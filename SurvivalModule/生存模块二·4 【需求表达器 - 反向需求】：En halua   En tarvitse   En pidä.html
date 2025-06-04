@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>芬兰语入门 - 反向需求表达系统 (TTS)</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            margin: 20px auto;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        thead {
+            background-color: #f4f4f4;
+        }
+        details {
+            margin-bottom: 10px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-left: 4px solid #3498db;
+            margin: 10px 0;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 5px;
+            padding: 0;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .tts-button:hover {
+            opacity: 0.7;
+        }
+        .debug-section {
+            background-color: #fffbf0;
+            border: 2px solid #ffa500;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .debug-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .debug-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🧱 模块二·4：【需求表达器 - 反向需求】"En halua / En tarvitse / En pidä"</h1>
+
+<!-- TTS调试区域 -->
+<div class="debug-section">
+    <h3>🔧 TTS功能测试</h3>
+    <p>如果TTS按钮没有声音，请先测试以下功能：</p>
+    <button class="debug-button" onclick="testBasicTTS()">测试基本TTS</button>
+    <button class="debug-button" onclick="testFinnishTTS()">测试芬兰语TTS</button>
+    <button class="debug-button" onclick="listVoices()">查看可用语音</button>
+    <button class="debug-button" onclick="removeDebugSection()">移除调试区域</button>
+    <div id="debug-output" style="margin-top: 10px; padding: 10px; background-color: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;"></div>
+</div>
+
+<hr>
+
+<section id="module-core">
+    <h2>🚨 模块核心：你不仅要知道你<strong>想要什么</strong>，也要知道你<strong>不想要什么</strong>。</h2>
+    <p>在芬兰文化中，“否定表达”不是简单的拒绝，而是一种<strong>社会边界建构</strong>，是你与世界<strong>重新定义关系的契机</strong>。</p>
+    <p>你已经掌握：</p>
+    <ul>
+        <li><span class="speakable-finnish">Haluan</span> = 我想要</li>
+        <li><span class="speakable-finnish">Tarvitsen</span> = 我需要</li>
+        <li><span class="speakable-finnish">Pidän</span> = 我喜欢</li>
+    </ul>
+    <p>现在我们将激活：</p>
+    <ul>
+        <li><span class="speakable-finnish">En halua</span> = 我不想要</li>
+        <li><span class="speakable-finnish">En tarvitse</span> = 我不需要</li>
+        <li><span class="speakable-finnish">En pidä</span> = 我不喜欢</li>
+    </ul>
+</section>
+
+<hr>
+
+<section id="negation-vocab-template">
+    <h2>🧬 高频否定语块模板（绑定真实情境）</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>动词原形</th>
+                <th>否定形式 + 部分格/出格</th>
+                <th>中文映射</th>
+                <th>使用示例</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>haluta</td><td><span class="speakable-finnish">En halua kahvia.</span></td><td>我不想要咖啡。</td><td>被提供咖啡时</td></tr>
+            <tr><td>tarvita</td><td><span class="speakable-finnish">En tarvitse tietoa.</span></td><td>我不需要信息。</td><td>邮局/柜台</td></tr>
+            <tr><td>pitää</td><td><span class="speakable-finnish">En pidä liikunnasta.</span></td><td>我不喜欢运动。</td><td>朋友邀请运动</td></tr>
+            <tr><td>nähdä</td><td><span class="speakable-finnish">En halua nähdä elokuvaa.</span></td><td>我不想要看电影。</td><td>被邀请时</td></tr>
+            <tr><td>ostaa</td><td><span class="speakable-finnish">En halua ostaa tätä.</span></td><td>我不想要买这个。</td><td>商店/餐厅</td></tr>
+            <tr><td>juoda</td><td><span class="speakable-finnish">En halua juoda kahvia.</span></td><td>我不想喝咖啡。</td><td>上班路上</td></tr>
+            <tr><td>kuulla</td><td><span class="speakable-finnish">En halua kuulla musiikkia.</span></td><td>我不想听音乐。</td><td>地铁、图书馆</td></tr>
+            <tr><td>syödä</td><td><span class="speakable-finnish">En halua syödä kalaa.</span></td><td>我不想吃鱼。</td><td>餐厅点餐</td></tr>
+            <tr><td>ottaa</td><td><span class="speakable-finnish">En halua ottaa tätä.</span></td><td>我不想拿这个。</td><td>被递东西时</td></tr>
+            <tr><td>odottaa</td><td><span class="speakable-finnish">En halua odottaa.</span></td><td>我不想等。</td><td>等待时间过长</td></tr>
+            <tr><td>mennä</td><td><span class="speakable-finnish">En halua mennä sinne.</span></td><td>我不想去那里。</td><td>被邀请去某地</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<section id="negation-structure">
+    <h2>🧠 否定句型模块化（En + verbi + [事物，部分格/出格]）</h2>
+    <p>所有否定句的结构都是一致的：</p>
+    <div class="example"><span class="speakable-finnish">En + [动词原形] + [事物，部分格/出格]</span></div>
+    <h3>✅ 常用否定句模板</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>否定形式</th>
+                <th>中文映射</th>
+                <th>语块绑定</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><span class="speakable-finnish">En halua kahvia.</span></td><td>我不想要咖啡。</td><td>在咖啡店</td></tr>
+            <tr><td><span class="speakable-finnish">En tarvitse apua.</span></td><td>我不需要帮助。</td><td>他人主动帮助你</td></tr>
+            <tr><td><span class="speakable-finnish">En pidä liikunnasta.</span></td><td>我不喜欢运动。</td><td>被邀请去运动</td></tr>
+            <tr><td><span class="speakable-finnish">En halua nähdä elokuvaa.</span></td><td>我不想看电影。</td><td>朋友邀请时</td></tr>
+            <tr><td><span class="speakable-finnish">En tarvitse juustoa.</span></td><td>我不需要奶酪。</td><td>超市</td></tr>
+            <tr><td><span class="speakable-finnish">En halua syödä kalaa.</span></td><td>我不想吃鱼。</td><td>餐厅点餐</td></tr>
+            <tr><td><span class="speakable-finnish">En pidä tästä.</span></td><td>我不喜欢这个。</td><td>任何场合</td></tr>
+            <tr><td><span class="speakable-finnish">En tarvitse tätä.</span></td><td>我不需要这个。</td><td>处理物品时</td></tr>
+            <tr><td><span class="speakable-finnish">En halua enää.</span></td><td>我不要了。</td><td>餐后、购物后</td></tr>
+            <tr><td><span class="speakable-finnish">En tarvitse enää.</span></td><td>不需要了。</td><td>现实转折</td></tr>
+            <tr><td><span class="speakable-finnish">En pidä siitä.</span></td><td>我不喜欢那玩意。</td><td>指向他人推荐</td></tr>
+            <tr><td><span class="speakable-finnish">En halua mennä sinne.</span></td><td>我不想去那里。</td><td>拒绝前往某地</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<section id="scenario-training">
+    <h2>🧪 否定表达场景训练套件（生存级）</h2>
+    <div class="example">
+        <h3>📍 场景 1：咖啡店</h3>
+        <p>对方递给你一杯咖啡，你可以说：</p>
+        <p><span class="speakable-finnish">En halua kahvia.</span></p>
+        <p><span class="speakable-finnish">Tämä kahvi ei hyvä?</span></p>
+        <p><span class="speakable-finnish">Kiitos, mutta en tarvitse.</span></p>
+    </div>
+    <div class="example">
+        <h3>📍 场景 2：邮局 / 柜台</h3>
+        <p>对方问你是否需要表格、信息、帮助，你可以说：</p>
+        <p><span class="speakable-finnish">En tarvitse lomaketta.</span></p>
+        <p><span class="speakable-finnish">En halua tätä kirjettä.</span></p>
+        <p><span class="speakable-finnish">En pidä tästä paikasta.</span></p>
+    </div>
+    <div class="example">
+        <h3>📍 场景 3：运动邀请</h3>
+        <p>朋友说：“<span class="speakable-finnish">Haluatko liikuntaan?</span>” 你可以回应：</p>
+        <p><span class="speakable-finnish">En halua liikuntaan.</span></p>
+        <p><span class="speakable-finnish">En pidä liikunnasta.</span></p>
+        <p><span class="speakable-finnish">Liikunta ei minulle.</span></p>
+    </div>
+    <div class="example">
+        <h3>📍 场景 4：餐厅 / 聚餐</h3>
+        <p>对方递给你食物，你可以说：</p>
+        <p><span class="speakable-finnish">En pidä tästä ruoasta.</span></p>
+        <p><span class="speakable-finnish">En halua syödä sitä.</span></p>
+        <p><span class="speakable-finnish">En tarvitse kalaa.</span></p>
+    </div>
+    <div class="example">
+        <h3>📍 场景 5：在超市</h3>
+        <p>对方问你是否要买这个，你可以回应：</p>
+        <p><span class="speakable-finnish">En pidä suklaasta.</span></p>
+        <p><span class="speakable-finnish">Tässä on liian makeaa.</span></p>
+        <p><span class="speakable-finnish">En halua tätä tuotetta.</span></p>
+    </div>
+</section>
+
+<hr>
+
+<section id="chinese-binding">
+    <h2>🧠 中文母语者语感绑定训练（否定的语义空间）</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>芬兰语否定</th>
+                <th>中文感</th>
+                <th>心理映射</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><span class="speakable-finnish">En halua kahvia.</span></td><td>不想要 → 拒绝服务</td><td>非语言式礼貌</td></tr>
+            <tr><td><span class="speakable-finnish">En tarvitse tietoa.</span></td><td>不需要 → 拒绝信息</td><td>灵活应对</td></tr>
+            <tr><td><span class="speakable-finnish">En pidä liikunnasta.</span></td><td>不喜欢 → 拒绝活动</td><td>自我表达</td></tr>
+            <tr><td><span class="speakable-finnish">En pidä tätä.</span></td><td>不喜欢这个</td><td>指向具体</td></tr>
+            <tr><td><span class="speakable-finnish">En halua enää.</span></td><td>不要了，够了</td><td>结束某种状态</td></tr>
+            <tr><td><span class="speakable-finnish">En tarvitse enää.</span></td><td>不需要了</td><td>现实转折</td></tr>
+            <tr><td><span class="speakable-finnish">En pidä siitä.</span></td><td>我不喜欢那玩意</td><td>指向他人推荐</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<section id="body-binding">
+    <h2>🧬 肢体绑定训练：用身体说“不”</h2>
+    <p>语言的否定不是靠嘴，是靠身体的<strong>退避式表达</strong>。</p>
+    <table>
+        <thead>
+            <tr>
+                <th>动作</th>
+                <th>配套语言</th>
+                <th>场景</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>手向前平推</td><td><span class="speakable-finnish">"En halua. Kiitos."</span></td><td>拒绝咖啡/食物</td></tr>
+            <tr><td>头轻侧</td><td><span class="speakable-finnish">"En pidä tästä."</span></td><td>不喜欢某推荐</td></tr>
+            <tr><td>摇头</td><td><span class="speakable-finnish">"En halua, kiitos."</span></td><td>礼貌拒绝</td></tr>
+            <tr><td>手掌向下按压</td><td><span class="speakable-finnish">"Tämä ei ok minulle."</span></td><td>表达不适</td></tr>
+            <tr><td>手指他人推荐</td><td><span class="speakable-finnish">"En pidä siitä."</span></td><td>不喜欢别人推荐</td></tr>
+            <tr><td>指着已经吃过的</td><td><span class="speakable-finnish">"En halua enää."</span></td><td>表达已经够了</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<section id="negation-deformation">
+    <h2>🧩 否定句型变形器（不止是“不”）</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>功能</th>
+                <th>否定语块</th>
+                <th>中文映射</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>不喜欢</td><td><span class="speakable-finnish">En pidä musiikista.</span></td><td>我不喜欢这音乐。</td></tr>
+            <tr><td>不想要</td><td><span class="speakable-finnish">En halua tätä.</span></td><td>我不想要这个。</td></tr>
+            <tr><td>不需要</td><td><span class="speakable-finnish">En tarvitse tietoa.</span></td><td>我不需要信息。</td></tr>
+            <tr><td>不喜欢但现在还在用</td><td><span class="speakable-finnish">En pidä, mutta käytän.</span></td><td>不喜欢但还在用</td></tr>
+            <tr><td>不想要但现在在点</td><td><span class="speakable-finnish">En halua, mutta tilaan.</span></td><td>不想吃，但点了</td></tr>
+            <tr><td>不需要但现在在拿</td><td><span class="speakable-finnish">En tarvitse, mutta otan.</span></td><td>不需要，但拿了</td></tr>
+            <tr><td>不再需要</td><td><span class="speakable-finnish">En tarvitse enää.</span></td><td>不再需要了</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<section id="module-summary">
+    <h2>🧠 模块总结：你的【需求表达器】已完整</h2>
+    <p>你已经掌握的语言行为系统如下：</p>
+    <table>
+        <thead>
+            <tr>
+                <th>意图</th>
+                <th>芬兰语</th>
+                <th>中文映射</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>我想要</td><td><span class="speakable-finnish">Haluan vettä.</span></td><td>我想要点水。</td></tr>
+            <tr><td>我需要</td><td><span class="speakable-finnish">Tarvitsen kahvia.</span></td><td>我需要咖啡。</td></tr>
+            <tr><td>我喜欢</td><td><span class="speakable-finnish">Pidän musiikista.</span></td><td>我喜欢音乐。</td></tr>
+            <tr><td>我不想要</td><td><span class="speakable-finnish">En halua tätä.</span></td><td>我不想要这个。</td></tr>
+            <tr><td>我不需要</td><td><span class="speakable-finnish">En tarvitse tietoa.</span></td><td>我不需要信息。</td></tr>
+            <tr><td>我不喜欢</td><td><span class="speakable-finnish">En pidä liikunnasta.</span></td><td>我不喜欢运动。</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<section id="practice-list">
+    <h2>✅ 否定语块练习清单（每日出血练习）</h2>
+    <p>每天选其中3句：</p>
+    <ul>
+        <li><span class="speakable-finnish">En halua kahvia.</span></li>
+        <li><span class="speakable-finnish">En halua liikuntaa.</span></li>
+        <li><span class="speakable-finnish">En halua tätä.</span></li>
+        <li><span class="speakable-finnish">En tarvitse avainta.</span></li>
+        <li><span class="speakable-finnish">En tarvitse lippua.</span></li>
+        <li><span class="speakable-finnish">En tarvitse enää.</span></li>
+        <li><span class="speakable-finnish">En pidä musiikista.</span></li>
+        <li><span class="speakable-finnish">En pidä liikunnasta.</span></li>
+        <li><span class="speakable-finnish">En pidä tätä.</span></li>
+        <li><span class="speakable-finnish">En pidä siitä.</span></li>
+        <li><span class="speakable-finnish">En halua syödä kalaa.</span></li>
+    </ul>
+</section>
+
+<hr>
+
+<section id="challenge">
+    <h2>🧱 否定句现实植入挑战（三日计划）</h2>
+    <h3>📆 第1日：</h3>
+    <ul>
+        <li>在咖啡店被递上咖啡，如果你不想要，说：<span class="speakable-finnish">"En halua kahvia."</span></li>
+        <li>在超市拿起一个你<strong>不喜欢</strong>的食品 → 说：<span class="speakable-finnish">"En pidä suklaasta."</span></li>
+        <li>在运动中心被问是否想运动，如果你不想，说：<span class="speakable-finnish">"En halua liikuntaan."</span></li>
+    </ul>
+    <h3>📆 第2日：</h3>
+    <ul>
+        <li>在餐厅被推荐不喜欢的菜肴，说：<span class="speakable-finnish">"En pidä tästä ruoasta."</span></li>
+        <li>在书店里看到不感兴趣的书，说：<span class="speakable-finnish">"En tarvitse kirjaa."</span></li>
+        <li>在办公室，有人给你多余的文件，说：<span class="speakable-finnish">"En halua tätä."</span></li>
+    </ul>
+    <h3>📆 第3日：</h3>
+    <ul>
+        <li>朋友在讨论一部你不喜欢的电影，说：<span class="speakable-finnish">"En pidä tästä elokuvasta."</span></li>
+        <li>在地铁上，音乐太吵，对耳机说：<span class="speakable-finnish">"En halua musiikkia."</span></li>
+        <li>在售票机前犹豫，最终决定不买票，对自己说：<span class="speakable-finnish">"En tarvitse lippua."</span></li>
+    </ul>
+</section>
+
+<hr>
+
+<section id="cognitive-implantation-today">
+    <h2>🧠 认知植入手术（今日任务）</h2>
+    <p>你的任务是让语言从你身体里<strong>自然溢出</strong>，不是靠背诵，而是<strong>靠需求的驱动</strong>。</p>
+    <h3>🧠 语言出血任务：</h3>
+    <ol>
+        <li>在超市拿起一个你<strong>不喜欢</strong>的食品 → 说：<span class="speakable-finnish">"En pidä tätä."</span> + 把它放回去</li>
+        <li>在咖啡店被递上咖啡 → 说：<span class="speakable-finnish">"En halua tätä."</span> + 指另一个选项</li>
+        <li>有人问你："<span class="speakable-finnish">Haluatko käydä kaupassa?</span>" → 回应：<span class="speakable-finnish">"Ehkä. En tarvitse tietoa."</span> (也许。我不需要信息。)</li>
+    </ol>
+</section>
+
+<hr>
+
+<footer>
+    <p>版权归芬兰语教学设计团队所有 | 如需继续构建下一阶段内容，请联系作者。</p>
+</footer>
+
+<script>
+/**
+ * 调试输出函数
+ * @param {string} message - 要显示的消息
+ */
+function debugLog(message) {
+    const output = document.getElementById('debug-output');
+    if (output) {
+        const time = new Date().toLocaleTimeString();
+        output.innerHTML += `[${time}] ${message}<br>`;
+        output.scrollTop = output.scrollHeight;
+    }
+    console.log(message);
+}
+
+/**
+ * 测试基本TTS功能
+ */
+function testBasicTTS() {
+    debugLog('开始测试基本TTS功能...');
+    if (!('speechSynthesis' in window)) {
+        debugLog('❌ 错误：浏览器不支持语音合成API');
+        alert('您的浏览器不支持语音合成功能，请尝试使用Chrome、Edge或Firefox的最新版本。');
+        return;
+    }
+    debugLog('✅ 浏览器支持语音合成API');
+    
+    const utterance = new SpeechSynthesisUtterance('Hello World');
+    utterance.onstart = () => debugLog('✅ 英语测试开始播放');
+    utterance.onend = () => debugLog('✅ 英语测试播放完成');
+    utterance.onerror = (event) => debugLog('❌ 英语测试错误: ' + event.error);
+    
+    window.speechSynthesis.speak(utterance);
+}
+
+/**
+ * 测试芬兰语TTS功能
+ */
+function testFinnishTTS() {
+    debugLog('开始测试芬兰语TTS功能...');
+    const utterance = new SpeechSynthesisUtterance('En halua kahvia');
+    utterance.lang = 'fi-FI';
+    utterance.onstart = () => debugLog('✅ 芬兰语测试开始播放');
+    utterance.onend = () => debugLog('✅ 芬兰语测试播放完成');
+    utterance.onerror = (event) => debugLog('❌ 芬兰语测试错误: ' + event.error);
+    
+    window.speechSynthesis.speak(utterance);
+}
+
+/**
+ * 列出所有可用语音
+ */
+function listVoices() {
+    debugLog('正在获取可用语音列表...');
+    const voices = window.speechSynthesis.getVoices();
+    
+    if (voices.length === 0) {
+        debugLog('⚠️ 未找到任何语音，语音可能还在加载中');
+        return;
+    }
+    
+    debugLog(`找到 ${voices.length} 个可用语音:`);
+    voices.forEach((voice, index) => {
+        const isDefault = voice.default ? ' (默认)' : '';
+        debugLog(`${index + 1}. ${voice.name} (${voice.lang})${isDefault}`);
+    });
+    
+    // 查找芬兰语语音
+    const finnishVoices = voices.filter(voice => 
+        voice.lang.toLowerCase().startsWith('fi') || 
+        voice.name.toLowerCase().includes('finnish') ||
+        voice.name.toLowerCase().includes('suomi')
+    );
+    
+    if (finnishVoices.length > 0) {
+        debugLog(`✅ 找到 ${finnishVoices.length} 个芬兰语语音:`);
+        finnishVoices.forEach(voice => {
+            debugLog(`  - ${voice.name} (${voice.lang})`);
+        });
+    } else {
+        debugLog('❌ 未找到芬兰语语音');
+    }
+}
+
+/**
+ * 移除调试区域
+ */
+function removeDebugSection() {
+    const debugSection = document.querySelector('.debug-section');
+    if (debugSection) {
+        debugSection.style.display = 'none';
+        debugLog('调试区域已隐藏');
+    }
+}
+
+// 全局变量跟踪播放状态
+let isSpeaking = false;
+
+/**
+ * 核心语音合成函数
+ * @param {string} text - 要播放的文本
+ * @param {string} lang - 语言代码 (例如 'fi-FI')
+ */
+function speakText(text, lang) {
+    debugLog(`尝试播放: "${text}" (语言: ${lang})`);
+    
+    if (!('speechSynthesis' in window)) {
+        alert('抱歉，您的浏览器不支持语音合成。');
+        debugLog('❌ 语音合成API不可用');
+        return;
+    }
+    
+    // 如果正在播放，先停止
+    if (isSpeaking) {
+        window.speechSynthesis.cancel();
+        debugLog('⏹️ 停止之前的播放');
+        // 等待一小段时间确保停止完成
+        setTimeout(() => {
+            startSpeaking(text, lang);
+        }, 100);
+    } else {
+        startSpeaking(text, lang);
+    }
+}
+
+/**
+ * 开始语音播放的内部函数
+ * @param {string} text - 要播放的文本
+ * @param {string} lang - 语言代码
+ */
+function startSpeaking(text, lang) {
+    isSpeaking = true;
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.rate = 0.85; // 稍慢语速
+    utterance.volume = 1.0;
+    utterance.pitch = 1.0;
+
+    // 尝试获取并设置特定语言的语音
+    const voices = window.speechSynthesis.getVoices();
+    let selectedVoice = null;
+    if (lang.startsWith('fi')) {
+        selectedVoice = voices.find(voice => 
+            voice.lang.toLowerCase().startsWith('fi') || 
+            voice.name.toLowerCase().includes('finnish') ||
+            voice.name.toLowerCase().includes('suomi')
+        );
+    }
+    
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+        debugLog(`使用语音: ${selectedVoice.name} (${selectedVoice.lang})`);
+    } else {
+        debugLog(`⚠️ 未找到语言 ${lang} 的特定语音，使用默认语音`);
+    }
+    
+    utterance.onstart = () => {
+        debugLog(`✅ 开始播放: "${text}"`);
+    };
+    
+    utterance.onend = () => {
+        debugLog(`✅ 播放完成: "${text}"`);
+        isSpeaking = false;
+    };
+    
+    utterance.onerror = (event) => {
+        debugLog(`❌ 播放错误: ${event.error} (文本: "${text}")`);
+        isSpeaking = false;
+        // 只在不是interrupted错误时显示alert
+        if (event.error !== 'interrupted') {
+            alert('语音播放出错: ' + event.error);
+        }
+    };
+
+    window.speechSynthesis.speak(utterance);
+}
+
+/**
+ * 为HTML元素添加TTS播放按钮
+ * @param {HTMLElement} element - 要附加按钮的HTML元素
+ * @param {string} textToSpeak - 点击按钮时要朗读的文本
+ * @param {string} lang - 文本的语言代码
+ */
+function addTTSButton(element, textToSpeak, lang) {
+    if (!textToSpeak || textToSpeak.trim() === '') {
+        debugLog(`⚠️ 跳过空文本元素: ${element.tagName}`);
+        return; // 如果没有文本则不添加按钮
+    }
+    
+    // 检查是否已经有按钮了
+    if (element.querySelector('.tts-button')) {
+        debugLog(`⚠️ 元素已有TTS按钮: "${textToSpeak.trim()}"`);
+        return;
+    }
+    
+    const button = document.createElement('button');
+    button.className = 'tts-button';
+    button.innerHTML = '🔊'; //喇叭图标
+    button.title = '播放: ' + textToSpeak.trim();
+    button.setAttribute('aria-label', '播放音频: ' + textToSpeak.trim());
+    
+    button.onclick = function(event) {
+        event.preventDefault(); // 防止默认行为
+        event.stopPropagation(); // 防止触发父元素的点击事件
+        
+        // 防止在播放期间重复点击
+        if (isSpeaking) {
+            debugLog(`⚠️ 播放中，忽略重复点击: "${textToSpeak.trim()}"`);
+            return false;
+        }
+        
+        debugLog(`🔊 按钮被点击: "${textToSpeak.trim()}" (语言: ${lang})`);
+        
+        // 添加视觉反馈
+        const originalText = button.innerHTML;
+        button.innerHTML = '🔇'; // 改为静音图标表示正在播放
+        button.disabled = true;
+        
+        // 播放完成后恢复按钮
+        const checkCompletion = () => {
+            if (!isSpeaking) {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            } else {
+                setTimeout(checkCompletion, 100);
+            }
+        };
+        
+        speakText(textToSpeak.trim(), lang);
+        setTimeout(checkCompletion, 100);
+        
+        return false; // 确保不会触发其他事件
+    };
+    
+    element.appendChild(button);
+    debugLog(`✅ 已添加TTS按钮: "${textToSpeak.trim()}" (语言: ${lang})`);
+}
+
+/**
+ * 初始化TTS按钮，在文档加载完成后执行。
+ * 确保在语音列表加载后再添加按钮，以正确选择语音。
+ */
+function initializeTTSFunctionality() {
+    debugLog('🚀 开始初始化TTS功能...');
+    const finnishLang = 'fi-FI';
+
+    // 等待一下确保DOM完全加载
+    setTimeout(() => {
+        debugLog('📝 开始添加TTS按钮到各个部分...');
+
+        // 模块核心 (module-core section) - 只处理 ul/li 中的 speakable-finnish
+        document.querySelectorAll('#module-core ul li .speakable-finnish').forEach((span) => {
+            addTTSButton(span, span.textContent, finnishLang);
+        });
+
+        // 高频否定语块模板 (negation-vocab-template section)
+        document.querySelectorAll('#negation-vocab-template table tbody tr').forEach((row) => {
+            const negationFormCell = row.cells[1]; // 否定形式列
+            if (negationFormCell && negationFormCell.querySelector('.speakable-finnish')) {
+                addTTSButton(negationFormCell.querySelector('.speakable-finnish'), negationFormCell.querySelector('.speakable-finnish').textContent, finnishLang);
+            }
+        });
+
+        // 否定句型模块化 (negation-structure section) - example div 和 table
+        const exampleSpan = document.querySelector('#negation-structure .example .speakable-finnish');
+        if (exampleSpan) {
+            addTTSButton(exampleSpan, exampleSpan.textContent, finnishLang);
+        }
+        document.querySelectorAll('#negation-structure table tbody tr').forEach((row) => {
+            const negationFormCell = row.cells[0]; // 否定形式列
+            if (negationFormCell && negationFormCell.querySelector('.speakable-finnish')) {
+                addTTSButton(negationFormCell.querySelector('.speakable-finnish'), negationFormCell.querySelector('.speakable-finnish').textContent, finnishLang);
+            }
+        });
+
+        // 否定表达场景训练套件 (scenario-training section)
+        document.querySelectorAll('#scenario-training .example p').forEach((p) => {
+            const speakableSpan = p.querySelector('.speakable-finnish');
+            if (speakableSpan) {
+                addTTSButton(speakableSpan, speakableSpan.textContent, finnishLang);
+            } else { // Fallback for raw text without span, but check if it's Finnish sentence or contains key Finnish words
+                const text = p.textContent.trim();
+                // Heuristic check for Finnish sentences. Adjust as needed.
+                if (text.match(/^[A-ZÅÄÖ].*\.$/) || text.includes('En halua') || text.includes('En tarvitse') || text.includes('En pidä') || text.includes('Tässä') || text.includes('Haluatko') || text.includes('Liikunta')) {
+                    addTTSButton(p, text, finnishLang);
+                }
+            }
+        });
+
+        // 中文母语者语感绑定训练 (chinese-binding section)
+        document.querySelectorAll('#chinese-binding table tbody tr').forEach((row) => {
+            const finnishCell = row.cells[0]; // 芬兰语否定列
+            if (finnishCell && finnishCell.querySelector('.speakable-finnish')) {
+                addTTSButton(finnishCell.querySelector('.speakable-finnish'), finnishCell.querySelector('.speakable-finnish').textContent, finnishLang);
+            }
+        });
+
+        // 肢体绑定训练 (body-binding section)
+        document.querySelectorAll('#body-binding table tbody tr').forEach((row) => {
+            const langCell = row.cells[1]; // 配套语言列
+            if (langCell && langCell.querySelector('.speakable-finnish')) {
+                addTTSButton(langCell.querySelector('.speakable-finnish'), langCell.querySelector('.speakable-finnish').textContent, finnishLang);
+            }
+        });
+
+        // 否定句型变形器 (negation-deformation section)
+        document.querySelectorAll('#negation-deformation table tbody tr').forEach((row) => {
+            const negationChunkCell = row.cells[1]; // 否定语块列
+            if (negationChunkCell && negationChunkCell.querySelector('.speakable-finnish')) {
+                addTTSButton(negationChunkCell.querySelector('.speakable-finnish'), negationChunkCell.querySelector('.speakable-finnish').textContent, finnishLang);
+            }
+        });
+
+        // 模块总结 (module-summary section)
+        document.querySelectorAll('#module-summary table tbody tr').forEach((row) => {
+            const finnishCell = row.cells[1]; // 芬兰语列
+            if (finnishCell && finnishCell.querySelector('.speakable-finnish')) {
+                addTTSButton(finnishCell.querySelector('.speakable-finnish'), finnishCell.querySelector('.speakable-finnish').textContent, finnishLang);
+            }
+        });
+
+        // 否定语块练习清单 (practice-list section)
+        document.querySelectorAll('#practice-list ul li').forEach((li) => {
+            const speakableSpan = li.querySelector('.speakable-finnish');
+            if (speakableSpan) {
+                addTTSButton(speakableSpan, speakableSpan.textContent, finnishLang);
+            }
+        });
+
+        // 否定句现实植入挑战 (challenge section)
+        document.querySelectorAll('#challenge ul li').forEach((li) => {
+            const speakableSpan = li.querySelector('.speakable-finnish');
+            if (speakableSpan) {
+                addTTSButton(speakableSpan, speakableSpan.textContent, finnishLang);
+            }
+        });
+
+        // 认知植入手术 (cognitive-implantation-today section)
+        document.querySelectorAll('#cognitive-implantation-today ol li').forEach((li) => {
+            const speakableSpan = li.querySelector('.speakable-finnish');
+            if (speakableSpan) {
+                addTTSButton(speakableSpan, speakableSpan.textContent, finnishLang);
+            }
+        });
+
+
+        debugLog('✅ TTS功能初始化完毕！');
+        
+    }, 500); // 延迟500毫秒确保DOM完全加载
+
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.speechSynthesis.getVoices().length === 0) {
+        window.speechSynthesis.onvoiceschanged = initializeTTSFunctionality;
+    } else {
+        initializeTTSFunctionality();
+    }
+});
+
+</script>
+
+</body>
+</html>
