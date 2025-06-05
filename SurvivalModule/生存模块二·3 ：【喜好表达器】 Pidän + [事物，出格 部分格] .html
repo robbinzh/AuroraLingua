@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>芬兰语入门 - 我喜欢表达系统 (TTS)</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            margin: 20px auto;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        thead {
+            background-color: #f4f4f4;
+        }
+        details {
+            margin-bottom: 10px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-left: 4px solid #3498db;
+            margin: 10px 0;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 5px;
+            padding: 0;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .tts-button:hover {
+            opacity: 0.7;
+        }
+        .debug-section {
+            background-color: #fffbf0;
+            border: 2px solid #ffa500;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .debug-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .debug-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🧱 模块二·3：【喜好表达器】"Pidän + [事物，出格/部分格]"</h1>
+
+<!-- TTS调试区域 -->
+<div class="debug-section">
+    <h3>🔧 TTS功能测试</h3>
+    <p>如果TTS按钮没有声音，请先测试以下功能：</p>
+    <button class="debug-button" onclick="testBasicTTS()">测试基本TTS</button>
+    <button class="debug-button" onclick="testFinnishTTS()">测试芬兰语TTS</button>
+    <button class="debug-button" onclick="listVoices()">查看可用语音</button>
+    <button class="debug-button" onclick="removeDebugSection()">移除调试区域</button>
+    <div id="debug-output" style="margin-top: 10px; padding: 10px; background-color: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;"></div>
+</div>
+
+<hr>
+
+<section id="cognitive-core">
+    <h2>🧠 认知绑定核心：</h2>
+    <p><strong>“Pidän + 出格/部分格” = 我喜欢（某个事物）</strong></p>
+    <p>你已经掌握了：</p>
+    <ul>
+        <li>Haluan + 部分格（我想要）</li>
+        <li>Tarvitsen + 部分格（我需要）</li>
+    </ul>
+    <p>现在我们进入：</p>
+    <ul>
+        <li>Pidän + 出格/部分格（我喜欢...）</li>
+    </ul>
+    <p>这不只是表达“喜欢”，而是<strong>让你的语言开始吸引他人注意并产生反应</strong>。</p>
+</section>
+
+<hr>
+
+<section id="vocab-table">
+    <h2>🧬 核心高频词汇表（爱好/运动/食物+饮品，部分格和出格）</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>原形</th>
+                <th>部分格</th>
+                <th>出格</th>
+                <th>中文</th>
+                <th>使用示例</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>kahvi</td><td>kahvia</td><td>kahvista</td><td>咖啡</td><td><span class="speakable-finnish">Pidän kahvista.</span>（我喜欢咖啡）</td></tr>
+            <tr><td>maito</td><td>maitoa</td><td>maidosta</td><td>牛奶</td><td><span class="speakable-finnish">Pidän maidosta.</span>（我喜欢牛奶）</td></tr>
+            <tr><td>musiikki</td><td>musiikkia</td><td>musiikista</td><td>音乐</td><td><span class="speakable-finnish">Pidän musiikista.</span></td></tr>
+            <tr><td>liikunta</td><td>liikuntaa</td><td>liikunnasta</td><td>运动</td><td><span class="speakable-finnish">Pidän liikunnasta.</span></td></tr>
+            <tr><td>suklaa</td><td>suklaata</td><td>suklaasta</td><td>巧克力</td><td><span class="speakable-finnish">Pidän suklaasta.</span></td></tr>
+            <tr><td>kirja</td><td>kirjaa</td><td>kirjasta</td><td>书</td><td><span class="speakable-finnish">Pidän kirjasta.</span></td></tr>
+            <tr><td>elokuva</td><td>elokuvaa</td><td>elokuvasta</td><td>电影</td><td><span class="speakable-finnish">Pidän elokuvasta.</span></td></tr>
+            <tr><td>juusto</td><td>juustoa</td><td>juustosta</td><td>奶酪</td><td><span class="speakable-finnish">Pidän juustosta.</span></td></tr>
+            <tr><td>bussi</td><td>bussia</td><td>bussista</td><td>公交车</td><td><span class="speakable-finnish">Pidän bussista.</span></td></tr>
+            <tr><td>Helsinki</td><td>Helsinkiä</td><td>Helsingistä</td><td>赫尔辛基</td><td><span class="speakable-finnish">Pidän Helsingistä.</span></td></tr>
+            <tr><td>matkailu</td><td>matkailua</td><td>matkailusta</td><td>旅游</td><td><span class="speakable-finnish">Pidän matkailusta.</span></td></tr>
+            <tr><td>luonto</td><td>luontoa</td><td>luonnosta</td><td>自然</td><td><span class="speakable-finnish">Pidän luonnosta.</span></td></tr>
+            <tr><td>uiminen</td><td>uimista</td><td>uimisesta</td><td>游泳</td><td><span class="speakable-finnish">Pidän uimisesta.</span></td></tr>
+            <tr><td>lukeminen</td><td>lukemista</td><td>lukemisesta</td><td>阅读</td><td><span class="speakable-finnish">Pidän lukemisesta.</span></td></tr>
+            <tr><td>ruoanlaitto</td><td>ruoanlaittoa</td><td>ruoanlaitosta</td><td>烹饪</td><td><span class="speakable-finnish">Pidän ruoanlaitosta.</span></td></tr>
+            <tr><td>aurinko</td><td>aurinkoa</td><td>auringosta</td><td>阳光</td><td><span class="speakable-finnish">Pidän auringosta.</span></td></tr>
+        </tbody>
+    </table>
+    <h3>🧠 认知绑定技巧：</h3>
+    <ul>
+        <li>“出格”表示你<strong>已经接触过</strong>这个事物，并要从中<strong>引出情感</strong>。</li>
+        <li>“部分格”表示你<strong>还没说完</strong>，或者你<strong>正在享受/需要一点</strong>（此用法在Pidän动词中较少，主要用于Haluan/Tarvitsen）。</li>
+    </ul>
+</section>
+
+<hr>
+
+<section id="core-blocks-template">
+    <h2>🧩 核心语块模板（绑定你的表达）</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>中文意图</th>
+                <th>芬兰语语块</th>
+                <th>直觉映射</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>我喜欢音乐</td><td><span class="speakable-finnish">Pidän musiikista.</span></td><td>→ 从音乐中我感受到喜欢</td></tr>
+            <tr><td>我喜欢巧克力</td><td><span class="speakable-finnish">Pidän suklaasta.</span></td><td>→ 从巧克力中我感受到</td></tr>
+            <tr><td>我喜欢运动</td><td><span class="speakable-finnish">Pidän liikunnasta.</span></td><td>→ 从运动中我感受到</td></tr>
+            <tr><td>我喜欢咖啡</td><td><span class="speakable-finnish">Pidän kahvista.</span></td><td>→ 从咖啡中我感受到</td></tr>
+            <tr><td>我喜欢赫尔辛基</td><td><span class="speakable-finnish">Pidän Helsingistä.</span></td><td>→ 从赫尔辛基我感受到</td></tr>
+            <tr><td>我喜欢书</td><td><span class="speakable-finnish">Pidän kirjasta.</span></td><td>→ 从书我感受到</td></tr>
+            <tr><td>我喜欢电影</td><td><span class="speakable-finnish">Pidän elokuvasta.</span></td><td>→ 从电影我感受到</td></tr>
+            <tr><td>我喜欢奶酪</td><td><span class="speakable-finnish">Pidän juustosta.</span></td><td>→ 从奶酪我感受到</td></tr>
+            <tr><td>我喜欢公交车</td><td><span class="speakable-finnish">Pidän bussista.</span></td><td>→ 从公交车我感受到</td></tr>
+            <tr><td>我喜欢旅游</td><td><span class="speakable-finnish">Pidän matkailusta.</span></td><td>→ 从旅游中我感受到</td></tr>
+            <tr><td>我喜欢大自然</td><td><span class="speakable-finnish">Pidän luonnosta.</span></td><td>→ 从大自然中我感受到</td></tr>
+            <tr><td>我喜欢阅读</td><td><span class="speakable-finnish">Pidän lukemisesta.</span></td><td>→ 从阅读中我感受到</td></tr>
+            <tr><td>我喜欢这个</td><td><span class="speakable-finnish">Pidän tästä.</span></td><td>→ 从这个东西中我感受到</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<section id="structure-intuition-generator">
+    <h2>🧠 语言结构直觉生成器（中文→芬兰语感）</h2>
+    <p>中文母语者的秘密武器：<strong>我们已经理解“从…来”的语法结构</strong>。芬兰语只是把这个“从”字<strong>直接“缝进名词里”</strong>。</p>
+    <table>
+        <thead>
+            <tr>
+                <th>中文表达</th>
+                <th>芬兰语表达</th>
+                <th>直觉映射</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>我喜欢音乐（因为接触过）</td><td><span class="speakable-finnish">Pidän musiikista</span></td><td>“从音乐中，我喜欢”</td></tr>
+            <tr><td>我喜欢牛奶（还不能确定全量）</td><td><span class="speakable-finnish">Pidän maidosta</span></td><td>“从牛奶/一些牛奶中我喜欢”</td></tr>
+            <tr><td>我喜欢巧克力（不确定是哪一种）</td><td><span class="speakable-finnish">Pidän suklaasta</span></td><td>“从巧克力/一些巧克力中我喜欢”</td></tr>
+            <tr><td>我喜欢运动（因为运动过）</td><td><span class="speakable-finnish">Pidän liikunnasta</span></td><td>“从运动中我喜欢”</td></tr>
+            <tr><td>我想要点书</td><td><span class="speakable-finnish">Haluan kirjaa</span></td><td>这不是“书”的语法，是你身体的行动</td></tr>
+            <tr><td>我需要点牛奶</td><td><span class="speakable-finnish">Tarvitsen maitoa</span></td><td>动作 → 需求 → 现实反馈</td></tr>
+            <tr><td>我喜欢赫尔辛基</td><td><span class="speakable-finnish">Pidän Helsingistä</span></td><td>“从赫尔辛基我感受到喜欢”</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<section id="scenario-training">
+    <h2>🧪 场景训练套件（生存级）</h2>
+    <div class="example">
+        <h3>📍 场景 1：咖啡店</h3>
+        <p><span class="speakable-finnish">Pidän kahvista.</span></p>
+        <p><span class="speakable-finnish">Tarvitsen kahvia.</span></p>
+        <p><span class="speakable-finnish">Maitoa lisää?</span></p>
+    </div>
+    <div class="example">
+        <h3>📍 场景 2：超市</h3>
+        <p><span class="speakable-finnish">Pidän suklaasta.</span></p>
+        <p><span class="speakable-finnish">Tämä hyvä?</span></p>
+        <p><span class="speakable-finnish">Onko tässä maitoa?</span></p>
+    </div>
+    <div class="example">
+        <h3>📍 场景 3：运动中心</h3>
+        <p><span class="speakable-finnish">Pidän liikunnasta.</span></p>
+        <p><span class="speakable-finnish">Minä liikun tässä.</span></p>
+        <p><span class="speakable-finnish">Tarvitsen vettä.</span></p>
+    </div>
+    <div class="example">
+        <h3>📍 场景 4：图书馆/书店</h3>
+        <p><span class="speakable-finnish">Pidän kirjasta.</span></p>
+        <p><span class="speakable-finnish">Tässä on hyvää kirjaa?</span></p>
+        <p><span class="speakable-finnish">Haluan tämän kirjan.</span></p>
+    </div>
+    <div class="example">
+        <h3>📍 场景 5：朋友对话</h3>
+        <p><span class="speakable-finnish">Pidän elokuvasta.</span></p>
+        <p><span class="speakable-finnish">Katsotko elokuvaa kanssani?</span></p>
+        <p><span class="speakable-finnish">Pidän Helsingistä.</span></p>
+        <p><span class="speakable-finnish">Minä asun tässä.</span></p>
+    </div>
+</section>
+
+<hr>
+
+<section id="modular-generator">
+    <h2>🧩 模块化语块生成器（绑定你的真实生活）</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>动机</th>
+                <th>语块</th>
+                <th>中文映射</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>我喜欢这口味</td><td><span class="speakable-finnish">Pidän juustosta</span></td><td>我喜欢这奶酪</td></tr>
+            <tr><td>我喜欢这城市</td><td><span class="speakable-finnish">Pidän Helsingistä</span></td><td>我喜欢赫尔辛基</td></tr>
+            <tr><td>我喜欢某人推荐的咖啡</td><td><span class="speakable-finnish">Pidän tästä kahvista</span></td><td>我喜欢这个咖啡</td></tr>
+            <tr><td>我喜欢这个包</td><td><span class="speakable-finnish">Pidän tästä laukusta</span></td><td>我喜欢这个包</td></tr>
+            <tr><td>我喜欢运动，但需要休息</td><td><span class="speakable-finnish">Pidän liikunnasta, mutta tarvitsen aikaa</span></td><td>我喜欢运动，但需要点时间休息</td></tr>
+            <tr><td>我喜欢阅读，但需要安静</td><td><span class="speakable-finnish">Pidän lukemisesta, mutta tarvitsen hiljaisuutta</span></td><td>我喜欢阅读，但需要安静</td></tr>
+            <tr><td>我喜欢大自然，但不喜欢下雨</td><td><span class="speakable-finnish">Pidän luonnosta, mutta en pidä sateesta</span></td><td>我喜欢大自然，但不喜欢下雨</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<section id="body-signal-binding">
+    <h2>🧬 肢体信号绑定术</h2>
+    <p>你可以用身体语言强化你的表达：</p>
+    <table>
+        <thead>
+            <tr>
+                <th>动作</th>
+                <th>配套语言</th>
+                <th>场景</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>拿起巧克力</td><td><span class="speakable-finnish">Pidän suklaasta.</span></td><td>用嗅觉和视觉辅助表达</td></tr>
+            <tr><td>做运动姿势</td><td><span class="speakable-finnish">Pidän liikunnasta.</span></td><td>跑步、拉伸动作</td></tr>
+            <tr><td>指着城市地图</td><td><span class="speakable-finnish">Pidän Helsingistä.</span></td><td>眼神望向城市</td></tr>
+            <tr><td>手按在心上</td><td><span class="speakable-finnish">Pidän tästä.</span></td><td>表达情感</td></tr>
+            <tr><td>指向窗外阳光</td><td><span class="speakable-finnish">Pidän auringosta.</span></td><td>表达对天气的喜好</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<section id="daily-bleeding-training">
+    <h2>🧪 每日语言出血训练（三日实战计划）</h2>
+    <h3>📆 第1日：表达喜好 + 选择反馈</h3>
+    <ul>
+        <li>在超市拿起一盒巧克力 → 说：<span class="speakable-finnish">"Pidän suklaasta."</span></li>
+        <li>在咖啡店说：<span class="speakable-finnish">"Pidän kahvista. Tässä on hyvää?"</span></li>
+        <li>指向城市 → 说：<span class="speakable-finnish">"Pidän Helsingistä."</span></li>
+    </ul>
+    <h3>📆 第2日：混合使用"haluan/tarvitsen/pidän"</h3>
+    <ul>
+        <li>在餐厅说：<span class="speakable-finnish">"Pidän soppaa. Haluan kalaa. Tarvitsen kahvia."</span></li>
+        <li>在柜台前：<span class="speakable-finnish">"Pidän tästä paikasta. Haluan tätä. Tarvitsen lomaketta."</span></li>
+    </ul>
+    <h3>📆 第3日：表达模糊 + 激活对方解释</h3>
+    <ul>
+        <li>在书店：<span class="speakable-finnish">"Pidän kirjasta... mutta en tiedä tätä."</span></li>
+        <li>在电影院：<span class="speakable-finnish">"Pidän tästä elokuvasta?"</span></li>
+        <li>在商店：<span class="speakable-finnish">"Pidän tästä laukusta. Tallenna?"</span></li>
+    </ul>
+</section>
+
+<hr>
+
+<section id="practice-list">
+    <h2>✅ Pidän高频语块练习清单（生存表达器）</h2>
+    <p>每天选其中3句，<strong>配合动作</strong>练习：</p>
+    <ul>
+        <li><span class="speakable-finnish">Pidän kahvista.</span></li>
+        <li><span class="speakable-finnish">Pidän maidosta.</span></li>
+        <li><span class="speakable-finnish">Pidän suklaasta.</span></li>
+        <li><span class="speakable-finnish">Pidän musiikista.</span></li>
+        <li><span class="speakable-finnish">Pidän liikunnasta.</span></li>
+        <li><span class="speakable-finnish">Pidän kirjasta.</span></li>
+        <li><span class="speakable-finnish">Pidän elokuvasta.</span></li>
+        <li><span class="speakable-finnish">Pidän Helsingistä.</span></li>
+        <li><span class="speakable-finnish">Pidän tästä. En tiedä mitä tämä on.</span></li>
+        <li><span class="speakable-finnish">Pidän tätä.</span></li>
+        <li><span class="speakable-finnish">Pidän matkailusta.</span></li>
+        <li><span class="speakable-finnish">Pidän luonnosta.</span></li>
+        <li><span class="speakable-finnish">Pidän uimisesta.</span></li>
+    </ul>
+</section>
+
+<hr>
+
+<section id="cognitive-implantation-today">
+    <h2>🧠 认知植入手术（今日任务）</h2>
+    <p>你的任务是让语言从你身体里<strong>自然溢出</strong>，不是靠背诵，而是<strong>靠需求的驱动</strong>。</p>
+    <h3>🧠 语块植入任务：</h3>
+    <ol>
+        <li>在超市拿起巧克力 → 说：<span class="speakable-finnish">"Pidän suklaasta. Tässä on makeaa?"</span></li>
+        <li>在城市地图前 → 说：<span class="speakable-finnish">"Pidän Helsingistä. Missä on hyvä?"</span></li>
+        <li>跑步后 → 对自己说：<span class="speakable-finnish">"Pidän liikunnasta. Mutta tarvitsen vettä."</span></li>
+    </ol>
+</section>
+
+<hr>
+
+<footer>
+    <p>版权归芬兰语教学设计团队所有 | 如需继续构建下一阶段内容，请联系作者。</p>
+</footer>
+
+<script>
+/**
+ * 调试输出函数
+ * @param {string} message - 要显示的消息
+ */
+function debugLog(message) {
+    const output = document.getElementById('debug-output');
+    if (output) {
+        const time = new Date().toLocaleTimeString();
+        output.innerHTML += `[${time}] ${message}<br>`;
+        output.scrollTop = output.scrollHeight;
+    }
+    console.log(message);
+}
+
+/**
+ * 测试基本TTS功能
+ */
+function testBasicTTS() {
+    debugLog('开始测试基本TTS功能...');
+    if (!('speechSynthesis' in window)) {
+        debugLog('❌ 错误：浏览器不支持语音合成API');
+        alert('您的浏览器不支持语音合成功能，请尝试使用Chrome、Edge或Firefox的最新版本。');
+        return;
+    }
+    debugLog('✅ 浏览器支持语音合成API');
+    
+    const utterance = new SpeechSynthesisUtterance('Hello World');
+    utterance.onstart = () => debugLog('✅ 英语测试开始播放');
+    utterance.onend = () => debugLog('✅ 英语测试播放完成');
+    utterance.onerror = (event) => debugLog('❌ 英语测试错误: ' + event.error);
+    
+    window.speechSynthesis.speak(utterance);
+}
+
+/**
+ * 测试芬兰语TTS功能
+ */
+function testFinnishTTS() {
+    debugLog('开始测试芬兰语TTS功能...');
+    const utterance = new SpeechSynthesisUtterance('Pidän musiikista');
+    utterance.lang = 'fi-FI';
+    utterance.onstart = () => debugLog('✅ 芬兰语测试开始播放');
+    utterance.onend = () => debugLog('✅ 芬兰语测试播放完成');
+    utterance.onerror = (event) => debugLog('❌ 芬兰语测试错误: ' + event.error);
+    
+    window.speechSynthesis.speak(utterance);
+}
+
+/**
+ * 列出所有可用语音
+ */
+function listVoices() {
+    debugLog('正在获取可用语音列表...');
+    const voices = window.speechSynthesis.getVoices();
+    
+    if (voices.length === 0) {
+        debugLog('⚠️ 未找到任何语音，语音可能还在加载中');
+        return;
+    }
+    
+    debugLog(`找到 ${voices.length} 个可用语音:`);
+    voices.forEach((voice, index) => {
+        const isDefault = voice.default ? ' (默认)' : '';
+        debugLog(`${index + 1}. ${voice.name} (${voice.lang})${isDefault}`);
+    });
+    
+    // 查找芬兰语语音
+    const finnishVoices = voices.filter(voice => 
+        voice.lang.toLowerCase().startsWith('fi') || 
+        voice.name.toLowerCase().includes('finnish') ||
+        voice.name.toLowerCase().includes('suomi')
+    );
+    
+    if (finnishVoices.length > 0) {
+        debugLog(`✅ 找到 ${finnishVoices.length} 个芬兰语语音:`);
+        finnishVoices.forEach(voice => {
+            debugLog(`  - ${voice.name} (${voice.lang})`);
+        });
+    } else {
+        debugLog('❌ 未找到芬兰语语音');
+    }
+}
+
+/**
+ * 移除调试区域
+ */
+function removeDebugSection() {
+    const debugSection = document.querySelector('.debug-section');
+    if (debugSection) {
+        debugSection.style.display = 'none';
+        debugLog('调试区域已隐藏');
+    }
+}
+
+// 全局变量跟踪播放状态
+let isSpeaking = false;
+
+/**
+ * 核心语音合成函数
+ * @param {string} text - 要播放的文本
+ * @param {string} lang - 语言代码 (例如 'fi-FI')
+ */
+function speakText(text, lang) {
+    debugLog(`尝试播放: "${text}" (语言: ${lang})`);
+    
+    if (!('speechSynthesis' in window)) {
+        alert('抱歉，您的浏览器不支持语音合成。');
+        debugLog('❌ 语音合成API不可用');
+        return;
+    }
+    
+    // 如果正在播放，先停止
+    if (isSpeaking) {
+        window.speechSynthesis.cancel();
+        debugLog('⏹️ 停止之前的播放');
+        // 等待一小段时间确保停止完成
+        setTimeout(() => {
+            startSpeaking(text, lang);
+        }, 100);
+    } else {
+        startSpeaking(text, lang);
+    }
+}
+
+/**
+ * 开始语音播放的内部函数
+ * @param {string} text - 要播放的文本
+ * @param {string} lang - 语言代码
+ */
+function startSpeaking(text, lang) {
+    isSpeaking = true;
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.rate = 0.85; // 稍慢语速
+    utterance.volume = 1.0;
+    utterance.pitch = 1.0;
+
+    // 尝试获取并设置特定语言的语音
+    const voices = window.speechSynthesis.getVoices();
+    let selectedVoice = null;
+    if (lang.startsWith('fi')) {
+        selectedVoice = voices.find(voice => 
+            voice.lang.toLowerCase().startsWith('fi') || 
+            voice.name.toLowerCase().includes('finnish') ||
+            voice.name.toLowerCase().includes('suomi')
+        );
+    }
+    
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+        debugLog(`使用语音: ${selectedVoice.name} (${selectedVoice.lang})`);
+    } else {
+        debugLog(`⚠️ 未找到语言 ${lang} 的特定语音，使用默认语音`);
+    }
+    
+    utterance.onstart = () => {
+        debugLog(`✅ 开始播放: "${text}"`);
+    };
+    
+    utterance.onend = () => {
+        debugLog(`✅ 播放完成: "${text}"`);
+        isSpeaking = false;
+    };
+    
+    utterance.onerror = (event) => {
+        debugLog(`❌ 播放错误: ${event.error} (文本: "${text}")`);
+        isSpeaking = false;
+        // 只在不是interrupted错误时显示alert
+        if (event.error !== 'interrupted') {
+            alert('语音播放出错: ' + event.error);
+        }
+    };
+
+    window.speechSynthesis.speak(utterance);
+}
+
+/**
+ * 为HTML元素添加TTS播放按钮
+ * @param {HTMLElement} element - 要附加按钮的HTML元素
+ * @param {string} textToSpeak - 点击按钮时要朗读的文本
+ * @param {string} lang - 文本的语言代码
+ */
+function addTTSButton(element, textToSpeak, lang) {
+    if (!textToSpeak || textToSpeak.trim() === '') {
+        debugLog(`⚠️ 跳过空文本元素: ${element.tagName}`);
+        return; // 如果没有文本则不添加按钮
+    }
+    
+    // 检查是否已经有按钮了
+    if (element.querySelector('.tts-button')) {
+        debugLog(`⚠️ 元素已有TTS按钮: "${textToSpeak.trim()}"`);
+        return;
+    }
+    
+    const button = document.createElement('button');
+    button.className = 'tts-button';
+    button.innerHTML = '🔊'; //喇叭图标
+    button.title = '播放: ' + textToSpeak.trim();
+    button.setAttribute('aria-label', '播放音频: ' + textToSpeak.trim());
+    
+    button.onclick = function(event) {
+        event.preventDefault(); // 防止默认行为
+        event.stopPropagation(); // 防止触发父元素的点击事件
+        
+        // 防止在播放期间重复点击
+        if (isSpeaking) {
+            debugLog(`⚠️ 播放中，忽略重复点击: "${textToSpeak.trim()}"`);
+            return false;
+        }
+        
+        debugLog(`🔊 按钮被点击: "${textToSpeak.trim()}" (语言: ${lang})`);
+        
+        // 添加视觉反馈
+        const originalText = button.innerHTML;
+        button.innerHTML = '🔇'; // 改为静音图标表示正在播放
+        button.disabled = true;
+        
+        // 播放完成后恢复按钮
+        const checkCompletion = () => {
+            if (!isSpeaking) {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            } else {
+                setTimeout(checkCompletion, 100);
+            }
+        };
+        
+        speakText(textToSpeak.trim(), lang);
+        setTimeout(checkCompletion, 100);
+        
+        return false; // 确保不会触发其他事件
+    };
+    
+    element.appendChild(button);
+    debugLog(`✅ 已添加TTS按钮: "${textToSpeak.trim()}" (语言: ${lang})`);
+}
+
+/**
+ * 初始化TTS按钮，在文档加载完成后执行。
+ * 确保在语音列表加载后再添加按钮，以正确选择语音。
+ */
+function initializeTTSFunctionality() {
+    debugLog('🚀 开始初始化TTS功能...');
+    const finnishLang = 'fi-FI';
+
+    // 等待一下确保DOM完全加载
+    setTimeout(() => {
+        debugLog('📝 开始添加TTS按钮到各个部分...');
+
+        // 认知绑定核心表 (cognitive-core section)
+        document.querySelectorAll('#cognitive-core table tbody tr').forEach((row) => {
+            const fiTextCell = row.cells[2]; // 芬兰语结构列
+            if (fiTextCell) {
+                addTTSButton(fiTextCell, fiTextCell.textContent, finnishLang);
+            }
+        });
+
+        // 核心高频词汇表 (vocab-table section)
+        document.querySelectorAll('#vocab-table table tbody tr').forEach((row) => {
+            const originalCell = row.cells[0]; // 原形
+            if (originalCell) addTTSButton(originalCell, originalCell.textContent, finnishLang);
+            const partitiveCell = row.cells[1]; // 部分格
+            if (partitiveCell) addTTSButton(partitiveCell, partitiveCell.textContent, finnishLang);
+            const elativeCell = row.cells[2]; // 出格
+            if (elativeCell) addTTSButton(elativeCell, elativeCell.textContent, finnishLang);
+            const exampleSpan = row.cells[4].querySelector('.speakable-finnish'); // 使用示例中的span
+            if (exampleSpan) addTTSButton(exampleSpan, exampleSpan.textContent, finnishLang);
+        });
+
+        // 核心语块模板 (core-blocks-template section)
+        document.querySelectorAll('#core-blocks-template table tbody tr').forEach((row) => {
+            const finnishChunkCell = row.cells[1]; // 芬兰语语块列
+            if (finnishChunkCell) {
+                addTTSButton(finnishChunkCell, finnishChunkCell.textContent, finnishLang);
+            }
+        });
+
+        // 语言结构直觉生成器 (structure-intuition-generator section)
+        document.querySelectorAll('#structure-intuition-generator table tbody tr').forEach((row) => {
+            const finnishExprCell = row.cells[1]; // 芬兰语表达列
+            if (finnishExprCell) {
+                addTTSButton(finnishExprCell, finnishExprCell.textContent, finnishLang);
+            }
+        });
+
+        // 场景训练套件 (scenario-training section)
+        document.querySelectorAll('#scenario-training .example p').forEach((p) => {
+            const speakableSpan = p.querySelector('.speakable-finnish');
+            if (speakableSpan) {
+                addTTSButton(speakableSpan, speakableSpan.textContent, finnishLang);
+            } else { // Fallback for raw text without span, but check if it's Finnish
+                const text = p.textContent.trim();
+                // Check if it looks like a Finnish sentence (starts with capital, contains common Finnish words)
+                if (text.match(/^[A-ZÅÄÖ].*\.$/) || text.includes('Pidän') || text.includes('Haluan') || text.includes('Tarvitsen') || text.includes('Maitoa') || text.includes('Tässä') || text.includes('Onko') || text.includes('Minä') || text.includes('Katsotko')) {
+                    addTTSButton(p, text, finnishLang);
+                }
+            }
+        });
+        
+        // 模块化语块生成器 (modular-generator section)
+        document.querySelectorAll('#modular-generator table tbody tr').forEach((row) => {
+            const finnishChunkCell = row.cells[1]; // 语块列
+            if (finnishChunkCell) {
+                addTTSButton(finnishChunkCell, finnishChunkCell.textContent, finnishLang);
+            }
+        });
+
+        // 肢体信号绑定术 (body-signal-binding section)
+        document.querySelectorAll('#body-signal-binding table tbody tr').forEach((row) => {
+            const finnishLangCell = row.cells[1]; // 配套语言列
+            if (finnishLangCell) {
+                addTTSButton(finnishLangCell, finnishLangCell.textContent, finnishLang);
+            }
+        });
+
+        // 每日语言出血训练 (daily-bleeding-training section)
+        document.querySelectorAll('#daily-bleeding-training ul li').forEach((li) => {
+            const speakableSpan = li.querySelector('.speakable-finnish');
+            if (speakableSpan) {
+                addTTSButton(speakableSpan, speakableSpan.textContent, finnishLang);
+            } else { // Fallback for raw text without span
+                 const text = li.textContent.trim();
+                 if (text.includes('Haluan') || text.includes('Pidän') || text.includes('Tarvitsen') || text.includes('Tässä')) {
+                     addTTSButton(li, text, finnishLang);
+                 }
+            }
+        });
+
+        // Pidän高频语块练习清单 (practice-list section)
+        document.querySelectorAll('#practice-list ul li').forEach((li) => {
+            const speakableSpan = li.querySelector('.speakable-finnish');
+            if (speakableSpan) {
+                addTTSButton(speakableSpan, speakableSpan.textContent, finnishLang);
+            }
+        });
+
+        // 认知植入手术 (cognitive-implantation-today section)
+        document.querySelectorAll('#cognitive-implantation-today ol li').forEach((li) => {
+            const speakableSpan = li.querySelector('.speakable-finnish');
+            if (speakableSpan) {
+                addTTSButton(speakableSpan, speakableSpan.textContent, finnishLang);
+            }
+        });
+
+
+        debugLog('✅ TTS功能初始化完毕！');
+        
+    }, 500); // 延迟500毫秒确保DOM完全加载
+
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.speechSynthesis.getVoices().length === 0) {
+        window.speechSynthesis.onvoiceschanged = initializeTTSFunctionality;
+    } else {
+        initializeTTSFunctionality();
+    }
+});
+
+</script>
+
+</body>
+</html>
