@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>芬兰语入门 - 我想要表达系统 (TTS)</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            margin: 20px auto;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        thead {
+            background-color: #f4f4f4;
+        }
+        details {
+            margin-bottom: 10px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-left: 4px solid #3498db;
+            margin: 10px 0;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 5px;
+            padding: 0;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .tts-button:hover {
+            opacity: 0.7;
+        }
+        .debug-section {
+            background-color: #fffbf0;
+            border: 2px solid #ffa500;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .debug-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .debug-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<h1>生存模块二·1：【需求表达器】Haluan + [事物，部分格]</h1>
+<p><strong>目标：</strong>掌握最基本的需求表达："Haluan + 部分格名词"</p>
+
+<!-- TTS调试区域 -->
+<div class="debug-section">
+    <h3>🔧 TTS功能测试</h3>
+    <p>如果TTS按钮没有声音，请先测试以下功能：</p>
+    <button class="debug-button" onclick="testBasicTTS()">测试基本TTS</button>
+    <button class="debug-button" onclick="testFinnishTTS()">测试芬兰语TTS</button>
+    <button class="debug-button" onclick="listVoices()">查看可用语音</button>
+    <button class="debug-button" onclick="removeDebugSection()">移除调试区域</button>
+    <div id="debug-output" style="margin-top: 10px; padding: 10px; background-color: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;"></div>
+</div>
+
+<hr>
+
+<section id="intro">
+    <h2>一、基本句型介绍</h2>
+    <p>在芬兰语中，如果你想说"我想要"，你要用这个句型：</p>
+    <div class="example">Haluan + [名词的部分格]</div>
+    <p>不需要知道什么是"部分格"，只要记住：当你想表达"我想要某物"时，要使用"未完成形式"。</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>原形（主格）</th>
+                <th>想要时的说法（部分格）</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>kahvi</td>
+                <td>kahvia</td>
+            </tr>
+            <tr>
+                <td>vesi</td>
+                <td>vettä</td>
+            </tr>
+            <tr>
+                <td>leipä</td>
+                <td>leipää</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<section id="vocab-table">
+    <h2>二、高频词汇表</h2>
+    <p>以下是与"Haluan"搭配使用的高频词表，包含原型、部分格、例句和中文翻译。</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>中文</th>
+                <th>原型（主格）</th>
+                <th>部分格</th>
+                <th>示例句子</th>
+                <th>中文翻译</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>咖啡</td>
+                <td>kahvi</td>
+                <td>kahvia</td>
+                <td>Haluan kahvia.</td>
+                <td>我想要咖啡</td>
+            </tr>
+            <tr>
+                <td>水</td>
+                <td>vesi</td>
+                <td>vettä</td>
+                <td>Haluan vettä.</td>
+                <td>我想要水</td>
+            </tr>
+            <tr>
+                <td>啤酒</td>
+                <td>olut</td>
+                <td>olutta</td>
+                <td>Haluan olutta.</td>
+                <td>我想要啤酒</td>
+            </tr>
+            <tr>
+                <td>面包</td>
+                <td>leipä</td>
+                <td>leipää</td>
+                <td>Haluan leipää.</td>
+                <td>我想要面包</td>
+            </tr>
+            <tr>
+                <td>牛奶</td>
+                <td>maito</td>
+                <td>maitoa</td>
+                <td>Haluan maitoa.</td>
+                <td>我想要牛奶</td>
+            </tr>
+            <tr>
+                <td>果汁</td>
+                <td>mehu</td>
+                <td>mehua</td>
+                <td>Haluan mehua.</td>
+                <td>我想要果汁</td>
+            </tr>
+            <tr>
+                <td>饼干</td>
+                <td>kakku</td>
+                <td>kakusta</td>
+                <td>Haluan kakusta.</td>
+                <td>我想要饼干</td>
+            </tr>
+            <tr>
+                <td>糖</td>
+                <td>sokeri</td>
+                <td>sokeria</td>
+                <td>Haluan sokeria.</td>
+                <td>我想要糖</td>
+            </tr>
+            <tr>
+                <td>盐</td>
+                <td>suola</td>
+                <td>suolaa</td>
+                <td>Haluan suolaa.</td>
+                <td>我想要盐</td>
+            </tr>
+            <tr>
+                <td>黄油</td>
+                <td>voi</td>
+                <td>voita</td>
+                <td>Haluan voita.</td>
+                <td>我想要黄油</td>
+            </tr>
+            <tr>
+                <td>面条</td>
+                <td>pasta</td>
+                <td>pastaa</td>
+                <td>Haluan pastaa.</td>
+                <td>我想要面条</td>
+            </tr>
+            <tr>
+                <td>米饭</td>
+                <td>riisi</td>
+                <td>riisiä</td>
+                <td>Haluan riisiä.</td>
+                <td>我想要米饭</td>
+            </tr>
+            <tr>
+                <td>肉</td>
+                <td>liha</td>
+                <td>lihaa</td>
+                <td>Haluan lihaa.</td>
+                <td>我想要肉</td>
+            </tr>
+            <tr>
+                <td>蔬菜</td>
+                <td>vihannes</td>
+                <td>vihannesta</td>
+                <td>Haluan vihannesta.</td>
+                <td>我想要蔬菜</td>
+            </tr>
+            <tr>
+                <td>鸡蛋</td>
+                <td>kananmuna</td>
+                <td>kananmunaa</td>
+                <td>Haluan kananmunaa.</td>
+                <td>我想要鸡蛋</td>
+            </tr>
+            <tr>
+                <td>酸奶</td>
+                <td>jogurtti</td>
+                <td>jogurttia</td>
+                <td>Haluan jogurttia.</td>
+                <td>我想要酸奶</td>
+            </tr>
+            <tr>
+                <td>苹果</td>
+                <td>omena</td>
+                <td>omenaa</td>
+                <td>Haluan omenaa.</td>
+                <td>我想要苹果</td>
+            </tr>
+            <tr>
+                <td>香蕉</td>
+                <td>banaani</td>
+                <td>banaania</td>
+                <td>Haluan banaania.</td>
+                <td>我想要香蕉</td>
+            </tr>
+            <tr>
+                <td>茶</td>
+                <td>tee</td>
+                <td>teetä</td>
+                <td>Haluan teetä.</td>
+                <td>我想要茶</td>
+            </tr>
+            <tr>
+                <td>可乐</td>
+                <td>cola</td>
+                <td>colaa</td>
+                <td>Haluan colaa.</td>
+                <td>我想要可乐</td>
+            </tr>
+            <tr>
+                <td>红酒</td>
+                <td>viini</td>
+                <td>viiniä</td>
+                <td>Haluan viiniä.</td>
+                <td>我想要红酒</td>
+            </tr>
+            <tr>
+                <td>奶酪</td>
+                <td>juusto</td>
+                <td>juustoa</td>
+                <td>Haluan juustoa.</td>
+                <td>我想要奶酪</td>
+            </tr>
+            <tr>
+                <td>鱼</td>
+                <td>kala</td>
+                <td>kalaa</td>
+                <td>Haluan kalaa.</td>
+                <td>我想要鱼</td>
+            </tr>
+            <tr>
+                <td>巧克力</td>
+                <td>suklaa</td>
+                <td>suklaata</td>
+                <td>Haluan suklaata.</td>
+                <td>我想要巧克力</td>
+            </tr>
+            <tr>
+                <td>冰淇淋</td>
+                <td>jäätelö</td>
+                <td>jäätelöä</td>
+                <td>Haluan jäätelöä.</td>
+                <td>我想要冰淇淋</td>
+            </tr>
+            <tr>
+                <td>书</td>
+                <td>kirja</td>
+                <td>kirjaa</td>
+                <td>Haluan kirjaa.</td>
+                <td>我想要书</td>
+            </tr>
+            <tr>
+                <td>笔</td>
+                <td>kynä</td>
+                <td>kynää</td>
+                <td>Haluan kynää.</td>
+                <td>我想要笔</td>
+            </tr>
+            <tr>
+                <td>帮助</td>
+                <td>apu</td>
+                <td>apua</td>
+                <td>Haluan apua.</td>
+                <td>我想要帮助</td>
+            </tr>
+            <tr>
+                <td>更多</td>
+                <td>lisää</td>
+                <td>lisää</td>
+                <td>Haluan lisää.</td>
+                <td>我想要更多</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<section id="analogy">
+    <h2>三、形象理解"为什么是 kahvia 而不是 kahvi？"</h2>
+    <p>在芬兰语中，"部分格"常用于表示"未完成"或"不确定"的状态。举个例子，咖啡Kahvi是所有咖啡的总和，Kahvia是你要的那一部分。以下是一些类比帮助你理解：</p>
+    <ul>
+        <li>我想要一杯咖啡 → 实际上只是咖啡全集的一点 → kahvia</li>
+        <li>我正在读一本书 → 还没读完 → kirjaa</li>
+        <li>我不吃面包 → 面包全集的一部分 → leipää</li>
+        <li>你想要点咖啡吗？→ 咖啡全集的一部分，或者不知道你要不要 → kahvia</li>
+    </ul>
+</section>
+
+<hr>
+
+<section id="examples">
+    <h2>四、实用例句练习</h2>
+    <p>请大声朗读以下句子，并尝试模仿发音：</p>
+    <ol>
+        <li>Haluan kahvia. 👉 我想要咖啡</li>
+        <li>Haluan vettä. 👉 我想要水</li>
+        <li>Haluan olutta. 👉 我想要啤酒</li>
+        <li>Haluan leipää. 👉 我想要面包</li>
+        <li>Haluan maitoa. 👉 我想要牛奶</li>
+        <li>Haluan vihannesta. 👉 我想要蔬菜</li>
+        <li>Haluan kananmunaa. 👉 我想要鸡蛋</li>
+        <li>Haluan omenaa. 👉 我想要苹果</li>
+        <li>Haluan jäätelöä. 👉 我想要冰淇淋</li>
+        <li>Haluan paperiliinaa. 👉 我想要一张餐巾纸</li>
+    </ol>
+</section>
+
+<hr>
+
+<section id="tasks">
+    <h2>五、预习任务清单</h2>
+    <details>
+        <summary>点击展开任务列表</summary>
+        <ul>
+            <li>听写练习：打开Google Translate或Quizlet，听写并跟读以上10个句子。</li>
+            <li>画图记忆：画出你最喜欢的食物，旁边写出"Haluan ___.。"</li>
+            <li>配对游戏：把左边的"原型词"和右边的"部分格词"连线配对。</li>
+            <li>自言自语练习：每天早上起床后对自己说一句："Haluan kahvia." 或 "Haluan vettä."</li>
+        </ul>
+    </details>
+</section>
+
+<hr>
+
+<section id="language-blocks">
+    <h2>🧩 核心语块模板（绑定你的真实需求）</h2>
+    <p><strong>你不是在"说芬兰语"，你是在用语言去索取世界。</strong></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>原型</th>
+                <th>语块</th>
+                <th>中文映射</th>
+                <th>场景</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Haluan + 部分格</td>
+                <td>Haluan kahvia.</td>
+                <td>我想要点咖啡。</td>
+                <td>咖啡厅</td>
+            </tr>
+            <tr>
+                <td>Haluan + 部分格 + kiitos</td>
+                <td>Haluan vettä, kiitos.</td>
+                <td>我想要点水，谢谢。</td>
+                <td>餐厅</td>
+            </tr>
+            <tr>
+                <td>Haluan... en tiedä mitä.</td>
+                <td>Haluan... en tiedä mitä.</td>
+                <td>我想要点... 我还不知道。</td>
+                <td>新餐厅/超市</td>
+            </tr>
+            <tr>
+                <td>Haluan nähdä...</td>
+                <td>Haluan nähdä... + 展开</td>
+                <td>我想看看…（再决定）</td>
+                <td>商店点餐/超市</td>
+            </tr>
+            <tr>
+                <td>Haluan jotain lämmintä</td>
+                <td>Haluan jotain lämmintä</td>
+                <td>我想要点热的。</td>
+                <td>冬季或饭馆</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<section id="scenario-training">
+    <h2>🧪 场景训练套件（生存级）</h2>
+    
+    <div class="example">
+        <h3>📍 场景 1：咖啡厅</h3>
+        <p>Haluan kahvia. Kiitos.</p>
+        <p>Haluan vettä. Tässä on hyvää?</p>
+    </div>
+
+    <div class="example">
+        <h3>📍 场景 2：餐厅点餐</h3>
+        <p>Haluan soppaa.</p>
+        <p>Haluan kalaa ja soppaa.</p>
+        <p>Tämä on hyvä? Haluan lisää kalaa?</p>
+    </div>
+
+    <div class="example">
+        <h3>📍 场景 3：超市购物</h3>
+        <p>Onko tässä maitoa?</p>
+        <p>Haluan maitoa.</p>
+        <p>Tässä on leipää?</p>
+        <p>Haluan leipää.</p>
+        <p>Tämä on hyvä? En tiedä.</p>
+    </div>
+
+    <div class="example">
+        <h3>📍 场景 4：不确定时</h3>
+        <p>Haluan jotain.</p>
+        <p>Haluan jotain lämmintä.</p>
+        <p>Haluan jotain makeaa.</p>
+        <p>Jokin makea?</p>
+    </div>
+</section>
+
+<hr>
+
+<section id="cognitive-binding">
+    <h2>🧠 认知绑定：高频词 + 格的"语言肌肉训练"</h2>
+    <p>每天练习以下语块，直到你看到咖啡就能自动说出"kahvia"：</p>
+    
+    <h3>✅ 食物+饮品高频词汇（部分格绑定）</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>原形</th>
+                <th>部分格</th>
+                <th>中文</th>
+                <th>语感练习</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>kahvi</td>
+                <td>kahvia</td>
+                <td>咖啡</td>
+                <td>Haluan kahvia.（每次见杯子就练）</td>
+            </tr>
+            <tr>
+                <td>vesi</td>
+                <td>vettä</td>
+                <td>水</td>
+                <td>Haluan vettä.（口渴就练）</td>
+            </tr>
+            <tr>
+                <td>maito</td>
+                <td>maitoa</td>
+                <td>牛奶</td>
+                <td>Haluan maitoa.（早餐场景）</td>
+            </tr>
+            <tr>
+                <td>olut</td>
+                <td>olutta</td>
+                <td>啤酒</td>
+                <td>Haluan olutta.（酒吧/聚会）</td>
+            </tr>
+            <tr>
+                <td>leipä</td>
+                <td>leipää</td>
+                <td>面包</td>
+                <td>Haluan leipää.（面包房）</td>
+            </tr>
+            <tr>
+                <td>kala</td>
+                <td>kalaa</td>
+                <td>鱼</td>
+                <td>Haluan kalaa.（餐厅点餐）</td>
+            </tr>
+            <tr>
+                <td>soppa</td>
+                <td>soppaa</td>
+                <td>汤</td>
+                <td>Haluan soppaa.（寒冷天气）</td>
+            </tr>
+            <tr>
+                <td>juusto</td>
+                <td>juustoa</td>
+                <td>奶酪</td>
+                <td>Haluan juustoa.（奶酪柜台）</td>
+            </tr>
+            <tr>
+                <td>liha</td>
+                <td>lihaa</td>
+                <td>肉</td>
+                <td>Haluan lihaa.（肉类区）</td>
+            </tr>
+            <tr>
+                <td>munä</td>
+                <td>munia</td>
+                <td>鸡蛋</td>
+                <td>Haluan munia.（早餐/购物）</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<section id="body-language-binding">
+    <h2>🧬 肢体+语言绑定训练（空间 ≈ 意愿）</h2>
+    <p>既然你说"部分格"像中文的"一点/一些"，我们可以用身体语言来配合：</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>动作</th>
+                <th>配套语言</th>
+                <th>作用</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>手指菜单 → 说 "Haluan..."</td>
+                <td>Haluan kahvia.</td>
+                <td>表示你做选择了</td>
+            </tr>
+            <tr>
+                <td>手从口中滑出 → 表示"不需要了"</td>
+                <td>En halua enää.</td>
+                <td>用动作表达已满足</td>
+            </tr>
+            <tr>
+                <td>手掌向内轻推 → 表示"再给我来点"</td>
+                <td>Haluan lisää.</td>
+                <td>沟通加量信号</td>
+            </tr>
+            <tr>
+                <td>摇头 + 说 "en" → 表示拒绝</td>
+                <td>En halua tätä.</td>
+                <td>构建否定反馈</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<section id="daily-training">
+    <h2>🧪 每日互动训练</h2>
+    
+    <h3>📆 第1周：植入"Haluan"系统</h3>
+    <p>每次你想要什么，说：</p>
+    <ul>
+        <li>Haluan kahvia.</li>
+        <li>Haluan jotain makeaa.</li>
+        <li>Tässä on hyvää?</li>
+    </ul>
+
+    <h3>镜子前练习：</h3>
+    <ul>
+        <li>[拿起杯子] → Haluan kahvia.</li>
+        <li>[拿起面包] → Haluan leipää.</li>
+        <li>[拿起水瓶] → Haluan vettä.</li>
+    </ul>
+</section>
+
+<hr>
+
+<section id="resources">
+    <h2>六、推荐复习资源</h2>
+    <ul>
+        <li>YouTube频道：<a href="https://www.youtube.com/user/FinnishPod101"  target="_blank">FinnishPod101</a>（初级视频）</li>
+        <li>工具推荐：
+            <ul>
+                <li><a href="https://apps.ankiweb.net/"  target="_blank">Anki</a>（制作自己的"我要系列"闪卡）</li>
+                <li><a href="https://quizlet.com/"  target="_blank">Quizlet</a>（创建"未完成 vs 完成"词汇库）</li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
+<hr>
+
+<footer>
+    <p>版权归芬兰语教学设计团队所有 | 如需继续构建下一阶段内容，请联系作者。</p>
+</footer>
+
+<script>
+/**
+ * 调试输出函数
+ * @param {string} message - 要显示的消息
+ */
+function debugLog(message) {
+    const output = document.getElementById('debug-output');
+    if (output) {
+        const time = new Date().toLocaleTimeString();
+        output.innerHTML += `[${time}] ${message}<br>`;
+        output.scrollTop = output.scrollHeight;
+    }
+    console.log(message);
+}
+
+/**
+ * 测试基本TTS功能
+ */
+function testBasicTTS() {
+    debugLog('开始测试基本TTS功能...');
+    if (!('speechSynthesis' in window)) {
+        debugLog('❌ 错误：浏览器不支持语音合成API');
+        alert('您的浏览器不支持语音合成功能，请尝试使用Chrome、Edge或Firefox的最新版本。');
+        return;
+    }
+    debugLog('✅ 浏览器支持语音合成API');
+    
+    const utterance = new SpeechSynthesisUtterance('Hello World');
+    utterance.onstart = () => debugLog('✅ 英语测试开始播放');
+    utterance.onend = () => debugLog('✅ 英语测试播放完成');
+    utterance.onerror = (event) => debugLog('❌ 英语测试错误: ' + event.error);
+    
+    window.speechSynthesis.speak(utterance);
+}
+
+/**
+ * 测试芬兰语TTS功能
+ */
+function testFinnishTTS() {
+    debugLog('开始测试芬兰语TTS功能...');
+    const utterance = new SpeechSynthesisUtterance('Haluan kahvia');
+    utterance.lang = 'fi-FI';
+    utterance.onstart = () => debugLog('✅ 芬兰语测试开始播放');
+    utterance.onend = () => debugLog('✅ 芬兰语测试播放完成');
+    utterance.onerror = (event) => debugLog('❌ 芬兰语测试错误: ' + event.error);
+    
+    window.speechSynthesis.speak(utterance);
+}
+
+/**
+ * 列出所有可用语音
+ */
+function listVoices() {
+    debugLog('正在获取可用语音列表...');
+    const voices = window.speechSynthesis.getVoices();
+    
+    if (voices.length === 0) {
+        debugLog('⚠️ 未找到任何语音，语音可能还在加载中');
+        return;
+    }
+    
+    debugLog(`找到 ${voices.length} 个可用语音:`);
+    voices.forEach((voice, index) => {
+        const isDefault = voice.default ? ' (默认)' : '';
+        debugLog(`${index + 1}. ${voice.name} (${voice.lang})${isDefault}`);
+    });
+    
+    // 查找芬兰语语音
+    const finnishVoices = voices.filter(voice => 
+        voice.lang.toLowerCase().startsWith('fi') || 
+        voice.name.toLowerCase().includes('finnish') ||
+        voice.name.toLowerCase().includes('suomi')
+    );
+    
+    if (finnishVoices.length > 0) {
+        debugLog(`✅ 找到 ${finnishVoices.length} 个芬兰语语音:`);
+        finnishVoices.forEach(voice => {
+            debugLog(`  - ${voice.name} (${voice.lang})`);
+        });
+    } else {
+        debugLog('❌ 未找到芬兰语语音');
+    }
+}
+
+/**
+ * 移除调试区域
+ */
+function removeDebugSection() {
+    const debugSection = document.querySelector('.debug-section');
+    if (debugSection) {
+        debugSection.style.display = 'none';
+        debugLog('调试区域已隐藏');
+    }
+}
+
+// 全局变量跟踪播放状态
+let isSpeaking = false;
+
+/**
+ * 核心语音合成函数
+ * @param {string} text - 要播放的文本
+ * @param {string} lang - 语言代码 (例如 'fi-FI')
+ */
+function speakText(text, lang) {
+    debugLog(`尝试播放: "${text}" (语言: ${lang})`);
+    
+    if (!('speechSynthesis' in window)) {
+        alert('抱歉，您的浏览器不支持语音合成。');
+        debugLog('❌ 语音合成API不可用');
+        return;
+    }
+    
+    // 如果正在播放，先停止
+    if (isSpeaking) {
+        window.speechSynthesis.cancel();
+        debugLog('⏹️ 停止之前的播放');
+        // 等待一小段时间确保停止完成
+        setTimeout(() => {
+            startSpeaking(text, lang);
+        }, 100);
+    } else {
+        startSpeaking(text, lang);
+    }
+}
+
+/**
+ * 开始语音播放的内部函数
+ * @param {string} text - 要播放的文本
+ * @param {string} lang - 语言代码
+ */
+function startSpeaking(text, lang) {
+    isSpeaking = true;
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.rate = 0.85;
+    utterance.volume = 1.0;
+    utterance.pitch = 1.0;
+
+    utterance.onstart = () => {
+        debugLog(`✅ 开始播放: "${text}"`);
+    };
+    
+    utterance.onend = () => {
+        debugLog(`✅ 播放完成: "${text}"`);
+        isSpeaking = false;
+    };
+    
+    utterance.onerror = (event) => {
+        debugLog(`❌ 播放错误: ${event.error} (文本: "${text}")`);
+        isSpeaking = false;
+        // 只在不是interrupted错误时显示alert
+        if (event.error !== 'interrupted') {
+            alert('语音播放出错: ' + event.error);
+        }
+    };
+
+    // 尝试获取并设置特定语言的语音
+    const voices = window.speechSynthesis.getVoices();
+    let selectedVoice = null;
+    if (lang.startsWith('fi')) {
+        selectedVoice = voices.find(voice => 
+            voice.lang.toLowerCase().startsWith('fi') || 
+            voice.name.toLowerCase().includes('finnish') ||
+            voice.name.toLowerCase().includes('suomi')
+        );
+    }
+    
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+        debugLog(`使用语音: ${selectedVoice.name} (${selectedVoice.lang})`);
+    } else {
+        debugLog(`⚠️ 未找到语言 ${lang} 的特定语音，使用默认语音`);
+    }
+    
+    window.speechSynthesis.speak(utterance);
+}
+
+/**
+ * 为HTML元素添加TTS播放按钮
+ * @param {HTMLElement} element - 要附加按钮的HTML元素
+ * @param {string} textToSpeak - 点击按钮时要朗读的文本
+ * @param {string} lang - 文本的语言代码
+ */
+function addTTSButton(element, textToSpeak, lang) {
+    if (!textToSpeak || textToSpeak.trim() === '') {
+        debugLog(`⚠️ 跳过空文本元素: ${element.tagName}`);
+        return; // 如果没有文本则不添加按钮
+    }
+    
+    // 检查是否已经有按钮了
+    if (element.querySelector('.tts-button')) {
+        debugLog(`⚠️ 元素已有TTS按钮: "${textToSpeak.trim()}"`);
+        return;
+    }
+    
+    const button = document.createElement('button');
+    button.className = 'tts-button';
+    button.innerHTML = '🔊'; //喇叭图标
+    button.title = '播放: ' + textToSpeak.trim();
+    button.setAttribute('aria-label', '播放音频: ' + textToSpeak.trim());
+    
+    button.onclick = function(event) {
+        event.preventDefault(); // 防止默认行为
+        event.stopPropagation(); // 防止触发父元素的点击事件
+        
+        // 防止在播放期间重复点击
+        if (isSpeaking) {
+            debugLog(`⚠️ 播放中，忽略重复点击: "${textToSpeak.trim()}"`);
+            return false;
+        }
+        
+        debugLog(`🔊 按钮被点击: "${textToSpeak.trim()}" (语言: ${lang})`);
+        
+        // 添加视觉反馈
+        const originalText = button.innerHTML;
+        button.innerHTML = '🔇'; // 改为静音图标表示正在播放
+        button.disabled = true;
+        
+        // 播放完成后恢复按钮
+        const checkCompletion = () => {
+            if (!isSpeaking) {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            } else {
+                setTimeout(checkCompletion, 100);
+            }
+        };
+        
+        speakText(textToSpeak.trim(), lang);
+        setTimeout(checkCompletion, 100);
+        
+        return false; // 确保不会触发其他事件
+    };
+    
+    element.appendChild(button);
+    debugLog(`✅ 已添加TTS按钮: "${textToSpeak.trim()}" (语言: ${lang})`);
+}
+
+/**
+ * 初始化TTS按钮，在文档加载完成后执行。
+ * 确保在语音列表加载后再添加按钮，以正确选择语音。
+ */
+function initializeTTSFunctionality() {
+    debugLog('🚀 开始初始化TTS功能...');
+    const finnishLang = 'fi-FI';
+
+    // 等待一下确保DOM完全加载
+    setTimeout(() => {
+        debugLog('📝 开始添加TTS按钮到各个部分...');
+
+        // Section: intro - example div
+        debugLog('处理intro部分的example div...');
+        const introExampleDiv = document.querySelector('#intro .example');
+        if (introExampleDiv) {
+            const originalHtml = introExampleDiv.innerHTML;
+            const haluanText = "Haluan";
+            if (originalHtml.includes(haluanText)) {
+                const parts = originalHtml.split(haluanText);
+                if (parts.length > 1) {
+                     introExampleDiv.innerHTML = parts[0] + `<span class="speakable-finnish">${haluanText}</span>` + parts.slice(1).join(haluanText);
+                     const speakableSpan = introExampleDiv.querySelector('.speakable-finnish');
+                     if (speakableSpan) {
+                        addTTSButton(speakableSpan, haluanText, finnishLang);
+                     }
+                }
+            }
+        } else {
+            debugLog('⚠️ 未找到intro example div');
+        }
+
+        // Section: intro - table
+        debugLog('处理intro部分的表格...');
+        const introTableRows = document.querySelectorAll('#intro table tbody tr');
+        debugLog(`找到 ${introTableRows.length} 行intro表格数据`);
+        introTableRows.forEach((row, index) => {
+            const cell1 = row.cells[0]; // 原形
+            if (cell1) {
+                debugLog(`添加按钮到intro表格第${index+1}行第1列: "${cell1.textContent}"`);
+                addTTSButton(cell1, cell1.textContent, finnishLang);
+            }
+            const cell2 = row.cells[1]; // 部分格
+            if (cell2) {
+                debugLog(`添加按钮到intro表格第${index+1}行第2列: "${cell2.textContent}"`);
+                addTTSButton(cell2, cell2.textContent, finnishLang);
+            }
+        });
+
+        // Section: vocab-table
+        debugLog('处理vocab-table部分...');
+        const vocabTableRows = document.querySelectorAll('#vocab-table table tbody tr');
+        debugLog(`找到 ${vocabTableRows.length} 行词汇表数据`);
+        vocabTableRows.forEach((row, index) => {
+            const cellPrototype = row.cells[1]; // 原型（主格）
+            if (cellPrototype) {
+                debugLog(`添加按钮到词汇表第${index+1}行原型: "${cellPrototype.textContent}"`);
+                addTTSButton(cellPrototype, cellPrototype.textContent, finnishLang);
+            }
+            
+            const cellPartitive = row.cells[2]; // 部分格
+            if (cellPartitive) {
+                debugLog(`添加按钮到词汇表第${index+1}行部分格: "${cellPartitive.textContent}"`);
+                addTTSButton(cellPartitive, cellPartitive.textContent, finnishLang);
+            }
+
+            const cellExample = row.cells[3]; // 示例句子
+            if (cellExample) {
+                debugLog(`添加按钮到词汇表第${index+1}行例句: "${cellExample.textContent}"`);
+                addTTSButton(cellExample, cellExample.textContent, finnishLang);
+            }
+        });
+
+        // Section: examples - list items
+        debugLog('处理examples部分...');
+        const exampleItems = document.querySelectorAll('#examples ol li');
+        debugLog(`找到 ${exampleItems.length} 个例句`);
+        exampleItems.forEach((item, index) => {
+            let finnishSentence = '';
+            for (let i = 0; i < item.childNodes.length; i++) {
+                const node = item.childNodes[i];
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const textContent = node.textContent.trim();
+                    if (textContent.includes('👉')) {
+                        finnishSentence = textContent.substring(0, textContent.indexOf('👉')).trim();
+                        break;
+                    } else {
+                        finnishSentence += textContent + ' ';
+                    }
+                } else if (node.nodeType === Node.ELEMENT_NODE && node.textContent.includes('👉')) {
+                    const textContentInElement = node.textContent.trim();
+                    finnishSentence = textContentInElement.substring(0, textContentInElement.indexOf('👉')).trim();
+                    break;
+                }
+            }
+            finnishSentence = finnishSentence.trim().replace(/^\d+\.\s*/, '');
+            
+            if (finnishSentence && !item.querySelector('.tts-button')) {
+                debugLog(`添加按钮到例句${index+1}: "${finnishSentence}"`);
+                addTTSButton(item, finnishSentence, finnishLang);
+            } else if (!finnishSentence) {
+                debugLog(`⚠️ 例句${index+1}未提取到芬兰语文本`);
+            }
+        });
+
+        debugLog('✅ TTS功能初始化完毕！');
+        
+    }, 500); // 延迟500毫秒确保DOM完全加载
+
+    // 为新添加的模块添加TTS按钮
+    setTimeout(() => {
+        debugLog('📝 为新模块添加TTS按钮...');
+
+        // Language blocks section
+        document.querySelectorAll('#language-blocks table tbody tr').forEach((row, index) => {
+            const languageBlockCell = row.cells[1]; // 语块列
+            if (languageBlockCell) {
+                debugLog(`添加按钮到语块表第${index+1}行: "${languageBlockCell.textContent}"`);
+                addTTSButton(languageBlockCell, languageBlockCell.textContent, finnishLang);
+            }
+        });
+
+        // Scenario training section
+        document.querySelectorAll('#scenario-training .example p').forEach((p, index) => {
+            const text = p.textContent.trim();
+            if (text && (text.includes('Haluan') || text.includes('Tässä') || text.includes('Onko') || 
+                        text.includes('Tämä') || text.includes('En tiedä') || text.includes('Jokin'))) {
+                debugLog(`添加按钮到场景训练第${index+1}个句子: "${text}"`);
+                addTTSButton(p, text, finnishLang);
+            }
+        });
+
+        // Cognitive binding section
+        document.querySelectorAll('#cognitive-binding table tbody tr').forEach((row, index) => {
+            const nomCell = row.cells[0]; // 原形
+            if (nomCell) {
+                debugLog(`添加按钮到认知绑定表第${index+1}行原形: "${nomCell.textContent}"`);
+                addTTSButton(nomCell, nomCell.textContent, finnishLang);
+            }
+            
+            const partCell = row.cells[1]; // 部分格
+            if (partCell) {
+                debugLog(`添加按钮到认知绑定表第${index+1}行部分格: "${partCell.textContent}"`);
+                addTTSButton(partCell, partCell.textContent, finnishLang);
+            }
+
+            const practiceCell = row.cells[3]; // 语感练习
+            if (practiceCell) {
+                const practiceText = practiceCell.textContent.trim();
+                const finnishPart = practiceText.split('.')[0] + '.'; // 提取芬兰语部分
+                if (finnishPart.includes('Haluan')) {
+                    debugLog(`添加按钮到认知绑定表第${index+1}行练习: "${finnishPart}"`);
+                    addTTSButton(practiceCell, finnishPart, finnishLang);
+                }
+            }
+        });
+
+        // Body language binding section
+        document.querySelectorAll('#body-language-binding table tbody tr').forEach((row, index) => {
+            const languageCell = row.cells[1]; // 配套语言
+            if (languageCell) {
+                debugLog(`添加按钮到肢体语言表第${index+1}行: "${languageCell.textContent}"`);
+                addTTSButton(languageCell, languageCell.textContent, finnishLang);
+            }
+        });
+
+        // Daily training section
+        document.querySelectorAll('#daily-training ul li').forEach((li, index) => {
+            const text = li.textContent.trim();
+            // 提取方括号后的芬兰语部分
+            if (text.includes('→')) {
+                const finnishPart = text.split('→')[1].trim();
+                if (finnishPart && finnishPart.includes('Haluan')) {
+                    debugLog(`添加按钮到每日训练第${index+1}项: "${finnishPart}"`);
+                    addTTSButton(li, finnishPart, finnishLang);
+                }
+            } else if (text.includes('Haluan') || text.includes('Tässä')) {
+                debugLog(`添加按钮到每日训练第${index+1}项: "${text}"`);
+                addTTSButton(li, text, finnishLang);
+            }
+        });
+
+        debugLog('✅ 新模块TTS按钮添加完毕！');
+    }, 1000); // 延迟1秒确保所有内容都加载完毕
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // The voices list is often not immediately available.
+    // We need to wait for the 'voiceschanged' event.
+    if (window.speechSynthesis.getVoices().length === 0) {
+        window.speechSynthesis.onvoiceschanged = initializeTTSFunctionality;
+    } else {
+        // If voices are already available (e.g., on subsequent loads or some browsers)
+        initializeTTSFunctionality();
+    }
+});
+
+</script>
+
+</body>
+</html> 
