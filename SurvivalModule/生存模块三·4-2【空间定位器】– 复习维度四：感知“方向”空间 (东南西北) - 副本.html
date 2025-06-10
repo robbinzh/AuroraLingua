@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>芬兰语模块三·维度四：感知“方向”空间 (地图最终优化TTS)</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; line-height: 1.7; margin: 20px auto; max-width: 900px; padding: 0 20px; color: #333; background-color: #f9f9f9; }
+        h1, h2, h3, h4 { color: #2c3e50; }
+        h1 { text-align: center; margin-bottom: 35px; font-size: 2.2em; }
+        h2 { border-bottom: 2px solid #9b59b6; padding-bottom: 12px; margin-top: 45px; font-size: 1.8em; color: #9b59b6; } /* Dimension 4 color */
+        h3 { margin-top: 30px; font-size: 1.5em; color: #8e44ad; } 
+        h4 { font-size: 1.3em; color: #c39bd3; margin-top:25px; margin-bottom:15px; }
+        table.directions-table, table.vocab-list-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; display: table; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .directions-table th, .directions-table td, .vocab-list-table th, .vocab-list-table td { border: 1px solid #ddd; padding: 10px; text-align: left; vertical-align: top;}
+        .directions-table thead, .vocab-list-table thead { background-color: #e9ecef; }
+        .directions-table td:first-child, .vocab-list-table td:first-child { font-weight: bold; width: 20%; }
+        .directions-table td { font-size: 0.95em;}
+
+        .task-card, .example, .summary-card, .new-vocab-section, .direction-card {
+            background-color: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .example { border-left: 6px solid #9b59b6 !important; }
+        .direction-card h4 { color: #8e44ad; margin-top: 0; font-size: 1.3em; border-bottom: 1px dashed #c39bd3; padding-bottom: 8px; margin-bottom: 15px; }
+        .direction-card-content p { margin: 5px 0; font-size: 1.1em; }
+        .direction-card img { width: 100px; height: 100px; object-fit: contain; margin-right: 15px; border-radius: 4px; float: left; margin-bottom:10px;}
+
+        .finnish-phrase { font-weight: bold; color: #8e44ad; font-size: 1.1em; }
+        .example-sentence .finnish-phrase { font-size: 1.05em; }
+        .chinese-sense, .note { font-size: 0.9em; color: #555; font-style: italic; }
+        .tts-button { background: none; border: none; cursor: pointer; font-size: 1.2em; margin-left: 8px; padding: 0; display: inline-block; vertical-align: middle; color: #8e44ad; }
+        .tts-button:hover { color: #7d3c98; opacity: 0.8; }
+        .debug-section, .interactive-map-container { 
+            background-color: #fdfefe; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin: 20px 0;
+        }
+        .debug-button { background-color: #4CAF50; color: white; padding: 8px 16px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .debug-button:hover { background-color: #45a049; }
+        .highlight { color: #c0392b; font-weight: bold; }
+        hr { border: 0; height: 1px; background-image: linear-gradient(to right, rgba(0,0,0,0), rgba(155,89,182,0.3), rgba(0,0,0,0)); margin: 40px 0; }
+        
+        .task-list { list-style-type: none; padding-left: 0; }
+        .task-list > li { margin-bottom: 15px; }
+        .task-list h5 { margin-top:0; color: #2c3e50; font-size: 1.15em; }
+        .task-list ul { list-style-type: disc; padding-left: 25px; margin-top: 5px; }
+        .task-list ul li { font-size: 1em; margin-bottom: 8px; }
+        
+        .final-summary-list { list-style-type: none; padding-left:0; }
+        .final-summary-list li { margin-bottom: 10px; font-size: 1.1em;}
+        .final-summary-list .finnish-phrase { font-weight: normal;}
+        .action-button { background-color: #9b59b6; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; margin-top:10px; font-size: 1em; }
+        .action-button:hover { background-color: #8e44ad; }
+
+        .feedback-area { margin-top: 15px; padding: 12px; border-radius: 5px; text-align:center; font-size: 1.1em; min-height: 1.5em; }
+        .correct { background-color: #e8f8f5; color: #27ae60; border: 1px solid #a3e4d7;}
+        .incorrect { background-color: #fdedec; color: #c0392b; border: 1px solid #f5b7b1; }
+        .concept-map { text-align: center; margin: 25px 0; padding: 15px; background-color: #f5eef8; border: 1px dashed #d7bde2; border-radius: 6px; }
+        .concept-map p { margin: 8px 0; font-size: 1.15em; }
+        .map-legend { margin-top: 10px; font-size: 0.9em; text-align: center;}
+    </style>
+</head>
+<body>
+
+    <h1>模块三：【空间定位器】 – 维度四：感知“方向”空间 (东南西北 - 地图最终优化)</h1>
+
+    <!-- TTS调试区域 -->
+    <div class="debug-section">
+        <h3>🔧 TTS功能测试 (模块三·维度四 方向空间 - 地图最终优化)</h3>
+        <p>如果TTS按钮没有声音，请先测试以下功能：</p>
+        <button class="debug-button" onclick="testBasicTTS()">测试基本TTS</button>
+        <button class="debug-button" onclick="testFinnishTTSModule3_Dim4_MapFinal()">测试芬兰语TTS (模块3.4地图最终)</button>
+        <button class="debug-button" onclick="listVoices()">查看可用语音</button>
+        <button class="debug-button" onclick="removeDebugSection()">移除调试区域</button>
+        <div id="debug-output" style="margin-top: 10px; padding: 10px; background-color: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;"></div>
+    </div>
+
+    <hr>
+
+    <section id="intro-dimension4">
+        <h2>🚀 维度四引入：超越自我，拥抱世界——东南西北的召唤！</h2>
+        <div class="example">
+            <p><span class="speakable-finnish">Hienosti olet edennyt!</span> (你进步神速！)</p>
+            <p>在之前的维度里，我们学会了如何以“我”或“你”为中心来描述“前面”、“左边”等相对位置。但是，如果我们想说太阳从哪个方向升起，或者芬兰的首都在哪个大方向，这些“身体坐标”就不够用了。</p>
+            <p>世界本身有它固定的、客观的方向：**东、南、西、北**。这一维度，我们就来一起探索芬兰语是如何描绘这些“宇宙级”的坐标轴的。更有趣的是，你会发现，芬兰语在表达这些大方向时，竟然用到了和我们描述“在<span class="highlight">房子里</span>”或“去<span class="highlight">商店里</span>”时非常相似的“声音感觉”！</p>
+            <p>准备好用你的芬兰语“指南针”来定位整个世界了吗？</p>
+        </div>
+        <div class="concept-map">
+            <p><strong>从“我的世界”到“世界的世界”：</strong> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Compass_rose_pale.svg/100px-Compass_rose_pale.svg.png" alt="指南针" style="vertical-align: middle; width:50px; height:50px;"> (指南针)</p>
+            <p><strong>芬兰语感知：</strong> 当你听到像 <span class="finnish-phrase speakable-finnish">pohjoisessa</span> 这样的说法，它就在告诉你某个事物处于“北方”这个大方向的“里面”或“区域”。</p>
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="cardinal-directions-focus">
+        <h3>🧭【认知出血结构】方向与空间的融合：世界方向如何与你的感知互动？</h3>
+        <div class="task-card"> 
+            <p>我们将通过下面的表格，集中学习“东、南、西、北”这四个基本方向。请特别注意，当芬兰语说到“在某个方向”、“去往某个方向”或“从某个方向来”的时候，这些方向词的“尾巴音”是如何变化的。试着将这些“尾巴音”和你已经熟悉的“容器感”（在里面/进去/出来）和“表面感”（在上面/到上面去/从上面离开）联系起来！</p>
+            <table class="directions-table">
+                <thead>
+                    <tr>
+                        <th>世界方向<br>(<span class="speakable-finnish">Maailman suunta</span>)</th>
+                        <th>“在”该方向的区域<span class="highlight">里</span><br>(<span class="finnish-phrase speakable-finnish">-ssa/-ssä</span> “容器”感)</th>
+                        <th>“去<span class="highlight">往</span>”该方向<br>(<span class="finnish-phrase speakable-finnish">-Vn/-seen</span> “进入”感)</th>
+                        <th>“从”该方向<span class="highlight">来</span><br>(<span class="finnish-phrase speakable-finnish">-sta/-stä</span> “释放”感)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>北方</strong><br>(<span class="speakable-finnish">Pohjoinen</span>)</td>
+                        <td><span class="speakable-finnish">Minä olen <span class="finnish-phrase">pohjoisessa</span>.</span><br><span class="note speakable-finnish">(Sinä asut <span class="finnish-phrase">pohjoisessa</span>.)</span></td>
+                        <td><span class="speakable-finnish">Minä menen <span class="finnish-phrase">pohjoiseen</span>.</span><br><span class="note speakable-finnish">(Sinä matkustat <span class="finnish-phrase">pohjoiseen</span>.)</span></td>
+                        <td><span class="speakable-finnish">Minä tulen <span class="finnish-phrase">pohjoisesta</span>.</span><br><span class="note speakable-finnish">(Tuuli tulee <span class="finnish-phrase">pohjoisesta</span>.)</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>东方</strong><br>(<span class="speakable-finnish">Itä</span>)</td>
+                        <td><span class="speakable-finnish">Aurinko on <span class="finnish-phrase">idässä</span>.</span><br><span class="note speakable-finnish">(Minun koti on <span class="finnish-phrase">idässä</span>.)</span></td>
+                        <td><span class="speakable-finnish">Minä katson <span class="finnish-phrase">itään</span>.</span><br><span class="note speakable-finnish">(Sinä käännyt <span class="finnish-phrase">itään</span>.)</span></td>
+                        <td><span class="speakable-finnish">Valo tulee <span class="finnish-phrase">idästä</span>.</span><br><span class="note speakable-finnish">(Sinä tulet <span class="finnish-phrase">idästä</span>.)</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>南方</strong><br>(<span class="speakable-finnish">Etelä</span>)</td>
+                        <td><span class="speakable-finnish">Minun koulu on <span class="finnish-phrase">etelässä</span>.</span><br><span class="note speakable-finnish">(Lämpö on <span class="finnish-phrase">etelässä</span>.)</span></td>
+                        <td><span class="speakable-finnish">Minä menen <span class="finnish-phrase">etelään</span>.</span><br><span class="note speakable-finnish">(Sinä haluat mennä <span class="finnish-phrase">etelään</span>.)</span></td>
+                        <td><span class="speakable-finnish">Minä tulen <span class="finnish-phrase">etelästä</span>.</span><br><span class="note speakable-finnish">(Lintu lentää <span class="finnish-phrase">etelästä</span>.)</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>西方</strong><br>(<span class="speakable-finnish">Länsi</span>)</td>
+                        <td><span class="speakable-finnish">Minun työpaikka on <span class="finnish-phrase">lännessä</span>.</span><br><span class="note speakable-finnish">(Aurinko laskee <span class="finnish-phrase">lännessä</span>.)</span></td>
+                        <td><span class="speakable-finnish">Minä kävelen <span class="finnish-phrase">länteen</span>.</span><br><span class="note speakable-finnish">(Sinä ajat autolla <span class="finnish-phrase">länteen</span>.)</span></td>
+                        <td><span class="speakable-finnish">Minä tulen <span class="finnish-phrase">lännestä</span>.</span><br><span class="note speakable-finnish">(Sade tulee <span class="finnish-phrase">lännestä</span>.)</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="usage-example">
+                <h4>🧠 中文母语者感知注入：</h4>
+                <p>你不是在单纯地“指方向”，你是在感受芬兰语如何将“方向”也视为一种可以“进入”、“在其中”或“从中出来”的**概念空间**！</p>
+                <ul>
+                    <li>听到“<span class="finnish-phrase speakable-finnish">pohjoise<span class="highlight">ssa</span></span>”，是不是让你想起了“在房子<span class="highlight">里</span>”(<span class="finnish-phrase speakable-finnish">talossa</span>)那种被“包裹”的感觉？—— 对，芬兰语用同样的方式来表达“在北方这个大区域<span class="highlight">里</span>”！</li>
+                    <li>听到“<span class="finnish-phrase speakable-finnish">it<span class="highlight">ään</span></span>”，是不是让你想起了“去商店<span class="highlight">里</span>”(<span class="finnish-phrase speakable-finnish">kauppa<span class="highlight">an</span></span>)那种“进入”的感觉？—— 没错，这也是表达“去<span class="highlight">往</span>东方那个方向”！</li>
+                    <li>听到“<span class="finnish-phrase speakable-finnish">etelä<span class="highlight">stä</span></span>”，是不是让你想起了“从口袋<span class="highlight">里</span>出来”(<span class="finnish-phrase speakable-finnish">tasku<span class="highlight">sta</span></span>)那种“离开”的感觉？—— 完全正确，这也是表达“从南方那个方向<span class="highlight">来</span>”！</li>
+                </ul>
+                <p>芬兰语的这种一致性是不是很酷？用你已经熟悉的“声音感觉”去理解新的概念！</p>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="cognitive-task1-body-compass">
+        <h3>🧪【认知出血任务一】你的身体就是指南针 (感知与表达)</h3>
+        <div class="task-card">
+            <h4><span class="speakable-finnish">Tehtävä: Minun kehoni kompassina</span> (任务：我的身体作为指南针)</h4>
+            <p>现在，让我们用自己的身体来感受和表达这些方向。找一个你能辨别方向的地方（比如能看到日出日落的窗边，或者你知道哪个方向是北）。</p>
+            <ul class="task-list">
+                <li>
+                    <h5>1. 面对太阳升起的方向（东方 - <span class="speakable-finnish">Itä</span>）:</h5>
+                    <ul>
+                        <li><span class="speakable-finnish">Sano ääneen: "Minä katson <span class="finnish-phrase">itään</span>."</span></li>
+                        <li><span class="speakable-finnish">Ajattele: "Aurinko on <span class="finnish-phrase">idässä</span>."</span></li>
+                        <li><span class="speakable-finnish">Tunne: Miltä tuntuu katsoa <span class="finnish-phrase">itään</span>?</span></li>
+                    </ul>
+                </li>
+                <li>
+                    <h5>2. 想象你要去北方旅行（北方 - <span class="speakable-finnish">Pohjoinen</span>）:</h5>
+                    <ul>
+                        <li><span class="speakable-finnish">Sano ääneen: "Minä haluan mennä <span class="finnish-phrase">pohjoiseen</span>."</span></li>
+                        <li><span class="speakable-finnish">Ajattele: "<span class="finnish-phrase">Pohjoisessa</span> on kylmä."</span></li>
+                        <li><span class="speakable-finnish">Tunne: Miltä tuntuu ajatella matkaa <span class="finnish-phrase">pohjoiseen</span>?</span></li>
+                    </ul>
+                </li>
+                <li>
+                    <h5>3. 转身，让你的背后是南方（南方 - <span class="speakable-finnish">Etelä</span>）:</h5>
+                    <ul>
+                        <li><span class="speakable-finnish">Sano ääneen: "Minun <span class="finnish-phrase">takana</span> on <span class="finnish-phrase">etelä</span>."</span></li>
+                        <li><span class="speakable-finnish">Ajattele: "Lämpö tulee <span class="finnish-phrase">etelästä</span>."</span></li>
+                    </ul>
+                </li>
+                 <li>
+                    <h5>4. 想象太阳正在落下（西方 - <span class="speakable-finnish">Länsi</span>）:</h5>
+                    <ul>
+                        <li><span class="speakable-finnish">Sano ääneen: "Aurinko laskee <span class="finnish-phrase">lännessä</span>. Minä katson <span class="finnish-phrase">länteen</span>."</span></li>
+                    </ul>
+                </li>
+            </ul>
+            <p class="note">🧠 身体出血提示：把这些方向和你的真实体验联系起来！“<span class="speakable-finnish">idässä</span>” 就是你早上看到太阳的地方；如果你知道你家窗户朝北，那“<span class="speakable-finnish">pohjoisessa</span>” 就是窗外的方向。</p>
+        </div>
+    </section>
+
+    <hr>
+
+     <section id="cognitive-task2-direction-spatial-nesting">
+        <h3>🌐【认知出血任务二】方向嵌套三空间出血 (融合练习)</h3>
+        <div class="task-card">
+            <h4><span class="speakable-finnish">Tehtävä: Suunnat ja tilat yhdessä</span> (任务：方向与空间相结合)</h4>
+            <p>你已经学会了描述“封闭容器”（维度一）、“物体表面”（维度二）和“绝对方向”（维度四）。现在我们来试着把它们巧妙地结合起来！仔细听下面的句子，感受芬兰语是如何在同一个想法里表达多个空间信息的。</p>
+            <div class="example">
+                <p><span class="speakable-finnish">Minä olen <span class="finnish-phrase">pohjoisessa</span>, minun <span class="finnish-phrase">talossa</span>.</span> <span class="note">(我在<span class="highlight">北方</span>，在我的房子<span class="highlight">里</span>。)</span></p>
+                <p><span class="speakable-finnish">Sinä laitat kirjan <span class="finnish-phrase">pöydälle</span>. Pöytä on huoneen <span class="finnish-phrase">itään</span> päin.</span> <span class="note">(你把书放到桌子<span class="highlight">上</span>。桌子朝房间的<span class="highlight">东</span>边。)</span></p>
+                <p><span class="speakable-finnish">Minun auto on <span class="finnish-phrase">kadulla</span>. Katu on talon <span class="finnish-phrase">eteläpuolella</span>.</span> <span class="note">(我的车在街道<span class="highlight">上</span>。街道在房子的南<span class="highlight">边</span>。)</span></p>
+                <p><span class="speakable-finnish">Sinä tulet <span class="finnish-phrase">lännestä</span> ja menet suoraan <span class="finnish-phrase">kotiin</span>.</span> <span class="note">(你从西边<span class="highlight">来</span>，然后直接回家<span class="highlight">里</span>。)</span></p>
+                <p><span class="speakable-finnish">Minun kahvikuppi on <span class="finnish-phrase">pöydällä</span>. Pöytä on <span class="finnish-phrase">ikkunan edessä</span>, ja ikkuna on <span class="finnish-phrase">etelään</span>.</span> <span class="note">(我的咖啡杯在桌子<span class="highlight">上</span>。桌子在窗户<span class="highlight">前</span>，并且窗户朝<span class="highlight">南</span>。)</span></p>
+            </div>
+            <p class="note">🧠 中文母语者注入：这不只是在说“方向”或“位置”，这是在用芬兰语构建一个更丰富的“空间场景”！试着在脑海里画出这些画面。</p>
+        </div>
+    </section>
+
+    <hr>
+    
+    <section id="cognitive-task3-map-training">
+        <h3>🧭【认知出血任务三】方向空间地图训练 (简单互动)</h3>
+        <div class="task-card">
+            <h4><span class="speakable-finnish">Tehtävä: Karttaharjoitus</span> (任务：地图练习)</h4>
+            <p>看下面的简化地图。听或读芬兰语描述，然后指出或说出对应的信息。用你的身体去“感应”这些方向！</p>
+            <div class="interactive-map-container">
+                <svg width="350" height="250" viewBox="0 0 120 80" style="border:1px solid #ccc; background-color: #f0f8ff;">
+                    <!-- Compass Rose -->
+                    <line x1="15" y1="10" x2="15" y2="30" stroke="#555" stroke-width="0.7"/> <text x="15" y1="7" font-size="5" fill="#333" text-anchor="middle" class="speakable-finnish">P</text> <polygon points="15,8 13,13 17,13" fill="red"/>
+                    <line x1="15" y1="20" x2="35" y2="20" stroke="#555" stroke-width="0.7"/> <text x="38" y1="21.5" font-size="5" fill="#333" text-anchor="start" class="speakable-finnish">I</text> <polygon points="35,20 30,18 30,22" fill="#555"/>
+                    <line x1="15" y1="20" x2="15" y2="40" stroke="#555" stroke-width="0.7"/> <text x="15" y1="45" font-size="5" fill="#333" text-anchor="middle" class="speakable-finnish">E</text> <polygon points="15,42 13,37 17,37" fill="#555"/>
+                    <line x1="15" y1="20" x2="-5" y2="20" stroke="#555" stroke-width="0.7"/> <text x="-8" y1="21.5" font-size="5" fill="#333" text-anchor="end" class="speakable-finnish">L</text> <polygon points="-5,20 0,18 0,22" fill="#555"/>
+                    <text x="15" y1="5" font-size="3" fill="grey" text-anchor="middle" class="speakable-finnish">Kompassi</text>
+                    <!-- Locations -->
+                    <rect id="Koti_A_Map" x="40" y="50" width="15" height="10" fill="#AED6F1" stroke="black" stroke-width="0.5"/> <text x="47.5" y="57" font-size="6" text-anchor="middle" fill="black">A</text> 
+                    <rect id="Kauppa_B_Map" x="70" y="15" width="15" height="10" fill="#F5B7B1" stroke="black" stroke-width="0.5"/> <text x="77.5" y="22" font-size="6" text-anchor="middle" fill="black">B</text>
+                    <circle id="Puisto_C_Map" cx="50" cy="20" r="7" fill="#ABEBC6" stroke="black" stroke-width="0.5"/> <text x="50" y="21.5" font-size="6" text-anchor="middle" fill="black">C</text>
+                </svg>
+                <p class="map-legend"><span class="speakable-finnish">Kartalla: A on Koti (<span class="finnish-phrase">koti</span>), B on Kauppa (<span class="finnish-phrase">kauppa</span>), C on Puisto (<span class="finnish-phrase">puisto</span>). P on Pohjoinen, I on Itä, E on Etelä, L on Länsi.</span></p>
+            </div>
+            <div id="map-question-area">
+                <!-- Map questions will appear here -->
+            </div>
+            <div style="text-align:center; margin-top:10px;">
+                <button class="action-button" onclick="nextMapQuestion()">Seuraava karttatehtävä</button>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="dim4-summary-and-next">
+        <h2>🌟 维度四感知小结：你拥有了“世界坐标”的语言！(含术语锚定)</h2>
+        <div class="summary-card">
+            <p><span class="speakable-finnish">Uskomatonta! Osaat nyt puhua ilmansuunnista!</span> (难以置信！你现在会说基本方向了！)</p>
+            <p>你已经对芬兰语如何表达“东、南、西、北”这些绝对方向有了初步的感知！</p>
+            <p>你可能已经再次注意到，当描述“在某个方向”、“去某个方向”或“从某个方向来”时，这些方向词（比如 <span class="speakable-finnish">Pohjoinen</span> - 北方）的“尾巴音”会发生变化，而且这些变化听起来非常像我们维度一学习“封闭容器”时的感觉：</p>
+            <ul style="list-style-type: disc; padding-left: 20px;">
+                <li>在北方：<span class="finnish-phrase speakable-finnish">pohjoise<span class="highlight">ssa</span></span> （是不是很像 <span class="finnish-phrase speakable-finnish">talo<span class="highlight">ssa</span></span>？）<span class="note">这对应着我们之前遇到的 **<span class="speakable-finnish">inessiivi</span> (Inessive case)** 的感觉。</span></li>
+                <li>向北方去：<span class="finnish-phrase speakable-finnish">pohjoise<span class="highlight">en</span></span> （是不是很像 <span class="finnish-phrase speakable-finnish">taloo<span class="highlight">n</span></span>？）<span class="note">这对应着 **<span class="speakable-finnish">illatiivi</span> (Illative case)** 的感觉。</span></li>
+                <li>从北方来：<span class="finnish-phrase speakable-finnish">pohjoise<span class="highlight">sta</span></span> （是不是很像 <span class="finnish-phrase speakable-finnish">talo<span class="highlight">sta</span></span>？）<span class="note">这对应着 **<span class="speakable-finnish">elatiivi</span> (Elative case)** 的感觉。</span></li>
+            </ul>
+            <p class="note speakable-finnish">Jälleen kerran, nämä kielioppitermit ovat vain lisätietoa. Tärkeintä on se, että tunnistat ja käytät näitä muotoja oikeissa yhteyksissä! (再说一次，这些语法术语只是附加信息。最重要的是你能认出并在正确的语境中使用这些形式！)</p>
+            <p>芬兰语就是这么有规律又充满“声音魔法”！你正在通过感受这些模式，而不是死记硬背，来真正理解它。</p>
+            <p><strong>下一维度：</strong> 我们将探索物体与物体之间的更多精确位置关系，比如“在...<span class="highlight">旁边</span>”、“在...<span class="highlight">中间</span>”、“在...<span class="highlight">上方/下方</span>（不接触的那种）”，进入【位置关系】的精彩世界！</p>
+        </div>
+    </section>
+
+    <hr>
+    <section id="new-vocabulary-list-m3p4" class="new-vocab-section">
+        <h3>📚 本维度新朋友：词汇积累 (聚焦核心方向词和高频辅助词)</h3>
+        <p>以下是本维度（模块三·维度四）我们重点接触和感知的核心“方向名词”，以及一些构成例句必需的简单高频词汇。我们依然主要在第一和第二人称的简单句子中使用它们。</p>
+        <table class="vocab-list-table">
+            <thead>
+                <tr>
+                    <th>芬兰语新词 (原形)</th>
+                    <th>中文意思</th>
+                    <th>你最常听到的“在/去/从”形式</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><span class="speakable-finnish">Pohjoinen</span></td><td>北方</td><td><span class="speakable-finnish">pohjoisessa, pohjoiseen, pohjoisesta</span></td></tr>
+                <tr><td><span class="speakable-finnish">Etelä</span></td><td>南方</td><td><span class="speakable-finnish">etelässä, etelään, etelästä</span></td></tr>
+                <tr><td><span class="speakable-finnish">Itä</span></td><td>东方</td><td><span class="speakable-finnish">idässä, itään, idästä</span></td></tr>
+                <tr><td><span class="speakable-finnish">Länsi</span></td><td>西方</td><td><span class="speakable-finnish">lännessä, länteen, lännestä</span></td></tr>
+                <tr><td><span class="speakable-finnish">aurinko</span></td><td>太阳</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">tuuli</span></td><td>风</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">valo</span></td><td>光</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">kartta</span></td><td>地图</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">kaupunki</span></td><td>城市</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">loma</span></td><td>假期</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">ilma</span></td><td>空气</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">raja</span></td><td>边界</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">huone</span></td><td>房间</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">suunta</span></td><td>方向</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">työpaikka</span></td><td>工作地点</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">sade</span></td><td>雨</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">kylmä</span></td><td>冷的 (形容词)</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">lämmin</span></td><td>暖和的 (形容词)</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">matkustaa</span></td><td>旅行</td><td><span class="speakable-finnish">minä matkustan, sinä matkustat</span></td></tr>
+                <tr><td><span class="speakable-finnish">asua</span></td><td>居住</td><td><span class="speakable-finnish">minä asun, sinä asut</span></td></tr>
+                <tr><td><span class="speakable-finnish">nousta</span></td><td>升起; 起床</td><td><span class="note">(aurinko nousee)</span></td></tr>
+                <tr><td><span class="speakable-finnish">laskea</span></td><td>落下; 计算</td><td><span class="note">(aurinko laskee)</span></td></tr>
+                <tr><td><span class="speakable-finnish">kääntyä</span></td><td>转弯</td><td><span class="speakable-finnish">minä käännyn, sinä käännyt</span></td></tr>
+                <tr><td><span class="speakable-finnish">puhaltaa</span></td><td>吹 (风)</td><td><span class="note">(tuuli puhaltaa)</span></td></tr>
+                <tr><td><span class="speakable-finnish">virrata</span></td><td>流动</td><td><span class="note">(ilma virtaa)</span></td></tr>
+                 <tr><td><span class="speakable-finnish">sanoa</span></td><td>说</td><td><span class="speakable-finnish">minä sanon, sinä sanot</span></td></tr>
+                <tr><td><span class="speakable-finnish">pitää</span></td><td>必须 (+动词基本型)</td><td><span class="note">(minun pitää mennä)</span></td></tr>
+                <tr><td><span class="speakable-finnish">katsoa</span></td><td>看</td><td><span class="speakable-finnish">minä katson, sinä katsot</span></td></tr>
+                <tr><td><span class="speakable-finnish">itäänpäin</span></td><td>朝东方向地 (副词)</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">pohjoispuoli</span></td><td>北边 (名词)</td><td><span class="note speakable-finnish">(esim. pöydän pohjoispuolella)</span></td></tr>
+                <tr><td><span class="speakable-finnish">eteläpuoli</span></td><td>南边 (名词)</td><td><span class="note speakable-finnish">(esim. talon eteläpuolella)</span></td></tr>
+                <tr><td><span class="speakable-finnish">länsipuoli</span></td><td>西边 (名词)</td><td><span class="note speakable-finnish">(esim. ikkunan länsipuolella)</span></td></tr>
+                <tr><td><span class="speakable-finnish">itäpuoli</span></td><td>东边 (名词)</td><td><span class="note speakable-finnish">(esim. puiston itäpuolella)</span></td></tr>
+            </tbody>
+        </table>
+    </section>
+
+<script>
+    const finnishLang = 'fi-FI';
+
+    function debugLog(message) {
+        const output = document.getElementById('debug-output');
+        if (output && output.innerHTML !== undefined) {
+            const time = new Date().toLocaleTimeString();
+            output.innerHTML += `[${time}] ${message}<br>`;
+            output.scrollTop = output.scrollHeight;
+        }
+    }
+
+    function testBasicTTS() {
+        debugLog('开始测试基本TTS功能...');
+        if (!('speechSynthesis' in window)) {
+            debugLog('❌ 错误：浏览器不支持语音合成API');
+            alert('您的浏览器不支持语音合成功能。');
+            return;
+        }
+        debugLog('✅ 浏览器支持语音合成API');
+        const utterance = new SpeechSynthesisUtterance('Hello World');
+        utterance.onstart = () => debugLog('✅ 英语测试开始播放');
+        utterance.onend = () => debugLog('✅ 英语测试播放完成');
+        utterance.onerror = (event) => debugLog('❌ 英语测试错误: ' + event.error);
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function testFinnishTTSModule3_Dim4_MapFinal() { 
+        debugLog('开始测试芬兰语TTS功能 (模块3.4地图最终)...');
+        const utterance = new SpeechSynthesisUtterance('Minä asun pohjoisessa.');
+        utterance.lang = finnishLang;
+        utterance.onstart = () => debugLog('✅ 芬兰语(M3 D4 MapFinal)测试开始播放');
+        utterance.onend = () => debugLog('✅ 芬兰语(M3 D4 MapFinal)测试播放完成');
+        utterance.onerror = (event) => debugLog('❌ 芬兰语(M3 D4 MapFinal)测试错误: ' + event.error);
+        window.speechSynthesis.speak(utterance);
+    }
+     function listVoices() {
+        debugLog('正在获取可用语音列表...');
+        const voices = window.speechSynthesis.getVoices();
+        if (voices.length === 0) {
+            debugLog('⚠️ 未找到任何语音，语音可能还在加载中。');
+            window.speechSynthesis.onvoiceschanged = () => {
+                debugLog('语音列表已更新，重新获取...');
+                const updatedVoices = window.speechSynthesis.getVoices();
+                if (updatedVoices.length === 0 && voices.length === 0) { 
+                    debugLog('⚠️ 更新后仍未找到任何语音。'); return;
+                }
+                if (updatedVoices.length > 0) logVoiceList(updatedVoices);
+            };
+            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1 || (navigator.userAgent.toLowerCase().indexOf('safari') > -1 && navigator.userAgent.toLowerCase().indexOf('chrome') === -1) ) {
+                setTimeout(() => { if(window.speechSynthesis.getVoices().length > 0) listVoices(); }, 500);
+            }
+            return;
+        }
+        logVoiceList(voices);
+    }
+     function logVoiceList(voices) {
+        debugLog(`找到 ${voices.length} 个可用语音:`);
+        voices.forEach((voice, index) => {
+            const isDefault = voice.default ? ' (默认)' : '';
+            debugLog(`${index + 1}. ${voice.name} (${voice.lang})${isDefault}`);
+        });
+        const finnishVoices = voices.filter(voice =>
+            voice.lang.toLowerCase().startsWith('fi') ||
+            voice.name.toLowerCase().includes('finnish') ||
+            voice.name.toLowerCase().includes('suomi')
+        );
+        if (finnishVoices.length > 0) {
+            debugLog(`✅ 找到 ${finnishVoices.length} 个芬兰语语音:`);
+            finnishVoices.forEach(voice => {
+                debugLog(`  - ${voice.name} (${voice.lang})`);
+            });
+        } else {
+            debugLog('❌ 未找到芬兰语语音。');
+        }
+    }
+
+    function removeDebugSection() {
+        const debugSection = document.querySelector('.debug-section');
+        if (debugSection) {
+            debugSection.style.display = 'none';
+            debugLog('调试区域已隐藏');
+        }
+    }
+
+    let isSpeaking = false;
+    function speakText(text, lang = finnishLang) {
+        if (!('speechSynthesis' in window)) return;
+        if (isSpeaking) {
+            window.speechSynthesis.cancel();
+            setTimeout(() => startSpeaking(text, lang), 50);
+        } else {
+            startSpeaking(text, lang);
+        }
+    }
+
+    function startSpeaking(text, lang) {
+        isSpeaking = true;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        const voices = window.speechSynthesis.getVoices();
+        let selectedVoice = null;
+        if (lang.toLowerCase().startsWith('fi')) {
+            selectedVoice = voices.find(voice => voice.lang.toLowerCase() === 'fi-fi') ||
+                            voices.find(voice => voice.lang.toLowerCase().startsWith('fi')) ||
+                            voices.find(voice => voice.name.toLowerCase().includes('finnish') || voice.name.toLowerCase().includes('suomi'));
+        }
+        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.onend = () => { isSpeaking = false; };
+        utterance.onerror = (event) => {
+            debugLog(`❌ 播放错误: ${event.error} (文本: "${text}")`);
+            isSpeaking = false;
+        };
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function addTTSButton(element, textToSpeak) {
+        let cleanedText = textToSpeak.replace(/\s*\(.*?\)\s*/g, '').trim(); 
+        cleanedText = cleanedText.replace(/（.*?）/g, '').trim();
+        cleanedText = cleanedText.replace(/\[.*?\]/g, '').trim();
+
+        if (!cleanedText || cleanedText === '') return;
+        
+        const existingButton = Array.from(element.childNodes).find(node => node.nodeType === Node.ELEMENT_NODE && node.classList.contains('tts-button') && node.title === '播放: ' + cleanedText);
+        if (existingButton) return;
+
+        const button = document.createElement('button');
+        button.className = 'tts-button';
+        button.innerHTML = '🔊';
+        button.title = '播放: ' + cleanedText;
+        button.setAttribute('aria-label', '播放音频: ' + cleanedText);
+        button.onclick = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            speakText(cleanedText);
+        };
+        
+        if (element.tagName === 'SPAN' && (element.classList.contains('speakable-finnish') || element.classList.contains('finnish-phrase'))) {
+            if (!element.querySelector('.tts-button')) {
+                element.appendChild(button);
+            }
+        } else {
+            let insertBeforeNode = null;
+            for (let i = 0; i < element.childNodes.length; i++) {
+                const child = element.childNodes[i];
+                if (child.nodeType === Node.ELEMENT_NODE && (child.classList.contains('note') || child.classList.contains('chinese-sense'))) {
+                    insertBeforeNode = child;
+                    break;
+                }
+            }
+            if (insertBeforeNode) {
+                element.insertBefore(button, insertBeforeNode);
+            } else {
+                element.appendChild(button);
+            }
+        }
+    }
+    
+    function initializeTTSForPage() {
+        debugLog('🚀 初始化页面TTS按钮 (模块三·维度四 方向空间 - 地图最终优化)...');
+        
+        document.querySelectorAll('.speakable-finnish, .finnish-phrase').forEach(span => {
+            const text = span.textContent.trim();
+            if (text && !span.querySelector('.tts-button')) {
+                 addTTSButton(span, text);
+            }
+        });
+
+        const sentenceLevelContainers = [
+            ...document.querySelectorAll('.direction-card-content p.example-sentence'),
+            ...document.querySelectorAll('.usage-example p'), 
+            ...document.querySelectorAll('.task-card ul li'),
+            ...document.querySelectorAll('.task-card ul ul li'), 
+            ...document.querySelectorAll('.interactive-map-container text.speakable-finnish'), 
+            ...document.querySelectorAll('.directions-table td'),
+            ...document.querySelectorAll('.new-vocab-section .vocab-list-table td:first-child'),
+            ...document.querySelectorAll('.new-vocab-section .vocab-list-table td:nth-child(3)'),
+            ...document.querySelectorAll('#intro-dimension4 .example p'),
+            ...document.querySelectorAll('#intro-dimension4 .concept-map p'),
+            ...document.querySelectorAll('#dim4-summary-and-next .summary-card p'),
+            ...document.querySelectorAll('#dim4-summary-and-next .summary-card ul li'),
+            ...document.querySelectorAll('#map-question-area p') 
+        ];
+
+        sentenceLevelContainers.forEach(el => {
+            if (el.classList.contains('speakable-finnish') || el.classList.contains('finnish-phrase')) return;
+            if (el.querySelector('.tts-button')) { 
+                let hasOwnButton = false;
+                for(let child of el.childNodes){
+                    if(child.nodeType === Node.ELEMENT_NODE && child.classList.contains('tts-button')){
+                        hasOwnButton = true;
+                        break;
+                    }
+                }
+                if(hasOwnButton || el.querySelector('.speakable-finnish .tts-button')) return;
+            }
+            if (el.closest('thead')) return;
+
+            let textToSpeak = "";
+            Array.from(el.childNodes).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    textToSpeak += node.textContent;
+                } else if (node.nodeType === Node.ELEMENT_NODE &&
+                           !node.classList.contains('note') &&
+                           !node.classList.contains('chinese-sense') &&
+                           !node.classList.contains('tts-button') &&
+                           !node.classList.contains('speakable-finnish') && 
+                           !node.classList.contains('finnish-phrase') &&
+                           !node.classList.contains('highlight') &&
+                           node.tagName !== 'IMG' && node.tagName !== 'svg'
+                           ) {
+                    textToSpeak += node.textContent; 
+                }
+            });
+            textToSpeak = textToSpeak.trim();
+            
+            if (textToSpeak.length > 1 && textToSpeak.match(/[äöåÄÖÅ]/i)) { 
+                addTTSButton(el, textToSpeak);
+            }
+        });
+        
+        document.querySelectorAll('.direction-card h4 .speakable-finnish, .task-card h4 .speakable-finnish, .task-list h5 .speakable-finnish').forEach(el => {
+             if(!el.querySelector('.tts-button')) addTTSButton(el, el.textContent);
+        });
+        
+        document.querySelectorAll('#intro-dimension4 h2, #cardinal-directions-focus h3, #cognitive-task1-body-compass h3, #cognitive-task2-direction-spatial-nesting h3, #cognitive-task3-map-training h3, #language-bleeding-plan-dim4 h2, #dim4-summary-and-next h2, #new-vocabulary-list-m3p4 h3').forEach(h => {
+            if (!h.querySelector('.tts-button')) { 
+                const text = h.textContent.split('(')[0].trim();
+                if (text.length > 1 && text.match(/[äöåÄÖÅ]/i)) {
+                    addTTSButton(h, text);
+                }
+            }
+        });
+
+        debugLog('✅ 页面TTS按钮初始化完毕 (模块三·维度四 方向空间 - 地图最终优化)');
+    }
+    
+    // --- Interactive Map Quiz Logic for Dimension 4 (Map with Letters - Corrected) ---
+    const mapQuestions = [
+        {
+            instruction_fi: "Katso karttaa. Kohde C (<span class='speakable-finnish'>Puisto</span>) on kohteen A (<span class='speakable-finnish'>Koti</span>) <span class='speakable-finnish'>pohjoispuolella</span>. Osoita kohde C kartalla.",
+            instruction_zh: "看地图。目标C（公园）在目标A（家）的北边。请在地图上指出目标C。",
+            correct_answer_for_tts_feedback: "Kohde C, Puisto, on kartan yläosassa, Koti A:n yläpuolella."
+        },
+        {
+            instruction_fi: "Sinä olet kohteessa C (<span class='speakable-finnish'>Puisto</span>). Kohde B (<span class='speakable-finnish'>Kauppa</span>) on sinun <span class='speakable-finnish'>itäpuolella</span>si. Mihin suuntaan sinä menet kohteeseen B?",
+            instruction_zh: "你在目标C（公园）。目标B（商店）在你的东边。你向哪个方向去目标B？",
+            correct_answer_for_tts_feedback: "Minä menen itään."
+        },
+        {
+            instruction_fi: "Jos aurinko paistaa <span class='speakable-finnish'>idästä</span> (kartan oikealta puolelta), ja sinä seisot kohteessa A (<span class='speakable-finnish'>Koti</span>) ja katsot kohdetta C (<span class='speakable-finnish'>Puisto</span>), missä suunnassa aurinko on sinuun nähden?",
+            instruction_zh: "如果太阳从东方（地图的右边）照过来，你站在目标A（家）看着目标C（公园），太阳相对于你在哪个方向？",
+            correct_answer_for_tts_feedback: "Aurinko on minun oikealla puolellani."
+        },
+        {
+            instruction_fi: "Sinä tulet kohteesta B (<span class='speakable-finnish'>Kauppa</span>) ja kävelet suoraan <span class='speakable-finnish'>länteen</span>. Minkä kohteen <span class='speakable-finnish'>lähelle</span> sinä tulet ensin?",
+            instruction_zh: "你从目标B（商店）出来，然后径直向西走。你会首先到达哪个目标的附近？",
+            correct_answer_for_tts_feedback: "Minä tulen Puiston (C) lähelle."
+        },
+        {
+            instruction_fi: "Jos sinä olet kohteessa A (<span class='speakable-finnish'>Koti</span>) ja haluat mennä kohteeseen B (<span class='speakable-finnish'>Kauppa</span>), sinun täytyy mennä ensin <span class='speakable-finnish'>pohjoiseen</span> ja sitten <span class='speakable-finnish'>itään</span>. Onko tämä totta vai ei?",
+            instruction_zh: "如果你在目标A（家）并且想去目标B（商店），你必须先向北走然后再向东走。这是对的还是不对的？",
+            correct_answer_for_tts_feedback: "Kyllä, se on totta."
+        }
+    ];
+    let currentMapQuestionIndex = 0;
+    const mapQuestionArea = document.getElementById('map-question-area');
+
+    function displayMapQuestion() {
+        if (!mapQuestionArea) return;
+        const q = mapQuestions[currentMapQuestionIndex];
+        // Create a temporary div to parse the instruction_fi and add TTS to speakable parts
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = q.instruction_fi;
+        tempDiv.querySelectorAll('.speakable-finnish').forEach(span => {
+            if (!span.querySelector('.tts-button')) { // Avoid double-adding if already has one
+                addTTSButton(span, span.textContent);
+            }
+        });
+        
+        mapQuestionArea.innerHTML = `<p class="example-sentence">${tempDiv.innerHTML} <span class="note">(${q.instruction_zh})</span></p>`;
+        // Add TTS to the entire P if it doesn't have one from a span
+        const questionP = mapQuestionArea.querySelector('p.example-sentence');
+        if (questionP && !questionP.querySelector('.tts-button') && !questionP.querySelector('span.speakable-finnish .tts-button')) {
+            let textToSpeak = "";
+            Array.from(questionP.childNodes).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE) textToSpeak += node.textContent;
+                else if (node.nodeType === Node.ELEMENT_NODE && (node.classList.contains('speakable-finnish') || node.classList.contains('finnish-phrase'))) textToSpeak += node.textContent;
+            });
+             if(textToSpeak.trim().length > 0) addTTSButton(questionP, textToSpeak.trim());
+        }
+
+        mapQuestionArea.innerHTML += `<button class="action-button" style="font-size:0.9em; padding: 5px 10px; margin-top:5px;" onclick="speakText('${q.correct_answer_for_tts_feedback.replace(/'/g, "\\'").replace(/"/g, '\\"')}')"><span class="speakable-finnish">Kuuntele esimerkkivastaus</span> (听答案示例)</button>`;
+        const newActionButton = mapQuestionArea.querySelector('.action-button');
+        if (newActionButton) {
+             const btnSpeakable = newActionButton.querySelector('.speakable-finnish');
+             if (btnSpeakable && !btnSpeakable.querySelector('.tts-button')) addTTSButton(btnSpeakable, btnSpeakable.textContent);
+        }
+    }
+
+    function nextMapQuestion() {
+        currentMapQuestionIndex = (currentMapQuestionIndex + 1) % mapQuestions.length;
+        displayMapQuestion();
+    }
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.speechSynthesis.getVoices().length === 0) {
+            window.speechSynthesis.onvoiceschanged = initializeTTSForPage;
+        } else {
+            initializeTTSForPage();
+        }
+        setTimeout(initializeTTSForPage, 200); 
+        if (document.getElementById('map-question-area')) {
+             displayMapQuestion(); 
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>芬兰语模块三·维度三：感知“相对”空间 (演化版TTS)</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; line-height: 1.7; margin: 20px auto; max-width: 900px; padding: 0 20px; color: #333; background-color: #f9f9f9; }
+        h1, h2, h3, h4 { color: #2c3e50; }
+        h1 { text-align: center; margin-bottom: 35px; font-size: 2.2em; }
+        h2 { border-bottom: 2px solid #d35400; padding-bottom: 12px; margin-top: 45px; font-size: 1.8em; color: #d35400; } /* Dimension 3 color */
+        h3 { margin-top: 30px; font-size: 1.5em; color: #e67e22; } /* Lighter shade for H3 */
+        h4 { font-size: 1.3em; color: #f39c12; margin-top:25px; margin-bottom:15px; } /* Even lighter for H4 */
+        table.immersion-table, table.vocab-list-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; display: table; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .immersion-table th, .immersion-table td, .vocab-list-table th, .vocab-list-table td { border: 1px solid #ddd; padding: 12px; text-align: left; vertical-align: top;}
+        .immersion-table thead, .vocab-list-table thead { background-color: #e9ecef; }
+        .immersion-table td:first-child, .vocab-list-table td:first-child { font-weight: bold; }
+        .story-card, .practice-plan-card, .cognitive-bleeding-card, .usage-example, .summary-card, .example, .new-vocab-section, .方位伙伴-card { /* Added 方位伙伴-card */
+            background-color: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .example { border-left: 6px solid #d35400 !important; } /* Dimension 3 example color */
+        .方位伙伴-card h4 { color: #c0392b; margin-top: 0; font-size: 1.3em; border-bottom: 1px dashed #f39c12; padding-bottom: 8px; margin-bottom: 15px; }
+        .方位伙伴-item { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dotted #eee; }
+        .方位伙伴-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0;}
+        .方位伙伴-item img { width: 100px; height: 100px; object-fit: contain; margin-right: 15px; border-radius: 4px; float: left; }
+        .方位伙伴-content { overflow: hidden; /* Clear float */}
+        .方位伙伴-content p { margin: 5px 0; font-size: 1.1em; }
+        .finnish-phrase { font-weight: bold; color: #d35400; font-size: 1.15em; } /* Dimension 3 phrase color */
+        .example-sentence .finnish-phrase { font-size: 1.1em; }
+        .chinese-sense, .note { font-size: 0.95em; color: #555; font-style: italic; }
+        .tts-button { background: none; border: none; cursor: pointer; font-size: 1.2em; margin-left: 8px; padding: 0; display: inline-block; vertical-align: middle; color: #d35400; } /* Dimension 3 TTS color */
+        .tts-button:hover { color: #a04000; opacity: 0.8; }
+        .debug-section { background-color: #fffbf0; border: 2px solid #ffa500; padding: 15px; margin: 20px 0; border-radius: 8px; }
+        .debug-button { background-color: #4CAF50; color: white; padding: 8px 16px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .debug-button:hover { background-color: #45a049; }
+        .highlight { color: #c0392b; font-weight: bold; }
+        hr { border: 0; height: 1px; background-image: linear-gradient(to right, rgba(0,0,0,0), rgba(211,84,0,0.3), rgba(0,0,0,0)); margin: 40px 0; } /* Dimension 3 hr color */
+        .task-list { list-style-type: none; padding-left: 0; }
+        .task-list > li { margin-bottom: 15px; }
+        .task-list h5 { margin-top:0; color: #2c3e50; font-size: 1.15em; }
+        .task-list ul { list-style-type: disc; padding-left: 25px; margin-top: 5px; }
+        .task-list ul li { font-size: 1em; margin-bottom: 8px; }
+        .final-summary-list { list-style-type: none; padding-left:0; }
+        .final-summary-list li { margin-bottom: 10px; font-size: 1.1em;}
+        .final-summary-list .finnish-phrase { font-weight: normal;}
+        .interactive-choice button { background-color: #e67e22; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; margin: 8px; font-size: 1em; transition: background-color 0.2s; } /* Dimension 3 button color */
+        .interactive-choice button:hover { background-color: #d35400; }
+        .feedback-area { margin-top: 15px; padding: 12px; border-radius: 5px; text-align:center; font-size: 1.1em; min-height: 1.5em; }
+        .correct { background-color: #d1f2eb; color: #0c6255; border: 1px solid #a3e4d7; }
+        .incorrect { background-color: #fdedec; color: #c0392b; border: 1px solid #f5b7b1; }
+        .action-button { background-color: #e67e22; color: white; padding: 12px 18px; border: none; border-radius: 5px; cursor: pointer; margin-top:12px; font-size: 1em; transition: background-color 0.2s; }
+        .action-button:hover { background-color: #d35400; }
+        .concept-map { text-align: center; margin: 25px 0; padding: 15px; background-color: #fff3e0; border: 1px dashed #ffcc80; border-radius: 6px; } /* Dimension 3 concept map color */
+        .concept-map p { margin: 8px 0; font-size: 1.15em; }
+    </style>
+</head>
+<body>
+
+    <h1>模块三：【空间定位器】 – 维度三：感知“相对”空间</h1>
+
+    <!-- TTS调试区域 -->
+    <div class="debug-section">
+        <h3>🔧 TTS功能测试 (模块三·维度三 相对空间 演化版)</h3>
+        <p>如果TTS按钮没有声音，请先测试以下功能：</p>
+        <button class="debug-button" onclick="testBasicTTS()">测试基本TTS</button>
+        <button class="debug-button" onclick="testFinnishTTSModule3_Dim3_Evolved()">测试芬兰语TTS (模块3.3演化)</button>
+        <button class="debug-button" onclick="listVoices()">查看可用语音</button>
+        <button class="debug-button" onclick="removeDebugSection()">移除调试区域</button>
+        <div id="debug-output" style="margin-top: 10px; padding: 10px; background-color: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;"></div>
+    </div>
+
+    <hr>
+
+    <section id="intro-dimension3">
+        <h2>🚀 维度三引入：以“我”为中心，定位世界！</h2>
+        <div class="example">
+            <p><span class="speakable-finnish">Hienosti jatkettu!</span> (继续得漂亮！)</p>
+            <p>我们已经探索了物体如何在“封闭容器<span class="highlight">里</span>”（比如 <span class="finnish-phrase speakable-finnish">talossa</span>）和“物体表面<span class="highlight">上</span>”（比如 <span class="finnish-phrase speakable-finnish">pöydällä</span>）安家。现在，我们要把**你自己**变成一个移动的“参照点”！</p>
+            <p>想象一下，你的身体就是世界的中心。东西可以在你的<span class="highlight">前面</span>、<span class="highlight">后面</span>、<span class="highlight">左边</span>、<span class="highlight">右边</span>，甚至<span class="highlight">上面</span>或<span class="highlight">下面</span>。这一维度，我们就来感受芬兰语是如何描述这些以“我”或“你”为基准的相对位置的。准备好用你的身体坐标系来“导航”芬兰语了吗？</p>
+        </div>
+        <div class="concept-map">
+            <p><strong>你的新视角：</strong> <img src="https://via.placeholder.com/50x50.png?text=Minä" alt="我" style="vertical-align: middle; border-radius:50%;"> (我) 是圆心，万物皆有方位！</p>
+            <p><strong>芬兰语感知：</strong> 当你听到像 <span class="finnish-phrase speakable-finnish">edessä</span> 这样的词，它就在告诉你某个东西相对于你的“前方”位置。</p>
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="relative-spatial-partners">
+        <h3>🧭 认识你的“方位伙伴”——它们帮你找到相对位置</h3>
+        <p>以下是一些帮助我们描述物体相对于“我”或“你”在哪里的芬兰语“方位伙伴”。我们会用图画、例句和中文感知来一一认识它们。</p>
+
+        <!-- 方位伙伴卡片 1: 前面 (Edessä) -->
+        <div class="方位伙伴-card">
+            <h4><span class="speakable-finnish">Edessä</span> - 在前面</h4>
+            <div class="方位伙伴-item">
+                <img src="https://images.pexels.com/photos/3747505/pexels-photo-3747505.jpeg?auto=compress&cs=tinysrgb&w=300" alt="书在人前面">
+                <div class="方位伙伴-content">
+                    <p><strong>当某物在你的前面：</strong></p>
+                    <p class="example-sentence"><span class="speakable-finnish">Minun kirja on minun <span class="finnish-phrase">edessä</span>.</span> <span class="note">(或者更自然地说: <span class="speakable-finnish">Kirja on <span class="finnish-phrase">edessä</span>ni.</span> 但我们先感知核心词)</span></p>
+                    <p class="chinese-sense">感知：“<span class="finnish-phrase speakable-finnish">edessä</span>”这个说法，像不像有什么东西正好挡在你的视线<span class="highlight">前</span>方，或者就在你面前展开？</p>
+                    <p class="example-sentence"><span class="speakable-finnish">Sinä istut minun <span class="finnish-phrase">edessä</span>ni.</span> (你坐在我的前面。)</p>
+                </div>
+            </div>
+            <div class="usage-example">
+                <h5>简单日常怎么用？</h5>
+                <p><span class="speakable-finnish">A: Missä sinun puhelin on?</span></p>
+                <p><span class="speakable-finnish">B: Se on <span class="finnish-phrase">edessä</span>ni, <span class="finnish-phrase">pöydällä</span>.</span> (它在我前面，在桌子上。)</p>
+            </div>
+        </div>
+
+        <!-- 方位伙伴卡片 2: 后面 (Takana) -->
+        <div class="方位伙伴-card">
+            <h4><span class="speakable-finnish">Takana</span> - 在后面</h4>
+            <div class="方位伙伴-item">
+                <img src="https://images.pexels.com/photos/159775/library-la-trobe-study-students-159775.jpeg?auto=compress&cs=tinysrgb&w=300" alt="包在人身后">
+                <div class="方位伙伴-content">
+                    <p><strong>当某物在你的后面：</strong></p>
+                    <p class="example-sentence"><span class="speakable-finnish">Sinun laukku on sinun <span class="finnish-phrase">takana</span>.</span> <span class="note">(或者: <span class="speakable-finnish">Laukku on <span class="finnish-phrase">takana</span>si.</span>)</span></p>
+                    <p class="chinese-sense">感知：“<span class="finnish-phrase speakable-finnish">takana</span>”，是不是有种东西在你<span class="highlight">背后</span>，你看不到，但能感觉到它的存在？</p>
+                    <p class="example-sentence"><span class="speakable-finnish">Minä seison sinun <span class="finnish-phrase">takana</span>si.</span> (我站在你的后面。)</p>
+                </div>
+            </div>
+            <div class="usage-example">
+                <h5>简单日常怎么用？</h5>
+                <p><span class="speakable-finnish">A: Onko joku minun <span class="finnish-phrase">takana</span>ni?</span> (我后面有人吗？ <span class="note speakable-finnish">joku=某人</span>)</p>
+                <p><span class="speakable-finnish">B: Ei, sinun <span class="finnish-phrase">takana</span> ei ole ketään.</span> (不，你后面没人。 <span class="note speakable-finnish">ketään=任何人(否定)</span>)</p>
+            </div>
+        </div>
+
+        <!-- 方位伙伴卡片 3: 左边 (Vasemmalla) -->
+        <div class="方位伙伴-card">
+            <h4><span class="speakable-finnish">Vasemmalla</span> - 在左边</h4>
+            <div class="方位伙伴-item">
+                <img src="https://images.pexels.com/photos/2106037/pexels-photo-2106037.jpeg?auto=compress&cs=tinysrgb&w=300" alt="杯子在人左边">
+                <div class="方位伙伴-content">
+                    <p><strong>当某物在你的左边：</strong></p>
+                    <p class="example-sentence"><span class="speakable-finnish">Minun kuppi on <span class="finnish-phrase">vasemmalla</span> puolella.</span> <span class="note">(或者简单说: <span class="speakable-finnish">Kuppi on <span class="finnish-phrase">vasemmalla</span>.</span>)</span></p>
+                    <p class="chinese-sense">感知：“<span class="finnish-phrase speakable-finnish">vasemmalla</span>”，跟着声音，你的头是不是想往<span class="highlight">左</span>边看看？这个“-lla”的尾音是不是让你想起了“在桌子<span class="highlight">上</span>”(<span class="finnish-phrase speakable-finnish">pöydällä</span>)的感觉？它们都表示在一个“位置”上！</p>
+                    <p class="example-sentence"><span class="speakable-finnish">Sinä istut minun <span class="finnish-phrase">vasemmalla</span> puolellani.</span> (你坐在我的左边。)</p>
+                </div>
+            </div>
+            <div class="usage-example">
+                <h5>简单日常怎么用？</h5>
+                <p><span class="speakable-finnish">A: Mihin suuntaan posti on?</span> (邮局在哪个方向？ <span class="note speakable-finnish">Mihin suuntaan=向哪个方向</span>)</p>
+                <p><span class="speakable-finnish">B: Se on <span class="finnish-phrase">vasemmalla</span>.</span> (它在左边。)</p>
+            </div>
+        </div>
+        
+        <!-- 方位伙伴卡片 4: 右边 (Oikealla) -->
+        <div class="方位伙伴-card">
+            <h4><span class="speakable-finnish">Oikealla</span> - 在右边</h4>
+            <div class="方位伙伴-item">
+                <img src="https://images.pexels.com/photos/3756785/pexels-photo-3756785.jpeg?auto=compress&cs=tinysrgb&w=300" alt="手机在人右边">
+                <div class="方位伙伴-content">
+                    <p><strong>当某物在你的右边：</strong></p>
+                    <p class="example-sentence"><span class="speakable-finnish">Sinun puhelin on <span class="finnish-phrase">oikealla</span>.</span></p>
+                    <p class="chinese-sense">感知：“<span class="finnish-phrase speakable-finnish">oikealla</span>”，是不是让你想起了“正确”的方向——<span class="highlight">右</span>手边？同样，那个“-lla”的“在...位置上”的感觉又出现了！</p>
+                    <p class="example-sentence"><span class="speakable-finnish">Minä seison sinun <span class="finnish-phrase">oikealla</span> puolellasi.</span> (我站在你的右边。)</p>
+                </div>
+            </div>
+             <div class="usage-example">
+                <h5>简单日常怎么用？</h5>
+                <p><span class="speakable-finnish">A: Onko kauppa <span class="finnish-phrase">oikealla</span> vai <span class="finnish-phrase">vasemmalla</span>?</span> (商店在右边还是左边？ <span class="note speakable-finnish">vai=还是</span>)</p>
+                <p><span class="speakable-finnish">B: Se on <span class="finnish-phrase">oikealla</span>.</span> (它在右边。)</p>
+            </div>
+        </div>
+
+        <!-- 方位伙伴卡片 5: 上面 (Päällä / Yläpuolella) -->
+        <div class="方位伙伴-card">
+            <h4><span class="speakable-finnish">Päällä / Yläpuolella</span> - 在上面/上方</h4>
+            <div class="方位伙伴-item">
+                <img src="https://images.pexels.com/photos/1866149/pexels-photo-1866149.jpeg?auto=compress&cs=tinysrgb&w=300" alt="灯在人头顶上方">
+                <div class="方位伙伴-content">
+                    <p><strong>当某物在你的头顶上方 (不接触)：</strong></p>
+                    <p class="example-sentence"><span class="speakable-finnish">Lamppu on minun <span class="finnish-phrase">yläpuolella</span>.</span> <span class="note speakable-finnish">(lamppu=灯)</span></p>
+                    <p class="chinese-sense">感知：“<span class="finnish-phrase speakable-finnish">yläpuolella</span>”，感觉是不是有什么东西悬在你头<span class="highlight">上</span>方，但没有碰到？那个“-lla”又出现了，表示在一个“位置”！</p>
+                    <p><strong>当某物在另一个物体之上 (接触)：</strong></p>
+                    <p class="example-sentence"><span class="speakable-finnish">Minun hattu on minun <span class="finnish-phrase">päällä</span>ni.</span> (我的帽子在我头上。 <span class="note speakable-finnish">hattu=帽子, päälläni=在我头上/身上</span>)</p>
+                    <p class="chinese-sense">感知：“<span class="finnish-phrase speakable-finnish">päällä</span>”，就像东西直接“覆盖”或“压”在你<span class="highlight">上</span>面。也带有“-llä”的“表面接触”感。</p>
+                </div>
+            </div>
+            <div class="usage-example">
+                <h5>简单日常怎么用？</h5>
+                <p><span class="speakable-finnish">A: Missä aurinko on?</span> (太阳在哪里？ <span class="note speakable-finnish">aurinko=太阳</span>)</p>
+                <p><span class="speakable-finnish">B: Se on meidän <span class="finnish-phrase">yläpuolella</span>!</span> (它在我们上方！)</p>
+                <p><span class="speakable-finnish">A: Onko sinulla lippis <span class="finnish-phrase">päässä</span>?</span> (你头上戴着棒球帽吗？<span class="note speakable-finnish">lippis=棒球帽, päässä=在头上(内格)</span> - 注意这里用了内格，表示“在头部这个容器里/表面”，`päällä`指更广泛的表面)</p>
+            </div>
+        </div>
+        
+        <!-- 方位伙伴卡片 6: 下面 (Alla / Alapuolella) -->
+        <div class="方位伙伴-card">
+            <h4><span class="speakable-finnish">Alla / Alapuolella</span> - 在下面/下方</h4>
+            <div class="方位伙伴-item">
+                <img src="https://images.pexels.com/photos/1350789/pexels-photo-1350789.jpeg?auto=compress&cs=tinysrgb&w=300" alt="猫在桌子下面">
+                <div class="方位伙伴-content">
+                    <p><strong>当某物在你的下方 (不一定接触)：</strong></p>
+                    <p class="example-sentence"><span class="speakable-finnish">Sinun kengät ovat sängyn <span class="finnish-phrase">alla</span>.</span> <span class="note speakable-finnish">(sänky=床)</span></p>
+                    <p class="chinese-sense">感知：“<span class="finnish-phrase speakable-finnish">alla</span>”，是不是让你想往<span class="highlight">下</span>看，找找藏起来的东西？它也常带有“-lla”的“位置”感觉。</p>
+                    <p><strong>当某物在另一个物体的正下方 (更强调垂直关系)：</strong></p>
+                    <p class="example-sentence"><span class="speakable-finnish">Kellari on talon <span class="finnish-phrase">alapuolella</span>.</span> <span class="note speakable-finnish">(kellari=地下室)</span></p>
+                     <p class="chinese-sense">感知：“<span class="finnish-phrase speakable-finnish">alapuolella</span>”，强调了“下方那一面/那个区域”。</p>
+                </div>
+            </div>
+             <div class="usage-example">
+                <h5>简单日常怎么用？</h5>
+                <p><span class="speakable-finnish">A: Näetkö sinä minun avaimen?</span> (你看见我的钥匙吗？)</p>
+                <p><span class="speakable-finnish">B: Se on ehkä tuolin <span class="finnish-phrase">alla</span>.</span> (它可能在椅子下面。)</p>
+            </div>
+        </div>
+
+        <!-- 方位伙伴卡片 7: 近处 (Lähellä) -->
+        <div class="方位伙伴-card">
+            <h4><span class="speakable-finnish">Lähellä</span> - 在近处/附近</h4>
+            <div class="方位伙伴-item">
+                <img src="https://images.pexels.com/photos/220357/pexels-photo-220357.jpeg?auto=compress&cs=tinysrgb&w=300" alt="咖啡店在附近">
+                <div class="方位伙伴-content">
+                    <p><strong>当某物离你很近：</strong></p>
+                    <p class="example-sentence"><span class="speakable-finnish">Kauppa on <span class="finnish-phrase">lähellä</span>. Minä kävelen sinne.</span> <span class="note speakable-finnish">(sinne=到那里去)</span></p>
+                    <p class="chinese-sense">感知：“<span class="finnish-phrase speakable-finnish">lähellä</span>”，是不是感觉那个东西就在你伸手可及的<span class="highlight">附近</span>，很方便？这个“-llä”的“位置感”又出现了！</p>
+                    <p class="example-sentence"><span class="speakable-finnish">Sinä asut minua <span class="finnish-phrase">lähellä</span>.</span> (你住得离我很近。 <span class="note speakable-finnish">asut=你住, minua=我(部分格)</span>)</p>
+                </div>
+            </div>
+            <div class="usage-example">
+                <h5>简单日常怎么用？</h5>
+                <p><span class="speakable-finnish">A: Onko täällä <span class="finnish-phrase">lähellä</span> hyvä kahvila?</span> (这附近有好咖啡馆吗？ <span class="note speakable-finnish">täällä=在这里</span>)</p>
+                <p><span class="speakable-finnish">B: Kyllä, tuolla kulman <span class="finnish-phrase">takana</span> on yksi. Se on tosi <span class="finnish-phrase">lähellä</span>.</span> (是的，在那边拐角后面有一个。它非常近。 <span class="note speakable-finnish">tuolla=在那边, kulma=拐角, tosi=非常</span>)</p>
+            </div>
+        </div>
+        
+        <!-- 方位伙伴卡片 8: 远处 (Kaukana) -->
+        <div class="方位伙伴-card">
+            <h4><span class="speakable-finnish">Kaukana</span> - 在远处</h4>
+            <div class="方位伙伴-item">
+                <img src="https://images.pexels.com/photos/158827/field-corn-air-frisch-158827.jpeg?auto=compress&cs=tinysrgb&w=300" alt="远处的山">
+                <div class="方位伙伴-content">
+                    <p><strong>当某物离你很远：</strong></p>
+                    <p class="example-sentence"><span class="speakable-finnish">Meri on <span class="finnish-phrase">kaukana</span> täältä. Minä tarvitsen auton.</span> <span class="note speakable-finnish">(meri=海, täältä=从这里)</span></p>
+                    <p class="chinese-sense">感知：“<span class="finnish-phrase speakable-finnish">kaukana</span>”，是不是让你感觉要眺望<span class="highlight">远</span>方才能看到？</p>
+                    <p class="example-sentence"><span class="speakable-finnish">Sinun koti on <span class="finnish-phrase">kaukana</span> minun kodista.</span> (你家离我家很远。 <span class="note speakable-finnish">minun kodista=从我家(出格)</span>)</p>
+                </div>
+            </div>
+             <div class="usage-example">
+                <h5>简单日常怎么用？</h5>
+                <p><span class="speakable-finnish">A: Onko Helsinki <span class="finnish-phrase">kaukana</span>?</span></p>
+                <p><span class="speakable-finnish">B: Kyllä, se on aika <span class="finnish-phrase">kaukana</span> täältä.</span> (是的，它离这里相当远。 <span class="note speakable-finnish">aika=相当)</span></p>
+            </div>
+        </div>
+        <p class="note"><strong>重要提示：</strong> 很多这类“方位伙伴”（如 <span class="speakable-finnish">edessä, takana, vieressä, lähellä, kaukana</span> 等）在芬兰语中和前面的名词（表示参照物）搭配时，那个名词常常需要变成一种特殊的“的”字形式（我们以后会了解的<span class="speakable-finnish">genetiivi</span>，所有格）。例如，“桌子的前面”是 <span class="speakable-finnish">pöydän edessä</span>。现在你先整体感知这些“方位伙伴”的意义和发音，以及它们在简单句子中如何使用，尤其是和<span class="speakable-finnish">minun</span> (我的) 和 <span class="speakable-finnish">sinun</span> (你的) 搭配的时候！</p>
+    </section>
+
+    <hr>
+
+    <section id="interactive-practice-dim3">
+        <h3>💡 初步互动：看图辨“相对位置”</h3>
+        <div class="story-card">
+            <p>下面这张图里有很多东西。试着回答问题，或者用我们刚认识的“方位伙伴”来描述它们的位置关系吧！</p>
+            <div style="text-align:center; margin-bottom:15px;">
+                <img src="https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=600" alt="客厅场景图" id="scene-image-dim3" style="max-width:100%; border-radius:5px;">
+            </div>
+            <div id="q-dim3-container">
+                <!-- Questions will be dynamically inserted here by JS -->
+            </div>
+            <div class="interactive-choice" style="text-align: center; margin-top:15px;">
+                <button class="action-button" onclick="nextDim3Question()">下一个问题/换个描述</button>
+            </div>
+            <div id="feedback-area-dim3" class="feedback-area"></div>
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="language-bleeding-plan-dim3">
+        <h2>🧪【语言出血】“我的工作/学习空间”相对定位三日计划</h2>
+        <div class="practice-plan-card">
+            <ul class="task-list">
+                <li>
+                    <h5><span class="speakable-finnish">📆 第1日：感知“前后”</span></h5>
+                    <ul>
+                        <li><span class="speakable-finnish">坐在你的书桌前，对自己说：“Minun tietokone on minun <span class="finnish-phrase">edessä</span>. Seinä on minun <span class="finnish-phrase">takana</span>.” (我的电脑在我前面。墙在我后面。 <span class="note speakable-finnish">seinä=墙</span>)</span></li>
+                        <li><span class="speakable-finnish">想象你的朋友坐在你对面，对空气说：“Sinä istut minun <span class="finnish-phrase">edessä</span>ni.”</span></li>
+                    </ul>
+                </li>
+                <li>
+                    <h5><span class="speakable-finnish">📆 第2日：感知“左右”与“上下”</span></h5>
+                    <ul>
+                        <li><span class="speakable-finnish">看看你书桌的左边有什么，说：“Minun <span class="finnish-phrase">vasemmalla</span> puolella on [物品].” (我左边是[物品]。)</span></li>
+                        <li><span class="speakable-finnish">看看你书桌的右边有什么，说：“Minun <span class="finnish-phrase">oikealla</span> puolella on [物品].”</span></li>
+                        <li><span class="speakable-finnish">抬头看看灯，说：“Lamppu on minun <span class="finnish-phrase">yläpuolella</span>.”</span></li>
+                        <li><span class="speakable-finnish">低头看看脚下的地板，说：“Lattia on minun <span class="finnish-phrase">alla</span>ni.” (地板在我的下面。)</span></li>
+                    </ul>
+                </li>
+                <li>
+                    <h5><span class="speakable-finnish">📆 第3日：感知“远近”与综合描述</span></h5>
+                    <ul>
+                        <li><span class="speakable-finnish">看看窗外，如果能看到远处的建筑，说：“Talo on <span class="finnish-phrase">kaukana</span>.” (房子在远处。)</span></li>
+                        <li><span class="speakable-finnish">看看手边的杯子，说：“Minun kuppi on <span class="finnish-phrase">lähellä</span>.” (我的杯子在近处。)</span></li>
+                        <li><span class="speakable-finnish">尝试描述一个场景给朋友（或自己）：“Minä istun <span class="finnish-phrase">tuolilla</span>. Minun pöytä on minun <span class="finnish-phrase">edessä</span>. Sinä seisot oven <span class="finnish-phrase">vieressä</span>.” (我坐在椅子上。我的桌子在我前面。你站在门旁边。 <span class="note speakable-finnish">ovi=门</span>)</span></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="dim3-summary-and-next">
+        <h2>🌟 维度三感知小结：你拥有了“身体坐标系”的语言！ (含术语锚定)</h2>
+        <div class="summary-card">
+            <p><span class="speakable-finnish">Hienosti tehty!</span> (做得太棒了！)</p>
+            <p>现在，你不仅知道东西在“容器<span class="highlight">里</span>”或“物体表面<span class="highlight">上</span>”，还能从“你”或“我”的角度出发，说出它在“<span class="speakable-finnish">edessä</span>”(前面)、“<span class="speakable-finnish">takana</span>”(后面)、“<span class="speakable-finnish">vasemmalla</span>”(左边)、“<span class="speakable-finnish">oikealla</span>”(右边)、“<span class="speakable-finnish">päällä</span>”(上面-接触)、“<span class="speakable-finnish">alla</span>”(下面)，“<span class="speakable-finnish">lähellä</span>”(附近) 和 “<span class="speakable-finnish">kaukana</span>”(远处) 了！</p>
+            <p>你有没有发现，芬兰语用一些听起来很特别的词来表达这些以身体为参照的方位？它们就像是你定位世界的“私人导航员”。</p>
+            <p class="note">在芬兰语语法中，像 <span class="speakable-finnish">edessä</span>, <span class="speakable-finnish">takana</span>, <span class="speakable-finnish">vieressä</span>, <span class="speakable-finnish">lähellä</span>, <span class="speakable-finnish">päällä</span>, <span class="speakable-finnish">alla</span>, <span class="speakable-finnish">yläpuolella</span>, <span class="speakable-finnish">alapuolella</span> 这些词，很多时候被称为 **<span class="speakable-finnish">postpositiot</span> (Postpositions，后置词)**，因为它们通常跟在某个名词（表示参照物，这个名词常需要变成“的”字形式——<span class="speakable-finnish">genetiivi</span>）的后面。而像 <span class="speakable-finnish">vasemmalla</span>, <span class="speakable-finnish">oikealle</span> 这些，你可以感觉到它们与我们维度二学的“表面格”(<span class="finnish-phrase speakable-finnish">adessiivi, allatiivi</span>) 在“声音感觉”上是一致的。还有一些，比如 <span class="speakable-finnish">ylös</span> (向上地), <span class="speakable-finnish">alas</span> (向下地), <span class="speakable-finnish">kaukana</span> (在远处)，它们本身就是描述方向或位置的 **<span class="speakable-finnish">adverbit</span> (Adverbs，副词)**。</p>
+            <p class="note speakable-finnish">Älä huoli termeistä! Tärkeintä on, että alat tunnistaa nämä sanat ja yhdistää ne oikeisiin paikkoihin ja suuntiin. (别担心术语！最重要的是你开始认出这些词，并将它们与正确的位置和方向联系起来。)</p>
+            <p>这些“方位伙伴”的发音和它们所代表的空间感觉，是不是也开始在你脑海里建立连接了？继续用它们来描述你看到和感受到的世界吧！</p>
+            <p><strong>下一维度：</strong> 除了以“我”为中心，世界本身也有固定的方向，比如东、南、西、北。下一维度，我们将一起探索芬兰语如何描绘这些“宇宙级”的坐标，进入【方向空间】的探索！</p>
+        </div>
+    </section>
+
+    <hr>
+    <section id="new-vocabulary-list-m3p3" class="new-vocab-section">
+        <h3>📚 本维度新朋友：词汇积累 (聚焦核心相对方位词)</h3>
+        <p>以下是本维度（模块三·维度三）我们重点接触和感知的核心“方位伙伴”。熟悉它们的发音和它们所代表的“相对于你”的空间感觉，将极大增强你的定位能力！我们依然主要在第一和第二人称的简单句子中使用它们。</p>
+        <table class="vocab-list-table">
+            <thead>
+                <tr>
+                    <th>芬兰语“方位伙伴” (常用形式)</th>
+                    <th>大致的中文“感觉”</th>
+                    <th>一个简单的<span class="speakable-finnish">Minä/Sinä</span>例句</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><span class="speakable-finnish">edessä</span></td><td>在...前面</td><td><span class="speakable-finnish">Kirja on minun <span class="finnish-phrase">edessä</span>.</span></td></tr>
+                <tr><td><span class="speakable-finnish">takana</span></td><td>在...后面</td><td><span class="speakable-finnish">Sinä olet minun <span class="finnish-phrase">takana</span>.</span></td></tr>
+                <tr><td><span class="speakable-finnish">vasemmalla (puolella)</span></td><td>在左边</td><td><span class="speakable-finnish">Minun kuppi on <span class="finnish-phrase">vasemmalla</span>.</span></td></tr>
+                <tr><td><span class="speakable-finnish">oikealla (puolella)</span></td><td>在右边</td><td><span class="speakable-finnish">Sinun puhelin on <span class="finnish-phrase">oikealla</span>.</span></td></tr>
+                <tr><td><span class="speakable-finnish">päällä</span></td><td>在...之上 (接触)</td><td><span class="speakable-finnish">Minun hattu on minun <span class="finnish-phrase">päällä</span>. <span class="note">(tai päässä)</span></span></td></tr>
+                <tr><td><span class="speakable-finnish">yläpuolella</span></td><td>在...上方 (不接触)</td><td><span class="speakable-finnish">Lamppu on sinun <span class="finnish-phrase">yläpuolella</span>.</span></td></tr>
+                <tr><td><span class="speakable-finnish">alla</span></td><td>在...下面 (通常接触或近距离)</td><td><span class="speakable-finnish">Minun kengät ovat sängyn <span class="finnish-phrase">alla</span>.</span></td></tr>
+                <tr><td><span class="speakable-finnish">alapuolella</span></td><td>在...下方 (更强调垂直下方，不一定接触)</td><td><span class="speakable-finnish">Kellari on talon <span class="finnish-phrase">alapuolella</span>.</span></td></tr>
+                <tr><td><span class="speakable-finnish">lähellä</span></td><td>在近处，在...附近</td><td><span class="speakable-finnish">Minä olen <span class="finnish-phrase">lähellä</span> sinua.</span></td></tr>
+                <tr><td><span class="speakable-finnish">kaukana</span></td><td>在远处，离...远</td><td><span class="speakable-finnish">Sinä olet <span class="finnish-phrase">kaukana</span> minusta. <span class="note">(minusta=从我这里)</span></span></td></tr>
+                 <tr><td><span class="speakable-finnish">edelle</span></td><td>到...前面去</td><td><span class="speakable-finnish">Minä menen <span class="finnish-phrase">edelle</span>.</span></td></tr>
+                <tr><td><span class="speakable-finnish">taakse</span></td><td>到...后面去</td><td><span class="speakable-finnish">Sinä menet <span class="finnish-phrase">taakse</span>.</span></td></tr>
+                 <tr><td><span class="speakable-finnish">vasemmalle</span></td><td>到左边去</td><td><span class="speakable-finnish">Minä käännyn <span class="finnish-phrase">vasemmalle</span>.</span></td></tr>
+                <tr><td><span class="speakable-finnish">oikealle</span></td><td>到右边去</td><td><span class="speakable-finnish">Sinä käännyt <span class="finnish-phrase">oikealle</span>.</span></td></tr>
+                <tr><td><span class="speakable-finnish">ylös</span></td><td>向上地 (副词)</td><td><span class="speakable-finnish">Katson <span class="finnish-phrase">ylös</span>.</span></td></tr>
+                <tr><td><span class="speakable-finnish">alas</span></td><td>向下地 (副词)</td><td><span class="speakable-finnish">Pallo putoaa <span class="finnish-phrase">alas</span>.</span></td></tr>
+                <!-- New nouns/verbs from examples for this Dim3, if not already covered or super common -->
+                <tr><td><span class="speakable-finnish">seinä</span></td><td>墙</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">lamppu</span></td><td>灯</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">sänky</span></td><td>床</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">kellari</span></td><td>地下室</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">meri</span></td><td>海</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">ovi</span></td><td>门</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">hattu</span></td><td>帽子</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">kääntyä</span></td><td>转弯</td><td><span class="speakable-finnish">minä käännyn, sinä käännyt</span></td></tr>
+            </tbody>
+        </table>
+    </section>
+
+
+<script>
+    const finnishLang = 'fi-FI';
+
+    function debugLog(message) {
+        const output = document.getElementById('debug-output');
+        if (output && output.innerHTML !== undefined) {
+            const time = new Date().toLocaleTimeString();
+            output.innerHTML += `[${time}] ${message}<br>`;
+            output.scrollTop = output.scrollHeight;
+        }
+    }
+
+    function testBasicTTS() {
+        debugLog('开始测试基本TTS功能...');
+        // ... (rest of function as before)
+        if (!('speechSynthesis' in window)) {
+            debugLog('❌ 错误：浏览器不支持语音合成API');
+            alert('您的浏览器不支持语音合成功能。');
+            return;
+        }
+        debugLog('✅ 浏览器支持语音合成API');
+        const utterance = new SpeechSynthesisUtterance('Hello World');
+        utterance.onstart = () => debugLog('✅ 英语测试开始播放');
+        utterance.onend = () => debugLog('✅ 英语测试播放完成');
+        utterance.onerror = (event) => debugLog('❌ 英语测试错误: ' + event.error);
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function testFinnishTTSModule3_Dim3_Evolved() { 
+        debugLog('开始测试芬兰语TTS功能 (模块3.3演化)...');
+        const utterance = new SpeechSynthesisUtterance('Kirja on minun edessä.');
+        utterance.lang = finnishLang;
+        // ... (onstart, onend, onerror as before)
+        utterance.onstart = () => debugLog('✅ 芬兰语(M3.3 Evolved)测试开始播放');
+        utterance.onend = () => debugLog('✅ 芬兰语(M3.3 Evolved)测试播放完成');
+        utterance.onerror = (event) => debugLog('❌ 芬兰语(M3.3 Evolved)测试错误: ' + event.error);
+        window.speechSynthesis.speak(utterance);
+    }
+     function listVoices() {
+        debugLog('正在获取可用语音列表...');
+        // ... (rest of function as before)
+        const voices = window.speechSynthesis.getVoices();
+        if (voices.length === 0) {
+            debugLog('⚠️ 未找到任何语音，语音可能还在加载中。');
+            window.speechSynthesis.onvoiceschanged = () => {
+                debugLog('语音列表已更新，重新获取...');
+                const updatedVoices = window.speechSynthesis.getVoices();
+                if (updatedVoices.length === 0 && voices.length === 0) { 
+                    debugLog('⚠️ 更新后仍未找到任何语音。'); return;
+                }
+                if (updatedVoices.length > 0) logVoiceList(updatedVoices);
+            };
+            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1 || (navigator.userAgent.toLowerCase().indexOf('safari') > -1 && navigator.userAgent.toLowerCase().indexOf('chrome') === -1) ) {
+                setTimeout(() => { if(window.speechSynthesis.getVoices().length > 0) listVoices(); }, 500);
+            }
+            return;
+        }
+        logVoiceList(voices);
+    }
+     function logVoiceList(voices) {
+        debugLog(`找到 ${voices.length} 个可用语音:`);
+        // ... (rest of function as before)
+        voices.forEach((voice, index) => {
+            const isDefault = voice.default ? ' (默认)' : '';
+            debugLog(`${index + 1}. ${voice.name} (${voice.lang})${isDefault}`);
+        });
+        const finnishVoices = voices.filter(voice =>
+            voice.lang.toLowerCase().startsWith('fi') ||
+            voice.name.toLowerCase().includes('finnish') ||
+            voice.name.toLowerCase().includes('suomi')
+        );
+        if (finnishVoices.length > 0) {
+            debugLog(`✅ 找到 ${finnishVoices.length} 个芬兰语语音:`);
+            finnishVoices.forEach(voice => {
+                debugLog(`  - ${voice.name} (${voice.lang})`);
+            });
+        } else {
+            debugLog('❌ 未找到芬兰语语音。');
+        }
+    }
+
+    function removeDebugSection() {
+        const debugSection = document.querySelector('.debug-section');
+        // ... (rest of function as before)
+        if (debugSection) {
+            debugSection.style.display = 'none';
+            debugLog('调试区域已隐藏');
+        }
+    }
+
+    let isSpeaking = false;
+    function speakText(text, lang = finnishLang) {
+        // ... (rest of function as before)
+        if (!('speechSynthesis' in window)) return;
+        if (isSpeaking) {
+            window.speechSynthesis.cancel();
+            setTimeout(() => startSpeaking(text, lang), 50);
+        } else {
+            startSpeaking(text, lang);
+        }
+    }
+
+    function startSpeaking(text, lang) {
+        // ... (rest of function as before)
+        isSpeaking = true;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        const voices = window.speechSynthesis.getVoices();
+        let selectedVoice = null;
+        if (lang.toLowerCase().startsWith('fi')) {
+            selectedVoice = voices.find(voice => voice.lang.toLowerCase() === 'fi-fi') ||
+                            voices.find(voice => voice.lang.toLowerCase().startsWith('fi')) ||
+                            voices.find(voice => voice.name.toLowerCase().includes('finnish') || voice.name.toLowerCase().includes('suomi'));
+        }
+        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.onend = () => { isSpeaking = false; };
+        utterance.onerror = (event) => {
+            debugLog(`❌ 播放错误: ${event.error} (文本: "${text}")`);
+            isSpeaking = false;
+        };
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function addTTSButton(element, textToSpeak) {
+        // ... (rest of function as before, with cleaning)
+        let cleanedText = textToSpeak.replace(/\s*\(.*?\)\s*/g, '').trim(); 
+        cleanedText = cleanedText.replace(/（.*?）/g, '').trim();
+        cleanedText = cleanedText.replace(/\[.*?\]/g, '').trim();
+
+        if (!cleanedText || cleanedText === '') return;
+        
+        const existingButton = Array.from(element.childNodes).find(node => node.nodeType === Node.ELEMENT_NODE && node.classList.contains('tts-button') && node.title === '播放: ' + cleanedText);
+        if (existingButton) return;
+
+        const button = document.createElement('button');
+        button.className = 'tts-button';
+        button.innerHTML = '🔊';
+        button.title = '播放: ' + cleanedText;
+        button.setAttribute('aria-label', '播放音频: ' + cleanedText);
+        button.onclick = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            speakText(cleanedText);
+        };
+        
+        if (element.tagName === 'SPAN' && (element.classList.contains('speakable-finnish') || element.classList.contains('finnish-phrase'))) {
+            if (!element.querySelector('.tts-button')) {
+                element.appendChild(button);
+            }
+        } else {
+            let insertBeforeNode = null;
+            for (let i = 0; i < element.childNodes.length; i++) {
+                const child = element.childNodes[i];
+                if (child.nodeType === Node.ELEMENT_NODE && (child.classList.contains('note') || child.classList.contains('chinese-sense'))) {
+                    insertBeforeNode = child;
+                    break;
+                }
+            }
+            if (insertBeforeNode) {
+                element.insertBefore(button, insertBeforeNode);
+            } else {
+                element.appendChild(button);
+            }
+        }
+    }
+    
+    function initializeTTSForPage() {
+        debugLog('🚀 初始化页面TTS按钮 (模块三·维度三 相对空间 演化版)...');
+        
+        document.querySelectorAll('.speakable-finnish, .finnish-phrase').forEach(span => {
+            const text = span.textContent.trim();
+            if (text && !span.querySelector('.tts-button')) {
+                 addTTSButton(span, text);
+            }
+        });
+
+        const sentenceLevelContainers = [
+            ...document.querySelectorAll('.方位伙伴-content p.example-sentence'),
+            ...document.querySelectorAll('.usage-example p'), 
+            ...document.querySelectorAll('.interactive-choice button'), // For buttons in interactive parts
+            ...document.querySelectorAll('.practice-plan-card .task-list ul li'), 
+            ...document.querySelectorAll('#intro-dimension3 .example p'),
+            ...document.querySelectorAll('#intro-dimension3 .concept-map p'),
+            ...document.querySelectorAll('.new-vocab-section .vocab-list-table td:first-child'),
+            ...document.querySelectorAll('.new-vocab-section .vocab-list-table td:nth-child(3)'),
+            ...document.querySelectorAll('#dim3-summary-and-next .summary-card p'),
+            ...document.querySelectorAll('#dim3-summary-and-next .summary-card ul li')
+        ];
+
+        sentenceLevelContainers.forEach(el => {
+            if (el.classList.contains('speakable-finnish') || el.classList.contains('finnish-phrase')) return;
+            if (el.querySelector('.tts-button')) { 
+                let hasOwnButton = false;
+                for(let child of el.childNodes){
+                    if(child.nodeType === Node.ELEMENT_NODE && child.classList.contains('tts-button')){
+                        hasOwnButton = true;
+                        break;
+                    }
+                }
+                if(hasOwnButton || el.querySelector('.speakable-finnish .tts-button')) return;
+            }
+            if (el.closest('thead')) return;
+
+            let textToSpeak = "";
+            Array.from(el.childNodes).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    textToSpeak += node.textContent;
+                } else if (node.nodeType === Node.ELEMENT_NODE &&
+                           !node.classList.contains('note') &&
+                           !node.classList.contains('chinese-sense') &&
+                           !node.classList.contains('tts-button') &&
+                           !node.classList.contains('speakable-finnish') && 
+                           !node.classList.contains('finnish-phrase') &&
+                           !node.classList.contains('highlight') 
+                           ) {
+                    textToSpeak += node.textContent; 
+                }
+            });
+            textToSpeak = textToSpeak.trim();
+            
+            if (textToSpeak.length > 1 && textToSpeak.match(/[äöåÄÖÅ]/i)) { 
+                addTTSButton(el, textToSpeak);
+            }
+        });
+        
+        document.querySelectorAll('.方位伙伴-card h4 .speakable-finnish, .practice-plan-card .task-list h5 .speakable-finnish').forEach(el => {
+             if(!el.querySelector('.tts-button')) addTTSButton(el, el.textContent);
+        });
+        document.querySelectorAll('#intro-dimension3 h2, #relative-spatial-partners h3, #interactive-practice-dim3 h3, #language-bleeding-plan-dim3 h2, #dim3-summary-and-next h2, #new-vocabulary-list-m3p3 h3').forEach(h => {
+            if (!h.querySelector('.tts-button')) {
+                const text = h.textContent.split('(')[0].trim(); 
+                if (text.length > 1 && text.match(/[äöåÄÖÅ]/i)) {
+                    addTTSButton(h, text);
+                }
+            }
+        });
+
+        debugLog('✅ 页面TTS按钮初始化完毕 (模块三·维度三 相对空间 演化版)');
+    }
+
+    // --- Interactive Quiz for Dimension 3 ---
+    const dim3Questions = [
+        {
+            image: "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=600", // Living room
+            question_fi: "Missä televisio on sohvaan nähden?", // TV relative to sofa
+            question_zh: "电视相对于沙发在哪里？",
+            options: [
+                { text_fi: "Edessä", correct: true},
+                { text_fi: "Takana", correct: false},
+                { text_fi: "Päällä", correct: false}
+            ],
+            answer_fi_prefix: "Televisio on sohvan "
+        },
+        {
+            image: "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=600",
+            question_fi: "Missä lamppu on pöytään nähden?", // Lamp relative to table
+            question_zh: "灯相对于桌子在哪里？",
+            options: [
+                { text_fi: "Alla", correct: false},
+                { text_fi: "Vieressä", correct: false},
+                { text_fi: "Yläpuolella", correct: true}
+            ],
+            answer_fi_prefix: "Lamppu on pöydän "
+        },
+        {
+            image: "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=600",
+            question_fi: "Missä sohva on ikkunaan nähden?", // Sofa relative to window
+            question_zh: "沙发相对于窗户在哪里？",
+            options: [
+                { text_fi: "Edessä", correct: true},
+                { text_fi: "Takana", correct: false},
+                { text_fi: "Oikealla", correct: false}
+            ],
+            answer_fi_prefix: "Sohva on ikkunan "
+        }
+    ];
+    let currentDim3QuestionIndex = 0;
+    const qDim3Container = document.getElementById('q-dim3-container');
+    const feedbackDim3El = document.getElementById('feedback-area-dim3');
+    const sceneImageDim3 = document.getElementById('scene-image-dim3');
+
+    function displayDim3Question() {
+        if (!qDim3Container || !feedbackDim3El || !sceneImageDim3) return;
+        const q = dim3Questions[currentDim3QuestionIndex];
+        sceneImageDim3.src = q.image; // Could change image per question if needed
+
+        let html = `<p><span class="speakable-finnish">${q.question_fi}</span> <span class="note">(${q.question_zh})</span></p>`;
+        html += `<div class="interactive-choice" style="text-align: center;">`;
+        q.options.forEach(opt => {
+            html += `<button onclick="checkDim3Answer(${opt.correct}, '${q.answer_fi_prefix}${opt.text_fi}.')"><span class="speakable-finnish">${opt.text_fi}</span></button>`;
+        });
+        html += `</div>`;
+        qDim3Container.innerHTML = html;
+        feedbackDim3El.innerHTML = "";
+        feedbackDim3El.className = 'feedback-area';
+        // Add TTS to new question and options
+        qDim3Container.querySelectorAll('.speakable-finnish').forEach(span => {
+            if(!span.querySelector('.tts-button')) addTTSButton(span, span.textContent);
+        });
+         qDim3Container.querySelectorAll('.interactive-choice button').forEach(button => {
+            const span = button.querySelector('.speakable-finnish');
+            if (span && !button.querySelector('.tts-button')) {
+                 addTTSButton(button, span.textContent);
+            }
+        });
+    }
+
+    function checkDim3Answer(isCorrect, correctAnswerSentence) {
+        if (!feedbackDim3El) return;
+        let feedbackText = "";
+        if (isCorrect) {
+            feedbackText = `<span class="speakable-finnish">Oikein! ${correctAnswerSentence}</span>`;
+            feedbackDim3El.className = 'feedback-area correct';
+        } else {
+            feedbackText = `<span class="speakable-finnish">Ei ihan. Oikea vastaus voisi olla esimerkiksi: ${correctAnswerSentence}</span> <span class="note">(Yritä uudelleen tai katso seuraava kysymys!)</span>`;
+            feedbackDim3El.className = 'feedback-area incorrect';
+        }
+        feedbackDim3El.innerHTML = feedbackText;
+        feedbackDim3El.querySelectorAll('.speakable-finnish').forEach(el => {
+            if (!el.querySelector('.tts-button')) addTTSButton(el, el.textContent);
+        });
+        const mainFeedbackSpan = feedbackDim3El.querySelector('.speakable-finnish');
+        if(mainFeedbackSpan) speakText(mainFeedbackSpan.textContent.split('.')[0] + '.');
+    }
+
+    function nextDim3Question() {
+        currentDim3QuestionIndex = (currentDim3QuestionIndex + 1) % dim3Questions.length;
+        displayDim3Question();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.speechSynthesis.getVoices().length === 0) {
+            window.speechSynthesis.onvoiceschanged = initializeTTSForPage;
+        } else {
+            initializeTTSForPage();
+        }
+        setTimeout(initializeTTSForPage, 200); 
+        displayDim3Question(); // Display the first question
+    });
+</script>
+</body>
+</html>

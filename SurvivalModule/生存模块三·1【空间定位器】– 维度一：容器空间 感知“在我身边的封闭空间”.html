@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>芬兰语模块三·阶段一：感知“封闭空间”的进出在 (术语锚定TTS)</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; line-height: 1.7; margin: 20px auto; max-width: 900px; padding: 0 20px; color: #333; background-color: #f9f9f9; }
+        h1, h2, h3, h4 { color: #2c3e50; }
+        h1 { text-align: center; margin-bottom: 35px; font-size: 2.2em; }
+        h2 { border-bottom: 2px solid #3498db; padding-bottom: 12px; margin-top: 45px; font-size: 1.8em; } /* Phase 1 color */
+        h3 { margin-top: 30px; font-size: 1.5em; color: #2980b9; }
+        h4 { font-size: 1.3em; color: #e67e22; margin-top:25px; margin-bottom:15px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 25px; display: block; overflow-x: auto; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; vertical-align: top;}
+        thead { background-color: #e9ecef; }
+        .story-card, .practice-plan-card, .cognitive-bleeding-card, .usage-example, .summary-card, .example, .new-vocab-section {
+            background-color: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .example { border-left: 6px solid #3498db !important; } /* Phase 1 example color */
+        .story-card h4 { color: #e67e22; margin-top: 0; font-size: 1.3em; border-bottom: 1px dashed #f39c12; padding-bottom: 8px; margin-bottom: 15px; }
+        .story-step { display: flex; align-items: flex-start; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted #eee; }
+        .story-step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0;}
+        .story-step img { width: 80px; height: 80px; object-fit: cover; margin-right: 20px; border-radius: 4px; flex-shrink: 0; margin-top:5px;}
+        .story-step-content { flex-grow: 1; }
+        .story-step-content p, .practice-plan-card ul li, .cognitive-bleeding-card td p, .summary-card p, .summary-card ul li {
+            margin: 5px 0; font-size: 1.1em;
+        }
+        .finnish-phrase { font-weight: bold; color: #2980b9; font-size: 1.15em; } 
+        .example-sentence .finnish-phrase { font-size: 1.1em; }
+        .chinese-sense, .note { font-size: 0.95em; color: #555; font-style: italic; }
+        .tts-button { background: none; border: none; cursor: pointer; font-size: 1.2em; margin-left: 8px; padding: 0; display: inline-block; vertical-align: middle; color: #3498db; }
+        .tts-button:hover { color: #2073aa; opacity: 0.8; }
+        .debug-section { background-color: #fffbf0; border: 2px solid #ffa500; padding: 15px; margin: 20px 0; border-radius: 8px; }
+        .debug-button { background-color: #4CAF50; color: white; padding: 8px 16px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .debug-button:hover { background-color: #45a049; }
+        .highlight { color: #c0392b; font-weight: bold; }
+        hr { border: 0; height: 1px; background-image: linear-gradient(to right, rgba(0,0,0,0), rgba(44,62,80,0.3), rgba(0,0,0,0)); margin: 40px 0; }
+        .task-list { list-style-type: none; padding-left: 0; }
+        .task-list > li { margin-bottom: 15px; }
+        .task-list h5 { margin-top:0; color: #2c3e50; font-size: 1.15em; }
+        .task-list ul { list-style-type: disc; padding-left: 25px; margin-top: 5px; }
+        .task-list ul li { font-size: 1em; margin-bottom: 8px; }
+        .final-summary-list { list-style-type: none; padding-left:0; }
+        .final-summary-list li { margin-bottom: 10px; font-size: 1.1em;}
+        .final-summary-list .finnish-phrase { font-weight: normal;}
+        .interactive-choice button { background-color: #5dade2; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; margin: 8px; font-size: 1em; transition: background-color 0.2s; }
+        .interactive-choice button:hover { background-color: #3498db; }
+        .feedback-area { margin-top: 15px; padding: 12px; border-radius: 5px; text-align:center; font-size: 1.1em; min-height: 1.5em; }
+        .correct { background-color: #d1f2eb; color: #0c6255; border: 1px solid #a3e4d7; }
+        .incorrect { background-color: #fdedec; color: #c0392b; border: 1px solid #f5b7b1; }
+        .action-button { background-color: #f39c12; color: white; padding: 12px 18px; border: none; border-radius: 5px; cursor: pointer; margin-top:12px; font-size: 1em; transition: background-color 0.2s; }
+        .action-button:hover { background-color: #d88c0a; }
+        .concept-map { text-align: center; margin: 25px 0; padding: 15px; background-color: #f0f8ff; border: 1px dashed #add8e6; border-radius: 6px; }
+        .concept-map p { margin: 8px 0; font-size: 1.15em; }
+    </style>
+</head>
+<body>
+
+    <h1>模块三：【空间定位器】 – 维度一：感知“在我身边的封闭空间”</h1>
+
+    <!-- TTS调试区域 -->
+    <div class="debug-section">
+        <h3>🔧 TTS功能测试 (模块三·维度一 封闭空间 术语锚定版)</h3>
+        <p>如果TTS按钮没有声音，请先测试以下功能：</p>
+        <button class="debug-button" onclick="testBasicTTS()">测试基本TTS</button>
+        <button class="debug-button" onclick="testFinnishTTSModule3_Dim1_Terms()">测试芬兰语TTS (模块3.1术语)</button>
+        <button class="debug-button" onclick="listVoices()">查看可用语音</button>
+        <button class="debug-button" onclick="removeDebugSection()">移除调试区域</button>
+        <div id="debug-output" style="margin-top: 10px; padding: 10px; background-color: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;"></div>
+    </div>
+
+    <hr>
+
+    <section id="intro-dimension1">
+        <h2>🚀 维度一：你的“容器”世界 —— 感受“吞没、进入、释放”</h2>
+        <div class="usage-example">
+            <p><span class="speakable-finnish">Tervetuloa moduuliin kolme!</span> (欢迎来到模块三！) 在这里，我们将一起进入芬兰语奇妙的“空间宇宙”。</p>
+            <p>首先，我们来探索那些我们每天都会接触的、能把东西“装起来”的**封闭空间**——比如你的家、你的书包、你坐的汽车。芬兰语用非常特别的声音变化来描述我们和这些“容器”之间的互动：是“在里面”，还是正要“进去”，或者是刚刚“出来”？</p>
+            <p>忘掉复杂的语法规则吧！我们的目标是让你通过生动的“微故事”，用你的耳朵和心灵去**感受**这些不同的空间状态在芬兰语里听起来是怎样的。准备好了吗？让我们开始这第一维度的空间探索！</p>
+        </div>
+         <div class="concept-map">
+            <p><strong>中文思维：</strong> [ 我 ] + [ 走进 ] + [ 房子 ] + [ 里 ]</p>
+            <p><strong>芬兰语初步感知：</strong> 当你听到一句芬兰语，比如 <span class="finnish-phrase speakable-finnish">Minä menen taloon</span>，试着直接将它与“我走进房子里”的整个画面和动作感联系起来！</p>
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="spatial-stories-internal">
+        <h3>🏘️ 常用“封闭容器”的空间故事</h3>
+
+        <!-- 故事卡片 1: 房子 (Talo) -->
+        <div class="story-card">
+            <h4><span class="speakable-finnish">Talon tarina</span> (房子的故事) - <span class="note speakable-finnish">(talo = 房子)</span></h4>
+            <div class="story-step">
+                <img src="https://images.pexels.com/photos/209274/pexels-photo-209274.jpeg?auto=compress&cs=tinysrgb&w=300" alt="一个人走向房子">
+                <div class="story-step-content">
+                    <p><strong>1. 进去！ (进入动作)</strong> 当我走向房子并要进去时：</p>
+                    <p class="example-sentence"><span class="speakable-finnish">Minä menen <span class="finnish-phrase">taloon</span>.</span></p>
+                    <p class="chinese-sense">感知：我 <span style="text-decoration: underline;">走进</span> 房子<span class="highlight">里</span>。（听！<span class="finnish-phrase speakable-finnish">taloon</span> 这个说法，是不是让你感觉到一种“跨越边界、进入内部”的动作？就像你正推开门走进去。）</p>
+                </div>
+            </div>
+            <div class="story-step">
+                <img src="https://images.pexels.com/photos/271816/pexels-photo-271816.jpeg?auto=compress&cs=tinysrgb&w=300" alt="一个人在房子里">
+                <div class="story-step-content">
+                    <p><strong>2. 在里面！ (内部状态)</strong> 当我已经走进房子，待在里面时：</p>
+                    <p class="example-sentence"><span class="speakable-finnish">Minä olen <span class="finnish-phrase">talossa</span>.</span></p>
+                    <p class="chinese-sense">感知：我 <span style="text-decoration: underline;">在</span> 房子<span class="highlight">里</span>。（听！<span class="finnish-phrase speakable-finnish">talossa</span> 这个说法，是不是让你感觉到一种“被包裹、被吞没”的稳定状态？就像你安稳地待在房间里。）</p>
+                </div>
+            </div>
+            <div class="story-step">
+                <img src="https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg?auto=compress&cs=tinysrgb&w=300" alt="一个人从房子里出来">
+                <div class="story-step-content">
+                    <p><strong>3. 出来！ (离开动作)</strong> 当我从房子里走出来时：</p>
+                    <p class="example-sentence"><span class="speakable-finnish">Minä tulen <span class="finnish-phrase">talosta</span>.</span></p>
+                    <p class="chinese-sense">感知：我 <span style="text-decoration: underline;">从</span> 房子<span class="highlight">里</span> 出来。（听！<span class="finnish-phrase speakable-finnish">talosta</span> 这个说法，是不是让你感觉到一种“松开、释放、离开原容器”的动作？）</p>
+                </div>
+            </div>
+            <div class="usage-example">
+                <h4>简单日常怎么用？</h4>
+                <p><span class="speakable-finnish">A: Missä sinä olet?</span> <span class="note speakable-finnish">(sinä olet = 你在)</span></p>
+                <p><span class="speakable-finnish">B: Minä olen <span class="finnish-phrase">talossa</span>. Entä sinä? Menetkö sinä <span class="finnish-phrase">taloon</span>?</span> <span class="note speakable-finnish">(Entä sinä? = 你呢？ Menetkö sinä = 你去吗？)</span></p>
+                <p><span class="speakable-finnish">A: En nyt. Minä juuri tulen <span class="finnish-phrase">talosta</span>.</span> <span class="note speakable-finnish">(En nyt = 现在不。 juuri = 刚刚)</span></p>
+            </div>
+        </div>
+
+        <!-- 故事卡片 2: 口袋 (Tasku) -->
+        <div class="story-card">
+            <h4><span class="speakable-finnish">Taskun tarina</span> (口袋的故事) - <span class="note speakable-finnish">(tasku = 口袋)</span></h4>
+            <div class="story-step">
+                <img src="https://images.pexels.com/photos/583848/pexels-photo-583848.jpeg?auto=compress&cs=tinysrgb&w=300" alt="手把钥匙放进口袋">
+                <div class="story-step-content">
+                    <p><strong>1. 放进去！</strong> 我把我的钥匙 (<span class="speakable-finnish">minun avain</span>) 放进口袋：</p>
+                    <p class="example-sentence"><span class="speakable-finnish">Minä laitan avaimen <span class="finnish-phrase">taskuun</span>.</span> <span class="note speakable-finnish">(laitan = 我放)</span></p>
+                    <p class="chinese-sense">感知：我 把钥匙 放<span style="text-decoration: underline;">进</span> 口袋<span class="highlight">里</span>。（<span class="finnish-phrase speakable-finnish">taskuun</span>，听起来是不是像钥匙“嗖”地一下滑进了那个小小的封闭空间？）</p>
+                </div>
+            </div>
+            <div class="story-step">
+                <img src="https://images.pexels.com/photos/4210610/pexels-photo-4210610.jpeg?auto=compress&cs=tinysrgb&w=300" alt="钥匙在口袋里">
+                <div class="story-step-content">
+                    <p><strong>2. 在里面！</strong> 现在我的钥匙在口袋里了：</p>
+                    <p class="example-sentence"><span class="speakable-finnish">Minun avain on <span class="finnish-phrase">taskussa</span>.</span></p>
+                    <p class="chinese-sense">感知：我的钥匙 <span style="text-decoration: underline;">在</span> 口袋<span class="highlight">里</span>。（<span class="finnish-phrase speakable-finnish">taskussa</span>，钥匙被口袋这个“容器”稳稳地“包裹”着。）</p>
+                </div>
+            </div>
+            <div class="story-step">
+                <img src="https://images.pexels.com/photos/6112010/pexels-photo-6112010.jpeg?auto=compress&cs=tinysrgb&w=300" alt="手从口袋拿出钥匙">
+                <div class="story-step-content">
+                    <p><strong>3. 拿出来！</strong> 我从口袋里拿出钥匙：</p>
+                    <p class="example-sentence"><span class="speakable-finnish">Minä otan avaimen <span class="finnish-phrase">taskusta</span>.</span> <span class="note speakable-finnish">(otan = 我拿)</span></p>
+                    <p class="chinese-sense">感知：我 <span style="text-decoration: underline;">从</span> 口袋<span class="highlight">里</span> 拿出钥匙。（<span class="finnish-phrase speakable-finnish">taskusta</span>，钥匙从那个封闭空间“释放”出来了。）</p>
+                </div>
+            </div>
+             <div class="usage-example">
+                <h4>简单日常怎么用？</h4>
+                <p><span class="speakable-finnish">A: Missä sinun puhelin on?</span> <span class="note speakable-finnish">(puhelin = 手机)</span></p>
+                <p><span class="speakable-finnish">B: Se on minun <span class="finnish-phrase">taskussa</span>. Laitatko sinä sinun lompakon <span class="finnish-phrase">taskuun</span>?</span> <span class="note speakable-finnish">(se=它, lompakko=钱包)</span></p>
+                <p><span class="speakable-finnish">A: Kyllä, kiitos. Sitten minä otan sen <span class="finnish-phrase">taskusta</span>.</span></p>
+            </div>
+        </div>
+
+        <!-- 故事卡片 3: 汽车 (Auto) -->
+        <div class="story-card">
+            <h4><span class="speakable-finnish">Auton tarina</span> (汽车的故事) - <span class="note speakable-finnish">(auto = 汽车)</span></h4>
+            <div class="story-step">
+                <img src="https://images.pexels.com/photos/1637859/pexels-photo-1637859.jpeg?auto=compress&cs=tinysrgb&w=300" alt="一个人走向汽车准备上车">
+                <div class="story-step-content">
+                    <p><strong>1. 上车/进去！</strong> 我要去车里：</p>
+                    <p class="example-sentence"><span class="speakable-finnish">Minä menen <span class="finnish-phrase">autoon</span>.</span></p>
+                    <p class="chinese-sense">感知：我 <span style="text-decoration: underline;">走进</span> 汽车<span class="highlight">里</span>。（<span class="finnish-phrase speakable-finnish">autoon</span>，一个“进入车辆内部”的动作。）</p>
+                </div>
+            </div>
+            <div class="story-step">
+                <img src="https://images.pexels.com/photos/116675/pexels-photo-116675.jpeg?auto=compress&cs=tinysrgb&w=300" alt="一个人坐在汽车驾驶座">
+                <div class="story-step-content">
+                    <p><strong>2. 在车里！</strong> 我现在坐在车里了：</p>
+                    <p class="example-sentence"><span class="speakable-finnish">Minä olen <span class="finnish-phrase">autossa</span>.</span></p>
+                    <p class="chinese-sense">感知：我 <span style="text-decoration: underline;">在</span> 汽车<span class="highlight">里</span>。（<span class="finnish-phrase speakable-finnish">autossa</span>，被汽车这个移动的“容器”包裹着。）</p>
+                </div>
+            </div>
+            <div class="story-step">
+                <img src="https://images.pexels.com/photos/3764999/pexels-photo-3764999.jpeg?auto=compress&cs=tinysrgb&w=300" alt="一个人从汽车里出来">
+                <div class="story-step-content">
+                    <p><strong>3. 下车/出来！</strong> 我从车里出来：</p>
+                    <p class="example-sentence"><span class="speakable-finnish">Minä tulen <span class="finnish-phrase">autosta</span>.</span></p>
+                    <p class="chinese-sense">感知：我 <span style="text-decoration: underline;">从</span> 汽车<span class="highlight">里</span> 出来。（<span class="finnish-phrase speakable-finnish">autosta</span>，从车辆内部“出来”的动作。）</p>
+                </div>
+            </div>
+            <div class="usage-example">
+                <h4>简单日常怎么用？</h4>
+                <p><span class="speakable-finnish">A: Menetkö sinä <span class="finnish-phrase">autoon</span> nyt?</span></p>
+                <p><span class="speakable-finnish">B: Kyllä, minä olen jo <span class="finnish-phrase">autossa</span>! Missä sinä olet?</span></p>
+                <p><span class="speakable-finnish">A: Minä tulen <span class="finnish-phrase">talosta</span>. Minä haen minun laukun <span class="finnish-phrase">autosta</span>.</span> <span class="note speakable-finnish">(haen=我去取, minun laukun=我的包)</span></p>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+    
+    <section id="simple-interaction-practice">
+        <h2>💡 初步互动：听音辨“封闭空间”的进出在</h2>
+        <div class="story-card">
+            <p>现在，我们来做个小小的听力练习。我会播放一个芬兰词，请你根据听到的“尾音感觉”，判断它描述的是“跑进去”、“在里面”还是“钻出来”的动作或状态。</p>
+            <div style="text-align:center; margin: 20px 0;">
+                <button class="action-button" onclick="playRandomLocationWord()">播放下一个芬兰词</button>
+            </div>
+            <p style="text-align:center; font-size: 1.5em; color: #2980b9; margin-bottom:20px;" id="played-word-display">- - -</p>
+            <div class="interactive-choice" style="text-align: center;">
+                <button onclick="checkSpatialAnswer('in')">感觉是“跑<span class="highlight">进</span>去” <span class="note speakable-finnish">(esim. taloon)</span></button>
+                <button onclick="checkSpatialAnswer('on')">感觉是“在<span class="highlight">里</span>面” <span class="note speakable-finnish">(esim. talossa)</span></button>
+                <button onclick="checkSpatialAnswer('out')">感觉是“钻<span class="highlight">出</span>来” <span class="note speakable-finnish">(esim. talosta)</span></button>
+            </div>
+            <div id="feedback-area-spatial" class="feedback-area"></div>
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="personal-container-table">
+        <h2>🎯【学习者现实场景】你每天都在接触这些“容器” (第一/二人称版)</h2>
+        <div class="story-card">
+            <p>非常好！你已经通过“微故事”对一些常用“容器”的空间表达有了初步印象。现在，让我们把这些表达和你更熟悉、每天都会接触到的物品和地点联系起来！再次注意例句中如何自然地使用 <span class="speakable-finnish">Minä</span> (我) 和 <span class="speakable-finnish">Sinä</span> (你)。</p>
+            <table class="immersion-table">
+                <thead>
+                    <tr>
+                        <th>容器 (<span class="speakable-finnish">Asia</span>)</th>
+                        <th>在里面 (<span class="finnish-phrase speakable-finnish">-ssa/-ssä</span> 感)</th>
+                        <th>放进/去到 (<span class="finnish-phrase speakable-finnish">-Vn/-hVn/-seen</span> 感)</th>
+                        <th>拿出/从...出来 (<span class="finnish-phrase speakable-finnish">-sta/-stä</span> 感)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>书包</strong><br>(<span class="speakable-finnish">laukku</span>)</td>
+                        <td><span class="speakable-finnish">Minun kirja on <span class="finnish-phrase">laukussa</span>.</span><br><span class="note speakable-finnish">Sinun puhelin on <span class="finnish-phrase">laukussa</span>.</span></td>
+                        <td><span class="speakable-finnish">Minä laitan avaimen <span class="finnish-phrase">laukkuun</span>.</span><br><span class="note speakable-finnish">Sinä laitat lompakon <span class="finnish-phrase">laukkuun</span>.</span></td>
+                        <td><span class="speakable-finnish">Minä otan kirjan <span class="finnish-phrase">laukusta</span>.</span><br><span class="note speakable-finnish">Sinä otat kynän <span class="finnish-phrase">laukusta</span>.</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>冰箱</strong><br>(<span class="speakable-finnish">jääkaappi</span>)</td>
+                        <td><span class="speakable-finnish">Maito on <span class="finnish-phrase">jääkaapissa</span>.</span><br><span class="note speakable-finnish">Sinun juoma on <span class="finnish-phrase">jääkaapissa</span>. <span class="note speakable-finnish">(juoma=饮料)</span></span></td>
+                        <td><span class="speakable-finnish">Minä laitan ruoan <span class="finnish-phrase">jääkaappiin</span>.</span><br><span class="note speakable-finnish">Sinä laitat hedelmät <span class="finnish-phrase">jääkaappiin</span>. <span class="note speakable-finnish">(hedelmät=水果复数)</span></span></td>
+                        <td><span class="speakable-finnish">Minä otan voin <span class="finnish-phrase">jääkaapista</span>.</span><br><span class="note speakable-finnish">Sinä otat jogurtin <span class="finnish-phrase">jääkaapista</span>. <span class="note speakable-finnish">(jogurtti=酸奶)</span></span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>家</strong><br>(<span class="speakable-finnish">koti</span>)</td>
+                        <td><span class="speakable-finnish">Minä olen <span class="finnish-phrase">kotona</span>.</span><br><span class="note speakable-finnish">Sinä olet <span class="finnish-phrase">kotona</span> myös.</span></td>
+                        <td><span class="speakable-finnish">Minä menen <span class="finnish-phrase">kotiin</span>.</span><br><span class="note speakable-finnish">Sinä menet <span class="finnish-phrase">kotiin</span> illalla. <span class="note speakable-finnish">(illalla=晚上)</span></span></td>
+                        <td><span class="speakable-finnish">Minä tulen <span class="finnish-phrase">kotoa</span>.</span><br><span class="note speakable-finnish">Sinä tulet <span class="finnish-phrase">kotoa</span> aikaisin. <span class="note speakable-finnish">(aikaisin=早)</span></span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>商店</strong><br>(<span class="speakable-finnish">kauppa</span>)</td>
+                        <td><span class="speakable-finnish">Minä olen <span class="finnish-phrase">kaupassa</span>.</span><br><span class="note speakable-finnish">Sinä ostat leipää <span class="finnish-phrase">kaupassa</span>. <span class="note speakable-finnish">(ostat=你买)</span></span></td>
+                        <td><span class="speakable-finnish">Minä menen <span class="finnish-phrase">kauppaan</span>.</span><br><span class="note speakable-finnish">Menetkö sinä <span class="finnish-phrase">kauppaan</span> tänään? <span class="note speakable-finnish">(tänään=今天)</span></span></td>
+                        <td><span class="speakable-finnish">Minä tulen <span class="finnish-phrase">kaupasta</span>.</span><br><span class="note speakable-finnish">Sinä tulet <span class="finnish-phrase">kaupasta</span> kassin kanssa. <span class="note speakable-finnish">(kassi=购物袋, kanssa=和...一起)</span></span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>学校</strong><br>(<span class="speakable-finnish">koulu</span>)</td>
+                        <td><span class="speakable-finnish">Minä olen <span class="finnish-phrase">koulussa</span>.</span><br><span class="note speakable-finnish">Sinun lapsi on <span class="finnish-phrase">koulussa</span>. <span class="note speakable-finnish">(lapsi=孩子)</span></span></td>
+                        <td><span class="speakable-finnish">Minä menen <span class="finnish-phrase">kouluun</span>.</span><br><span class="note speakable-finnish">Sinä menet <span class="finnish-phrase">kouluun</span> bussilla. <span class="note speakable-finnish">(bussilla=乘公交车)</span></span></td>
+                        <td><span class="speakable-finnish">Minä tulen <span class="finnish-phrase">koulusta</span>.</span><br><span class="note speakable-finnish">Sinä tulet <span class="finnish-phrase">koulusta</span> pyörällä. <span class="note speakable-finnish">(pyörällä=骑自行车)</span></span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="note"><strong>观察提示：</strong> 再次提醒，“家 (<span class="speakable-finnish">koti</span>)”的说法比较特别！对于其他词，你是不是开始感觉到那些表示“在里面”、“进去”、“出来”的“尾音”了呢？多听多模仿，这种感觉会越来越清晰！</p>
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="language-bleeding-plan-laukku">
+        <h2>🧪【语言出血】“书包空间”三日植入计划</h2>
+        <div class="practice-plan-card">
+            <ul class="task-list">
+                <li>
+                    <h5><span class="speakable-finnish">📆 第1日：感知“在里面” (<span class="finnish-phrase speakable-finnish">-ssa</span> 感)</span></h5>
+                    <ul>
+                        <li><span class="speakable-finnish">拿出你的书包。看着它，对自己说：“Minun avain on ehkä <span class="finnish-phrase">laukussa</span>.” (我的钥匙可能在书包里。 <span class="note speakable-finnish">ehkä=也许</span>)</span></li>
+                        <li><span class="speakable-finnish">把你的书放进书包里。边做动作边对自己说：“Nyt minun kirja on <span class="finnish-phrase">laukussa</span>.” (现在我的书在书包里了。)</span></li>
+                        <li><span class="speakable-finnish">如果朋友问你：“Missä sinun puhelin on?” (你的手机在哪？) 试着回答：“Minun puhelin on <span class="finnish-phrase">laukussa</span>.”</span></li>
+                    </ul>
+                    <p class="note">🧠 语言出血提示：“<span class="speakable-finnish">laukussa</span>”这个说法，整体上就传递了“东西在书包里”的信息。感受那个被书包“包裹”的状态。</p>
+                </li>
+                <li>
+                    <h5><span class="speakable-finnish">📆 第2日：感知“进入动作” (<span class="finnish-phrase speakable-finnish">-Vn/-seen</span> 感) 与 “出来动作” (<span class="finnish-phrase speakable-finnish">-sta</span> 感)</span></h5>
+                    <ul>
+                        <li><span class="speakable-finnish">准备出门，把你的钱包放进书包里。对自己说：“Minä laitan lompakon <span class="finnish-phrase">laukkuun</span>.”</span></li>
+                        <li><span class="speakable-finnish">需要用笔了，从书包里拿出来。对自己说：“Minä otan kynän <span class="finnish-phrase">laukusta</span>.”</span></li>
+                        <li><span class="speakable-finnish">想象一下，你提醒朋友：“Sinä voit laittaa sinun vesipullon <span class="finnish-phrase">laukkuun</span>.” (你可以把你的水瓶放进包里。 <span class="note speakable-finnish">vesipullo=水瓶</span>)</span></li>
+                        <li><span class="speakable-finnish">朋友从他/她的包里拿出零食：“Sinä otat herkut <span class="finnish-phrase">laukusta</span>!” (你从包里拿出好吃的！<span class="note speakable-finnish">herkut=零食/美味</span>)</span></li>
+                    </ul>
+                    <p class="note">🧠 语言出血提示：感受“<span class="speakable-finnish">laukkuun</span>”这个说法中“投入”的动作感，和“<span class="speakable-finnish">laukusta</span>”中“取出/离开”的动作感。它们的声音是不是和“<span class="speakable-finnish">laukussa</span>”不一样？</p>
+                </li>
+                <li>
+                    <h5><span class="speakable-finnish">📆 第3日：语言出血实战（书包空间+学校）</span></h5>
+                    <ul>
+                        <li><span class="speakable-finnish">到学校，从书包拿出课本 → 对自己说：“Minä otan kirjan <span class="finnish-phrase">laukusta</span>. Nyt minä olen <span class="finnish-phrase">koulussa</span>.”</span></li>
+                        <li><span class="speakable-finnish">朋友问：“Missä sinun eväät ovat?” (你的午餐便当在哪？ <span class="note speakable-finnish">eväät=午餐便当/点心</span>) → 回应：“Minun eväät ovat <span class="finnish-phrase">laukussa</span>.”</span></li>
+                        <li><span class="speakable-finnish">放学离开学校，把书本放回书包 → 说：“Minä laitan kirjat <span class="finnish-phrase">laukkuun</span>. Minä tulen <span class="finnish-phrase">koulusta</span> ja menen <span class="finnish-phrase">kotiin</span>.”</span></li>
+                        <li><span class="speakable-finnish">被问：“Mistä sinä tulet?” (你从哪里来？) → 回应：“Minä tulen <span class="finnish-phrase">koulusta</span>. Minun tavarat ovat <span class="finnish-phrase">laukussa</span>.” <span class="note speakable-finnish">(tavarat=东西)</span></span></li>
+                    </ul>
+                    <p class="note">🧠 语言出血提示：每次你和书包互动时，都试着用这些芬兰语的“声音感觉”来描述发生了什么。你正在把语言和你的真实动作绑定起来！</p>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="cognitive-bleeding-supermarket">
+        <h2>🧬【维度一·认知出血】超市购物中的“容器”空间感</h2>
+        <div class="cognitive-bleeding-card">
+            <p>让我们以“超市”(<span class="speakable-finnish">kauppa</span>) 和 “冰箱” (<span class="speakable-finnish">jääkaappi</span>) 为例，再次感受这些“封闭容器”的空间表达如何融入你的购物体验：</p>
+            <table class="immersion-table">
+                <thead>
+                    <tr>
+                        <th>你的中文感知 / 你的动作</th>
+                        <th>对应的芬兰语表达</th>
+                        <th>更深层的感知方式 (声音的“意义”)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>“我现在就在超市里面逛呢。”</td>
+                        <td><span class="speakable-finnish">Minä olen <span class="finnish-phrase">kaupassa</span>.</span></td>
+                        <td>听到 <span class="finnish-phrase speakable-finnish">kaupassa</span>，感觉自己被超市这个大空间“包裹”着。</td>
+                    </tr>
+                    <tr>
+                        <td>“我正朝着超市走，要进去了！”</td>
+                        <td><span class="speakable-finnish">Minä menen <span class="finnish-phrase">kauppaan</span>.</span></td>
+                        <td>听到 <span class="finnish-phrase speakable-finnish">kauppaan</span>，感觉到一个“进入”超市内部的动作。</td>
+                    </tr>
+                    <tr>
+                        <td>“我刚从超市买完东西出来。”</td>
+                        <td><span class="speakable-finnish">Minä tulen <span class="finnish-phrase">kaupasta</span>.</span></td>
+                        <td>听到 <span class="finnish-phrase speakable-finnish">kaupasta</span>，感觉到一个“离开”超市空间的动作。</td>
+                    </tr>
+                    <tr>
+                        <td>“牛奶好好地待在冰箱里面。”</td>
+                        <td><span class="speakable-finnish">Maito on <span class="finnish-phrase">jääkaapissa</span>.</span></td>
+                        <td>听到 <span class="finnish-phrase speakable-finnish">jääkaapissa</span>，感觉牛奶被冰箱这个“容器”稳稳地容纳。</td>
+                    </tr>
+                    <tr>
+                        <td>“我要从冰箱里把牛奶拿出来。”</td>
+                        <td><span class="speakable-finnish">Minä otan maidon <span class="finnish-phrase">jääkaapista</span>.</span></td>
+                        <td>听到 <span class="finnish-phrase speakable-finnish">jääkaapista</span>，感觉冰箱正在“释放”牛奶。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="cognitive-leap-summary-dim1">
+        <h2>🌌【维度一·语言宇宙出血】初步认知跃迁 (含术语锚定)</h2>
+        <div class="summary-card"> 
+            <p>通过这些具体的“微故事”、生活场景和“语言出血”练习，你的大脑可能已经开始对这些“封闭容器”的空间表达有了一些奇妙的“声音感觉”：</p>
+            <ul class="final-summary-list">
+                <li>当你感觉到或想表达“<strong>在...里面</strong>”这种被“吞没”、被“包裹”的静态感觉时，芬兰语词的尾巴听起来常常像... <span class="finnish-phrase speakable-finnish">-ssa</span> 或 <span class="finnish-phrase speakable-finnish">-ssä</span> (比如 <span class="speakable-finnish">talossa, laukussa</span>)。<span class="note">在芬兰语语法中，这种表达“在...里面”状态的“尾巴”或形式，我们称之为 **<span class="speakable-finnish">inessiivi</span> (Inessive case)**。</span></li>
+                <li>当你感觉到或想表达“<strong>到...里面去</strong>”这种“跨越边界”、“门打开”的进入动作感时，芬兰语词的尾巴听起来常常像... <span class="finnish-phrase speakable-finnish">-Vn</span> (V代表元音) 或 <span class="finnish-phrase speakable-finnish">-seen</span> (比如 <span class="speakable-finnish">taloon, laukkuun</span>)。<span class="note">这种表达“到...里面去”动作的“尾巴”或形式，我们称之为 **<span class="speakable-finnish">illatiivi</span> (Illative case)**。</span></li>
+                <li>当你感觉到或想表达“<strong>从...里面出来</strong>”这种“松开”、“释放”、“离开容器”的动作感时，芬兰语词的尾巴听起来常常像... <span class="finnish-phrase speakable-finnish">-sta</span> 或 <span class="finnish-phrase speakable-finnish">-stä</span> (比如 <span class="speakable-finnish">talosta, laukusta</span>)。<span class="note">而这种表达“从...里面出来”动作的“尾巴”或形式，则被称为 **<span class="speakable-finnish">elatiivi</span> (Elative case)**。</span></li>
+            </ul>
+            <p class="note speakable-finnish">Nämä nimet, <span class="finnish-phrase">inessiivi</span>, <span class="finnish-phrase">illatiivi</span> ja <span class="finnish-phrase">elatiivi</span>, ovat vain viitteitä. Tärkeintä on tunne!</p>
+            <p class="note">(这些名称，inessiivi, illatiivi 和 elatiivi，只是参考标记。最重要的是你的感觉！)</p>
+            <p>这些“<span class="highlight">声音感觉</span>”不是抽象的语法规则，它们是你通过**模仿和体验真实的生活动作**而获得的语言直觉！</p>
+            <p>就像你说“我把书放进包里”时，你不会去想“进”是什么词性，你只是在描述一个动作。芬兰语的这些“尾巴变化”也是一样，它们是语言与你身体行为和空间感知的自然融合。</p>
+            <p><strong>下一维度：</strong>我们将从“封闭的里面”走到“开放的表面”，去感受芬兰语如何描述“在桌子上”、“到地板上去”等新的空间故事！</p>
+        </div>
+    </section>
+
+
+<script>
+    const finnishLang = 'fi-FI';
+
+    function debugLog(message) {
+        const output = document.getElementById('debug-output');
+        if (output && output.innerHTML !== undefined) {
+            const time = new Date().toLocaleTimeString();
+            output.innerHTML += `[${time}] ${message}<br>`;
+            output.scrollTop = output.scrollHeight;
+        }
+    }
+
+    function testBasicTTS() {
+        debugLog('开始测试基本TTS功能...');
+        if (!('speechSynthesis' in window)) {
+            debugLog('❌ 错误：浏览器不支持语音合成API');
+            alert('您的浏览器不支持语音合成功能。');
+            return;
+        }
+        debugLog('✅ 浏览器支持语音合成API');
+        const utterance = new SpeechSynthesisUtterance('Hello World');
+        utterance.onstart = () => debugLog('✅ 英语测试开始播放');
+        utterance.onend = () => debugLog('✅ 英语测试播放完成');
+        utterance.onerror = (event) => debugLog('❌ 英语测试错误: ' + event.error);
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function testFinnishTTSModule3_Dim1_Terms() { 
+        debugLog('开始测试芬兰语TTS功能 (模块3.1术语)...');
+        const utterance = new SpeechSynthesisUtterance('Minä laitan kirjan laukkuun. Se on inessiivi.');
+        utterance.lang = finnishLang;
+        utterance.onstart = () => debugLog('✅ 芬兰语(M3.1 Terms)测试开始播放');
+        utterance.onend = () => debugLog('✅ 芬兰语(M3.1 Terms)测试播放完成');
+        utterance.onerror = (event) => debugLog('❌ 芬兰语(M3.1 Terms)测试错误: ' + event.error);
+        window.speechSynthesis.speak(utterance);
+    }
+     function listVoices() {
+        debugLog('正在获取可用语音列表...');
+        const voices = window.speechSynthesis.getVoices();
+        if (voices.length === 0) {
+            debugLog('⚠️ 未找到任何语音，语音可能还在加载中。');
+            window.speechSynthesis.onvoiceschanged = () => {
+                debugLog('语音列表已更新，重新获取...');
+                const updatedVoices = window.speechSynthesis.getVoices();
+                if (updatedVoices.length === 0 && voices.length === 0) { 
+                    debugLog('⚠️ 更新后仍未找到任何语音。'); return;
+                }
+                if (updatedVoices.length > 0) logVoiceList(updatedVoices);
+            };
+            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1 || (navigator.userAgent.toLowerCase().indexOf('safari') > -1 && navigator.userAgent.toLowerCase().indexOf('chrome') === -1) ) {
+                setTimeout(() => { if(window.speechSynthesis.getVoices().length > 0) listVoices(); }, 500);
+            }
+            return;
+        }
+        logVoiceList(voices);
+    }
+     function logVoiceList(voices) {
+        debugLog(`找到 ${voices.length} 个可用语音:`);
+        voices.forEach((voice, index) => {
+            const isDefault = voice.default ? ' (默认)' : '';
+            debugLog(`${index + 1}. ${voice.name} (${voice.lang})${isDefault}`);
+        });
+        const finnishVoices = voices.filter(voice =>
+            voice.lang.toLowerCase().startsWith('fi') ||
+            voice.name.toLowerCase().includes('finnish') ||
+            voice.name.toLowerCase().includes('suomi')
+        );
+        if (finnishVoices.length > 0) {
+            debugLog(`✅ 找到 ${finnishVoices.length} 个芬兰语语音:`);
+            finnishVoices.forEach(voice => {
+                debugLog(`  - ${voice.name} (${voice.lang})`);
+            });
+        } else {
+            debugLog('❌ 未找到芬兰语语音。');
+        }
+    }
+
+    function removeDebugSection() {
+        const debugSection = document.querySelector('.debug-section');
+        if (debugSection) {
+            debugSection.style.display = 'none';
+            debugLog('调试区域已隐藏');
+        }
+    }
+
+    let isSpeaking = false;
+    function speakText(text, lang = finnishLang) {
+        if (!('speechSynthesis' in window)) return;
+        if (isSpeaking) {
+            window.speechSynthesis.cancel();
+            setTimeout(() => startSpeaking(text, lang), 50);
+        } else {
+            startSpeaking(text, lang);
+        }
+    }
+
+    function startSpeaking(text, lang) {
+        isSpeaking = true;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        const voices = window.speechSynthesis.getVoices();
+        let selectedVoice = null;
+        if (lang.toLowerCase().startsWith('fi')) {
+            selectedVoice = voices.find(voice => voice.lang.toLowerCase() === 'fi-fi') ||
+                            voices.find(voice => voice.lang.toLowerCase().startsWith('fi')) ||
+                            voices.find(voice => voice.name.toLowerCase().includes('finnish') || voice.name.toLowerCase().includes('suomi'));
+        }
+        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.onend = () => { isSpeaking = false; };
+        utterance.onerror = (event) => {
+            debugLog(`❌ 播放错误: ${event.error} (文本: "${text}")`);
+            isSpeaking = false;
+        };
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function addTTSButton(element, textToSpeak) {
+        let cleanedText = textToSpeak.replace(/\s*\(.*?\)\s*/g, '').trim(); 
+        cleanedText = cleanedText.replace(/（.*?）/g, '').trim();
+        cleanedText = cleanedText.replace(/\[.*?\]/g, '').trim(); 
+
+        if (!cleanedText || cleanedText === '') return;
+        
+        const existingButton = Array.from(element.childNodes).find(node => node.nodeType === Node.ELEMENT_NODE && node.classList.contains('tts-button') && node.title === '播放: ' + cleanedText);
+        if (existingButton) return;
+
+        const button = document.createElement('button');
+        button.className = 'tts-button';
+        button.innerHTML = '🔊';
+        button.title = '播放: ' + cleanedText;
+        button.setAttribute('aria-label', '播放音频: ' + cleanedText);
+        button.onclick = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            speakText(cleanedText);
+        };
+        
+        if (element.tagName === 'SPAN' && (element.classList.contains('speakable-finnish') || element.classList.contains('finnish-phrase'))) {
+            if (!element.querySelector('.tts-button')) {
+                element.appendChild(button);
+            }
+        } else {
+            let insertBeforeNode = null;
+            for (let i = 0; i < element.childNodes.length; i++) {
+                const child = element.childNodes[i];
+                if (child.nodeType === Node.ELEMENT_NODE && (child.classList.contains('note') || child.classList.contains('chinese-sense'))) {
+                    insertBeforeNode = child;
+                    break;
+                }
+            }
+            if (insertBeforeNode) {
+                element.insertBefore(button, insertBeforeNode);
+            } else {
+                element.appendChild(button);
+            }
+        }
+    }
+    
+    function initializeTTSForPage() {
+        debugLog('🚀 初始化页面TTS按钮 (模块三·维度一 封闭空间 术语锚定版)...');
+        
+        document.querySelectorAll('.speakable-finnish, .finnish-phrase').forEach(span => {
+            const text = span.textContent.trim();
+            if (text && !span.querySelector('.tts-button')) {
+                 addTTSButton(span, text);
+            }
+        });
+
+        const sentenceLevelContainers = [
+            ...document.querySelectorAll('.story-step-content p.example-sentence'), 
+            ...document.querySelectorAll('.usage-example p'),
+            ...document.querySelectorAll('.task-list ul li'),
+            ...document.querySelectorAll('#personal-container-table td'), 
+            ...document.querySelectorAll('#cognitive-bleeding-supermarket td:nth-child(2)'), 
+            ...document.querySelectorAll('.final-summary-list li'),
+            ...document.querySelectorAll('.summary-card p'),
+            ...document.querySelectorAll('.summary-card ul li'),
+            ...document.querySelectorAll('#intro-dimension1 .usage-example p'),
+            ...document.querySelectorAll('#intro-dimension1 .concept-map p'),
+            ...document.querySelectorAll('#simple-interaction-practice .story-card p:not(#played-word-display)'),
+            ...document.querySelectorAll('.interactive-choice button') 
+        ];
+
+        sentenceLevelContainers.forEach(el => {
+            if (el.classList.contains('speakable-finnish') || el.classList.contains('finnish-phrase')) return;
+            if (el.querySelector('.tts-button')) { 
+                let hasOwnButton = false;
+                for(let child of el.childNodes){
+                    if(child.nodeType === Node.ELEMENT_NODE && child.classList.contains('tts-button')){
+                        hasOwnButton = true;
+                        break;
+                    }
+                }
+                if(hasOwnButton || el.querySelector('.speakable-finnish .tts-button')) return;
+            }
+            if (el.closest('thead')) return;
+
+            let textToSpeak = "";
+            Array.from(el.childNodes).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    textToSpeak += node.textContent;
+                } else if (node.nodeType === Node.ELEMENT_NODE &&
+                           !node.classList.contains('note') &&
+                           !node.classList.contains('chinese-sense') &&
+                           !node.classList.contains('tts-button') &&
+                           !node.classList.contains('speakable-finnish') && 
+                           !node.classList.contains('finnish-phrase') &&
+                           !node.classList.contains('highlight') 
+                           ) {
+                    textToSpeak += node.textContent; 
+                }
+            });
+            textToSpeak = textToSpeak.trim();
+            
+            if (textToSpeak.length > 1 && textToSpeak.match(/[äöåÄÖÅ]/i)) {
+                addTTSButton(el, textToSpeak);
+            }
+        });
+        
+        document.querySelectorAll('.story-card h4, .task-list h5').forEach(header => { // For H4, H5 titles
+             if (!header.querySelector('.speakable-finnish') && !header.querySelector('.tts-button')) {
+                const speakableSpan = header.querySelector('span.speakable-finnish');
+                if (!speakableSpan) { 
+                    const text = header.textContent.trim().split('(')[0].trim(); 
+                    if (text.length > 1 && text.match(/[äöåÄÖÅ]/i)) {
+                        addTTSButton(header, text);
+                    }
+                }
+            }
+        });
+         // Add TTS to the main title h2 of sections
+        document.querySelectorAll('#intro-dimension1 h2, #spatial-stories-internal h3, #simple-interaction-practice h2, #personal-container-table h2, #language-bleeding-plan-laukku h2, #cognitive-bleeding-supermarket h2, #cognitive-leap-summary-dim1 h2, #module-completion-status h2').forEach(h => {
+            if (!h.querySelector('.tts-button')) {
+                const text = h.textContent.split('(')[0].trim(); // Get text before parenthesis
+                if (text.length > 1 && text.match(/[äöåÄÖÅ]/i)) {
+                    addTTSButton(h, text);
+                }
+            }
+        });
+
+
+        debugLog('✅ 页面TTS按钮初始化完毕 (模块三·维度一 封闭空间 术语锚定版)');
+    }
+    
+    const spatialWords = [
+        { word: "taloon", type: "in", display: "taloon" },
+        { word: "talossa", type: "on", display: "talossa" },
+        { word: "talosta", type: "out", display: "talosta" },
+        { word: "kouluun", type: "in", display: "kouluun" },
+        { word: "koulussa", type: "on", display: "koulussa" },
+        { word: "koulusta", type: "out", display: "koulusta" },
+        { word: "kauppaan", type: "in", display: "kauppaan" },
+        { word: "kaupassa", type: "on", display: "kaupassa" },
+        { word: "kaupasta", type: "out", display: "kaupasta" },
+        { word: "autoon", type: "in", display: "autoon" },
+        { word: "autossa", type: "on", display: "autossa" },
+        { word: "autosta", type: "out", display: "autosta" },
+        { word: "laatikkoon", type: "in", display: "laatikkoon" },
+        { word: "laatikossa", type: "on", display: "laatikossa" },
+        { word: "laatikosta", type: "out", display: "laatikosta" }
+    ];
+    let currentSpatialWord = null;
+    const playedWordDisplay = document.getElementById('played-word-display');
+    const spatialFeedbackEl = document.getElementById('feedback-area-spatial');
+
+    function playRandomLocationWord() {
+        if (isSpeaking) window.speechSynthesis.cancel(); 
+        currentSpatialWord = spatialWords[Math.floor(Math.random() * spatialWords.length)];
+        if (playedWordDisplay) {
+            const displaySpanId = "playedWordSpan";
+            playedWordDisplay.innerHTML = `<span id="${displaySpanId}" class="finnish-phrase speakable-finnish">${currentSpatialWord.display}</span>`;
+            const newSpan = document.getElementById(displaySpanId);
+            if (newSpan && !newSpan.querySelector('.tts-button')) {
+                addTTSButton(newSpan, newSpan.textContent);
+            }
+        }
+        speakText(currentSpatialWord.word);
+        if (spatialFeedbackEl) {
+            spatialFeedbackEl.innerHTML = ""; 
+            spatialFeedbackEl.className = 'feedback-area';
+        }
+    }
+
+    function checkSpatialAnswer(selectedType) {
+        if (!currentSpatialWord) {
+            if (spatialFeedbackEl) spatialFeedbackEl.innerHTML = "Paina '播放下一个芬兰词' ensin!";
+            return;
+        }
+        let feedbackText = "";
+        if (selectedType === currentSpatialWord.type) {
+            feedbackText = `<span class="speakable-finnish">Oikein!</span> Sana <span class="finnish-phrase speakable-finnish">${currentSpatialWord.word}</span> tarkoittaa juuri sitä.`;
+            if (spatialFeedbackEl) spatialFeedbackEl.className = 'feedback-area correct';
+        } else {
+            feedbackText = `<span class="speakable-finnish">Ei ihan.</span> Sana <span class="finnish-phrase speakable-finnish">${currentSpatialWord.word}</span> ei tarkoita sitä. Yritä uudelleen!`;
+            if (spatialFeedbackEl) spatialFeedbackEl.className = 'feedback-area incorrect';
+        }
+        if (spatialFeedbackEl) {
+            spatialFeedbackEl.innerHTML = feedbackText;
+            spatialFeedbackEl.querySelectorAll('.speakable-finnish, .finnish-phrase').forEach(el => {
+                 if (!el.querySelector('.tts-button')) addTTSButton(el, el.textContent);
+            });
+            const mainFeedbackSpan = spatialFeedbackEl.querySelector('.speakable-finnish');
+            if (mainFeedbackSpan) speakText(mainFeedbackSpan.textContent.split('.')[0] + '.');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.speechSynthesis.getVoices().length === 0) {
+            window.speechSynthesis.onvoiceschanged = initializeTTSForPage;
+        } else {
+            initializeTTSForPage();
+        }
+        setTimeout(initializeTTSForPage, 200); 
+    });
+
+</script>
+</body>
+</html>
