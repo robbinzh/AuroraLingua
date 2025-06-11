@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>芬兰语融合挑战：需求与空间</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; line-height: 1.7; margin: 20px auto; max-width: 900px; padding: 0 20px; color: #333; background-color: #f9f9f9; }
+        h1, h2, h3, h4 { color: #2c3e50; }
+        h1 { text-align: center; margin-bottom: 35px; font-size: 2.2em; }
+        h2 { border-bottom: 2px solid #c0392b; padding-bottom: 12px; margin-top: 45px; font-size: 1.8em; color: #c0392b; } /* Fusion color: Red */
+        h3 { margin-top: 30px; font-size: 1.5em; color: #e74c3c; }
+        .intro-box, .scenario-card, .vocab-summary {
+            background-color: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .intro-box { border-left: 6px solid #c0392b; }
+        .scenario-card h3 .icon { margin-right: 10px; }
+        .dialogue { margin-top: 15px; border-left: 3px solid #f1c40f; padding-left: 15px; }
+        .dialogue-line { margin-bottom: 12px; }
+        .dialogue-line .speaker { font-weight: bold; color: #2980b9; } /* Blue for guide/other person */
+        .dialogue-line .learner { font-weight: bold; color: #27ae60; } /* Green for the learner */
+        .finnish-phrase { font-weight: bold; color: #c0392b; font-size: 1.1em; }
+        .note { font-size: 0.95em; color: #555; font-style: italic; display: block; margin-top: 4px; }
+        .tts-button { background: none; border: none; cursor: pointer; font-size: 1.2em; margin-left: 8px; padding: 0; display: inline-block; vertical-align: middle; color: #c0392b; }
+        .tts-button:hover { color: #a93226; opacity: 0.8; }
+        hr { border: 0; height: 1px; background-image: linear-gradient(to right, rgba(0,0,0,0), rgba(192,57,43,0.3), rgba(0,0,0,0)); margin: 40px 0; }
+        .cognitive-recap { background-color: #fdedec; border: 1px dashed #e74c3c; padding: 15px; border-radius: 5px; margin-top: 20px; }
+        .cognitive-recap ul { list-style-type: '💡'; padding-left: 25px; }
+        .vocab-summary table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .vocab-summary th, .vocab-summary td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        .vocab-summary thead { background-color: #f9e79f; }
+    </style>
+</head>
+<body>
+
+    <section id="fusion-challenge">
+        <h1>🚀【融合挑战】当“我想要”遇见“在哪里”</h1>
+        <div class="intro-box">
+            <p><span class="speakable-finnish">Hienoa!</span> 你已经掌握了表达需求（模块二）和定位空间（模块三）的超能力。现在，让我们把它们融合在一起，解决真实的生存问题！</p>
+            <p>在下面的三个场景中，你将不再是简单地回答问题，而是要完成一个从**“产生需求”**到**“满足需求”**的完整任务链。</p>
+        </div>
+
+        <div class="scenario-card">
+            <h3><span class="icon">☕</span> 场景一：在赫尔辛基市中心找一家特定的咖啡馆 (<span class="speakable-finnish">Kahvilan etsiminen</span>)</h3>
+            <p><strong>情境：</strong> 你在赫尔辛基的中央火车站 (<span class="finnish-phrase speakable-finnish">Rautatieasema</span>)，你的朋友推荐了一家叫做“Cafe Engel”的咖啡馆，据说它就在赫尔辛基大教堂 (<span class="finnish-phrase speakable-finnish">Tuomiokirkko</span>) 的旁边。你又渴又累，需要一杯咖啡。</p>
+            
+            <div class="dialogue">
+                <p><strong>(内心独白/自我对话)</strong></p>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä:</span> <span class="speakable-finnish">Minä olen nyt rautatieasemalla. Tarvitsen kahvia. Minä haluan mennä Cafe Engeliin.</span><span class="note">(我现在在火车站。我需要咖啡。我想要去Cafe Engel。)</span></div>
+                
+                <p><strong>(向路人问路)</strong></p>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä:</span> <span class="speakable-finnish">Anteeksi, voitko auttaa? Missä on Tuomiokirkko?</span><span class="note">(请问，你能帮忙吗？大教堂在哪里？)</span></div>
+                <div class="dialogue-line"><span class="speaker speakable-finnish">Ohikulkija (路人):</span> <span class="speakable-finnish">Se on tuolla, idässä. Mene vain suoraan eteenpäin.</span><span class="note">(它在那边，在东边。只管一直往前走。)</span></div>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä:</span> <span class="speakable-finnish">Kiitos! Onko se kaukana?</span><span class="note">(谢谢！它远吗？)</span></div>
+                <div class="dialogue-line"><span class="speaker speakable-finnish">Ohikulkija:</span> <span class="speakable-finnish">Ei, se on lähellä.</span><span class="note">(不，它很近。)</span></div>
+
+                <p><strong>(到达大教堂附近，寻找咖啡馆)</strong></p>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä (自言自语):</span> <span class="speakable-finnish">Okei, tässä on Tuomiokirkko. Missä kahvila on? Ahaa, se on Tuomiokirkon vieressä!</span><span class="note">(好的，这里是大教堂。咖啡馆在哪？啊哈，它在大教堂的旁边！)</span></div>
+
+                <p><strong>(在咖啡馆点单)</strong></p>
+                <div class="dialogue-line"><span class="speaker speakable-finnish">Myyjä (店员):</span> <span class="speakable-finnish">Hei, mitä saisi olla?</span><span class="note">(你好，想要点什么？)</span></div>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä:</span> <span class="speakable-finnish">Hei, minä haluan ison kahvin ja yhden korvapuustin, kiitos.</span><span class="note">(你好，我想要一大杯咖啡和一个肉桂卷，谢谢。)</span></div>
+                <div class="dialogue-line"><span class="speaker speakable-finnish">Myyjä:</span> <span class="speakable-finnish">Selvä. Tuleeko muuta?</span><span class="note">(好的。还要别的吗？)</span></div>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä:</span> <span class="speakable-finnish">Ei kiitos, en tarvitse muuta.</span><span class="note">(不了谢谢，我不需要别的了。)</span></div>
+            </div>
+            <div class="cognitive-recap">
+                <h4>认知出血分析：</h4>
+                <ul>
+                    <li><span class="speakable-finnish"><span class="finnish-phrase">Tarvitsen kahvia / Haluan mennä...</span>: 你运用了【模块二】表达“需要”和“想要”。</span></li>
+                    <li><span class="speakable-finnish"><span class="finnish-phrase">Missä on...? / idässä / lähellä</span>: 你运用了【模块三】询问位置、方向和相对远近。</span></li>
+                    <li><span class="speakable-finnish"><span class="finnish-phrase">Tuomiokirkon vieressä</span>: 你理解并运用了【模块三·维度五】最重要的 `genetiivi + postpositio` 结构来定位。</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="scenario-card">
+            <h3><span class="icon">🛒</span> 场景二：在超市里找黄油和面包 (<span class="speakable-finnish">Voin ja leivän etsiminen kaupassa</span>)</h3>
+            <p><strong>情境：</strong> 你在一家大超市 (<span class="finnish-phrase speakable-finnish">supermarket</span>) 里，你需要买黄油 (<span class="finnish-phrase speakable-finnish">voi</span>) 和黑麦面包 (<span class="finnish-phrase speakable-finnish">ruisleipä</span>) 做早餐。</p>
+            <div class="dialogue">
+                <p><strong>(进入超市，内心规划)</strong></p>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä:</span> <span class="speakable-finnish">Okei, minä olen kaupassa. Minä tarvitsen voita ja leipää aamiaiseksi.</span><span class="note">(好的，我在商店里。我需要黄油和面包做早餐。)</span></div>
+
+                <p><strong>(找不到黄油，向店员求助)</strong></p>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä:</span> <span class="speakable-finnish">Anteeksi, voitko auttaa? Minä etsin voita. Missä se on?</span><span class="note">(请问，你能帮忙吗？我正在找黄油。它在哪？)</span></div>
+                <div class="dialogue-line"><span class="speaker speakable-finnish">Myyjä (店员):</span> <span class="speakable-finnish">Voi on tuolla, maidon vieressä.</span><span class="note">(黄油在那边，牛奶的旁边。)</span></div>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä:</span> <span class="speakable-finnish">Ja missä maito on?</span><span class="note">(那牛奶在哪？)</span></div>
+                <div class="dialogue-line"><span class="speaker speakable-finnish">Myyjä:</span> <span class="speakable-finnish">Maito on kaupan takana, vasemmalla.</span><span class="note">(牛奶在商店的后面，在左边。)</span></div>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä:</span> <span class="speakable-finnish">Kiitos paljon!</span><span class="note">(非常感谢！)</span></div>
+
+                <p><strong>(找到黄油，现在找面包)</strong></p>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä (自言自语):</span> <span class="speakable-finnish">Hyvä, tässä on voi. Nyt minä tarvitsen ruisleipää.</span><span class="note">(好，这是黄油。现在我需要黑麦面包。)</span></div>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä (自言自语):</span> <span class="speakable-finnish">Ahaa, leipä on tuolla, hedelmien vastapäätä.</span><span class="note">(啊哈，面包在那边，水果的对面。)</span></div>
+                
+                <p><strong>(结账)</strong></p>
+                <div class="dialogue-line"><span class="speaker speakable-finnish">Kassa (收银员):</span> <span class="speakable-finnish">Hei!</span></div>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä:</span> <span class="speakable-finnish">Hei! Vain nämä, kiitos.</span><span class="note">(你好！就这些，谢谢。)</span></div>
+                <div class="dialogue-line"><span class="speaker speakable-finnish">Kassa:</span> <span class="speakable-finnish">Tarvitsetko kuittia?</span><span class="note">(你需要小票吗？)</span></div>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä:</span> <span class="speakable-finnish">En tarvitse, kiitos.</span><span class="note">(我不需要，谢谢。)</span></div>
+            </div>
+             <div class="cognitive-recap">
+                <h4>认知出血分析：</h4>
+                <ul>
+                    <li><span class="speakable-finnish"><span class="finnish-phrase">tarvitsen voita</span>: 再次巩固了【模块二】的“需要”表达。</span></li>
+                    <li><span class="speakable-finnish"><span class="finnish-phrase">kaupan takana, vasemmalla</span>: 融合了【模块三·维度三和五】，用建筑(`kauppa`)作为参照点，描述相对位置。</span></li>
+                    <li><span class="speakable-finnish"><span class="finnish-phrase">hedelmien vastapäätä</span>: 你理解了“水果(`hedelmät`)的对面”，这暗示了复数所有格，但在此阶段，你只需整体感知即可。</span></li>
+                    <li><span class="speakable-finnish"><span class="finnish-phrase">En tarvitse</span>: 熟练运用了【模块二】的否定句。</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="scenario-card">
+            <h3><span class="icon">➕</span> 场景三：在药店里表达需求和位置 (<span class="speakable-finnish">Apteekissa asiointi</span>)</h3>
+            <p><strong>情境：</strong> 你感觉有点头疼，需要去药店 (<span class="finnish-phrase speakable-finnish">apteekki</span>) 买止痛药 (<span class="finnish-phrase speakable-finnish">särkylääke</span>)。你还想顺便买一瓶水。</p>
+            <div class="dialogue">
+                <p><strong>(进入药店)</strong></p>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä (对药剂师):</span> <span class="speakable-finnish">Hei. Minä tarvitsen särkylääkettä. Minulla on päänsärky.</span><span class="note">(你好。我需要止痛药。我头疼。)</span></div>
+                <div class="dialogue-line"><span class="speaker speakable-finnish">Farmaseutti (药剂师):</span> <span class="speakable-finnish">Selvä. Tämä on hyvä. Tarvitsetko muuta?</span><span class="note">(好的。这个很好。你还需要别的吗？)</span></div>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä:</span> <span class="speakable-finnish">Kyllä, minä haluan myös yhden vesipullon.</span><span class="note">(是的，我还想要一瓶水。)</span></div>
+
+                <p><strong>(药剂师指明水的位置)</strong></p>
+                <div class="dialogue-line"><span class="speaker speakable-finnish">Farmaseutti:</span> <span class="speakable-finnish">Vesipullo on tuolla hyllyllä, kassojen vieressä.</span><span class="note">(水瓶在那边的货架上，收银台的旁边。)</span></div>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä:</span> <span class="speakable-finnish">Kiitos.</span></div>
+                
+                <p><strong>(找到水，准备付款)</strong></p>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä (自言自语):</span> <span class="speakable-finnish">Okei, lääke on tässä ja vesi on tässä. Minä menen kassalle.</span><span class="note">(好的，药在这里，水也在这里。我去收银台。)</span></div>
+                <div class="dialogue-line"><span class="speaker speakable-finnish">Kassa (收银员):</span> <span class="speakable-finnish">Hei.</span></div>
+                <div class="dialogue-line"><span class="learner speakable-finnish">Sinä:</span> <span class="speakable-finnish">Hei, maksan nämä.</span><span class="note">(你好，我付这些。)</span></div>
+            </div>
+             <div class="cognitive-recap">
+                <h4>认知出血分析：</h4>
+                <ul>
+                    <li><span class="speakable-finnish"><span class="finnish-phrase">Minulla on päänsärky</span>: 这是“在某人身上有某物”的表达，一个非常有用的新结构！</span></li>
+                    <li><span class="speakable-finnish"><span class="finnish-phrase">hyllyllä, kassojen vieressä</span>: 完美融合了【模块三·维度二】的表面格 (`-lla` 在货架上) 和【模块三·维度五】的位置关系。</span></li>
+                    <li><span class="speakable-finnish"><span class="finnish-phrase">menen kassalle</span>: 运用了【模块三·维度二】的去格 (`-lle` 去往收银台)。</span></li>
+                </ul>
+            </div>
+        </div>
+
+    </section>
+
+    <hr>
+    
+    <section class="vocab-summary">
+        <h3>📚 本次融合练习新增词汇</h3>
+        <p>为了让场景更真实，我们引入了以下几个高频新词。把它们加入你的词汇库吧！</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>芬兰语 (原形)</th>
+                    <th>中文意思</th>
+                    <th>在对话中的形式</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><span class="speakable-finnish">ohikulkija</span></td><td>路人</td><td><span class="speakable-finnish">Ohikulkija</span></td></tr>
+                <tr><td><span class="speakable-finnish">myyjä</span></td><td>店员</td><td><span class="speakable-finnish">Myyjä</span></td></tr>
+                <tr><td><span class="speakable-finnish">kassa</span></td><td>收银员 / 收银台</td><td><span class="speakable-finnish">Kassa, kassojen, kassalle</span></td></tr>
+                <tr><td><span class="speakable-finnish">farmaseutti</span></td><td>药剂师</td><td><span class="speakable-finnish">Farmaseutti</span></td></tr>
+                <tr><td><span class="speakable-finnish">korvapuusti</span></td><td>肉桂卷</td><td><span class="speakable-finnish">korvapuustin</span> (所有格)</td></tr>
+                <tr><td><span class="speakable-finnish">aamiainen</span></td><td>早餐</td><td><span class="speakable-finnish">aamiaiseksi</span> (状语)</td></tr>
+                <tr><td><span class="speakable-finnish">ruisleipä</span></td><td>黑麦面包</td><td><span class="speakable-finnish">ruisleipää</span> (部分格)</td></tr>
+                <tr><td><span class="speakable-finnish">särkylääke</span></td><td>止痛药</td><td><span class="speakable-finnish">särkylääkettä</span> (部分格)</td></tr>
+                <tr><td><span class="speakable-finnish">päänsärky</span></td><td>头痛</td><td><span class="speakable-finnish">päänsärky</span></td></tr>
+                <tr><td><span class="speakable-finnish">vesipullo</span></td><td>水瓶</td><td><span class="speakable-finnish">vesipullon</span> (所有格)</td></tr>
+                <tr><td><span class="speakable-finnish">hylly</span></td><td>货架</td><td><span class="speakable-finnish">hyllyllä</span> (在格)</td></tr>
+                <tr><td><span class="speakable-finnish">kuitti</span></td><td>小票，收据</td><td><span class="speakable-finnish">kuittia</span> (部分格)</td></tr>
+                 <tr><td><span class="speakable-finnish">suoraan eteenpäin</span></td><td>一直往前</td><td><span class="speakable-finnish">suoraan eteenpäin</span></td></tr>
+            </tbody>
+        </table>
+    </section>
+
+<script>
+    const finnishLang = 'fi-FI';
+    let isSpeaking = false;
+
+    function speakText(text, lang = finnishLang) {
+        if (!('speechSynthesis' in window)) return;
+        if (isSpeaking) { window.speechSynthesis.cancel(); setTimeout(() => startSpeaking(text, lang), 50); } 
+        else { startSpeaking(text, lang); }
+    }
+
+    function startSpeaking(text, lang) {
+        isSpeaking = true;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        const voices = window.speechSynthesis.getVoices();
+        let selectedVoice = voices.find(voice => voice.lang.toLowerCase() === 'fi-fi') || voices.find(voice => voice.lang.toLowerCase().startsWith('fi'));
+        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.onend = () => { isSpeaking = false; };
+        utterance.onerror = () => { isSpeaking = false; };
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function addTTSButton(element, textToSpeak) {
+        let cleanedText = textToSpeak.replace(/\s*\(.*?\)\s*/g, '').trim().replace(/（.*?）/g, '').trim().replace(/\[.*?\]/g, '').trim();
+        if (!cleanedText) return;
+        
+        if (element.querySelector('.tts-button')) return;
+
+        const button = document.createElement('button');
+        button.className = 'tts-button';
+        button.innerHTML = '🔊';
+        button.title = '播放: ' + cleanedText;
+        button.setAttribute('aria-label', '播放音频: ' + cleanedText);
+        button.onclick = (event) => { event.preventDefault(); event.stopPropagation(); speakText(cleanedText); };
+        
+        element.appendChild(button);
+    }
+
+    function initializeAllTTS() {
+        const elementsToMakeSpeakable = document.querySelectorAll('.speakable-finnish');
+        elementsToMakeSpeakable.forEach(el => {
+            const textContent = el.textContent.split('(')[0].split('（')[0].trim();
+            if (textContent && !el.querySelector('.tts-button')) {
+                addTTSButton(el, textContent);
+            }
+        });
+        
+        // Add to h-tags and other specific elements not containing .speakable-finnish
+        document.querySelectorAll('h1, h2, h3, h4, .intro-box p, .cognitive-recap ul li').forEach(container => {
+             if (container.querySelector('.speakable-finnish')) return;
+             const clone = container.cloneNode(true);
+             clone.querySelectorAll('.note, .tts-button, .icon').forEach(child => child.remove());
+             const textContent = clone.textContent.trim();
+             if (textContent && !container.querySelector('.tts-button') && textContent.match(/[a-zA-ZäöÄÖ]/)) {
+                 addTTSButton(container, textContent);
+             }
+        });
+
+        // Specifically for vocab table
+        document.querySelectorAll('.vocab-summary td').forEach(td => {
+             if (!td.querySelector('.speakable-finnish') && !td.querySelector('.tts-button')) {
+                 const text = td.textContent.trim();
+                 if(text.match(/[a-zA-ZäöÄÖ]/)){
+                     addTTSButton(td, text);
+                 }
+             }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.speechSynthesis.getVoices().length === 0) {
+            window.speechSynthesis.onvoiceschanged = initializeAllTTS;
+        } else {
+            initializeAllTTS();
+        }
+        setTimeout(initializeAllTTS, 300);
+    });
+</script>
+</body>
+</html>

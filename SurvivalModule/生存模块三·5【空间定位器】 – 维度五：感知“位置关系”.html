@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>芬兰语模块三·维度五：感知“位置关系” (SVG互动TTS)</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; line-height: 1.7; margin: 20px auto; max-width: 900px; padding: 0 20px; color: #333; background-color: #f9f9f9; }
+        h1, h2, h3, h4 { color: #2c3e50; }
+        h1 { text-align: center; margin-bottom: 35px; font-size: 2.2em; }
+        h2 { border-bottom: 2px solid #e67e22; padding-bottom: 12px; margin-top: 45px; font-size: 1.8em; color: #e67e22; } /* Dimension 5 color */
+        h3 { margin-top: 30px; font-size: 1.5em; color: #d35400; } /* Lighter shade for H3 */
+        h4 { font-size: 1.3em; color: #d35400; margin-top:25px; margin-bottom:15px; }
+        table.immersion-table, table.vocab-list-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; display: table; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .immersion-table th, .immersion-table td, .vocab-list-table th, .vocab-list-table td { border: 1px solid #ddd; padding: 12px; text-align: left; vertical-align: top;}
+        .immersion-table thead, .vocab-list-table thead { background-color: #e9ecef; }
+        .immersion-table td:first-child, .vocab-list-table td:first-child { font-weight: bold; }
+        .partner-card, .practice-plan-card, .cognitive-bleeding-card, .usage-example, .summary-card, .example, .new-vocab-section {
+            background-color: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .example { border-left: 6px solid #e67e22 !important; } /* Dimension 5 example color */
+        .partner-card h4 { color: #d35400; margin-top: 0; font-size: 1.3em; border-bottom: 1px dashed #f39c12; padding-bottom: 8px; margin-bottom: 15px; }
+        .partner-card-content p { margin: 5px 0; font-size: 1.1em; }
+        .partner-card img, .partner-card svg { width: 100px; height: 100px; object-fit: contain; margin-right: 15px; border-radius: 4px; float: left; margin-bottom:10px;}
+        .finnish-phrase { font-weight: bold; color: #d35400; font-size: 1.15em; } /* Dimension 5 phrase color */
+        .genitive-n { color: #c0392b; font-weight: bold; text-decoration: underline; font-size: 1.2em; }
+        .example-sentence .finnish-phrase { font-size: 1.1em; }
+        .chinese-sense, .note { font-size: 0.95em; color: #555; font-style: italic; }
+        .tts-button { background: none; border: none; cursor: pointer; font-size: 1.2em; margin-left: 8px; padding: 0; display: inline-block; vertical-align: middle; color: #d35400; }
+        .tts-button:hover { color: #a04000; opacity: 0.8; }
+        .debug-section, .interactive-svg-container, .interactive-choice { background-color: #fdfefe; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin: 20px 0; }
+        .debug-button { background-color: #4CAF50; color: white; padding: 8px 16px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .debug-button:hover { background-color: #45a049; }
+        .highlight { color: #c0392b; font-weight: bold; }
+        hr { border: 0; height: 1px; background-image: linear-gradient(to right, rgba(0,0,0,0), rgba(230,126,34,0.3), rgba(0,0,0,0)); margin: 40px 0; }
+        .task-list { list-style-type: none; padding-left: 0; }
+        .task-list > li { margin-bottom: 15px; }
+        .task-list h5 { margin-top:0; color: #2c3e50; font-size: 1.15em; }
+        .task-list ul { list-style-type: disc; padding-left: 25px; margin-top: 5px; }
+        .task-list ul li { font-size: 1em; margin-bottom: 8px; }
+        .interactive-choice button { background-color: #f39c12; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; margin: 8px; font-size: 1em; transition: background-color 0.2s; }
+        .interactive-choice button:hover { background-color: #d35400; }
+        .feedback-area { margin-top: 15px; padding: 12px; border-radius: 5px; text-align:center; font-size: 1.1em; min-height: 1.5em; }
+        .correct { background-color: #d1f2eb; color: #0c6255; border: 1px solid #a3e4d7; }
+        .incorrect { background-color: #fdedec; color: #c0392b; border: 1px solid #f5b7b1; }
+        .action-button { background-color: #f39c12; color: white; padding: 12px 18px; border: none; border-radius: 5px; cursor: pointer; margin-top:12px; font-size: 1em; transition: background-color 0.2s; }
+        .action-button:hover { background-color: #d35400; }
+        .concept-map { text-align: center; margin: 25px 0; padding: 15px; background-color: #fff3e0; border: 1px dashed #ffcc80; border-radius: 6px; }
+        .concept-map p { margin: 8px 0; font-size: 1.15em; }
+        .n-hand-viz { display: flex; align-items: center; justify-content: center; font-size: 1.3em; margin: 20px 0; }
+        .n-hand-viz span { margin: 0 15px; }
+        .n-hand-viz .plus-sign { font-size: 1.5em; color: #aaa; }
+    </style>
+</head>
+<body>
+
+    <h1>模块三：【空间定位器】 – 维度五：感知“位置关系”</h1>
+
+    <!-- TTS调试区域 -->
+    <div class="debug-section">
+        <h3>🔧 TTS功能测试 (模块三·维度五 位置关系)</h3>
+        <p>如果TTS按钮没有声音，请先测试以下功能：</p>
+        <button class="debug-button" onclick="testBasicTTS()">测试基本TTS</button>
+        <button class="debug-button" onclick="testFinnishTTSModule3_Dim5()">测试芬兰语TTS (模块3.5)</button>
+        <button class="debug-button" onclick="listVoices()">查看可用语音</button>
+        <button class="debug-button" onclick="removeDebugSection()">移除调试区域</button>
+        <div id="debug-output" style="margin-top: 10px; padding: 10px; background-color: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;"></div>
+    </div>
+
+    <hr>
+
+    <section id="intro-dimension5">
+        <h2>🚀 维度五引入：当物体成为新的“世界中心”</h2>
+        <div class="example">
+            <p><span class="speakable-finnish">Loistavaa työtä tähän mennessä!</span> (到目前为止干得太出色了！)</p>
+            <p>我们已经能说“我在商店<span class="highlight">里</span>”(<span class="finnish-phrase speakable-finnish">kaupassa</span>)，能说“书在桌子<span class="highlight">上</span>”(<span class="finnish-phrase speakable-finnish">pöydällä</span>)，还能说“你在我的<span class="highlight">前面</span>”(<span class="finnish-phrase speakable-finnish">minun edessä</span>)。</p>
+            <p>现在，我们来完成空间定位的最后一块重要拼图：如果我想说“钥匙在<span class="highlight">杯子的旁边</span>”呢？这时，参照物不再是我，而是一个物体——“杯子”。</p>
+            <p>芬兰语有一个绝妙的方法来处理这种情况。我们将它称为**“-n小手”理论**！</p>
+        </div>
+        <div class="concept-map">
+            <h3>🤝【认知锚点】“-n 小手”理论：物体间的伙伴关系</h3>
+            <p>想象一下，当一个物体要成为另一个物体的位置参照物时，它需要伸出一只“小手”来“拉住”描述方位的词。</p>
+            <p>这只“小手”通常就是字母 <span class="genitive-n">-n</span>。</p>
+            <div class="n-hand-viz">
+                <span class="finnish-phrase speakable-finnish">kuppi</span>
+                <span class="plus-sign">➔</span>
+                <span class="finnish-phrase speakable-finnish">kupi<span class="genitive-n">n</span></span>
+                <span class="plus-sign">+</span>
+                <span class="finnish-phrase speakable-finnish">vieressä</span>
+                <span class="plus-sign">➔</span>
+                <span class="finnish-phrase speakable-finnish">kupin vieressä</span>
+            </div>
+            <p>这个 <span class="finnish-phrase speakable-finnish">kupi<span class="genitive-n">n</span></span> 在感觉上就完全等同于中文的“**杯子的**”！所以 <span class="finnish-phrase speakable-finnish">kupin vieressä</span> 就是“杯子的旁边”。是不是一下就变得非常亲切和容易理解了？</p>
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="position-partners">
+        <h3>🤝 认识新的“位置伙伴” (Postpositiot)</h3>
+        <p>让我们来认识几个最高频的“位置伙伴”。记住，当它们和另一个物体（参照物）搭配时，那个物体通常需要伸出 <span class="genitive-n">-n</span> “小手”哦！</p>
+
+        <!-- 位置伙伴 1: vieressä -->
+        <div class="partner-card">
+            <h4><span class="speakable-finnish">vieressä</span> (在...旁边)</h4>
+            <div class="partner-card-content">
+                <svg width="100" height="100" viewBox="0 0 100 100">
+                    <rect x="10" y="40" width="30" height="50" fill="#5DADE2" rx="2"></rect>
+                    <path d="M 60 40 h 20 v 50 h -20 z" fill="#E74C3C"></path>
+                    <path d="M 80 45 h 5 v 20 h -5 z" fill="#E74C3C"></path>
+                </svg>
+                <p><strong>当某物在另一个物体的旁边：</strong></p>
+                <p class="example-sentence"><span class="speakable-finnish">Minun avain on kirja<span class="genitive-n">n</span> <span class="finnish-phrase">vieressä</span>.</span> <span class="note speakable-finnish">(avain=钥匙, kirja=书)</span></p>
+                <p class="chinese-sense">感知：“书”(<span class="finnish-phrase speakable-finnish">kirja</span>)伸出了<span class="genitive-n">-n</span>小手，变成了“书的”(<span class="finnish-phrase speakable-finnish">kirjan</span>)，然后拉住了“旁边”(<span class="finnish-phrase speakable-finnish">vieressä</span>)。</p>
+                <p class="example-sentence"><span class="speakable-finnish">Sinä istut minun <span class="finnish-phrase">vieressä</span>ni.</span> <span class="note">(你坐在我的旁边。这里的-ni是“我的”所有格后缀，是另一种表达方式)</span></p>
+            </div>
+        </div>
+
+        <!-- 位置伙伴 2: välissä -->
+        <div class="partner-card">
+            <h4><span class="speakable-finnish">välissä</span> (在...之间)</h4>
+            <div class="partner-card-content">
+                 <svg width="100" height="100" viewBox="0 0 100 100">
+                    <rect x="5" y="40" width="25" height="50" fill="#5DADE2" rx="2"></rect>
+                    <path d="M 70 40 h 20 v 50 h -20 z" fill="#E74C3C"></path>
+                    <path d="M 90 45 h 5 v 20 h -5 z" fill="#E74C3C"></path>
+                    <rect x="40" y="50" width="20" height="30" fill="#F1C40F" rx="2"></rect>
+                </svg>
+                <p><strong>当某物在两个物体之间：</strong></p>
+                <p class="example-sentence"><span class="speakable-finnish">Puhelin on kirja<span class="genitive-n">n</span> ja kupi<span class="genitive-n">n</span> <span class="finnish-phrase">välissä</span>.</span> <span class="note speakable-finnish">(puhelin=手机, ja=和)</span></p>
+                <p class="chinese-sense">感知：太奇妙了！“书”和“杯子”都伸出了自己的<span class="genitive-n">-n</span>小手，然后一起拉住了“之间”(<span class="finnish-phrase speakable-finnish">välissä</span>)。</p>
+                <p class="example-sentence"><span class="speakable-finnish">Minä seison sinun ja oven <span class="finnish-phrase">välissä</span>.</span> <span class="note speakable-finnish">(seison=我站, ovi=门 -> oven=门的)</span></p>
+            </div>
+        </div>
+        
+        <!-- 位置伙伴 3: vastapäätä -->
+        <div class="partner-card">
+            <h4><span class="speakable-finnish">vastapäätä</span> (在...对面)</h4>
+            <div class="partner-card-content">
+                <svg width="100" height="100" viewBox="0 0 100 100">
+                    <rect x="10" y="40" width="30" height="50" fill="#2ECC71" rx="2"></rect>
+                    <rect x="60" y="40" width="30" height="50" fill="#3498DB" rx="2"></rect>
+                    <path d="M 45 65 l 10 0" stroke="#aaa" stroke-width="2" stroke-dasharray="4 2"></path>
+                </svg>
+                <p><strong>当某物在另一个物体的对面：</strong></p>
+                <p class="example-sentence"><span class="speakable-finnish">Kauppa on koulu<span class="genitive-n">n</span> <span class="finnish-phrase">vastapäätä</span>.</span> <span class="note speakable-finnish">(koulu=学校)</span></p>
+                <p class="chinese-sense">感知：“学校”(<span class="finnish-phrase speakable-finnish">koulu</span>)伸出<span class="genitive-n">-n</span>小手，变成了“学校的”(<span class="finnish-phrase speakable-finnish">koulun</span>)，然后指向了它的“对面伙伴”(<span class="finnish-phrase speakable-finnish">vastapäätä</span>)。</p>
+                <p class="example-sentence"><span class="speakable-finnish">Minä istun sinua <span class="finnish-phrase">vastapäätä</span>.</span> <span class="note">(我坐在你的对面。这里 sinua 是“你”的部分格，是另一种常见用法)</span></p>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="interactive-practice-dim5">
+        <h3>💡 互动练习：我的桌面寻宝 (SVG版)</h3>
+        <div class="story-card">
+            <p>这是一张我为你画的桌面示意图。仔细观察图中物品的位置，然后回答下面的问题吧！</p>
+            <div class="interactive-svg-container" style="text-align:center;">
+                <svg id="desktop-scene" width="90%" viewBox="0 0 450 220" style="border:1px solid #ddd; border-radius: 5px;">
+                    <!-- Table -->
+                    <rect x="10" y="180" width="430" height="15" fill="#D2B48C" rx="3"></rect>
+                    <rect x="50" y="195" width="15" height="20" fill="#D2B48C"></rect>
+                    <rect x="385" y="195" width="15" height="20" fill="#D2B48C"></rect>
+                    <text x="400" y="175" font-size="12" fill="#aaa" class="speakable-finnish">pöytä</text>
+
+                    <!-- Book (kirja, blue) -->
+                    <rect x="40" y="120" width="100" height="60" fill="#5DADE2" rx="3"></rect>
+                    <text x="80" y="115" font-size="12" fill="#5DADE2" class="speakable-finnish">kirja</text>
+
+                    <!-- Cup (kuppi, red) -->
+                    <path d="M 300 130 h 50 v 50 h -50 z" fill="#E74C3C"></path>
+                    <path d="M 350 140 h 15 v 20 h -15 z" fill="#E74C3C"></path>
+                    <text x="315" y="125" font-size="12" fill="#E74C3C" class="speakable-finnish">kuppi</text>
+
+                    <!-- Phone (puhelin, gray) -->
+                    <rect x="160" y="140" width="35" height="40" fill="#7F8C8D" rx="4"></rect>
+                    <text x="150" y="135" font-size="12" fill="#7F8C8D" class="speakable-finnish">puhelin</text>
+
+                    <!-- Key (avain, yellow - question item) -->
+                    <g id="interactive-key">
+                        <circle cx="240" cy="170" r="8" fill="#F1C40F" />
+                        <rect x="245" y="168" width="10" height="4" fill="#F1C40F" />
+                        <rect x="255" y="165" width="10" height="10" fill="#F1C40F" />
+                        <text x="240" y="160" font-size="12" fill="#F1C40F" font-weight="bold" class="speakable-finnish">avain</text>
+                    </g>
+                </svg>
+            </div>
+            <div id="q-dim5-container" style="margin-top:20px;">
+                <!-- Questions will be dynamically inserted here by JS -->
+            </div>
+            <div class="interactive-choice" style="text-align: center; margin-top:15px;">
+                <button class="action-button" onclick="nextDim5Question()">下一个问题</button>
+            </div>
+            <div id="feedback-area-dim5" class="feedback-area"></div>
+        </div>
+    </section>
+    
+    <hr>
+    
+    <section id="language-bleeding-plan-dim5">
+        <h2>🧪【语言出血】“我的真实空间”位置关系三日植入计划</h2>
+        <div class="practice-plan-card">
+            <ul class="task-list">
+                <li>
+                    <h5><span class="speakable-finnish">📆 第1日：感知“在旁边” (<span class="finnish-phrase speakable-finnish">vieressä</span>)</span></h5>
+                    <ul>
+                        <li><span class="speakable-finnish">找到你身边的任何两个物体，比如手机和杯子。对自己说：“Minun puhelin on kupi<span class="genitive-n">n</span> <span class="finnish-phrase">vieressä</span>.”</span></li>
+                        <li><span class="speakable-finnish">换个参照物，再说一遍：“Minun kuppi on puhelime<span class="genitive-n">n</span> <span class="finnish-phrase">vieressä</span>.”</span></li>
+                        <li><span class="speakable-finnish">每次看到并排放置的东西，都用这个句式在心里默念一遍。</span></li>
+                    </ul>
+                </li>
+                <li>
+                    <h5><span class="speakable-finnish">📆 第2日：感知“在之间” (<span class="finnish-phrase speakable-finnish">välissä</span>)</span></h5>
+                    <ul>
+                        <li><span class="speakable-finnish">创造一个“三明治”结构：把你的钥匙放在书和手机中间。然后大声说：“Minun avain on kirja<span class="genitive-n">n</span> ja puhelime<span class="genitive-n">n</span> <span class="finnish-phrase">välissä</span>.”</span></li>
+                        <li><span class="speakable-finnish">在超市排队时，看看你前面和后面的人，对自己说：“Minä olen kahde<span class="genitive-n">n</span> ihmise<span class="genitive-n">n</span> <span class="finnish-phrase">välissä</span>.” (我在两个人之间。<span class="note">kaksi ihmistä -> kahden ihmisen</span>)</span></li>
+                    </ul>
+                </li>
+                <li>
+                    <h5><span class="speakable-finnish">📆 第3日：感知“在对面” (<span class="finnish-phrase speakable-finnish">vastapäätä</span>) 并综合应用</span></h5>
+                    <ul>
+                        <li><span class="speakable-finnish">如果你家对面有另一栋楼或一家商店，对自己说：“Talo on minun talo<span class="genitive-n">n</span> <span class="finnish-phrase">vastapäätä</span>.”</span></li>
+                        <li><span class="speakable-finnish">和朋友在咖啡馆，描述：“Sinä istut minua <span class="finnish-phrase">vastapäätä</span>. Sokeri on kupi<span class="genitive-n">n</span> <span class="finnish-phrase">vieressä</span>.” (你坐在我对面。糖在杯子旁边。<span class="note">sokeri=糖</span>)</span></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="dim5-summary-and-next">
+        <h2>🌟 维度五感知小结：你掌握了“物体伙伴关系”的语言！ (含术语锚定)</h2>
+        <div class="summary-card">
+            <p><span class="speakable-finnish">Mahtavaa! Olet nyt avaruudellisen paikantamisen mestari!</span> (太棒了！你现在是空间定位大师了！)</p>
+            <p>你已经成功解锁了芬兰语空间表达中非常核心和强大的一个能力：描述物体与物体之间的位置关系！我们的**“-n小手”理论**帮助你轻松地理解了这一点。</p>
+            <p>让我们来回顾一下这个强大的模式：</p>
+             <div class="n-hand-viz" style="background-color:#fef9e7; padding:10px; border-radius:5px;">
+                <span class="finnish-phrase speakable-finnish">[参照物]</span>
+                <span class="plus-sign">+</span>
+                <span class="genitive-n">-n</span>
+                <span class="plus-sign">+</span>
+                <span class="finnish-phrase speakable-finnish">[位置伙伴]</span>
+            </div>
+            <p class="note" style="text-align:center;">(<span class="finnish-phrase speakable-finnish">esim. pöydä<span class="genitive-n">n</span> vieressä</span>)</p>
+
+            <p>现在，是时候为这些你已经有“感觉”的东西，挂上它们的“语法姓名牌”了：</p>
+            <ul style="list-style-type: disc; padding-left: 20px;">
+                <li>我们给参照物名词加上的那个神奇的 <span class="genitive-n">-n</span> “小手”，在语法上叫做 **<span class="speakable-finnish">genetiivi</span> (Genitive case，所有格)**。它最常见的意思就是中文里的“**的**”，表示所属关系或作为参照点。</li>
+                <li>而像 <span class="finnish-phrase speakable-finnish">vieressä</span> (旁边), <span class="finnish-phrase speakable-finnish">välissä</span> (之间), <span class="finnish-phrase speakable-finnish">vastapäätä</span> (对面) 这些“位置伙伴”，它们在语法上被称为 **<span class="speakable-finnish">postpositiot</span> (Postpositions，后置词)**，因为它们总是放在它们参照的名词（的所有格形式）的**后面**。</li>
+            </ul>
+            <p class="note speakable-finnish">Muista: tunne on tärkeämpi kuin termi! Nyt ymmärrät, miksi ja miten suomalaiset rakentavat näitä lauseita. (记住：感觉比术语更重要！现在你理解了芬兰人为什么以及如何构建这些句子。)</p>
+            <p><strong>模块三最终总结：</strong> 我们将用一个综合任务来回顾和融合全部五个维度的空间知识，真正做到在芬兰语的“空间宇宙”中自由漫游！</p>
+        </div>
+    </section>
+
+    <hr>
+    
+    <section id="new-vocabulary-list-m3p5" class="new-vocab-section">
+        <h3>📚 本维度新朋友：词汇积累 (聚焦核心位置伙伴)</h3>
+        <p>以下是本维度（模块三·维度五）我们重点接触的核心“位置伙伴”（后置词）和一些辅助词汇。熟悉它们将让你能更精确地描述你周围的世界！</p>
+        <table class="vocab-list-table">
+            <thead>
+                <tr>
+                    <th>芬兰语新词 (原形)</th>
+                    <th>中文意思</th>
+                    <th>常用形式或动词变形 (Minä/Sinä)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Postpositions -->
+                <tr><td><span class="speakable-finnish">vieressä</span></td><td>在...旁边</td><td><span class="note speakable-finnish">(Yleensä substantiivin genetiivin jälkeen, esim. 'pöydän vieressä')</span></td></tr>
+                <tr><td><span class="speakable-finnish">välissä</span></td><td>在...之间</td><td><span class="note speakable-finnish">(esim. 'kirjan ja kupin välissä')</span></td></tr>
+                <tr><td><span class="speakable-finnish">vastapäätä</span></td><td>在...对面</td><td><span class="note speakable-finnish">(esim. 'koulun vastapäätä')</span></td></tr>
+                
+                <!-- Nouns (from examples, reinforcing old ones) -->
+                <tr><td><span class="speakable-finnish">avain</span></td><td>钥匙</td><td><span class="note speakable-finnish">(Genetiivi: avaime<span class="genitive-n">n</span>)</span></td></tr>
+                <tr><td><span class="speakable-finnish">puhelin</span></td><td>手机</td><td><span class="note speakable-finnish">(Genetiivi: puhelime<span class="genitive-n">n</span>)</span></td></tr>
+                <tr><td><span class="speakable-finnish">sokeri</span></td><td>糖</td><td>-</td></tr>
+                <tr><td><span class="speakable-finnish">ihminen</span></td><td>人</td><td><span class="note speakable-finnish">(Genetiivi monikko: ihmiste<span class="genitive-n">n</span> / kahden ihmise<span class="genitive-n">n</span>)</span></td></tr>
+
+                <!-- Verbs -->
+                <tr><td><span class="speakable-finnish">seisoa</span></td><td>站立</td><td><span class="speakable-finnish">minä seison, sinä seisot</span> <span class="note">(复习)</span></td></tr>
+                
+                <!-- Conjunctions -->
+                <tr><td><span class="speakable-finnish">ja</span></td><td>和</td><td><span class="note">(复习)</span></td></tr>
+            </tbody>
+        </table>
+    </section>
+
+
+<script>
+    const finnishLang = 'fi-FI';
+
+    function debugLog(message) {
+        const output = document.getElementById('debug-output');
+        if (output && output.innerHTML !== undefined) {
+            const time = new Date().toLocaleTimeString();
+            output.innerHTML += `[${time}] ${message}<br>`;
+            output.scrollTop = output.scrollHeight;
+        }
+    }
+
+    function testBasicTTS() {
+        debugLog('开始测试基本TTS功能...');
+        if (!('speechSynthesis' in window)) {
+            debugLog('❌ 错误：浏览器不支持语音合成API');
+            alert('您的浏览器不支持语音合成功能。');
+            return;
+        }
+        debugLog('✅ 浏览器支持语音合成API');
+        const utterance = new SpeechSynthesisUtterance('Hello World');
+        utterance.onstart = () => debugLog('✅ 英语测试开始播放');
+        utterance.onend = () => debugLog('✅ 英语测试播放完成');
+        utterance.onerror = (event) => debugLog('❌ 英语测试错误: ' + event.error);
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function testFinnishTTSModule3_Dim5() { 
+        debugLog('开始测试芬兰语TTS功能 (模块3.5)...');
+        const utterance = new SpeechSynthesisUtterance('Avain on kupin vieressä.');
+        utterance.lang = finnishLang;
+        utterance.onstart = () => debugLog('✅ 芬兰语(M3 D5)测试开始播放');
+        utterance.onend = () => debugLog('✅ 芬兰语(M3 D5)测试播放完成');
+        utterance.onerror = (event) => debugLog('❌ 芬兰语(M3 D5)测试错误: ' + event.error);
+        window.speechSynthesis.speak(utterance);
+    }
+     function listVoices() {
+        debugLog('正在获取可用语音列表...');
+        const voices = window.speechSynthesis.getVoices();
+        if (voices.length === 0) {
+            debugLog('⚠️ 未找到任何语音，语音可能还在加载中。');
+            window.speechSynthesis.onvoiceschanged = () => {
+                debugLog('语音列表已更新，重新获取...');
+                const updatedVoices = window.speechSynthesis.getVoices();
+                if (updatedVoices.length === 0 && voices.length === 0) { 
+                    debugLog('⚠️ 更新后仍未找到任何语音。'); return;
+                }
+                if (updatedVoices.length > 0) logVoiceList(updatedVoices);
+            };
+             if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1 || (navigator.userAgent.toLowerCase().indexOf('safari') > -1 && navigator.userAgent.toLowerCase().indexOf('chrome') === -1) ) {
+                setTimeout(() => { if(window.speechSynthesis.getVoices().length > 0) listVoices(); }, 500);
+            }
+            return;
+        }
+        logVoiceList(voices);
+    }
+     function logVoiceList(voices) {
+        debugLog(`找到 ${voices.length} 个可用语音:`);
+        voices.forEach((voice, index) => {
+            const isDefault = voice.default ? ' (默认)' : '';
+            debugLog(`${index + 1}. ${voice.name} (${voice.lang})${isDefault}`);
+        });
+        const finnishVoices = voices.filter(voice =>
+            voice.lang.toLowerCase().startsWith('fi') ||
+            voice.name.toLowerCase().includes('finnish') ||
+            voice.name.toLowerCase().includes('suomi')
+        );
+        if (finnishVoices.length > 0) {
+            debugLog(`✅ 找到 ${finnishVoices.length} 个芬兰语语音:`);
+            finnishVoices.forEach(voice => {
+                debugLog(`  - ${voice.name} (${voice.lang})`);
+            });
+        } else {
+            debugLog('❌ 未找到芬兰语语音。');
+        }
+    }
+
+    function removeDebugSection() {
+        const debugSection = document.querySelector('.debug-section');
+        if (debugSection) {
+            debugSection.style.display = 'none';
+            debugLog('调试区域已隐藏');
+        }
+    }
+
+    let isSpeaking = false;
+    function speakText(text, lang = finnishLang) {
+        if (!('speechSynthesis' in window)) return;
+        if (isSpeaking) {
+            window.speechSynthesis.cancel();
+            setTimeout(() => startSpeaking(text, lang), 50);
+        } else {
+            startSpeaking(text, lang);
+        }
+    }
+
+    function startSpeaking(text, lang) {
+        isSpeaking = true;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        const voices = window.speechSynthesis.getVoices();
+        let selectedVoice = null;
+        if (lang.toLowerCase().startsWith('fi')) {
+            selectedVoice = voices.find(voice => voice.lang.toLowerCase() === 'fi-fi') ||
+                            voices.find(voice => voice.lang.toLowerCase().startsWith('fi')) ||
+                            voices.find(voice => voice.name.toLowerCase().includes('finnish') || voice.name.toLowerCase().includes('suomi'));
+        }
+        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.onend = () => { isSpeaking = false; };
+        utterance.onerror = (event) => {
+            debugLog(`❌ 播放错误: ${event.error} (文本: "${text}")`);
+            isSpeaking = false;
+        };
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function addTTSButton(element, textToSpeak) {
+        let cleanedText = textToSpeak.replace(/\s*\(.*?\)\s*/g, '').trim(); 
+        cleanedText = cleanedText.replace(/（.*?）/g, '').trim();
+        cleanedText = cleanedText.replace(/\[.*?\]/g, '').trim();
+
+        if (!cleanedText || cleanedText === '') return;
+        
+        const existingButton = Array.from(element.childNodes).find(node => node.nodeType === Node.ELEMENT_NODE && node.classList.contains('tts-button') && node.title === '播放: ' + cleanedText);
+        if (existingButton) return;
+
+        const button = document.createElement('button');
+        button.className = 'tts-button';
+        button.innerHTML = '🔊';
+        button.title = '播放: ' + cleanedText;
+        button.setAttribute('aria-label', '播放音频: ' + cleanedText);
+        button.onclick = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            speakText(cleanedText);
+        };
+        
+        if (element.tagName === 'SPAN' && (element.classList.contains('speakable-finnish') || element.classList.contains('finnish-phrase'))) {
+            if (!element.querySelector('.tts-button')) {
+                element.appendChild(button);
+            }
+        } else {
+            let insertBeforeNode = null;
+            for (let i = 0; i < element.childNodes.length; i++) {
+                const child = element.childNodes[i];
+                if (child.nodeType === Node.ELEMENT_NODE && (child.classList.contains('note') || child.classList.contains('chinese-sense'))) {
+                    insertBeforeNode = child;
+                    break;
+                }
+            }
+            if (insertBeforeNode) {
+                element.insertBefore(button, insertBeforeNode);
+            } else {
+                element.appendChild(button);
+            }
+        }
+    }
+    
+    function initializeTTSForPage() {
+        debugLog('🚀 初始化页面TTS按钮 (模块三·维度五 位置关系)...');
+        
+        document.querySelectorAll('.speakable-finnish, .finnish-phrase').forEach(span => {
+            const text = span.textContent.trim();
+            if (text && !span.querySelector('.tts-button')) {
+                 addTTSButton(span, text);
+            }
+        });
+
+        const sentenceLevelContainers = [
+            ...document.querySelectorAll('.partner-card-content p.example-sentence'),
+            ...document.querySelectorAll('.usage-example p'), 
+            ...document.querySelectorAll('.interactive-choice button'),
+            ...document.querySelectorAll('.practice-plan-card .task-list ul li'), 
+            ...document.querySelectorAll('#intro-dimension5 .example p'),
+            ...document.querySelectorAll('#intro-dimension5 .concept-map p, #intro-dimension5 .concept-map h3'),
+            ...document.querySelectorAll('.new-vocab-section .vocab-list-table td'),
+            ...document.querySelectorAll('#dim5-summary-and-next .summary-card p'),
+            ...document.querySelectorAll('#dim5-summary-and-next .summary-card ul li')
+        ];
+
+        sentenceLevelContainers.forEach(el => {
+            if (el.classList.contains('speakable-finnish') || el.classList.contains('finnish-phrase')) return;
+            if (el.querySelector('.tts-button')) { 
+                let hasOwnButton = false;
+                for(let child of el.childNodes){
+                    if(child.nodeType === Node.ELEMENT_NODE && child.classList.contains('tts-button')){
+                        hasOwnButton = true;
+                        break;
+                    }
+                }
+                if(hasOwnButton || el.querySelector('.speakable-finnish .tts-button')) return;
+            }
+            if (el.closest('thead')) return;
+
+            let textToSpeak = "";
+            Array.from(el.childNodes).forEach(node => {
+                 if (node.nodeType === Node.TEXT_NODE) {
+                    textToSpeak += node.textContent;
+                } else if (node.nodeType === Node.ELEMENT_NODE &&
+                           !node.classList.contains('note') &&
+                           !node.classList.contains('chinese-sense') &&
+                           !node.classList.contains('tts-button') &&
+                           node.tagName !== 'svg' &&
+                           node.tagName !== 'g' &&
+                           node.tagName !== 'rect' &&
+                           node.tagName !== 'path' &&
+                           node.tagName !== 'circle'
+                           ) {
+                    textToSpeak += node.textContent; 
+                }
+            });
+            textToSpeak = textToSpeak.trim();
+            
+            if (textToSpeak.length > 1 && (textToSpeak.match(/[a-zA-Z]/) || textToSpeak.match(/[äöåÄÖÅ]/))) { 
+                addTTSButton(el, textToSpeak);
+            }
+        });
+        
+        document.querySelectorAll('.partner-card h4 .speakable-finnish, .practice-plan-card .task-list h5 .speakable-finnish').forEach(el => {
+             if(!el.querySelector('.tts-button')) addTTSButton(el, el.textContent);
+        });
+        
+        document.querySelectorAll('h2, h3').forEach(h => {
+            if (!h.querySelector('.tts-button')) { 
+                const text = h.textContent.split('(')[0].trim();
+                if (text.length > 1 && text.match(/[äöåÄÖÅ]/i)) {
+                    addTTSButton(h, text);
+                }
+            }
+        });
+
+        debugLog('✅ 页面TTS按钮初始化完毕 (模块三·维度五 位置关系)');
+    }
+    
+    // --- Interactive Quiz for Dimension 5 ---
+    const dim5Questions = [
+        {
+            question_fi: "Missä puhelin on?",
+            question_zh: "手机在哪里？",
+            options: [
+                { text_fi: "Se on kirjan vieressä.", correct: true },
+                { text_fi: "Se on kupin alla.", correct: false },
+                { text_fi: "Se on avaimen vastapäätä.", correct: false }
+            ]
+        },
+        {
+            question_fi: "Missä avain on?",
+            question_zh: "钥匙在哪里？",
+            options: [
+                { text_fi: "Se on kirjan ja kupin välissä.", correct: false }, // Let's create a new correct answer for this one.
+                { text_fi: "Se on puhelimen ja kupin välissä.", correct: true },
+                { text_fi: "Se on pöydän päällä.", correct: false } // Too generic, let's make it more specific
+            ]
+        },
+        {
+            question_fi: "Mitä on kupin vieressä?",
+            question_zh: "杯子旁边有什么？",
+            options: [
+                { text_fi: "Kirja ja puhelin.", correct: false },
+                { text_fi: "Vain avain.", correct: false },
+                { text_fi: "Puhelin ja avain.", correct: true } // Assuming 'vieressä' can mean generally next to
+            ]
+        }
+    ];
+    
+    // Correction for the scene logic: avain is between puhelin and kuppi.
+    // Let's adjust Q2 to reflect this.
+    dim5Questions[1].options = [
+        { text_fi: "Se on kirjan ja kupin välissä.", correct: false },
+        { text_fi: "Se on puhelimen ja kupin välissä.", correct: true },
+        { text_fi: "Se on pöydän päällä.", correct: false } 
+    ];
+
+    let currentDim5QuestionIndex = 0;
+    const qDim5Container = document.getElementById('q-dim5-container');
+    const feedbackDim5El = document.getElementById('feedback-area-dim5');
+
+    function displayDim5Question() {
+        if (!qDim5Container || !feedbackDim5El) return;
+        const q = dim5Questions[currentDim5QuestionIndex];
+        
+        let html = `<p><strong class="speakable-finnish">${q.question_fi}</strong> <span class="note">(${q.question_zh})</span></p>`;
+        html += `<div class="interactive-choice" style="text-align: center;">`;
+        q.options.forEach(opt => {
+            html += `<button onclick="checkDim5Answer(${opt.correct}, '${opt.text_fi}')">${opt.text_fi}</button>`;
+        });
+        html += `</div>`;
+        qDim5Container.innerHTML = html;
+        feedbackDim5El.innerHTML = "";
+        feedbackDim5El.className = 'feedback-area';
+        
+        qDim5Container.querySelectorAll('.speakable-finnish, button').forEach(el => {
+            if(!el.querySelector('.tts-button')) addTTSButton(el, el.textContent);
+        });
+    }
+
+    function checkDim5Answer(isCorrect, selectedText) {
+        if (!feedbackDim5El) return;
+        let feedbackText = "";
+        if (isCorrect) {
+            feedbackText = `<span class="speakable-finnish">Aivan oikein! ${selectedText}</span>`;
+            feedbackDim5El.className = 'feedback-area correct';
+        } else {
+            const correctAnswer = dim5Questions[currentDim5QuestionIndex].options.find(opt => opt.correct).text_fi;
+            feedbackText = `<span class="speakable-finnish">Ei ihan. Oikea vastaus on: ${correctAnswer}</span> <span class="note">(Yritä uudelleen tai katso seuraava kysymys!)</span>`;
+            feedbackDim5El.className = 'feedback-area incorrect';
+        }
+        feedbackDim5El.innerHTML = feedbackText;
+        feedbackDim5El.querySelectorAll('.speakable-finnish').forEach(el => {
+            if (!el.querySelector('.tts-button')) addTTSButton(el, el.textContent);
+        });
+        const mainFeedbackSpan = feedbackDim5El.querySelector('.speakable-finnish');
+        if(mainFeedbackSpan) speakText(mainFeedbackSpan.textContent.split('.')[0] + '.');
+    }
+
+    function nextDim5Question() {
+        currentDim5QuestionIndex = (currentDim5QuestionIndex + 1) % dim5Questions.length;
+        displayDim5Question();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.speechSynthesis.getVoices().length === 0) {
+            window.speechSynthesis.onvoiceschanged = initializeTTSForPage;
+        } else {
+            initializeTTSForPage();
+        }
+        setTimeout(initializeTTSForPage, 200); 
+        if (document.getElementById('q-dim5-container')) {
+             displayDim5Question(); 
+        }
+    });
+</script>
+</body>
+</html>

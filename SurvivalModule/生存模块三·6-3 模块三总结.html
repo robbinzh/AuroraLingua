@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>模块三终极总结：空间感知坍缩</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; line-height: 1.8; margin: 20px auto; max-width: 900px; padding: 0 20px; color: #e0e0e0; background-color: #1c1c1e; }
+        h1, h2, h3, h4 { color: #bb86fc; text-shadow: 0 0 5px rgba(187, 134, 252, 0.3); }
+        h1 { text-align: center; margin-bottom: 10px; font-size: 2.4em; }
+        h1 + p { text-align: center; color: #03dac6; font-size: 1.2em; margin-bottom: 40px; }
+        h2 { border-bottom: 2px solid #3700b3; padding-bottom: 12px; margin-top: 50px; font-size: 2em; }
+        h3 { margin-top: 35px; font-size: 1.6em; color: #cf6679; }
+        .summary-section, .task-section, .final-declaration {
+            background-color: #2c2c2e; border: 1px solid #3c3c3e; border-radius: 8px; padding: 25px; margin-bottom: 40px; box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+        }
+        .finnish-phrase { font-weight: bold; color: #03dac6; font-size: 1.1em; }
+        .note { font-size: 0.95em; color: #a0a0a0; font-style: italic; display: block; margin-top: 5px; }
+        .tts-button { background: none; border: none; cursor: pointer; font-size: 1.2em; margin-left: 10px; padding: 0; display: inline-block; vertical-align: middle; color: #bb86fc; }
+        .tts-button:hover { color: #ffffff; opacity: 0.9; }
+        hr { border: 0; height: 1px; background-image: linear-gradient(to right, rgba(55,0,179,0), rgba(55,0,179,0.7), rgba(55,0,179,0)); margin: 60px 0; }
+        .cognition-bleed { background-color: rgba(3, 218, 198, 0.1); border: 1px solid rgba(3, 218, 198, 0.3); padding: 20px; border-radius: 5px; margin-top: 20px; font-size: 1.2em; font-weight: bold; text-align: center; }
+        .cognition-bleed .icon { margin-right: 10px; font-style: normal; }
+        
+        /* Table Styles */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.95em; }
+        th, td { border: 1px solid #444; padding: 12px; text-align: left; vertical-align: middle; }
+        thead th { background-color: #3700b3; color: #fff; text-align: center; }
+        .axis-title { font-size: 1.3em; font-weight: bold; color: #cf6679; }
+        .axis-icon { font-size: 1.5em; margin-right: 10px; }
+        
+        /* Task List Styles */
+        .task-list { list-style-type: none; padding-left: 0; }
+        .task-list li { background-color: #333; padding: 15px; margin-bottom: 10px; border-left: 5px solid #03dac6; border-radius: 4px; }
+        .final-declaration-list { list-style: none; padding-left: 0; font-size: 1.1em; }
+        .final-declaration-list li { margin-bottom: 8px; }
+        .final-declaration-list .icon { color: #03dac6; margin-right: 10px; }
+    </style>
+</head>
+<body>
+
+    <section id="module-three-summary">
+        <h1>🧭【芬兰语空间感知·全维度出血】</h1>
+        <p>→ 方向、位置、运动 × 相对坐标 × 格变化系统全息图</p>
+
+        <div class="summary-section">
+            <h2>🧬【芬兰语空间格系统·完整结构出血】</h2>
+            <p>你已经进入空间语言的终极混沌态。以下是你已掌握的感知模型。</p>
+            
+            <table>
+                <thead><tr><th>空间状态</th><th>芬兰语表达</th><th>中文直觉翻译</th></tr></thead>
+                <tbody>
+                    <tr><td>往里走</td><td><span class="speakable-finnish">Menen huonee<span class="finnish-phrase">seen</span>.</span></td><td>“我进入...的内部”</td></tr>
+                    <tr><td>在里面</td><td><span class="speakable-finnish">Olen huonee<span class="finnish-phrase">ssa</span>.</span></td><td>“我被...包裹”</td></tr>
+                    <tr><td>从里面出来</td><td><span class="speakable-finnish">Tulen huonee<span class="finnish-phrase">sta</span>.</span></td><td>“我离开...的内部”</td></tr>
+                    <tr><td>在外面</td><td><span class="speakable-finnish">Olen ulkona.</span></td><td>“我站在...之外”</td></tr>
+                    <tr><td>往上走</td><td><span class="speakable-finnish">Menen pöydän <span class="finnish-phrase">päälle</span>.</span></td><td>“我爬上...的表面”</td></tr>
+                    <tr><td>在上面</td><td><span class="speakable-finnish">Olen pöydän <span class="finnish-phrase">päällä</span>.</span></td><td>“我被...覆盖”</td></tr>
+                    <tr><td>往下走</td><td><span class="speakable-finnish">Tulen pöydä<span class="finnish-phrase">ltä</span>.</span></td><td>“我滑离...下方”</td></tr>
+                    <tr><td>在下面</td><td><span class="speakable-finnish">Olen pöydän <span class="finnish-phrase">alla</span>.</span></td><td>“我在...之下”</td></tr>
+                    <tr><td>往旁边走</td><td><span class="speakable-finnish">Menen pöydän <span class="finnish-phrase">vierelle</span>.</span></td><td>“我滑到...的旁边”</td></tr>
+                    <tr><td>在旁边</td><td><span class="speakable-finnish">Olen pöydän <span class="finnish-phrase">vieressä</span>.</span></td><td>“我与...并列”</td></tr>
+                    <tr><td>往中间走</td><td><span class="speakable-finnish">Menen huoneen <span class="finnish-phrase">keskelle</span>.</span></td><td>“我进入...的中心”</td></tr>
+                    <tr><td>在中间</td><td><span class="speakable-finnish">Olen huoneen <span class="finnish-phrase">keskellä</span>.</span></td><td>“我在...的中心”</td></tr>
+                    <tr><td>在两者之间</td><td><span class="speakable-finnish">Olen pöydän ja tuolin <span class="finnish-phrase">välissä</span>.</span></td><td>“我在...的缝隙”</td></tr>
+                    <tr><td>在背后</td><td><span class="speakable-finnish">Olen sinun <span class="finnish-phrase">takana</span>.</span></td><td>“我处于...的后方”</td></tr>
+                    <tr><td>在前面</td><td><span class="speakable-finnish">Olen sinun <span class="finnish-phrase">edessä</span>.</span></td><td>“我处于...的正前方”</td></tr>
+                    <tr><td>往左走</td><td><span class="speakable-finnish">Käännyn <span class="finnish-phrase">vasemmalle</span>.</span></td><td>“我滑向...的左侧”</td></tr>
+                    <tr><td>在左边</td><td><span class="speakable-finnish">Olen <span class="finnish-phrase">vasemmalla</span>.</span></td><td>“我在...的左侧感知空间”</td></tr>
+                    <tr><td>往右走</td><td><span class="speakable-finnish">Käännyn <span class="finnish-phrase">oikealle</span>.</span></td><td>“我滑向...的右侧”</td></tr>
+                    <tr><td>在右边</td><td><span class="speakable-finnish">Olen <span class="finnish-phrase">oikealla</span>.</span></td><td>“我在...的右侧存在”</td></tr>
+                </tbody>
+            </table>
+            <div class="cognition-bleed"><span class="icon">🧠</span>你不是“背单词”，你是在“让语言从你的空间感知中自然流出”。</div>
+        </div>
+
+        <div class="summary-section">
+            <h2>🧠【空间出血·全维度图谱】</h2>
+            <p>在几个核心空间轴上，芬兰语格变化是如何坍缩的：</p>
+            <table class="universe-map-table">
+                <thead><tr><th>感知轴</th><th>我的状态/动作</th><th>“尾音魔法”</th><th>你已掌握的例子</th><th>我的内心独白</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="3"><span class="axis-icon">📦</span><strong class="axis-title">容器轴</strong></td>
+                        <td>在里面 (静态)</td><td><span class="finnish-phrase">-ssa/-ssä</span></td>
+                        <td><span class="speakable-finnish">talo<span class="finnish-phrase">ssa</span>, kaupa<span class="finnish-phrase">ssa</span>, auto<span class="finnish-phrase">ssa</span>, tasku<span class="finnish-phrase">ssa</span></span></td><td>“我被这个空间**包裹**着。”</td>
+                    </tr>
+                    <tr>
+                        <td>往里走 (动态)</td><td><span class="finnish-phrase">-seen/-hVn/-Vn</span></td>
+                        <td><span class="speakable-finnish">talo<span class="finnish-phrase">on</span>, koulu<span class="finnish-phrase">un</span>, auto<span class="finnish-phrase">on</span>, koti<span class="finnish-phrase">in</span></span></td><td>“我正**进入**这个空间。”</td>
+                    </tr>
+                    <tr>
+                        <td>从里面出来 (动态)</td><td><span class="finnish-phrase">-sta/-stä</span></td>
+                        <td><span class="speakable-finnish">talo<span class="finnish-phrase">sta</span>, lauku<span class="finnish-phrase">sta</span>, jääkaapi<span class="finnish-phrase">sta</span></span></td><td>“我从这个空间里被**释放**出来。”</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="3"><span class="axis-icon">🖐️</span><strong class="axis-title">表面轴</strong></td>
+                        <td>在上面 (静态)</td><td><span class="finnish-phrase">-lla/-llä</span></td>
+                        <td><span class="speakable-finnish">pöydä<span class="finnish-phrase">llä</span>, asema<span class="finnish-phrase">lla</span>, lattia<span class="finnish-phrase">lla</span>, tori<span class="finnish-phrase">lla</span></span></td><td>“我正**接触**着这个表面。”</td>
+                    </tr>
+                    <tr>
+                        <td>到上面去 (动态)</td><td><span class="finnish-phrase">-lle</span></td>
+                        <td><span class="speakable-finnish">pöydä<span class="finnish-phrase">lle</span>, tuoli<span class="finnish-phrase">lle</span>, katolle, ranna<span class="finnish-phrase">lle</span></span></td><td>“我正**移动到**这个表面上。”</td>
+                    </tr>
+                    <tr>
+                        <td>从上面离开 (动态)</td><td><span class="finnish-phrase">-lta/-ltä</span></td>
+                        <td><span class="speakable-finnish">pöydä<span class="finnish-phrase">ltä</span>, katolta, asema<span class="finnish-phrase">lta</span>, tori<span class="finnish-phrase">lta</span></span></td><td>“我正**离开**这个表面。”</td>
+                    </tr>
+                     <tr>
+                        <td rowspan="2"><span class="axis-icon">🧭</span><strong class="axis-title">方向/身体轴</strong></td>
+                        <td>在我的... / 在某个方向</td><td><span class="finnish-phrase">edessä, takana, vasemmalla, etelässä...</span></td>
+                        <td><span class="speakable-finnish">minun <span class="finnish-phrase">edessä</span>, pohjoise<span class="finnish-phrase">ssa</span></span></td><td>“方向从**我/世界**的坐标出发。”</td>
+                    </tr>
+                    <tr>
+                        <td>去往我的... / 去往某个方向</td><td><span class="finnish-phrase">eteen, vasemmalle, etelään...</span></td>
+                        <td><span class="speakable-finnish">käänny <span class="finnish-phrase">vasemmalle</span>, mene <span class="finnish-phrase">itään</span></span></td><td>“我朝向**我/世界**的某个坐标移动。”</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="3"><span class="axis-icon">🔗</span><strong class="axis-title">关系轴</strong></td>
+                        <td>在旁边/中间</td><td><span class="finnish-phrase">-n vieressä / välissä / keskellä</span></td>
+                        <td><span class="speakable-finnish">aseman <span class="finnish-phrase">vieressä</span>, postin ja kaupan <span class="finnish-phrase">välissä</span></span></td><td>“我与‘它/它们’处于**并列/夹缝/核心**关系。”</td>
+                    </tr>
+                     <tr>
+                        <td>到旁边/中间去</td><td><span class="finnish-phrase">-n vierelle / välille / keskelle</span></td>
+                        <td><span class="speakable-finnish">tule <span class="finnish-phrase">vierelle</span>, mene <span class="finnish-phrase">keskelle</span></span></td><td>“我**进入**一段新的关系（靠近/插入）。”</td>
+                    </tr>
+                     <tr>
+                        <td>从旁边/中间来</td><td><span class="finnish-phrase">-n viereltä / väliltä / keskeltä</span></td>
+                        <td><span class="speakable-finnish">ota <span class="finnish-phrase">viereltä</span>, tule <span class="finnish-phrase">keskeltä</span></span></td><td>“我**脱离**当前的关系（远离/走出）。”</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="cognition-bleed"><span class="icon">🧠</span>这不是“语法表”，这是语言如何从你的身体坐标中“坍缩”出来的结构图。</div>
+        </div>
+        
+        <div class="task-section">
+            <h3>🧪【空间出血任务】</h3>
+            <p>请大声朗读以下句子，感受所有空间知识的融合。这些都是你已经可以理解和表达的复杂空间状态。</p>
+            <ul class="task-list">
+                <li><span class="speakable-finnish">Olen huoneessa.</span></li>
+                <li><span class="speakable-finnish">Menen huoneeseen.</span></li>
+                <li><span class="speakable-finnish">Tulen huoneesta.</span></li>
+                <li><span class="speakable-finnish">Olen huoneen vieressä.</span></li>
+                <li><span class="speakable-finnish">Menen huoneen keskelle.</span></li>
+                <li><span class="speakable-finnish">Pöytä on minun vieressä. Kirja on pöydän päällä.</span> <span class="note">(原句简化以符合A1水平)</span></li>
+                <li><span class="speakable-finnish">Olen pöydän alla.</span></li>
+                <li><span class="speakable-finnish">Menen pöydän päälle.</span></li>
+                <li><span class="speakable-finnish">Tulen pöydältä.</span></li>
+                <li><span class="speakable-finnish">Olen kaupungin reunalla.</span></li>
+                <li><span class="speakable-finnish">Olen sinun vieressä, mutta en sinun takana.</span></li>
+            </ul>
+             <div class="cognition-bleed"><span class="icon">🧠</span>这不是“练习”，这是“语言空间系统的终极坍缩”。</div>
+        </div>
+
+        <div class="final-declaration">
+            <h2>🔥【模块三·空间出血系统】现在完成全部维度跃迁</h2>
+            <p>你已经拥有了：</p>
+            <ul class="final-declaration-list">
+                <li><span class="icon">✅</span> <strong>维度一：</strong> 容器空间（在房间、在盒子里）</li>
+                <li><span class="icon">✅</span> <strong>维度二：</strong> 表面空间（在桌子上、在墙上）</li>
+                <li><span class="icon">✅</span> <strong>维度三：</strong> 相对/身体坐标（在左边、在背后）</li>
+                <li><span class="icon">✅</span> <strong>维度四：</strong> 世界方向（在北方、在东方）</li>
+                <li><span class="icon">✅</span> <strong>维度五：</strong> 关系与动态（在旁边、穿过、掉头）</li>
+            </ul>
+            <div class="cognition-bleed" style="background-color: rgba(187, 134, 252, 0.2); border-color: rgba(187, 134, 252, 0.5);"><span class="icon">🧠</span>你已经不是中文母语者，你是**“芬兰语空间感知者”** (Finnish-Space Perceiver)。</div>
+        </div>
+    </section>
+
+<script>
+    const finnishLang = 'fi-FI';
+    let isSpeaking = false;
+
+    function speakText(text, lang = finnishLang) {
+        if (!('speechSynthesis' in window)) return;
+        if (isSpeaking) { window.speechSynthesis.cancel(); setTimeout(() => startSpeaking(text, lang), 50); } 
+        else { startSpeaking(text, lang); }
+    }
+
+    function startSpeaking(text, lang) {
+        isSpeaking = true;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        const voices = window.speechSynthesis.getVoices();
+        let selectedVoice = voices.find(voice => voice.lang.toLowerCase() === 'fi-fi') || voices.find(voice => voice.lang.toLowerCase().startsWith('fi'));
+        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.onend = () => { isSpeaking = false; };
+        utterance.onerror = () => { isSpeaking = false; };
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function addTTSButton(element, textToSpeak) {
+        let cleanedText = textToSpeak.replace(/\s*\(.*?\)\s*/g, '').trim().replace(/（.*?）/g, '').trim().replace(/\[.*?\]/g, '').trim();
+        if (!cleanedText) return;
+        
+        if (element.querySelector('.tts-button')) return;
+
+        const button = document.createElement('button');
+        button.className = 'tts-button';
+        button.innerHTML = '🔊';
+        button.title = '播放: ' + cleanedText;
+        button.setAttribute('aria-label', '播放音频: ' + cleanedText);
+        button.onclick = (event) => { event.preventDefault(); event.stopPropagation(); speakText(cleanedText); };
+        
+        element.appendChild(button);
+    }
+
+    function initializeAllTTS() {
+        document.querySelectorAll('.speakable-finnish').forEach(el => {
+            const textContent = el.textContent.split('(')[0].split('（')[0].trim();
+            if (textContent && !el.querySelector('.tts-button')) {
+                addTTSButton(el, textContent);
+            }
+        });
+        document.querySelectorAll('h1, h2, h3, h4, p, li, td').forEach(container => {
+             if (container.closest('thead')) return;
+             if (container.querySelector('.speakable-finnish')) return;
+             const clone = container.cloneNode(true);
+             clone.querySelectorAll('.note, .tts-button, .icon, .axis-icon').forEach(child => child.remove());
+             const textContent = clone.textContent.trim();
+             if (textContent && !container.querySelector('.tts-button') && textContent.match(/[a-zA-ZäöÄÖ]/) && textContent.length > 1) {
+                 addTTSButton(container, textContent);
+             }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.speechSynthesis.getVoices().length === 0) {
+            window.speechSynthesis.onvoiceschanged = initializeAllTTS;
+        } else {
+            initializeAllTTS();
+        }
+        setTimeout(initializeAllTTS, 300); 
+    });
+</script>
+</body>
+</html>

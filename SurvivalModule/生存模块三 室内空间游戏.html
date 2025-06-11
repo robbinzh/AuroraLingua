@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>芬兰语现实构造模拟器 v1.0</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #f0f4f8;
+            --surface-color: #ffffff;
+            --text-color: #333;
+            --primary-color: #007bff;
+            --module2-color: #28a745; /* Green for possession */
+            --module3-color: #fd7e14; /* Orange for space */
+            --border-color: #d1d9e6;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Fira Code', monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            user-select: none; /* Prevent text selection during drag */
+        }
+
+        h1, h2 { text-align: center; color: var(--primary-color); }
+        h1 { font-size: 2em; }
+        h2 { font-size: 1.2em; font-weight: 400; margin-bottom: 20px;}
+
+        .simulator-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--surface-color);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px var(--shadow-color);
+            border: 1px solid var(--border-color);
+        }
+
+        /* --- Left: Inventory --- */
+        .inventory-panel {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        .inventory-panel h3 { margin-top: 0; text-align: center; }
+        .inventory-items { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .item {
+            width: 60px;
+            height: 60px;
+            font-size: 36px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            cursor: grab;
+            transition: background-color 0.2s;
+        }
+        .item:hover { background-color: #e9ecef; }
+        .item:active { cursor: grabbing; }
+
+        /* --- Middle: Scene --- */
+        .scene-panel {
+            flex: 3;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            position: relative;
+            min-height: 500px;
+            background-image:
+                linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-color: #fdfdfd;
+        }
+        .scene-object {
+            position: absolute;
+            background-color: rgba(253, 126, 20, 0.2);
+            border: 1px solid var(--module3-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #555;
+        }
+        .placed-item {
+            position: absolute;
+            font-size: 36px;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: move;
+        }
+
+        /* --- Right: Generator Panel --- */
+        .generator-panel {
+            flex: 2;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+        }
+        .generator-panel h3 { margin-top: 0; text-align: center; }
+        .task-display {
+            padding: 15px;
+            background-color: #e9f7ef;
+            border: 1px solid #a9dfbf;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            min-height: 5em;
+        }
+        .task-display p { margin: 0; font-size: 1.1em; }
+        .event-log {
+            flex-grow: 1;
+            background-color: #1e1e1e;
+            color: #dcdcdc;
+            padding: 15px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            border-radius: 8px;
+            overflow-y: auto;
+            min-height: 200px;
+        }
+        .log-entry {
+            margin-bottom: 8px;
+            border-bottom: 1px dashed #444;
+            padding-bottom: 8px;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+        .log-entry .module2-core { color: #82aaff; }
+        .log-entry .module3-core { color: #c3e88d; }
+        .tts-button { background: none; border: none; cursor: pointer; font-size: 1.1em; color: #bb86fc; opacity: 0.7; }
+        .tts-button:hover { opacity: 1; }
+        #mode-toggle, #new-task-btn {
+            width: 100%; padding: 10px; font-size: 1em; margin-top: 15px; cursor: pointer;
+            border-radius: 5px; border: 1px solid var(--primary-color);
+        }
+        #mode-toggle { background-color: #fff; color: var(--primary-color); }
+        #new-task-btn { background-color: var(--primary-color); color: #fff; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <h1>🌌【芬兰语现实构造模拟器】</h1>
+        <h2>v1.0 - 拖动物品，构造你的芬兰语现实！</h2>
+
+        <div class="simulator-container">
+            <div class="inventory-panel">
+                <h3><span class="module2-core">物品栏 (Tavaraluettelo)</span></h3>
+                <div class="inventory-items">
+                    <div class="item" draggable="true" data-id="kirja" title="书 (kirja)">📖</div>
+                    <div class="item" draggable="true" data-id="muki" title="杯子 (muki)">☕</div>
+                    <div class="item" draggable="true" data-id="kissa" title="猫 (kissa)">🐈</div>
+                    <div class="item" draggable="true" data-id="kännykkä" title="手机 (kännykkä)">📱</div>
+                    <div class="item" draggable="true" data-id="avain" title="钥匙 (avain)">🔑</div>
+                    <div class="item" draggable="true" data-id="leipä" title="面包 (leipä)">🍞</div>
+                    <div class="item" draggable="true" data-id="sinä" title="你 (sinä/minä)">👤</div>
+                </div>
+            </div>
+
+            <div class="scene-panel" id="scene-panel">
+                <div class="scene-object" id="pöytä" style="width: 200px; height: 100px; top: 150px; left: 100px;">pöytä (桌子)</div>
+                <div class="scene-object" id="tuoli" style="width: 60px; height: 60px; top: 170px; left: 320px;">tuoli (椅子)</div>
+                <div class="scene-object" id="sänky" style="width: 120px; height: 180px; top: 300px; left: 50px;">sänky (床)</div>
+                <div class="scene-object" id="ikkuna" style="width: 150px; height: 20px; top: 20px; left: 150px;">ikkuna (窗户)</div>
+            </div>
+
+            <div class="generator-panel">
+                <h3><span class="module3-core">现实生成面板</span></h3>
+                <div class="task-display" id="task-display">
+                    <p><strong>模式:</strong> <span id="mode-text">自由构造</span></p>
+                    <p id="task-text">拖动物品到场景中吧！</p>
+                </div>
+                <div class="event-log" id="event-log">
+                    <!-- Log entries will appear here -->
+                </div>
+                <button id="mode-toggle" onclick="toggleMode()">切换到指令挑战模式</button>
+                <button id="new-task-btn" onclick="generateNewTask()" style="display: none;">新任务</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // --- TTS Logic ---
+    const finnishLang = 'fi-FI';
+    let isSpeaking = false;
+    function speakText(text) {
+        if (!('speechSynthesis' in window)) return;
+        if (isSpeaking) { window.speechSynthesis.cancel(); }
+        isSpeaking = true;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = finnishLang;
+        utterance.rate = 0.9;
+        const voices = window.speechSynthesis.getVoices();
+        let selectedVoice = voices.find(voice => voice.lang.toLowerCase() === 'fi-fi') || voices.find(voice => voice.lang.toLowerCase().startsWith('fi'));
+        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.onend = () => { isSpeaking = false; };
+        utterance.onerror = () => { isSpeaking = false; };
+        window.speechSynthesis.speak(utterance);
+    }
+    
+    // --- Simulator State & Data ---
+    const scenePanel = document.getElementById('scene-panel');
+    const eventLog = document.getElementById('event-log');
+    const taskTextEl = document.getElementById('task-text');
+    const modeTextEl = document.getElementById('mode-text');
+    const newTaskBtn = document.getElementById('new-task-btn');
+    const modeToggleBtn = document.getElementById('mode-toggle');
+
+    let draggedItem = null;
+    let simulatorMode = 'free'; // 'free' or 'challenge'
+    let currentTask = null;
+
+    const zhMap = { 'kirja':'书', 'muki':'杯子', 'kissa':'猫', 'kännykkä':'手机', 'avain':'钥匙', 'leipä':'面包', 'sinä': '你', 'pöytä':'桌子', 'tuoli':'椅子', 'sänky':'床', 'ikkuna':'窗户' };
+    const items = ['kirja', 'muki', 'kissa', 'kännykkä', 'avain', 'leipä', 'sinä'];
+    const sceneObjects = ['pöytä', 'tuoli', 'sänky', 'ikkuna'];
+    const relations = ['päällä', 'alla', 'vieressä', 'edessä', 'takana'];
+
+    // --- Core Logic ---
+    function logEvent(finnishSentence, colorClass = '') {
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        
+        const textSpan = document.createElement('span');
+        textSpan.innerHTML = finnishSentence; // Using innerHTML to render styled spans
+        
+        const ttsButton = document.createElement('button');
+        ttsButton.className = 'tts-button';
+        ttsButton.innerHTML = '🔊';
+        ttsButton.onclick = () => speakText(textSpan.textContent);
+        
+        entry.appendChild(textSpan);
+        entry.appendChild(ttsButton);
+        eventLog.appendChild(entry);
+        eventLog.scrollTop = eventLog.scrollHeight;
+    }
+
+    function getRelation(itemRect, zoneRect) {
+        const itemCenter = { x: itemRect.left + itemRect.width / 2, y: itemRect.top + itemRect.height / 2 };
+        
+        // Check for 'päällä' (on top)
+        if (itemCenter.x > zoneRect.left && itemCenter.x < zoneRect.right &&
+            itemCenter.y > zoneRect.top && itemCenter.y < zoneRect.bottom) {
+            return 'päällä';
+        }
+        // Check for 'alla' (under)
+        if (itemCenter.x > zoneRect.left && itemCenter.x < zoneRect.right &&
+            itemCenter.y > zoneRect.bottom && itemCenter.y < zoneRect.bottom + 80) {
+            return 'alla';
+        }
+        // Check for 'vieressä' (next to) - simplified to right side
+        if (itemCenter.y > zoneRect.top && itemCenter.y < zoneRect.bottom &&
+            itemCenter.x > zoneRect.right && itemCenter.x < zoneRect.right + 80) {
+            return 'vieressä';
+        }
+        // Add more relation checks (left, front, back) as needed
+        return null;
+    }
+
+    function generateSentence(item, zone, relation) {
+        let sentence = '';
+        const itemPart = `<span class="module2-core">${item}</span>`;
+        const zonePart = `<span class="module3-core">${getGenitive(zone)}</span>`;
+        const relationPart = `<span class="module3-core">${relation}</span>`;
+
+        if (item === 'sinä') {
+            sentence = `Minä olen ${zonePart} ${relationPart}.`;
+        } else {
+            sentence = `${item} on ${zonePart} ${relationPart}.`;
+        }
+        return sentence;
+    }
+    
+    // Simplified grammar for the demo
+    function getGenitive(word) {
+        if (word.endsWith('i')) return word.slice(0, -1) + 'en';
+        if (word.endsWith('e')) return word.slice(0, -1) + 'en';
+        return word + 'n';
+    }
+
+    function checkTaskCompletion(item, zone, relation) {
+        if (simulatorMode !== 'challenge' || !currentTask) return;
+
+        if (item === currentTask.item && zone === currentTask.zone && relation === currentTask.relation) {
+            taskTextEl.innerHTML = '✅ <span style="color: green;">Oikein!</span>';
+            setTimeout(generateNewTask, 1500);
+        } else {
+             taskTextEl.innerHTML = '❌ <span style="color: red;">Ei ihan! Yritä uudelleen.</span>';
+        }
+    }
+
+    // --- Event Listeners ---
+    document.querySelectorAll('.item').forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+            draggedItem = e.target;
+            setTimeout(() => e.target.style.opacity = '0.5', 0);
+        });
+        item.addEventListener('dragend', (e) => {
+            draggedItem = null;
+            e.target.style.opacity = '1';
+        });
+    });
+
+    scenePanel.addEventListener('dragover', (e) => e.preventDefault());
+
+    scenePanel.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (!draggedItem) return;
+
+        // Clone the item to place it in the scene
+        const newItem = draggedItem.cloneNode(true);
+        newItem.classList.remove('item');
+        newItem.classList.add('placed-item');
+        scenePanel.appendChild(newItem);
+
+        const sceneRect = scenePanel.getBoundingClientRect();
+        newItem.style.left = `${e.clientX - sceneRect.left - newItem.offsetWidth / 2}px`;
+        newItem.style.top = `${e.clientY - sceneRect.top - newItem.offsetHeight / 2}px`;
+
+        const newItemRect = newItem.getBoundingClientRect();
+        const itemId = draggedItem.dataset.id;
+        
+        let foundRelation = false;
+        document.querySelectorAll('.scene-object').forEach(zoneEl => {
+            const zoneRect = zoneEl.getBoundingClientRect();
+            const relation = getRelation(newItemRect, zoneRect);
+            if (relation) {
+                const zoneId = zoneEl.id;
+                const sentence = generateSentence(itemId, zoneId, relation);
+                logEvent(sentence);
+                checkTaskCompletion(itemId, zoneId, relation);
+                foundRelation = true;
+            }
+        });
+
+        if (!foundRelation) {
+            logEvent(`<span class="module2-core">${itemId}</span> on nyt <span class="module3-core">huoneessa</span>.`);
+            checkTaskCompletion(itemId, 'huone', 'sisällä'); // Generic 'in the room'
+        }
+    });
+    
+    // --- Mode & Task Logic ---
+    function toggleMode() {
+        if (simulatorMode === 'free') {
+            simulatorMode = 'challenge';
+            modeTextEl.textContent = '指令挑战';
+            modeToggleBtn.textContent = '切换到自由构造模式';
+            newTaskBtn.style.display = 'block';
+            generateNewTask();
+        } else {
+            simulatorMode = 'free';
+            modeTextEl.textContent = '自由构造';
+            modeToggleBtn.textContent = '切换到指令挑战模式';
+            newTaskBtn.style.display = 'none';
+            taskTextEl.textContent = "拖动物品到场景中吧！";
+        }
+    }
+
+    function generateNewTask() {
+        if (simulatorMode !== 'challenge') return;
+        
+        const item = getRandom(items);
+        const zone = getRandom(sceneObjects);
+        const relation = getRandom(relations);
+        
+        currentTask = { item, zone, relation };
+
+        const taskFi = `Tehtävä: Laita ${item} ${getGenitive(zone)} ${relation}.`;
+        const taskZh = `(任务：把 ${getZh(item)} 放到 ${getZh(zone)} 的 ${relation === 'päällä' ? '上' : (relation === 'alla' ? '下' : '旁')}。)`;
+        
+        taskTextEl.innerHTML = `${taskFi} <span style="font-size: 0.8em; color: #555;">${taskZh}</span>`;
+    }
+    
+    function getRandom(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    // Initial setup
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.speechSynthesis.getVoices().length === 0) {
+            window.speechSynthesis.onvoiceschanged = () => console.log("Voices loaded.");
+        }
+    });
+
+</script>
+</body>
+</html>

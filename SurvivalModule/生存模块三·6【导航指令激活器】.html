@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>芬兰语导航指令激活器 (逻辑修正版)</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; line-height: 1.7; margin: 20px auto; max-width: 900px; padding: 0 20px; color: #333; background-color: #f9f9f9; }
+        h1, h2, h3, h4 { color: #2c3e50; }
+        h1 { text-align: center; margin-bottom: 35px; font-size: 2.2em; }
+        h2 { border-bottom: 2px solid #2980b9; padding-bottom: 12px; margin-top: 45px; font-size: 1.8em; color: #2980b9; } /* Navigation color: Blue */
+        h3 { margin-top: 30px; font-size: 1.5em; color: #3498db; }
+        .intro-box, .instruction-card, .dialogue-card, .interactive-map-container, .vocab-summary {
+            background-color: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .intro-box { border-left: 6px solid #2980b9; }
+        .instruction-card-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .instruction-card { text-align: center; padding: 15px; }
+        .instruction-card .icon { font-size: 2.5em; color: #3498db; }
+        .instruction-card p { margin: 8px 0; }
+        .finnish-phrase { font-weight: bold; color: #2980b9; font-size: 1.1em; }
+        .note { font-size: 0.95em; color: #555; font-style: italic; display: block; margin-top: 4px; }
+        .tts-button { background: none; border: none; cursor: pointer; font-size: 1.2em; margin-left: 8px; padding: 0; display: inline-block; vertical-align: middle; color: #3498db; }
+        .tts-button:hover { color: #21618c; opacity: 0.8; }
+        hr { border: 0; height: 1px; background-image: linear-gradient(to right, rgba(0,0,0,0), rgba(41,128,185,0.3), rgba(0,0,0,0)); margin: 40px 0; }
+        .dialogue-card .dialogue-line { margin-bottom: 12px; }
+        .dialogue-card .speaker { font-weight: bold; }
+        .dialogue-card .learner { color: #16a085; } /* Learner's text color */
+        .interactive-map-container .map-controls { text-align: center; margin-top: 15px; }
+        .interactive-map-container .map-controls button { font-size: 1.5em; width: 60px; height: 60px; margin: 5px; cursor: pointer; border: 1px solid #ccc; background-color: #f8f9f9; border-radius: 5px; position: relative;}
+        .interactive-map-container .map-controls button:hover { background-color: #e9ecef; }
+        .map-controls .control-label { font-size: 0.6em; color: #555; position: absolute; bottom: 2px; left: 0; right: 0; }
+        .vocab-summary table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .vocab-summary th, .vocab-summary td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        .vocab-summary thead { background-color: #eaf2f8; }
+        #map-feedback { min-height: 1.5em; }
+    </style>
+</head>
+<body>
+
+    <section id="navigation-activator">
+        <h1>🧭【导航指令激活器】从A到B的动态语言</h1>
+        <div class="intro-box">
+            <p>你已经学会了描述“哪里有什么”，现在我们来激活一项更关键的技能：**如何从一个地方去到另一个地方**。</p>
+            <p>这个模块将为你装备上最核心的动态导航指令，让你不仅能听懂别人的指路，还能清晰地描述自己的行动路线。</p>
+        </div>
+
+        <h2>步骤一：核心导航语块</h2>
+        <p>首先，让我们认识这些指路时最高频的“动作+方向”语块。每个语块都有“指令式”（别人对你说）和“陈述式”（你说你自己的行动）两种形式。</p>
+        <div class="instruction-card-container">
+            <div class="instruction-card"><div class="icon">⬆️</div><h4>向前走</h4><p><strong>指令:</strong> <span class="speakable-finnish">Mene suoraan eteenpäin!</span></p><p><strong>陈述:</strong> <span class="speakable-finnish">Minä menen suoraan eteenpäin.</span></p></div>
+            <div class="instruction-card"><div class="icon">⬅️</div><h4>左转</h4><p><strong>指令:</strong> <span class="speakable-finnish">Käänny vasemmalle!</span></p><p><strong>陈述:</strong> <span class="speakable-finnish">Minä käännyn vasemmalle.</span></p></div>
+            <div class="instruction-card"><div class="icon">➡️</div><h4>右转</h4><p><strong>指令:</strong> <span class="speakable-finnish">Käänny oikealle!</span></p><p><strong>陈述:</strong> <span class="speakable-finnish">Minä käännyn oikealle.</span></p></div>
+            <div class="instruction-card"><div class="icon">⬇️</div><h4>后退</h4><p><strong>指令:</strong> <span class="speakable-finnish">Mene vähän taaksepäin.</span></p><p><strong>陈述:</strong> <span class="speakable-finnish">Minä menen taaksepäin.</span></p></div>
+            <div class="instruction-card"><div class="icon">↩️</div><h4>掉头/转身</h4><p><strong>指令:</strong> <span class="speakable-finnish">Käänny takaisin!</span></p><p><strong>陈述:</strong> <span class="speakable-finnish">Minä käännyn takaisin.</span></p></div>
+            <div class="instruction-card"><div class="icon">👣</div><h4>沿着...走</h4><p><strong>指令:</strong> <span class="speakable-finnish">Kävele katua pitkin!</span></p><p><strong>陈述:</strong> <span class="speakable-finnish">Minä kävelen katua pitkin.</span></p></div>
+             <div class="instruction-card"><div class="icon">🌳</div><h4>穿过...</h4><p><strong>指令:</strong> <span class="speakable-finnish">Mene puiston läpi!</span></p><p><strong>陈述:</strong> <span class="speakable-finnish">Minä menen puiston läpi.</span></p></div>
+        </div>
+
+        <h2>步骤二：简要指路场景对话 (饱和输入)</h2>
+        <p>现在，让我们看看这些语块在真实的问路对话中是如何组合使用的。</p>
+        <div class="dialogue-card">
+            <h4>场景A：路口左转</h4>
+            <div class="dialogue-line"><span class="speaker learner">Sinä:</span> <span class="speakable-finnish">Anteeksi, missä on posti?</span></div>
+            <div class="dialogue-line"><span class="speaker">Minä:</span> <span class="speakable-finnish">Se on helppo. Mene suoraan eteenpäin risteykseen asti.</span> <span class="note">(很简单。一直走到十字路口。)</span></div>
+            <div class="dialogue-line"><span class="speaker">Minä:</span> <span class="speakable-finnish">Sitten, käänny vasemmalle. Posti on siellä, oikealla puolella.</span> <span class="note">(然后，向左转。邮局就在那里，在(路的)右边。)</span></div>
+            <div class="dialogue-line"><span class="speaker learner">Sinä:</span> <span class="speakable-finnish">Selvä, kiitos!</span></div>
+        </div>
+        <div class="dialogue-card">
+            <h4>场景B：沿街走，在对面</h4>
+            <div class="dialogue-line"><span class="speaker learner">Sinä:</span> <span class="speakable-finnish">Anteeksi, etsin yhtä kirjakauppaa.</span> <span class="note">(打扰了，我找一家书店。)</span></div>
+            <div class="dialogue-line"><span class="speaker">Minä:</span> <span class="speakable-finnish">Aivan. Kävele vain tätä katua pitkin, noin 200 metriä.</span> <span class="note">(啊对。就沿着这条街走，大概200米。)</span></div>
+            <div class="dialogue-line"><span class="speaker">Minä:</span> <span class="speakable-finnish">Kirjakauppa on tien toisella puolella, ison tavaratalon vastapäätä.</span> <span class="note">(书店在路的另一边，一个大百货公司的对面。)</span></div>
+            <div class="dialogue-line"><span class="speaker learner">Sinä:</span> <span class="speakable-finnish">Okei, kiitos avusta!</span></div>
+        </div>
+        <div class="dialogue-card">
+            <h4>场景C：走错路，需要掉头</h4>
+            <div class="dialogue-line"><span class="speaker learner">Sinä:</span> <span class="speakable-finnish">Anteeksi, onko museo tällä suunnalla?</span> <span class="note">(请问，博物馆是这个方向吗？)</span></div>
+            <div class="dialogue-line"><span class="speaker">Minä:</span> <span class="speakable-finnish">Ei, museo on toisessa suunnassa. Sinä menet väärään suuntaan.</span> <span class="note">(不，博物馆在另一个方向。你走错方向了。)</span></div>
+            <div class="dialogue-line"><span class="speaker">Minä:</span> <span class="speakable-finnish">Sinun pitää kääntyä takaisin.</span> <span class="note">(你必须掉头。)</span></div>
+            <div class="dialogue-line"><span class="speaker learner">Sinä:</span> <span class="speakable-finnish">Voi ei! Selvä, minä käännyn takaisin. Kiitos!</span> <span class="note">(哦不！好的，我掉头回去。谢谢！)</span></div>
+        </div>
+        
+        <h2>步骤三：微型地图导航挑战</h2>
+        <p>你已经看过了别人如何指路，现在轮到你亲自操作了！根据屏幕上方的指令，使用下面的控制按钮，将你的图标 📍 移动到终点 🏁。</p>
+        <div class="interactive-map-container">
+            <h4 id="map-instruction-text" style="text-align:center; min-height: 2.2em;"></h4>
+            <div style="text-align:center;">
+                <svg id="navigation-map" width="300" height="300" style="border:2px solid #3498db; background-color: #ecf5fb;">
+                    <path d="M 60 0 V 300 M 120 0 V 300 M 180 0 V 300 M 240 0 V 300" stroke="#bde0fe" stroke-width="1"/>
+                    <path d="M 0 60 H 300 M 0 120 H 300 M 0 180 H 300 M 0 240 H 300" stroke="#bde0fe" stroke-width="1"/>
+                    <text id="finish-flag" x="270" y="35" font-size="24">🏁</text>
+                    <text id="player-icon" x="30" y="35" font-size="24" transform="rotate(0 30 35)">📍</text>
+                </svg>
+            </div>
+            <div class="map-controls">
+                <button onclick="handleMove('forward')" title="Mene eteenpäin">↑<span class="control-label">向前</span></button><br>
+                <button onclick="handleMove('turn_left')" title="Käänny vasemmalle">←<span class="control-label">左转</span></button>
+                <button onclick="handleMove('backward')" title="Mene taaksepäin">↓<span class="control-label">后退</span></button>
+                <button onclick="handleMove('turn_right')" title="Käänny oikealle">→<span class="control-label">右转</span></button>
+            </div>
+            <div id="map-feedback" style="text-align:center; font-weight:bold; margin-top:10px;"></div>
+        </div>
+
+        <h2>步骤四：词汇表总结</h2>
+        <div class="vocab-summary">
+             <table>
+                <thead><tr><th>芬兰语 (原形/固定短语)</th><th>中文意思</th><th>备注 (动词给出minä/sinä形式)</th></tr></thead>
+                <tbody>
+                    <tr><td><span class="speakable-finnish">suoraan eteenpäin</span></td><td>一直向前</td><td>(固定短语)</td></tr>
+                    <tr><td><span class="speakable-finnish">taaksepäin</span></td><td>向后</td><td>(方向副词)</td></tr>
+                    <tr><td><span class="speakable-finnish">takaisin</span></td><td>回去，回来</td><td>(副词)</td></tr>
+                    <tr><td><span class="speakable-finnish">ympäri</span></td><td>环绕，转身</td><td>(副词/后置词)</td></tr>
+                    <tr><td><span class="speakable-finnish">vasemmalle</span></td><td>向左</td><td>(方向副词)</td></tr>
+                    <tr><td><span class="speakable-finnish">oikealle</span></td><td>向右</td><td>(方向副词)</td></tr>
+                    <tr><td><span class="speakable-finnish">kääntyä</span></td><td>转弯</td><td><span class="speakable-finnish">minä käännyn, sinä käännyt</span></td></tr>
+                    <tr><td><span class="speakable-finnish">kävellä</span></td><td>走路</td><td><span class="speakable-finnish">minä kävelen, sinä kävelet</span></td></tr>
+                    <tr><td><span class="speakable-finnish">pitkin</span></td><td>沿着...</td><td>(后置词，跟部分格)</td></tr>
+                    <tr><td><span class="speakable-finnish">läpi</span></td><td>穿过...</td><td>(后置词，跟所有格)</td></tr>
+                    <tr><td><span class="speakable-finnish">risteys</span></td><td>十字路口</td><td><span class="speakable-finnish">risteykseen</span> (入格)</td></tr>
+                    <tr><td><span class="speakable-finnish">tie</span></td><td>路</td><td><span class="speakable-finnish">tien toisella puolella</span> (在路的另一边)</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+<script>
+    const finnishLang = 'fi-FI';
+    let isSpeaking = false;
+
+    function speakText(text, lang = finnishLang) {
+        if (!('speechSynthesis' in window)) return;
+        if (isSpeaking) { window.speechSynthesis.cancel(); setTimeout(() => startSpeaking(text, lang), 50); } 
+        else { startSpeaking(text, lang); }
+    }
+
+    function startSpeaking(text, lang) {
+        isSpeaking = true;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        const voices = window.speechSynthesis.getVoices();
+        let selectedVoice = voices.find(voice => voice.lang.toLowerCase() === 'fi-fi') || voices.find(voice => voice.lang.toLowerCase().startsWith('fi'));
+        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.onend = () => { isSpeaking = false; };
+        utterance.onerror = () => { isSpeaking = false; };
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function addTTSButton(element, textToSpeak) {
+        let cleanedText = textToSpeak.replace(/\s*\(.*?\)\s*/g, '').trim().replace(/（.*?）/g, '').trim().replace(/\[.*?\]/g, '').trim();
+        if (!cleanedText) return;
+        
+        if (element.querySelector('.tts-button')) return;
+
+        const button = document.createElement('button');
+        button.className = 'tts-button';
+        button.innerHTML = '🔊';
+        button.title = '播放: ' + cleanedText;
+        button.setAttribute('aria-label', '播放音频: ' + cleanedText);
+        button.onclick = (event) => { event.preventDefault(); event.stopPropagation(); speakText(cleanedText); };
+        
+        element.appendChild(button);
+    }
+
+    function initializeAllTTS() {
+        document.querySelectorAll('.speakable-finnish').forEach(el => {
+            const textContent = el.textContent.split('(')[0].split('（')[0].trim();
+            if (textContent && !el.querySelector('.tts-button')) { addTTSButton(el, textContent); }
+        });
+        document.querySelectorAll('h1, h2, h3, h4, .intro-box p').forEach(container => {
+             if (container.querySelector('.speakable-finnish')) return;
+             const clone = container.cloneNode(true);
+             clone.querySelectorAll('.note, .tts-button, .icon').forEach(child => child.remove());
+             const textContent = clone.textContent.trim();
+             if (textContent && !container.querySelector('.tts-button') && textContent.match(/[a-zA-ZäöÄÖ]/)) { addTTSButton(container, textContent); }
+        });
+        document.querySelectorAll('.vocab-summary td').forEach(td => {
+             if (!td.querySelector('.speakable-finnish') && !td.querySelector('.tts-button')) {
+                 const text = td.textContent.trim();
+                 if(text.match(/[a-zA-ZäöÄÖ]/)){ addTTSButton(td, text); }
+             }
+        });
+    }
+
+    // --- NEW Interactive Map Logic ---
+    const playerIcon = document.getElementById('player-icon');
+    const finishIcon = document.getElementById('finish-flag');
+    const instructionEl = document.getElementById('map-instruction-text');
+    const feedbackEl = document.getElementById('map-feedback');
+    const stepSize = 60;
+    const gridBounds = { minX: 30, maxX: 270, minY: 35, maxY: 275 };
+
+    let playerState = {
+        x: 30,
+        y: 35,
+        facing: 'right', // 'up', 'down', 'left', 'right'
+        rotation: 0
+    };
+
+    const challenge = [
+        { type: 'forward', instruction: "Mene suoraan eteenpäin." },
+        { type: 'turn_right', instruction: "Käänny oikealle." },
+        { type: 'forward', instruction: "Mene suoraan eteenpäin." },
+        { type: 'forward', instruction: "Mene suoraan eteenpäin." },
+        { type: 'turn_left', instruction: "Käänny vasemmalle." },
+        { type: 'forward', instruction: "Mene suoraan eteenpäin." }
+    ];
+    let challengeIndex = 0;
+    
+    function resetChallenge() {
+        playerState = { x: 30, y: 35, facing: 'right', rotation: 0 };
+        challengeIndex = 0;
+        updatePlayerPosition();
+        displayInstruction();
+        feedbackEl.textContent = "";
+    }
+
+    function displayInstruction() {
+        if (challengeIndex < challenge.length) {
+            instructionEl.innerHTML = `<span class="speakable-finnish">${challengeIndex + 1}. ${challenge[challengeIndex].instruction}</span>`;
+        } else {
+            instructionEl.innerHTML = `<span class="speakable-finnish">Olet perillä!</span>`;
+            checkWin();
+        }
+        initializeAllTTS();
+    }
+
+    function updatePlayerPosition() {
+        playerIcon.setAttribute('x', playerState.x);
+        playerIcon.setAttribute('y', playerState.y);
+        playerIcon.setAttribute('transform', `rotate(${playerState.rotation} ${playerState.x} ${playerState.y})`);
+    }
+
+    function handleMove(action) {
+        if (challengeIndex >= challenge.length) return; // Challenge complete
+
+        const expectedAction = challenge[challengeIndex].type;
+        if (action === expectedAction) {
+            performAction(action);
+            challengeIndex++;
+            feedbackEl.textContent = "Oikein! (对!)";
+            setTimeout(() => { if(feedbackEl.textContent === "Oikein! (对!)") feedbackEl.textContent = ""; }, 1500);
+            displayInstruction();
+        } else {
+            feedbackEl.textContent = "Väärä liike! Yritä uudelleen. (动作错了！再试试。)";
+        }
+    }
+
+    function performAction(action) {
+        switch(action) {
+            case 'forward':
+                if (playerState.facing === 'up') playerState.y -= stepSize;
+                if (playerState.facing === 'down') playerState.y += stepSize;
+                if (playerState.facing === 'left') playerState.x -= stepSize;
+                if (playerState.facing === 'right') playerState.x += stepSize;
+                break;
+            case 'backward':
+                if (playerState.facing === 'up') playerState.y += stepSize;
+                if (playerState.facing === 'down') playerState.y -= stepSize;
+                if (playerState.facing === 'left') playerState.x += stepSize;
+                if (playerState.facing === 'right') playerState.x -= stepSize;
+                break;
+            case 'turn_left':
+                if (playerState.facing === 'up') playerState.facing = 'left';
+                else if (playerState.facing === 'left') playerState.facing = 'down';
+                else if (playerState.facing === 'down') playerState.facing = 'right';
+                else if (playerState.facing === 'right') playerState.facing = 'up';
+                playerState.rotation -= 90;
+                break;
+            case 'turn_right':
+                if (playerState.facing === 'up') playerState.facing = 'right';
+                else if (playerState.facing === 'right') playerState.facing = 'down';
+                else if (playerState.facing === 'down') playerState.facing = 'left';
+                else if (playerState.facing === 'left') playerState.facing = 'up';
+                playerState.rotation += 90;
+                break;
+        }
+        // Clamp position to bounds
+        playerState.x = Math.max(gridBounds.minX, Math.min(playerState.x, gridBounds.maxX));
+        playerState.y = Math.max(gridBounds.minY, Math.min(playerState.y, gridBounds.maxY));
+        updatePlayerPosition();
+    }
+    
+    function checkWin() {
+        const finishPos = { x: parseFloat(finishIcon.getAttribute('x')), y: parseFloat(finishIcon.getAttribute('y')) };
+        if (Math.abs(playerState.x - finishPos.x) < stepSize && Math.abs(playerState.y - finishPos.y) < stepSize) {
+             feedbackEl.innerHTML = `<button onclick="resetChallenge()">Pelaa uudelleen (再玩一次)</button>`;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.speechSynthesis.getVoices().length === 0) {
+            window.speechSynthesis.onvoiceschanged = initializeAllTTS;
+        } else {
+            initializeAllTTS();
+        }
+        setTimeout(initializeAllTTS, 300); 
+        resetChallenge();
+    });
+</script>
+
+</body>
+</html>

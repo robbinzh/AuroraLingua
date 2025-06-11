@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>芬兰语模块三·最终章：综合挑战与空间宇宙观</title>
+    <style>
+        /* 复用并演化之前的CSS，确保风格统一 */
+        body { font-family: "Microsoft YaHei", sans-serif; line-height: 1.7; margin: 20px auto; max-width: 900px; padding: 0 20px; color: #333; background-color: #f9f9f9; }
+        h1, h2, h3, h4 { color: #2c3e50; }
+        h1 { text-align: center; margin-bottom: 35px; font-size: 2.2em; }
+        h2 { border-bottom: 2px solid #27ae60; padding-bottom: 12px; margin-top: 45px; font-size: 1.8em; color: #27ae60; } /* Graduation color: Green for Go! */
+        h3 { margin-top: 30px; font-size: 1.5em; color: #2ecc71; }
+        .final-summary h2 { border-bottom-color: #4a235a; color: #4a235a; } /* Deep purple for final chapter */
+        .final-summary h3 { color: #6c3483; }
+
+        .challenge-card, .recap-map-container, .narrative-template, .dialogue-challenge, .final-summary {
+            background-color: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .example { border-left: 6px solid #27ae60 !important; }
+        .final-summary .example { border-left-color: #4a235a; }
+        .finnish-phrase { font-weight: bold; color: #27ae60; font-size: 1.1em; } /* Adjusted size for tables */
+        .note { font-size: 0.95em; color: #555; font-style: italic; display: block; margin-top: 4px; }
+        .tts-button { background: none; border: none; cursor: pointer; font-size: 1.2em; margin-left: 8px; padding: 0; display: inline-block; vertical-align: middle; color: #27ae60; }
+        .tts-button:hover { color: #229954; opacity: 0.8; }
+        .final-summary .tts-button { color: #6c3483; }
+        .final-summary .finnish-phrase { color: #6c3483; }
+
+
+        hr { border: 0; height: 1px; background-image: linear-gradient(to right, rgba(0,0,0,0), rgba(39,174,96,0.3), rgba(0,0,0,0)); margin: 40px 0; }
+        .action-button { background-color: #2ecc71; color: white; padding: 12px 18px; border: none; border-radius: 5px; cursor: pointer; margin-top:12px; font-size: 1em; transition: background-color 0.2s; }
+        .action-button:hover { background-color: #27ae60; }
+        
+        /* Recap Map Styles */
+        .recap-map { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; text-align: center; }
+        .dimension-node { padding: 15px; border: 1px dashed #ccc; border-radius: 8px; }
+        .dimension-node h4 { margin-top: 0; color: #34495e; border-bottom: 1px solid; padding-bottom: 5px;}
+        .dim1 h4 { border-color: #3498db; } .dim1 { background-color: #ecf5fb; }
+        .dim2 h4 { border-color: #16a085; } .dim2 { background-color: #e8f6f3; }
+        .dim3 h4 { border-color: #d35400; } .dim3 { background-color: #fef5e7; }
+        .dim4 h4 { border-color: #8e44ad; } .dim4 { background-color: #f5eef8; }
+        .dim5 h4 { border-color: #e67e22; } .dim5 { background-color: #fff3e0; }
+
+        /* Narrative Template Styles */
+        .narrative-template ol { list-style-type: none; padding-left: 0; counter-reset: step-counter; }
+        .narrative-template li { counter-increment: step-counter; margin-bottom: 20px; padding: 15px; border-left: 5px solid #bdc3c7; background-color:#f8f9f9;}
+        .narrative-template li::before { content: counter(step-counter); font-weight: bold; font-size: 1.5em; color: #fff; background-color: #27ae60; border-radius: 50%; width: 30px; height: 30px; display: inline-block; text-align: center; line-height: 30px; margin-right: 15px; }
+        
+        /* Helsinki Map Styles */
+        .helsinki-map-container { display: flex; gap: 20px; flex-wrap: wrap; }
+        .helsinki-map { flex: 2; min-width: 300px; }
+        .task-list { flex: 1; min-width: 250px; background-color:#f8f9f9; padding:15px; border-radius:5px; }
+        .task-list h4 { margin-top:0; }
+        .task-list ul { list-style-type: lower-alpha; padding-left: 20px; }
+
+        /* Dialogue Challenge Styles */
+        .dialogue-option { display: block; margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; }
+        .dialogue-option:hover { background-color: #f0f0f0; }
+        .feedback-area { margin-top: 15px; padding: 12px; border-radius: 5px; text-align:center; font-size: 1.1em; min-height: 1.5em; }
+        .correct { background-color: #d1f2eb; color: #0c6255; border: 1px solid #a3e4d7; }
+        .incorrect { background-color: #fdedec; color: #c0392b; border: 1px solid #f5b7b1; }
+        
+        /* Universe Map Table Styles */
+        .universe-map-table { width: 100%; border-collapse: collapse; margin-top: 20px; background-color: #fdfefe; }
+        .universe-map-table th, .universe-map-table td { border: 1px solid #e5e7e9; padding: 12px; text-align: left; vertical-align: middle; }
+        .universe-map-table thead th { background-color: #faf3fc; color: #4a235a; }
+        .axis-title { font-size: 1.3em; font-weight: bold; color: #6c3483; }
+        .axis-icon { font-size: 1.5em; margin-right: 10px; }
+    </style>
+</head>
+<body>
+
+    <section id="final-challenge">
+        <h1>🎓【模块三毕业挑战】赫尔辛基一日游：你的导航与叙事</h1>
+        <div class="example">
+            <p><span class="speakable-finnish">Onneksi olkoon!</span> (恭喜你！) 你已经完成了空间定位器的所有核心维度训练。你不再是一个迷失的旅行者，而是一个拥有“芬兰语内置GPS”的探险家！</p>
+            <p>现在，是时候将所有知识融会贯通，接受最终的“芬兰城市生存挑战”了。你的任务是：规划一次赫尔辛基一日游，并用你学到的芬兰语，清晰地描述出你的行程。</p>
+        </div>
+
+        <h2>步骤一：装备你的导航仪 - 五大空间维度宇宙回顾</h2>
+        <p>在出发前，让我们快速回顾并激活你已经掌握的五大空间定位能力。这张“认知出血总路径图”是你完成挑战的速查表和信心来源！</p>
+        <div class="recap-map-container">
+            <div class="recap-map">
+                <div class="dimension-node dim1"><h4>维度一: 容器空间</h4><p class="speakable-finnish">Minä olen <span class="finnish-phrase">talossa</span>.</p><p class="speakable-finnish">Minä menen <span class="finnish-phrase">taloon</span>.</p></div>
+                <div class="dimension-node dim2"><h4>维度二: 表面空间</h4><p class="speakable-finnish">Kirja on <span class="finnish-phrase">pöydällä</span>.</p><p class="speakable-finnish">Laita kirja <span class="finnish-phrase">pöydälle</span>.</p></div>
+                <div class="dimension-node dim3"><h4>维度三: 相对空间</h4><p class="speakable-finnish">Sinä olet minun <span class="finnish-phrase">edessä</span>.</p><p class="speakable-finnish">Kauppa on <span class="finnish-phrase">vasemmalla</span>.</p></div>
+                <div class="dimension-node dim4"><h4>维度四: 方向空间</h4><p class="speakable-finnish">Helsinki on <span class="finnish-phrase">etelässä</span>.</p><p class="speakable-finnish">Minä matkustan <span class="finnish-phrase">pohjoiseen</span>.</p></div>
+                <div class="dimension-node dim5"><h4>维度五: 位置关系</h4><p class="speakable-finnish">Apteekki on aseman <span class="finnish-phrase">vieressä</span>.</p><p class="speakable-finnish">Puisto on postin <span class="finnish-phrase">vastapäätä</span>.</p></div>
+            </div>
+        </div>
+
+        <h2>步骤二：核心任务 - “我的寻宝路线”语言输出</h2>
+        <p>这是你的挑战核心！下面是一张简化的赫尔辛基市中心地图和你的任务清单。请根据任务，阅读下面的“行程叙事”。</p>
+        <div class="challenge-card">
+            <div class="helsinki-map-container">
+                <div class="helsinki-map">
+                    <svg id="helsinki-city-map" width="100%" viewBox="0 0 400 350" style="border:1px solid #ddd; border-radius: 5px; background-color: #ecf5fb;">
+                        <rect x="0" y="280" width="400" height="70" fill="#aed6f1"></rect><text x="200" y="315" text-anchor="middle" fill="#2980b9" font-size="14" class="speakable-finnish">Meri (海)</text>
+                        <rect x="50" y="160" width="300" height="40" fill="#abebc6"></rect><text x="200" y="185" text-anchor="middle" fill="#229954" font-size="10" class="speakable-finnish">Esplanadin puisto (公园)</text>
+                        <rect x="50" y="100" width="80" height="40" fill="#f5b041"></rect><text x="90" y="125" text-anchor="middle" fill="white" font-size="8" class="speakable-finnish">Stockmann</text>
+                        <rect x="270" y="50" width="80" height="40" fill="#ec7063"></rect><text x="310" y="75" text-anchor="middle" fill="white" font-size="8" class="speakable-finnish">Tuomiokirkko (大教堂)</text>
+                        <rect x="50" y="220" width="80" height="40" fill="#a569bd"></rect><text x="90" y="245" text-anchor="middle" fill="white" font-size="8" class="speakable-finnish">Kauppatori (码头市场)</text>
+                        <g><circle cx="200" cy="50" r="15" fill="#34495e"></circle><text x="200" y="55" text-anchor="middle" fill="white" font-size="10">🚂</text><text x="200" y="30" text-anchor="middle" font-size="8" class="speakable-finnish">Rautatieasema (火车站)</text></g>
+                    </svg>
+                </div>
+                <div class="task-list">
+                    <h4>📝 <span class="speakable-finnish">Minun Tehtävä</span> (我的任务)</h4>
+                    <ul>
+                        <li><span class="speakable-finnish">Sinä olet rautatieasemalla.</span> <span class="note">(你现在在中央火车站。)</span></li>
+                        <li><span class="speakable-finnish">Mene ensin Stockmannille.</span> <span class="note">(先去Stockmann商场。)</span></li>
+                        <li><span class="speakable-finnish">Sitten, kävele Tuomiokirkon eteen.</span> <span class="note">(然后，走到大教堂前面。)</span></li>
+                        <li><span class="speakable-finnish">Lopuksi, mene Kauppatorille.</span> <span class="note">(最后，去码头市场。)</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="narrative-template">
+                <h4>✍️ <span class="speakable-finnish">Minun Suunnitelma</span> (我的计划)</h4>
+                <p>下面是一个已经为你完成的计划描述。请大声朗读，感受所有空间维度的知识是如何融合在一起的。</p>
+                <ol>
+                    <li><span class="speakable-finnish">Ensin, minä olen rautatieasemalla. Minä menen länteen ja vähän etelään Stockmannille.</span> <span class="note">(首先，我在火车站。我向西边和南边一点去Stockmann。)</span></li>
+                    <li><span class="speakable-finnish">Sitten, minä tulen Stockmannilta. Minä menen itään ja kävelen Esplanadin puiston vieressä. Tuomiokirkko on puiston pohjoispuolella.</span> <span class="note">(然后，我从Stockmann出来。我向东走，并沿着滨海公园旁边走。大教堂在公园的北边。)</span></li>
+                    <li><span class="speakable-finnish">Lopuksi, minä menen Tuomiokirkolta etelään. Minä menen Kauppatorille. Se on meren vieressä.</span> <span class="note">(最后，我从大教堂向南走。我到码头市场去。它在海的旁边。)</span></li>
+                    <li><span class="speakable-finnish">Tämä on hieno päivä!</span> <span class="note">(这是美好的一天！)</span></li>
+                </ol>
+            </div>
+        </div>
+
+        <h2>步骤三：升级版“问路指路”情景对话</h2>
+        <p>你正在<span class="finnish-phrase speakable-finnish">Tuomiokirkon</span>(大教堂)前拍照，一个游客向你问路。他想去<span class="finnish-phrase speakable-finnish">Rautatieasemalle</span>(火车站)。请根据地图，从下面三个回答中，选择一个**路径最合理、描述最清晰**的选项。</p>
+        <div class="dialogue-challenge">
+            <p><strong>Turisti (游客):</strong> <span class="speakable-finnish">Anteeksi, voitko auttaa? Missä on rautatieasema?</span></p>
+            <div id="dialogue-options">
+                <div class="dialogue-option" onclick="checkDialogueAnswer('A', false)"><span class="speakable-finnish">A) Se on etelässä, Kauppatorin takana.</span> <span class="note">(它在南边，码头市场的后面。)</span></div>
+                <div class="dialogue-option" onclick="checkDialogueAnswer('B', true)"><span class="speakable-finnish">B) Mene länteen, Esplanadin puiston ohi. Asema on puiston pohjoispuolella.</span> <span class="note">(向西走，经过滨海公园。车站在公园的北边。)</span></div>
+                <div class="dialogue-option" onclick="checkDialogueAnswer('C', false)"><span class="speakable-finnish">C) Mene pohjoiseen. Se on hyvin lähellä.</span> <span class="note">(向北走。它非常近。)</span></div>
+            </div>
+            <div id="feedback-area-dialogue" class="feedback-area"></div>
+        </div>
+    </section>
+
+    <hr style="border-width:2px; border-color:#4a235a;">
+
+    <section class="final-summary">
+        <h2>🌌【最终章】你的芬兰语空间宇宙观：五大感知轴的统一</h2>
+        <div class="example">
+            <p>恭喜你，探险家！你已经穿越了芬兰语空间的五大维度。现在，让我们退后一步，从上帝视角看看你所构建的这个精妙宇宙。你会发现，所有复杂的格变化，最终都坍缩在几个核心的“感知轴”上。</p>
+        </div>
+        
+        <div class="challenge-card">
+            <h3>【空间出血·全维度图谱】</h3>
+            <table class="universe-map-table">
+                <thead>
+                    <tr>
+                        <th>感知轴</th>
+                        <th>我的状态/动作</th>
+                        <th>“尾音魔法”</th>
+                        <th>你已掌握的例子</th>
+                        <th>我的内心独白 (语言感知方式)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="axis-icon">📦</span><strong class="axis-title">容器轴</strong></td>
+                        <td>在里面 (静态)</td>
+                        <td><span class="finnish-phrase">-ssa/-ssä</span></td>
+                        <td><span class="speakable-finnish">talo<span class="finnish-phrase">ssa</span>, kaupa<span class="finnish-phrase">ssa</span></span></td>
+                        <td>“我被这个空间**包裹**着。”</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>往里走 (动态)</td>
+                        <td><span class="finnish-phrase">-seen/-hVn/-Vn</span></td>
+                        <td><span class="speakable-finnish">talo<span class="finnish-phrase">on</span>, koulu<span class="finnish-phrase">un</span></span></td>
+                        <td>“我正**进入**这个空间。”</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>从里面出来 (动态)</td>
+                        <td><span class="finnish-phrase">-sta/-stä</span></td>
+                        <td><span class="speakable-finnish">talo<span class="finnish-phrase">sta</span>, lauku<span class="finnish-phrase">sta</span></span></td>
+                        <td>“我从这个空间里被**释放**出来。”</td>
+                    </tr>
+                    <tr>
+                        <td><span class="axis-icon">🖐️</span><strong class="axis-title">表面轴</strong></td>
+                        <td>在上面 (静态)</td>
+                        <td><span class="finnish-phrase">-lla/-llä</span></td>
+                        <td><span class="speakable-finnish">pöydä<span class="finnish-phrase">llä</span>, asema<span class="finnish-phrase">lla</span></span></td>
+                        <td>“我正**接触**着这个表面。”</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>到上面去 (动态)</td>
+                        <td><span class="finnish-phrase">-lle</span></td>
+                        <td><span class="speakable-finnish">pöydä<span class="finnish-phrase">lle</span>, lattia<span class="finnish-phrase">lle</span></span></td>
+                        <td>“我正**移动到**这个表面上。”</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>从上面离开 (动态)</td>
+                        <td><span class="finnish-phrase">-lta/-ltä</span></td>
+                        <td><span class="speakable-finnish">pöydä<span class="finnish-phrase">ltä</span>, katolta</span></td>
+                        <td>“我正**离开**这个表面。”</td>
+                    </tr>
+                    <tr>
+                        <td><span class="axis-icon">🧭</span><strong class="axis-title">相对/方向轴</strong></td>
+                        <td>在我的左/右/前</td>
+                        <td><span class="finnish-phrase">vasemmalla, oikealla, edessä...</span></td>
+                        <td><span class="speakable-finnish">Minun <span class="finnish-phrase">edessä</span></span></td>
+                        <td>“方向从**我的身体**出发。”</td>
+                    </tr>
+                     <tr>
+                        <td></td>
+                        <td>在北/南/东/西</td>
+                        <td><span class="finnish-phrase">-ssa, -sta, -Vn</span></td>
+                        <td><span class="speakable-finnish">pohjoise<span class="finnish-phrase">ssa</span>, etelää<span class="finnish-phrase">n</span></span></td>
+                        <td>“我处于**世界坐标**的某个区域。”</td>
+                    </tr>
+                    <tr>
+                        <td><span class="axis-icon">🔗</span><strong class="axis-title">关系轴</strong></td>
+                        <td>在旁边</td>
+                        <td><span class="finnish-phrase">vieressä</span></td>
+                        <td><span class="speakable-finnish">aseman <span class="finnish-phrase">vieressä</span></span></td>
+                        <td>“我**停靠**在‘它’的旁边。”</td>
+                    </tr>
+                     <tr>
+                        <td></td>
+                        <td>到旁边去</td>
+                        <td><span class="finnish-phrase">vierelle</span></td>
+                        <td><span class="speakable-finnish">Tule minun <span class="finnish-phrase">vierelle</span>.</span></td>
+                        <td>“我**靠近**‘它’，但不进入。”</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>在两者之间</td>
+                        <td><span class="finnish-phrase">välissä</span></td>
+                        <td><span class="speakable-finnish">postin ja kaupan <span class="finnish-phrase">välissä</span></span></td>
+                        <td>“我处于两者形成的**缝隙**中。”</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>在正中心</td>
+                        <td><span class="finnish-phrase">keskellä</span></td>
+                        <td><span class="speakable-finnish">puiston <span class="finnish-phrase">keskellä</span></span></td>
+                        <td>“我处于这个区域的**核心**。”</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="example">
+            <p>看！这就是你掌握的芬兰语空间宇宙。你不再需要死记硬背15个格的名字，因为你已经理解了它们背后的**核心感知逻辑**。你学会的不是规则，而是一种全新的、用声音和身体去感知世界的方式。</p>
+            <p>现在，带着你的内置GPS，去探索真实的芬兰吧！ <span class="speakable-finnish">Hyvää matkaa!</span> (旅途愉快！)</p>
+        </div>
+    </section>
+
+<script>
+    const finnishLang = 'fi-FI';
+    let isSpeaking = false;
+
+    function speakText(text, lang = finnishLang) {
+        if (!('speechSynthesis' in window)) return;
+        if (isSpeaking) { window.speechSynthesis.cancel(); setTimeout(() => startSpeaking(text, lang), 50); } 
+        else { startSpeaking(text, lang); }
+    }
+
+    function startSpeaking(text, lang) {
+        isSpeaking = true;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        const voices = window.speechSynthesis.getVoices();
+        let selectedVoice = voices.find(voice => voice.lang.toLowerCase() === 'fi-fi') || voices.find(voice => voice.lang.toLowerCase().startsWith('fi'));
+        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.onend = () => { isSpeaking = false; };
+        utterance.onerror = () => { isSpeaking = false; };
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function addTTSButton(element, textToSpeak) {
+        let cleanedText = textToSpeak.replace(/\s*\(.*?\)\s*/g, '').trim().replace(/（.*?）/g, '').trim().replace(/\[.*?\]/g, '').trim();
+        if (!cleanedText) return;
+        
+        if (element.querySelector('.tts-button')) return;
+
+        const button = document.createElement('button');
+        button.className = 'tts-button';
+        button.innerHTML = '🔊';
+        button.title = '播放: ' + cleanedText;
+        button.setAttribute('aria-label', '播放音频: ' + cleanedText);
+        button.onclick = (event) => { event.preventDefault(); event.stopPropagation(); speakText(cleanedText); };
+        
+        element.appendChild(button);
+    }
+
+    function initializeAllTTS() {
+        const elementsToMakeSpeakable = document.querySelectorAll('.speakable-finnish');
+        elementsToMakeSpeakable.forEach(el => {
+            const textContent = el.textContent.split('(')[0].split('（')[0].trim();
+            if (textContent && !el.querySelector('.tts-button')) {
+                addTTSButton(el, textContent);
+            }
+        });
+
+        document.querySelectorAll('h1, h2, h3, h4, p, li, .dialogue-option').forEach(container => {
+             if (container.querySelector('.speakable-finnish')) return; // If it has a speakable child, don't add to parent.
+             const clone = container.cloneNode(true);
+             clone.querySelectorAll('.note, .tts-button, .axis-icon').forEach(child => child.remove());
+             const textContent = clone.textContent.trim();
+             if (textContent && !container.querySelector('.tts-button') && textContent.match(/[a-zA-ZäöÄÖ]/)) {
+                 addTTSButton(container, textContent);
+             }
+        });
+    }
+
+    const dialogueFeedbackEl = document.getElementById('feedback-area-dialogue');
+    function checkDialogueAnswer(choice, isCorrect) {
+        if (!dialogueFeedbackEl) return;
+        let feedbackText = '';
+        if (isCorrect) {
+            feedbackText = `<span class="speakable-finnish">Aivan oikein! Tämä on selkein ja oikea ohje.</span><span class="note">(完全正确！这是最清晰、最正确的指示。)</span>`;
+            dialogueFeedbackEl.className = 'feedback-area correct';
+        } else {
+            feedbackText = `<span class="speakable-finnish">Ei ihan. Tämä ohje on väärä tai epäselvä. Yritä uudelleen!</span><span class="note">(不太对。这个指示是错误的或不清楚的。再试一次！)</span>`;
+            dialogueFeedbackEl.className = 'feedback-area incorrect';
+        }
+        dialogueFeedbackEl.innerHTML = feedbackText;
+        initializeAllTTS();
+        speakText(dialogueFeedbackEl.querySelector('.speakable-finnish').textContent.trim());
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.speechSynthesis.getVoices().length === 0) {
+            window.speechSynthesis.onvoiceschanged = initializeAllTTS;
+        } else {
+            initializeAllTTS();
+        }
+        setTimeout(initializeAllTTS, 300); 
+    });
+</script>
+</body>
+</html>

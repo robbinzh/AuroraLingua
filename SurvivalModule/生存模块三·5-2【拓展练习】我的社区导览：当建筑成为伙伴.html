@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>芬兰语模块三·维度五·拓展：我的社区导览 (最终整合优化版)</title>
+    <style>
+        /* 复用维度五的CSS，确保风格统一 */
+        body { font-family: "Microsoft YaHei", sans-serif; line-height: 1.7; margin: 20px auto; max-width: 900px; padding: 0 20px; color: #333; background-color: #f9f9f9; }
+        h1, h2, h3, h4 { color: #2c3e50; }
+        h1 { text-align: center; margin-bottom: 35px; font-size: 2.2em; }
+        h2 { border-bottom: 2px solid #e67e22; padding-bottom: 12px; margin-top: 45px; font-size: 1.8em; color: #e67e22; }
+        h3 { margin-top: 30px; font-size: 1.5em; color: #d35400; }
+        h4 { font-size: 1.3em; color: #d35400; margin-top:25px; margin-bottom:15px; }
+        table.vocab-scaffolding-table, table.vocab-list-table, table.dynamics-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; display: table; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; vertical-align: top;}
+        thead { background-color: #fef9e7; }
+        .vocab-scaffolding-table td:first-child, .vocab-list-table td:first-child, .dynamics-table td:first-child { font-weight: bold; }
+        .svg-icon { font-size: 1.5em; text-align: center; }
+        .community-card, .practice-plan-card, .dialogue-box, .usage-example, .summary-card, .example, .new-vocab-section, .trap-card-container {
+            background-color: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .example { border-left: 6px solid #e67e22 !important; }
+        .community-card-content { display: flex; align-items: center; gap: 20px; }
+        .community-card-content .svg-icon { font-size: 3em; flex-shrink: 0; }
+        .finnish-phrase { font-weight: bold; color: #d35400; font-size: 1.15em; }
+        .genitive-n { color: #c0392b; font-weight: bold; text-decoration: underline; font-size: 1.2em; }
+        .example-sentence .finnish-phrase { font-size: 1.1em; }
+        .chinese-sense, .note { font-size: 0.95em; color: #555; font-style: italic; display: block; margin-top: 4px; }
+        .tts-button { background: none; border: none; cursor: pointer; font-size: 1.2em; margin-left: 8px; padding: 0; display: inline-block; vertical-align: middle; color: #d35400; }
+        .tts-button:hover { color: #a04000; opacity: 0.8; }
+        .interactive-map-container, .interactive-choice, .trap-quiz-container { background-color: #fdfefe; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin: 20px 0; }
+        .highlight { color: #c0392b; font-weight: bold; }
+        hr { border: 0; height: 1px; background-image: linear-gradient(to right, rgba(0,0,0,0), rgba(230,126,34,0.3), rgba(0,0,0,0)); margin: 40px 0; }
+        .interactive-choice button { background-color: #f39c12; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; margin: 8px; font-size: 1em; transition: background-color 0.2s; }
+        .interactive-choice button:hover { background-color: #d35400; }
+        .feedback-area { margin-top: 15px; padding: 12px; border-radius: 5px; text-align:center; font-size: 1.1em; min-height: 1.5em; }
+        .correct { background-color: #d1f2eb; color: #0c6255; border: 1px solid #a3e4d7; }
+        .incorrect { background-color: #fdedec; color: #c0392b; border: 1px solid #f5b7b1; }
+        .action-button { background-color: #f39c12; color: white; padding: 12px 18px; border: none; border-radius: 5px; cursor: pointer; margin-top:12px; font-size: 1em; transition: background-color 0.2s; }
+        .action-button:hover { background-color: #d35400; }
+        .dialogue-line { margin-bottom: 12px; }
+        .dialogue-line .speaker { font-weight: bold; color: #2980b9; }
+        .dialogue-line .learner { font-weight: bold; color: #27ae60; }
+        .clickable-spot { cursor: pointer; transition: fill 0.2s, stroke 0.2s; }
+        .clickable-spot:hover { fill: #f39c12; stroke: #c0392b; stroke-width: 2px;}
+        .trap-card-container { display: flex; justify-content: space-around; gap: 20px; flex-wrap: wrap; }
+        .trap-card { width: 45%; min-width: 280px; padding: 15px; border: 2px solid; border-radius: 8px; text-align: center; }
+        .trap-card.space { border-color: #2980b9; } /* Blue for space */
+        .trap-card.time { border-color: #27ae60; } /* Green for time */
+        .trap-card h4 { margin-top: 0; }
+        .trap-card .icon { font-size: 2.5em; margin-bottom: 10px; }
+        .trap-quiz-container ul { list-style-type: none; padding-left: 0; }
+        .trap-quiz-container li { margin-bottom: 15px; }
+        .trap-quiz-container .options { margin-top: 5px; }
+        .trap-quiz-container .options label { margin-right: 15px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <!-- This拓展模块 is inserted between dimension five's main content and its summary -->
+
+    <hr style="border-width:2px; border-color:#e67e22;">
+    
+    <section id="community-expansion">
+        <h2>🏙️【拓展练习】我的社区导览：当建筑成为伙伴</h2>
+        <div class="example">
+            <p><span class="speakable-finnish">Olet oppinut paljon!</span> (你已经学了很多了！) 现在让我们把桌面寻宝的技能应用到更广阔的世界——你身边的社区！</p>
+        </div>
+
+        <h3>步骤一：认识新的建筑伙伴和它们的“-n 小手”</h3>
+        <p>在开始导览前，我们先来认识一下社区里的新朋友，并看看它们伸出 <span class="genitive-n">-n</span> “小手”后是什么样子。</p>
+        <div class="community-card">
+            <table class="vocab-scaffolding-table">
+                <thead>
+                    <tr>
+                        <th>芬兰语建筑 (原形)</th>
+                        <th>伸出“-n小手”后 (所有格)</th>
+                        <th>中文意思</th>
+                        <th class="svg-icon">图标</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="speakable-finnish">asema</span></td><td><span class="speakable-finnish">asema<span class="genitive-n">n</span></span></td><td>车站</td><td class="svg-icon">🚂</td></tr>
+                    <tr><td><span class="speakable-finnish">puisto</span></td><td><span class="speakable-finnish">puisto<span class="genitive-n">n</span></span></td><td>公园</td><td class="svg-icon">🌳</td></tr>
+                    <tr><td><span class="speakable-finnish">apteekki</span></td><td><span class="speakable-finnish">apteeki<span class="genitive-n">n</span></span></td><td>药店</td><td class="svg-icon">➕</td></tr>
+                    <tr><td><span class="speakable-finnish">posti</span></td><td><span class="speakable-finnish">posti<span class="genitive-n">n</span></span></td><td>邮局</td><td class="svg-icon">✉️</td></tr>
+                    <tr><td><span class="speakable-finnish">kauppakeskus</span></td><td><span class="speakable-finnish">kauppakeskukse<span class="genitive-n">n</span></span></td><td>商场</td><td class="svg-icon">🛒</td></tr>
+                    <tr><td><span class="speakable-finnish">kerrostalo</span></td><td><span class="speakable-finnish">kerrostalo<span class="genitive-n">n</span></span></td><td>公寓楼</td><td class="svg-icon">🏢</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>步骤二：情景浸润 - 听我说我的社区</h3>
+        <div class="community-card">
+            <div class="community-card-content">
+                <span class="svg-icon">➕ … 🚂</span>
+                <div>
+                    <p class="example-sentence"><span class="speakable-finnish">Minun naapurustossa apteekki on aseman vieressä.</span> <span class="note">(naapurusto=社区)</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="community-card">
+            <div class="community-card-content">
+                <span class="svg-icon">✉️ ↔️ 🛒</span>
+                <div>
+                    <p class="example-sentence"><span class="speakable-finnish">Minä näen, että posti on ison kauppakeskuksen vastapäätä.</span> <span class="note">(näen=我看见, että=that..., iso=大的)</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="community-card">
+            <div class="community-card-content">
+                <span class="svg-icon">🏢 … 🌳 … 🚂</span>
+                <div>
+                    <p class="example-sentence"><span class="speakable-finnish">Sinun koti on puiston ja aseman välissä. Se on tosi kätevää!</span> <span class="note">(tosi kätevä=非常方便)</span></p>
+                </div>
+            </div>
+        </div>
+
+        <h3>步骤三：互动地图练习 - 建立你自己的社区</h3>
+        <div class="interactive-map-container">
+            <p id="map-task-text" style="font-weight:bold; font-size:1.1em; text-align:center;"></p>
+            <div style="text-align:center;">
+                <svg id="community-map" width="90%" viewBox="0 0 500 300" style="border:1px solid #ddd; border-radius: 5px; background-color: #e8f5e9;">
+                    <rect x="0" y="125" width="500" height="50" fill="#bdc3c7"></rect>
+                    <rect x="225" y="0" width="50" height="300" fill="#bdc3c7"></rect>
+                    <rect x="50" y="50" width="100" height="50" fill="#3498db"></rect>
+                    <text x="100" y="80" text-anchor="middle" fill="white" class="speakable-finnish">Asema 🚂</text>
+                    <rect id="spot-A" class="clickable-spot" x="325" y="50" width="100" height="50" fill="#ecf0f1" stroke="#95a5a6" stroke-dasharray="4" onclick="checkMapAnswer('A')"></rect>
+                    <text x="375" y="80" text-anchor="middle" fill="#7f8c8d" style="pointer-events:none;">A</text>
+                    <rect id="spot-B" class="clickable-spot" x="50" y="200" width="100" height="50" fill="#ecf0f1" stroke="#95a5a6" stroke-dasharray="4" onclick="checkMapAnswer('B')"></rect>
+                    <text x="100" y="230" text-anchor="middle" fill="#7f8c8d" style="pointer-events:none;">B</text>
+                    <rect id="spot-C" class="clickable-spot" x="325" y="200" width="100" height="50" fill="#ecf0f1" stroke="#95a5a6" stroke-dasharray="4" onclick="checkMapAnswer('C')"></rect>
+                    <text x="375" y="230" text-anchor="middle" fill="#7f8c8d" style="pointer-events:none;">C</text>
+                </svg>
+            </div>
+            <div id="feedback-area-map" class="feedback-area"></div>
+            <div style="text-align:center;">
+                 <button class="action-button" onclick="generateNewMapTask()">下一个任务</button>
+            </div>
+        </div>
+        
+        <h3>步骤四：微型对话模拟 - 真实场景应用</h3>
+        <p>现在，让我们把学到的知识用在最真实的场景中：问路！想象一下，你（<span class="learner">学习者</span>）在一个新社区，向我（<span class="speaker">向导</span>）询问药店的位置。</p>
+        <div class="dialogue-box">
+            <div class="dialogue-line"><span class="speaker">Minä:</span> <span class="speakable-finnish">Hei! Voinko auttaa sinua?</span></div>
+            <div class="dialogue-line"><span class="learner">Sinä:</span> <span class="speakable-finnish">Hei! Anteeksi, minä etsin apteekkia. Missä se on?</span> <span class="note">(etsin=我正在找)</span></div>
+            <div class="dialogue-line"><span class="speaker">Minä:</span> <span class="speakable-finnish">Apteekki... Se on tuon ison puiston vastapäätä.</span></div>
+            <div class="dialogue-line"><span class="learner">Sinä:</span> <span class="speakable-finnish">Aha, puiston vastapäätä. Onko se aseman vieressä?</span></div>
+            <div class="dialogue-line"><span class="speaker">Minä:</span> <span class="speakable-finnish">Ei, se ei ole aseman vieressä. Se on postin ja pienen kaupan välissä.</span> <span class="note">(pieni=小的, kauppa=商店)</span></div>
+            <div class="dialogue-line"><span class="learner">Sinä:</span> <span class="speakable-finnish">Selvä, nyt minä ymmärrän. Kiitos paljon avusta!</span> <span class="note">(ymmärrän=我明白, apu=帮助 -> avusta=从帮助)</span></div>
+        </div>
+
+        <!-- NEW INTEGRATED MINI-MODULE STARTS HERE -->
+        <hr>
+        <h3>深化理解：伙伴关系的动态与陷阱</h3>
+        <p>你已经掌握了静态的位置关系，现在我们来探索一下动态的变化，并避开一个初学者常见的认知陷阱！</p>
+
+        <h4>A. 伙伴的动态：从“在”到“去”与“来”</h4>
+        <div class="community-card">
+            <p>就像物体可以“在”桌子上、也可以“放到”桌子上一样，我们的位置伙伴也有动态形式。</p>
+            <table class="dynamics-table">
+                <thead>
+                    <tr>
+                        <th>核心感觉</th>
+                        <th>“旁边”系列 (<span class="speakable-finnish">vieri-</span>)</th>
+                        <th>“中间”系列 (<span class="speakable-finnish">väli-</span>)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>静态 (在)</strong> 📍</td>
+                        <td><span class="example-sentence speakable-finnish">Minä istun sinun <span class="finnish-phrase">vieressä</span>.</span><span class="note">(我坐在你旁边。)</span></td>
+                        <td><span class="example-sentence speakable-finnish">Avain on kupin ja kirjan <span class="finnish-phrase">välissä</span>.</span><span class="note">(钥匙在杯子和书之间。)</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>动态 (去)</strong> ➡️</td>
+                        <td><span class="example-sentence speakable-finnish">Minä tulen sinun <span class="finnish-phrase">vierelle</span>.</span><span class="note">(我到你旁边来。)</span></td>
+                        <td><span class="example-sentence speakable-finnish">Laita avain kupin ja kirjan <span class="finnish-phrase">välille</span>.</span><span class="note">(把钥匙放到杯子和书之间去。)</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>动态 (来)</strong> ⬅️</td>
+                        <td><span class="example-sentence speakable-finnish">Ota kissa minun <span class="finnish-phrase">viereltä</span> pois.</span><span class="note">(把猫从我旁边拿走。)</span></td>
+                        <td><span class="example-sentence speakable-finnish">Ota avain kupin ja kirjan <span class="finnish-phrase">väliltä</span>.</span><span class="note">(从杯子和书之间把钥匙拿出来。)</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h4>B. 认清你的伙伴：一个重要的认知陷阱！</h4>
+        <p>芬兰语中有两个词听起来很像，但意思完全不同：<span class="finnish-phrase speakable-finnish">välissä</span> 和 <span class="finnish-phrase speakable-finnish">välillä</span>。弄清它们的区别是迈向流利的一大步！</p>
+        <div class="trap-card-container">
+            <div class="trap-card space">
+                <div class="icon">🍞+🧀+🍞</div>
+                <h4>【空间三明治】 <span class="finnish-phrase speakable-finnish">välissä</span></h4>
+                <p><strong>功能：</strong> 在**空间**上，位于两者之间。</p>
+                <p><strong>必要伙伴：</strong> 需要名词伸出 <span class="genitive-n">-n</span> 小手。</p>
+                <p class="example-sentence"><span class="speakable-finnish">Minä seison sinun ja oven <span class="finnish-phrase">välissä</span>.</span> <span class="note">(我站在你和门之间。)</span></p>
+            </div>
+            <div class="trap-card time">
+                <div class="icon">⏰🎵</div>
+                <h4>【时间节拍器】 <span class="finnish-phrase speakable-finnish">välillä</span></h4>
+                <p><strong>功能：</strong> 在**时间**上，有时、偶尔。</p>
+                <p><strong>必要伙伴：</strong> 通常独立工作，作为副词。</p>
+                <p class="example-sentence"><span class="speakable-finnish">Minä juon teetä <span class="finnish-phrase">välillä</span>.</span> <span class="note">(我有时候喝茶。)</span></p>
+            </div>
+        </div>
+
+        <h4>C. 互动小测验：选择正确的伙伴</h4>
+        <div class="trap-quiz-container">
+            <ul>
+                <li>
+                    <p>1. <span class="speakable-finnish">Minä istun kahden ystävän _______.</span> <span class="note">(我坐在两个朋友之间。)</span></p>
+                    <div class="options">
+                        <label><input type="radio" name="quiz1" value="a" onclick="checkTrapAnswer(1, true)"> <span class="finnish-phrase speakable-finnish">välissä</span></label>
+                        <label><input type="radio" name="quiz1" value="b" onclick="checkTrapAnswer(1, false)"> <span class="finnish-phrase speakable-finnish">välillä</span></label>
+                    </div>
+                </li>
+                <li>
+                    <p>2. <span class="speakable-finnish">Sinä syöt suklaata _______, mutta et joka päivä.</span> <span class="note">(你偶尔吃巧克力, 但是不是每天。)</span></p>
+                    <div class="options">
+                        <label><input type="radio" name="quiz2" value="a" onclick="checkTrapAnswer(2, false)"> <span class="finnish-phrase speakable-finnish">välissä</span></label>
+                        <label><input type="radio" name="quiz2" value="b" onclick="checkTrapAnswer(2, true)"> <span class="finnish-phrase speakable-finnish">välillä</span></label>
+                    </div>
+                </li>
+            </ul>
+            <div id="feedback-area-trap" class="feedback-area"></div>
+        </div>
+        <!-- NEW INTEGRATED MINI-MODULE ENDS HERE -->
+
+    </section>
+
+    <hr style="border-width:2px; border-color:#e67e22;">
+    
+    <section id="expanded-vocabulary-list" class="new-vocab-section">
+        <h3>📚 拓展练习新朋友：高频地点与建筑</h3>
+        <p>这是本次拓展练习中我们接触到的，以及其他一些在城市中非常常见的高频地点。熟悉它们的所有格形式（伸出<span class="genitive-n">-n</span>小手）对于描述位置关系至关重要！</p>
+        <table class="vocab-list-table">
+            <thead>
+                <tr>
+                    <th>芬兰语 (原形)</th>
+                    <th>所有格 (-n “小手”)</th>
+                    <th>中文意思</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><span class="speakable-finnish">kirjasto</span></td><td><span class="speakable-finnish">kirjaston</span></td><td>图书馆</td></tr>
+                <tr><td><span class="speakable-finnish">museo</span></td><td><span class="speakable-finnish">museon</span></td><td>博物馆</td></tr>
+                <tr><td><span class="speakable-finnish">pysäköintialue</span></td><td><span class="speakable-finnish">pysäköintialueen</span></td><td>停车场</td></tr>
+                <tr><td><span class="speakable-finnish">sairaala</span></td><td><span class="speakable-finnish">sairaalan</span></td><td>医院</td></tr>
+                <tr><td><span class="speakable-finnish">pankki</span></td><td><span class="speakable-finnish">pankin</span></td><td>银行</td></tr>
+                <tr><td><span class="speakable-finnish">elokuvateatteri</span></td><td><span class="speakable-finnish">elokuvateatterin</span></td><td>电影院</td></tr>
+                <tr><td><span class="speakable-finnish">ravintola</span></td><td><span class="speakable-finnish">ravintolan</span></td><td>餐馆</td></tr>
+                <tr><td><span class="speakable-finnish">hotelli</span></td><td><span class="speakable-finnish">hotellin</span></td><td>酒店</td></tr>
+                <tr><td><span class="speakable-finnish">yliopisto</span></td><td><span class="speakable-finnish">yliopiston</span></td><td>大学</td></tr>
+                <tr><td><span class="speakable-finnish">kirkko</span></td><td><span class="speakable-finnish">kirkon</span></td><td>教堂</td></tr>
+                <tr><td><span class="speakable-finnish">etsiä</span></td><td><span class="note speakable-finnish">(minä etsin, sinä etsit)</span></td><td>寻找</td></tr>
+                <tr><td><span class="speakable-finnish">ymmärtää</span></td><td><span class="note speakable-finnish">(minä ymmärrän, sinä ymmärrät)</span></td><td>明白，理解</td></tr>
+                <tr><td><span class="speakable-finnish">auttaa</span></td><td><span class="note speakable-finnish">(minä autan, sinä autat)</span></td><td>帮助</td></tr>
+                <tr><td><span class="speakable-finnish">nähdä</span></td><td><span class="note speakable-finnish">(minä näen, sinä näet)</span></td><td>看见 (复习)</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+<script>
+    const finnishLang = 'fi-FI';
+    let isSpeaking = false;
+
+    function speakText(text, lang = finnishLang) {
+        if (!('speechSynthesis' in window)) return;
+        if (isSpeaking) { window.speechSynthesis.cancel(); setTimeout(() => startSpeaking(text, lang), 50); } 
+        else { startSpeaking(text, lang); }
+    }
+
+    function startSpeaking(text, lang) {
+        isSpeaking = true;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        const voices = window.speechSynthesis.getVoices();
+        let selectedVoice = voices.find(voice => voice.lang.toLowerCase() === 'fi-fi') || voices.find(voice => voice.lang.toLowerCase().startsWith('fi'));
+        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.onend = () => { isSpeaking = false; };
+        utterance.onerror = () => { isSpeaking = false; };
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function addTTSButton(element, textToSpeak) {
+        let cleanedText = textToSpeak.replace(/\s*\(.*?\)\s*/g, '').trim().replace(/（.*?）/g, '').trim().replace(/\[.*?\]/g, '').trim();
+        if (!cleanedText) return;
+        if (element.querySelector('.tts-button')) return;
+
+        const button = document.createElement('button');
+        button.className = 'tts-button';
+        button.innerHTML = '🔊';
+        button.title = '播放: ' + cleanedText;
+        button.setAttribute('aria-label', '播放音频: ' + cleanedText);
+        button.onclick = (event) => { event.preventDefault(); event.stopPropagation(); speakText(cleanedText); };
+        
+        element.appendChild(button);
+    }
+
+    function initializeAllTTS() {
+        const elementsToMakeSpeakable = document.querySelectorAll('.speakable-finnish');
+        
+        elementsToMakeSpeakable.forEach(el => {
+            // This simplified selector targets only the specific spans that should be speakable.
+            // This avoids double-adding buttons to parent elements.
+            const textContent = el.textContent.split('(')[0].split('（')[0].trim();
+            if (textContent) {
+                addTTSButton(el, textContent);
+            }
+        });
+    }
+
+    const mapTasks = [
+        { task_fi: "Minä olen asemalla. Posti on aseman vastapäätä. Missä posti on?", task_zh: "我在车站。邮局在车站对面。邮局在哪里？", correct_spot: "B" },
+        { task_fi: "Kauppakeskus on aseman vieressä, tien toisella puolella. Missä kauppakeskus on?", task_zh: "商场在车站旁边，在马路的另一边。商场在哪里？", correct_spot: "A" },
+        { task_fi: "Apteekki on aseman ja kauppakeskuksen välissä, mutta tien vastapäätä. Missä se on?", task_zh: "药店在车站和商场之间，但是在马路对面。它在哪里？", correct_spot: "C" }
+    ];
+    let currentMapTaskIndex = 0;
+    const mapTaskTextEl = document.getElementById('map-task-text');
+    const feedbackMapEl = document.getElementById('feedback-area-map');
+
+    function generateNewMapTask() {
+        currentMapTaskIndex = (currentMapTaskIndex + 1) % mapTasks.length;
+        displayMapTask();
+    }
+    function displayMapTask() {
+        if (!mapTaskTextEl || !feedbackMapEl) return;
+        const task = mapTasks[currentMapTaskIndex];
+        mapTaskTextEl.innerHTML = `<span class="speakable-finnish">${task.task_fi}</span> <span class="note">(${task.task_zh})</span>`;
+        feedbackMapEl.innerHTML = "";
+        feedbackMapEl.className = 'feedback-area';
+        initializeAllTTS(); // Re-initialize TTS for new content
+    }
+    function checkMapAnswer(selectedSpot) {
+        if (!feedbackMapEl) return;
+        const correctSpot = mapTasks[currentMapTaskIndex].correct_spot;
+        let feedbackText = (selectedSpot === correctSpot)
+            ? `<span class="speakable-finnish">Oikein! Hyvin sijoitettu!</span><span class="note">(正确！放对地方了！)</span>`
+            : `<span class="speakable-finnish">Ei ihan. Katso karttaa ja ohjeita uudelleen.</span><span class="note">(不太对。再看看地图和指示。)</span>`;
+        feedbackMapEl.className = `feedback-area ${selectedSpot === correctSpot ? 'correct' : 'incorrect'}`;
+        feedbackMapEl.innerHTML = feedbackText;
+        initializeAllTTS(); // Re-initialize TTS for new content
+        speakText(feedbackMapEl.querySelector('.speakable-finnish').textContent.trim());
+    }
+    
+    const trapFeedbackEl = document.getElementById('feedback-area-trap');
+    function checkTrapAnswer(quizNum, isCorrect) {
+        if (!trapFeedbackEl) return;
+        let feedbackText = isCorrect
+            ? `<span class="speakable-finnish">Aivan oikein!</span>`
+            : `<span class="speakable-finnish">Ei ihan. Mieti uudelleen!</span><span class="note">(不太对，再想想！)</span>`;
+        trapFeedbackEl.className = `feedback-area ${isCorrect ? 'correct' : 'incorrect'}`;
+        trapFeedbackEl.innerHTML = feedbackText;
+        initializeAllTTS(); // Re-initialize TTS for new content
+        speakText(trapFeedbackEl.querySelector('.speakable-finnish').textContent.trim());
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.speechSynthesis.getVoices().length === 0) {
+            window.speechSynthesis.onvoiceschanged = initializeAllTTS;
+        } else {
+            initializeAllTTS();
+        }
+        setTimeout(initializeAllTTS, 300);
+        if (document.getElementById('community-map')) { displayMapTask(); }
+    });
+</script>
+</body>
+</html>

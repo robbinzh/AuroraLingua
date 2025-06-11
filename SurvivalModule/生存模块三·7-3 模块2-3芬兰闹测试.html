@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>最终融合：认知重塑</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+
+        :root {
+            --background-color: #121212;
+            --text-color: #e0e0e0;
+            --primary-color: #bb86fc;
+            --module2-color: #03dac6;
+            --module3-color: #cf6679;
+            --surface-color: #1e1e1e;
+            --border-color: #333;
+        }
+
+        body {
+            font-family: 'Roboto Mono', monospace;
+            line-height: 1.9;
+            margin: 0;
+            padding: 40px 20px;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 30px 40px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+        }
+
+        h1, h2 {
+            text-align: center;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px var(--primary-color);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        h2 {
+            color: var(--text-color);
+            font-size: 1.2em;
+            margin-top: 0;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .sentence-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sentence-list li {
+            font-size: 1.25em;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-left: 3px solid var(--primary-color);
+            background-color: rgba(187, 134, 252, 0.05);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1em; /* Adjusted for this layout */
+            margin-left: 15px;
+            padding: 0;
+            display: inline-block;
+            vertical-align: middle;
+            color: var(--primary-color);
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .tts-button:hover {
+            opacity: 1;
+        }
+
+        .module2-core {
+            color: var(--module2-color);
+        }
+
+        .module3-core {
+            color: var(--module3-color);
+        }
+
+        .cognition-anchor {
+            margin-top: 40px;
+            padding: 25px;
+            background-color: rgba(207, 102, 121, 0.1);
+            border: 1px solid var(--module3-color);
+            border-radius: 4px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--module3-color);
+            letter-spacing: 1px;
+            line-height: 1.6;
+        }
+        .cognition-anchor .icon {
+            display: block;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        
+        #regen-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 40px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--background-color);
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 2px;
+        }
+
+        #regen-button:hover {
+            background-color: #fff;
+            box-shadow: 0 0 15px var(--primary-color);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🔥【模块出血】</h1>
+        <h2>🧠 你的语言宇宙已重构。你可以说：</h2>
+
+        <ul class="sentence-list" id="sentence-container">
+            <!-- Sentences will be injected here by JavaScript -->
+        </ul>
+
+        <div class="cognition-anchor">
+            <span class="icon">🧠</span>
+            这不是“表达”，这是语言如何在你身体和空间中“自然坍缩”。
+        </div>
+        
+        <button id="regen-button" onclick="regenerateReality()">[ UUDELLEENGENERROI TODELISUUS ]</button>
+    </div>
+
+<script>
+    const sentences = [
+        'Minulla on <span class="module2-core">kirja</span> <span class="module3-core">talossa</span>',
+        'Olen <span class="module3-core">pöydän vieressä</span>',
+        'Minulla on <span class="module2-core">muki</span> ja menen <span class="module3-core">seinän yli</span>',
+        'Minulla on <span class="module2-core">kissa</span> ja olen <span class="module3-core">kadun pohjoispuolella</span>',
+        'Minulla on <span class="module2-core">kännykkä</span> ja kuljen <span class="module3-core">ihmisten välistä</span>',
+        'Minulla on <span class="module2-core">lippu</span> ja menen <span class="module3-core">aseman sisään</span>',
+        'Minulla on <span class="module2-core">reppu</span> ja olen <span class="module3-core">Helsingin itäosassa</span>',
+        'Minulla on <span class="module2-core">teetä</span> ja istun <span class="module3-core">ikkunan vieressä</span>',
+        'Minulla on <span class="module2-core">avain</span> ja olen <span class="module3-core">talon reunalla</span>',
+        'Minulla on <span class="module2-core">kirja</span> ja menen <span class="module3-core">pöydän päälle</span>'
+    ];
+
+    const sentenceContainer = document.getElementById('sentence-container');
+    const finnishLang = 'fi-FI';
+    let isSpeaking = false;
+
+    function speakText(text) {
+        if (!('speechSynthesis' in window)) return;
+        if (isSpeaking) { window.speechSynthesis.cancel(); }
+        isSpeaking = true;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = finnishLang;
+        utterance.rate = 0.9;
+        const voices = window.speechSynthesis.getVoices();
+        let selectedVoice = voices.find(voice => voice.lang.toLowerCase() === 'fi-fi') || voices.find(voice => voice.lang.toLowerCase().startsWith('fi'));
+        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.onend = () => { isSpeaking = false; };
+        utterance.onerror = () => { isSpeaking = false; };
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function addTTSButton(element, textToSpeak) {
+        const button = document.createElement('button');
+        button.className = 'tts-button';
+        button.innerHTML = '🔊';
+        button.title = '播放';
+        button.onclick = (event) => {
+            event.stopPropagation();
+            const clone = element.cloneNode(true);
+            clone.querySelectorAll('.tts-button').forEach(btn => btn.remove());
+            speakText(clone.textContent.trim());
+        };
+        element.appendChild(button);
+    }
+
+    function displaySentences() {
+        sentenceContainer.innerHTML = '';
+        sentences.forEach((sentence, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = sentence;
+            addTTSButton(li, sentence);
+            sentenceContainer.appendChild(li);
+
+            // Animate entrance
+            setTimeout(() => {
+                li.style.opacity = '1';
+                li.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    }
+
+    function regenerateReality() {
+        const listItems = sentenceContainer.querySelectorAll('li');
+        listItems.forEach((li, index) => {
+            setTimeout(() => {
+                li.style.opacity = '0';
+                li.style.transform = 'translateY(-20px)';
+            }, index * 50);
+        });
+
+        // Shuffle array for a new order
+        for (let i = sentences.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [sentences[i], sentences[j]] = [sentences[j], sentences[i]];
+        }
+        
+        setTimeout(displaySentences, sentences.length * 50 + 200);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initial display
+        displaySentences();
+    });
+
+</script>
+</body>
+</html>
