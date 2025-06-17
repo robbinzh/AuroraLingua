@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>芬兰语闪卡游戏 (新版)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f7f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+            color: #333;
+        }
+
+        h1 {
+            width: 100%;
+            text-align: center;
+            color: #1f2d3d;
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1600px;
+        }
+
+        .card {
+            background-color: transparent;
+            width: 100%;
+            height: 260px;
+            perspective: 1200px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), box-shadow 0.3s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+        }
+        
+        .card:hover .card-inner {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 16px;
+        }
+
+        .card-front {
+            background-color: #ffffff;
+            color: black;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #3c4a5c, #2a3440);
+            color: white;
+            transform: rotateY(180deg);
+            justify-content: flex-start; /* 内容从顶部开始 */
+            text-align: left;
+            overflow-y: auto; /* 关键：内容溢出时可滚动 */
+        }
+        
+        /* 美化滚动条 */
+        .card-back::-webkit-scrollbar {
+          width: 6px;
+        }
+        .card-back::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 10px;
+        }
+        .card-back::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.4);
+          border-radius: 10px;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #d0d0d0;
+        }
+        
+        .card-back .card-number {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .card-front h2 {
+            font-size: 1.7em;
+            font-weight: 700;
+            margin: 0 0 15px 0;
+            padding: 0 10px;
+        }
+        
+        .card-back h3 {
+            width: 100%;
+            margin: 15px 0 8px 0;
+            font-size: 1.1em;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 5px;
+        }
+        .card-back h3:first-of-type {
+             margin-top: 35px; /* 为序号留出空间 */
+        }
+        
+        .card-back p {
+            width: 100%;
+            margin: 5px 0;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        
+        .card-back p em {
+            font-style: italic;
+            color: #aed9ff;
+        }
+        
+        .card-back p strong {
+            font-weight: 700;
+            color: #f5d38a;
+        }
+
+        .instruction {
+            font-size: 0.8em;
+            color: #aaa;
+            position: absolute;
+            bottom: 15px;
+        }
+
+        audio {
+            margin-top: 15px;
+            width: 85%;
+            height: 35px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>芬兰语日常对话闪卡</h1>
+
+    <div class="card-container">
+        </div>
+
+    <script>
+        const flashcardData = [
+            { fi: "Kappale 14.", zh: "第14章/第14课。", grammar: "<strong>Kappale</strong>: 名词原型 <em>kappale</em> (章，课)。数字 '14' (neljätoista)。" },
+            { fi: "Mitä teille tulee?", zh: "您需要什么？/您要点什么？", grammar: "<strong>Mitä teille tulee?</strong>: 固定搭配，服务场景中“您想要什么？”的礼貌问法。<strong>Mitä</strong>: 疑问代词原型 <em>mikä</em> (什么) 的部分格单数。<strong>teille</strong>: 人称代词原型 <em>te</em> (您，复数形式表敬意) 的趋向格复数 (allative case)，表示“给您/对您而言”。<strong>tulee</strong>: 动词原型 <em>tulla</em> (来，变得) 的第三人称单数现在时。" },
+            { fi: "Kaksi kuppia kahvia, kiitos.", zh: "两杯咖啡，谢谢。", grammar: "<strong>Kaksi</strong>: 数字 '2'。<strong>kuppia</strong>: 名词原型 <em>kuppi</em> (杯子) 的部分格单数。数量词后接的名词通常使用部分格。<strong>kahvia</strong>: 名词原型 <em>kahvi</em> (咖啡) 的部分格单数。不可数名词或表示数量的物体常使用部分格。<strong>kiitos</strong>: 感谢，谢谢。" },
+            { fi: "Kahvilassa.", zh: "在咖啡馆。", grammar: "<strong>Kahvilassa</strong>: 名词原型 <em>kahvila</em> (咖啡馆) 的内格单数 (inessive case)，表示“在…里面”。" },
+            { fi: "Kuppi kahvia, kiitos.", zh: "一杯咖啡，谢谢。", grammar: "<strong>Kuppi</strong>: 名词原型 <em>kuppi</em> (杯子) 的主格单数。<strong>kahvia</strong>: 名词原型 <em>kahvi</em> (咖啡) 的部分格单数。<strong>kiitos</strong>: 谢谢。" },
+            { fi: "Iso vai pieni?", zh: "大的还是小的？", grammar: "<strong>Iso</strong>: 形容词原型 <em>iso</em> (大) 的主格单数。<strong>vai</strong>: 连词 (或者)。<strong>pieni</strong>: 形容词原型 <em>pieni</em> (小) 的主格单数。" },
+            { fi: "Pieni.", zh: "小的。", grammar: "<strong>Pieni</strong>: 形容词原型 <em>pieni</em> (小) 的主格单数。" },
+            { fi: "Ja lasivettä, kiitos.", zh: "再来一杯水，谢谢。", grammar: "<strong>Ja</strong>: 连词 (和，再)。<strong>lasivettä</strong>: 复合名词，原型 <em>lasivesi</em> (杯水)。这里是部分格单数。由 <em>lasi</em> (杯子) 和 <em>vesi</em> (水) 组成。<strong>kiitos</strong>: 谢谢。" },
+            { fi: "Olkaa hyvä.", zh: "请。/给您。/您请。", grammar: "<strong>Olkaa hyvä</strong>: 固定搭配，礼貌用语。动词原型 <em>olla</em> (是) 的第二人称复数命令式 (用于敬语)。<strong>hyvä</strong>: 形容词原型 <em>hyvä</em> (好) 的主格。" },
+            { fi: "Kahdeksan markkaa.", zh: "八马克。", grammar: "<strong>Kahdeksan</strong>: 数字 '8'。<strong>markkaa</strong>: 名词原型 <em>markka</em> (马克，芬兰旧货币) 的部分格单数。数字后通常使用部分格。" },
+            { fi: "Kaksi kahvia ja yksi juustosämpylä.", zh: "两杯咖啡和一个奶酪面包。", grammar: "<strong>Kaksi</strong>: 数字 '2'。<strong>kahvia</strong>: 名词原型 <em>kahvi</em> 的部分格单数。<strong>ja</strong>: 连词 (和)。<strong>yksi</strong>: 数字 '1'。<strong>juustosämpylä</strong>: 复合名词原型 <em>juustosämpylä</em> (奶酪面包) 的主格单数。" },
+            { fi: "Saako olla vielä jotain muuta?", zh: "还需要别的什么吗？", grammar: "<strong>Saako olla...?</strong>: 固定搭配，询问“是否可以有...？”。<strong>Saako</strong>: 动词原型 <em>saada</em> (可以) 的第三人称单数疑问形式。<strong>olla</strong>: 动词原型 <em>olla</em> (是)。<strong>vielä</strong>: 副词 (还)。<strong>jotain muuta</strong>: 其他东西(部分格)。" },
+            { fi: "Joo, oikeastaan.", zh: "嗯，实际上。", grammar: "<strong>Joo</strong>: 口语化的“是的”。<strong>oikeastaan</strong>: 副词 (实际上)。" },
+            { fi: "Yksi tuollainen.", zh: "就要一个那个。", grammar: "<strong>Yksi</strong>: 数字 '1'。<strong>tuollainen</strong>: 指示代词原型 <em>tuollainen</em> (那样的) 的主格单数。" },
+            { fi: "Pasteja.", zh: "馅饼。", grammar: "<strong>Pasteja</strong>: 名词原型 <em>pasteija</em> (馅饼) 的部分格复数。" },
+            { fi: "Liha vai riisi?", zh: "肉的还是米饭的？", grammar: "<strong>Liha</strong>: 名词原型 <em>liha</em> (肉) 的主格单数。<strong>vai</strong>: 连词 (或者)。<strong>riisi</strong>: 名词原型 <em>riisi</em> (米饭) 的主格单数。" },
+            { fi: "Riisi.", zh: "米饭的。", grammar: "<strong>Riisi</strong>: 名词原型 <em>riisi</em> (米饭) 的主格单数。" },
+            { fi: "Anteeksi, onko tämä paikka varattu?", zh: "对不起，这个位置有人预定了吗？", grammar: "<strong>Anteeksi</strong>: 对不起。<strong>onko</strong>: 动词 <em>olla</em> (是) 的疑问形式。<strong>tämä paikka</strong>: 这个位置 (主格)。<strong>varattu</strong>: 动词 <em>varata</em> (预定) 的过去被动分词，作形容词“被预定的”。" },
+            { fi: "Ei, se on vapaa.", zh: "不，它是空的。", grammar: "<strong>Ei</strong>: 否定词 (不)。<strong>se on vapaa</strong>: 它是空的。" },
+            { fi: "Pubissa.", zh: "在酒吧。", grammar: "<strong>Pubissa</strong>: 名词原型 <em>pubi</em> (酒吧) 的内格单数。" },
+            { fi: "Yksi tuoppi ja pullo kokista, kiitos.", zh: "一杯生啤和一瓶可乐，谢谢。", grammar: "<strong>Yksi tuoppi</strong>: 一杯生啤 (主格)。<strong>pullo kokista</strong>: 一瓶可乐 (名词主格+名词部分格)。<strong>kiitos</strong>: 谢谢。" },
+            { fi: "Keskiolutta vai nelosta?", zh: "中度啤酒还是四号啤酒？", grammar: "<strong>Keskiolutta</strong>: 名词原型 <em>keskiolut</em> (中度啤酒) 的部分格单数。<strong>vai</strong>: 连词 (或者)。<strong>nelosta</strong>: 名词原型 <em>nelonen</em> (四号) 的部分格单数。" },
+            { fi: "Keskiolutta.", zh: "中度啤酒。", grammar: "<strong>Keskiolutta</strong>: 名词原型 <em>keskiolut</em> (中度啤酒) 的部分格单数。" },
+            { fi: "Iso lasiviiniä, kiitos.", zh: "大杯葡萄酒，谢谢。", grammar: "<strong>Iso</strong>: 形容词 (大)。<strong>lasiviiniä</strong>: 复合名词 <em>lasiviini</em> (杯装葡萄酒) 的部分格单数。" },
+            { fi: "Punaviiniä vai valkoviiniä?", zh: "红葡萄酒还是白葡萄酒？", grammar: "<strong>Punaviiniä</strong>: <em>punaviini</em> (红葡萄酒) 的部分格单数。<strong>valkoviiniä</strong>: <em>valkoviini</em> (白葡萄酒) 的部分格单数。" },
+            { fi: "Valkoviiniä. Kuivaa.", zh: "白葡萄酒。干的。", grammar: "<strong>Valkoviiniä</strong>: <em>valkoviini</em> (白葡萄酒) 的部分格单数。<strong>Kuivaa</strong>: 形容词 <em>kuiva</em> (干的) 的部分格单数。" },
+            { fi: "Ravintolassa.", zh: "在餐馆。", grammar: "<strong>Ravintolassa</strong>: 名词原型 <em>ravintola</em> (餐馆) 的内格单数。" },
+            { fi: "Tervetuloa. Jotain juotavaa?", zh: "欢迎。要点喝的吗？", grammar: "<strong>Tervetuloa</strong>: 欢迎。<strong>Jotain juotavaa?</strong>: 要点喝的吗？(<em>juotava</em> - 能喝的东西, 部分格)" },
+            { fi: "Pullo punaviiniä, kiitos. Ja ruokalista.", zh: "一瓶红葡萄酒，谢谢。还有菜单。", grammar: "<strong>Pullo punaviiniä</strong>: 一瓶红葡萄酒。<strong>ruokalista</strong>: 复合词 <em>ruoka</em> (食物) + <em>lista</em> (清单)，菜单。" },
+            { fi: "Saako olla jälkiruokaa tai kahvia?", zh: "还需要甜点或咖啡吗？", grammar: "<strong>Saako olla...?</strong>: 固定搭配。<strong>jälkiruokaa</strong>: <em>jälkiruoka</em> (甜点) 的部分格。<strong>tai</strong>: 连词 (或者)。<strong>kahvia</strong>: <em>kahvi</em> (咖啡) 的部分格。" },
+            { fi: "Kaksi kahvia ja lasku, kiitos.", zh: "两杯咖啡和账单，谢谢。", grammar: "<strong>Kaksi kahvia</strong>: 两杯咖啡。<strong>lasku</strong>: 账单 (主格)。" },
+            { fi: "Kioskilla.", zh: "在报刊亭/小卖部。", grammar: "<strong>Kioskilla</strong>: 名词原型 <em>kioski</em> 的外格单数 (adessive case)，表示“在…上面/旁边”。" },
+            { fi: "Aski tupakkaa, kiitos.", zh: "一盒烟，谢谢。", grammar: "<strong>Aski</strong>: 盒 (主格)。<strong>tupakkaa</strong>: <em>tupakka</em> (烟草) 的部分格。" },
+            { fi: "Ja vielä muuta?", zh: "还有别的吗？", grammar: "<strong>vielä</strong>: 副词 (还)。<strong>muuta</strong>: 代词 <em>muu</em> (其他) 的部分格。" },
+            { fi: "Tulitikut. Ainiin ja iltalehti.", zh: "火柴。哦对了，还有晚报。", grammar: "<strong>Tulitikut</strong>: <em>tulitikku</em> (火柴) 的主格复数。<strong>Ainiin</strong>: 感叹词 (哦对了)。<strong>iltalehti</strong>: 晚报。" },
+            { fi: "Ja yksi suklaapatukka.", zh: "还有一根巧克力棒。", grammar: "<strong>yksi suklaapatukka</strong>: 一根巧克力棒。" },
+            { fi: "Kaupassa.", zh: "在商店。", grammar: "<strong>Kaupassa</strong>: 名词原型 <em>kauppa</em> (商店) 的内格单数。" },
+            { fi: "Mitä teille saisi olla?", zh: "您需要些什么？", grammar: "<strong>Mitä teille saisi olla?</strong>: 更礼貌的问法。<strong>saisi</strong>: 动词 <em>saada</em> (可以) 的条件式，表委婉。" },
+            { fi: "Kilo jauhelihaa.", zh: "一公斤肉末。", grammar: "<strong>Kilo</strong>: 公斤 (主格)。<strong>jauhelihaa</strong>: 复合词 <em>jauheliha</em> (肉末) 的部分格单数 (<strong>注意：已根据表格提示修正</strong>)。" },
+            { fi: "Tässä, olkaa hyvä. Ja sitten?", zh: "给您，请。然后呢？", grammar: "<strong>Tässä</strong>: 在这里。<strong>olkaa hyvä</strong>: 请。<strong>sitten</strong>: 然后。" },
+            { fi: "Siinä kaikki.", zh: "就这些。", grammar: "<strong>Siinä kaikki</strong>: 固定搭配 (就这些)。" },
+            { fi: "Ja sinne?", zh: "那边呢？/您还需要什么？", grammar: "<strong>sinne</strong>: 趋向格 (to there)，此处指询问下一位顾客。" },
+            { fi: "Kaksi porsaan kyljystä.", zh: "两块猪排。", grammar: "<strong>Kaksi</strong>: 数字 '2'。<strong>porsaan</strong>: <em>porsas</em> (猪) 的属格。<strong>kyljystä</strong>: <em>kyljys</em> (肉排) 的部分格单数。" },
+            { fi: "Ja muuta?", zh: "还有别的吗？", grammar: "<strong>muuta</strong>: 代词 <em>muu</em> (其他) 的部分格。" },
+            { fi: "Ei muuta, kiitos.", zh: "没有别的了，谢谢。", grammar: "<strong>Ei muuta</strong>: 固定搭配 (没有别的了)。" },
+            { fi: "Kassalla.", zh: "在收银台。", grammar: "<strong>Kassalla</strong>: 名词原型 <em>kassa</em> (收银台) 的外格单数。" },
+            { fi: "Päivää. Käteisellä.", zh: "您好。用现金支付。", grammar: "<strong>Päivää</strong>: 问候语“日安”。<strong>Käteisellä</strong>: <em>käteinen</em> (现金) 的外格，表示“通过现金”。" },
+            { fi: "Käykö luottokortti?", zh: "可以用信用卡吗？", grammar: "<strong>Käykö</strong>: 动词 <em>käydä</em> (起作用) 的疑问形式。<strong>luottokortti</strong>: 信用卡。" },
+            { fi: "Käy.", zh: "可以。", grammar: "<strong>Käy</strong>: 动词 <em>käydä</em> 的第三人称单数现在时，表示“可以”。" },
+            { fi: "No sitten visalla.", zh: "那就用维萨卡。", grammar: "<strong>No</strong>: 嗯, 那么。<strong>sitten</strong>: 然后。<strong>visalla</strong>: <em>visa</em> (Visa卡) 的外格。" },
+            { fi: "Ja allekirjoitus, olkaa hyvä.", zh: "请签名。", grammar: "<strong>allekirjoitus</strong>: 签名。" },
+            { fi: "345 markkaa, olkaa hyvä.", zh: "345马克，给您。", grammar: "<strong>345 markkaa</strong>: 345马克 (部分格)。" },
+            { fi: "Ainiin, muovikassi vielä.", zh: "哦对了，还需要一个塑料袋。", grammar: "<strong>Ainiin</strong>: 哦对了。<strong>muovikassi</strong>: 塑料袋。<strong>vielä</strong>: 还。" },
+            { fi: "Se on sitten 80 penniä lisää.", zh: "那就是另外80芬尼。", grammar: "<strong>Se on</strong>: 它是。<strong>sitten</strong>: 那么。<strong>80 penniä lisää</strong>: 另外80芬尼。" },
+            { fi: "Yhteensä 345 markkaa 80 penniä.", zh: "总共345马克80芬尼。", grammar: "<strong>Yhteensä</strong>: 副词 (总共)。" },
+        ];
+
+        const container = document.querySelector('.card-container');
+
+        flashcardData.forEach((item, index) => {
+            const cardElement = document.createElement('div');
+            cardElement.classList.add('card');
+            
+            const audioText = item.fi.replace("14.", "neljätoista");
+            const audioSrc = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(audioText)}&tl=fi`;
+
+            cardElement.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">
+                        <span class="card-number">${index + 1}</span>
+                        <h2>${item.fi}</h2>
+                        <audio controls src="${audioSrc}" preload="none">
+                            您的浏览器不支持音频播放。
+                        </audio>
+                        <p class="instruction">点击卡片翻面</p>
+                    </div>
+                    <div class="card-back">
+                        <span class="card-number">${index + 1}</span>
+                        <h3>中文解释</h3>
+                        <p>${item.zh}</p>
+                        <h3>语法分析</h3>
+                        <p>${item.grammar}</p>
+                    </div>
+                </div>
+            `;
+            
+            cardElement.addEventListener('click', function(e) {
+                // 防止点击 audio 控件时翻转卡片
+                if (e.target.tagName.toLowerCase() !== 'audio' && !e.target.closest('audio')) {
+                    this.classList.toggle('is-flipped');
+                }
+            });
+
+            container.appendChild(cardElement);
+        });
+    </script>
+
+</body>
+</html>
