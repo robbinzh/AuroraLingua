@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>芬兰语闪卡游戏 - 第16课</title>
+    <title>芬兰语闪卡游戏 - 第15课</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
 
@@ -45,6 +45,7 @@
             text-align: center;
             color: #1f2d3d;
             margin-bottom: 40px;
+            margin-top: 50px; /* 为返回按钮留出空间 */
             font-weight: 700;
         }
 
@@ -102,37 +103,30 @@
         .card-front {
             background-color: #ffffff;
             color: black;
-            justify-content: flex-start; 
-            overflow-y: auto; 
+            justify-content: center;
         }
 
         .card-back {
             background: linear-gradient(135deg, #3c4a5c, #2a3440);
             color: white;
             transform: rotateY(180deg);
-            justify-content: flex-start;
-            text-align: left;
-            overflow-y: auto;
+            padding: 45px 0 15px 0;
         }
         
-        .card-front::-webkit-scrollbar,
-        .card-back::-webkit-scrollbar {
+        .card-back-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 0 25px;
+            text-align: left;
+        }
+        
+        .card-back-content::-webkit-scrollbar {
           width: 6px;
         }
-        .card-front::-webkit-scrollbar-track,
-        .card-back::-webkit-scrollbar-track {
-          background: rgba(0, 0, 0, 0.05);
-          border-radius: 10px;
-        }
-        .card-front::-webkit-scrollbar-thumb,
-        .card-back::-webkit-scrollbar-thumb {
-          background: rgba(0, 0, 0, 0.2);
-          border-radius: 10px;
-        }
-        .card-back::-webkit-scrollbar-track {
+        .card-back-content::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.1);
         }
-        .card-back::-webkit-scrollbar-thumb {
+        .card-back-content::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.4);
         }
 
@@ -148,25 +142,32 @@
         .card-back .card-number {
             color: rgba(255, 255, 255, 0.6);
         }
-
+        
         .card-front h2 {
             font-size: 1.5em;
             font-weight: 700;
-            margin: 25px 0 15px 0; 
+            margin: 0;
             padding: 0 10px;
-            width: 100%;
+        }
+
+        .card-title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 0 30px; 
         }
         
         .card-back h3 {
             width: 100%;
-            margin: 15px 0 8px 0;
+            margin: 0 0 8px 0;
             font-size: 1.1em;
             font-weight: 700;
             border-bottom: 1px solid rgba(255, 255, 255, 0.3);
             padding-bottom: 5px;
         }
-        .card-back h3:first-of-type {
-             margin-top: 35px;
+        .card-back-content h3:not(:first-child) {
+            margin-top: 15px;
         }
         
         .card-back p {
@@ -189,34 +190,19 @@
         .instruction {
             font-size: 0.8em;
             color: #aaa;
-            margin-top: auto; 
-            padding-top: 10px;
-        }
-
-        audio {
-            margin-top: 15px;
-            width: 85%;
-            height: 35px;
-            flex-shrink: 0; 
-        }
-
-        /* TTS图标样式 */
-        .card-title-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 0 0 15px 0;
+            position: absolute;
+            bottom: 20px;
         }
 
         .tts-icon {
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 16px;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
@@ -243,145 +229,107 @@
     </style>
 </head>
 <body>
-    <!-- 返回按钮 -->
-    <button class="back-button" onclick="history.back()" title="返回上级页面">
+    <button class="back-button" onclick="window.history.length > 1 ? window.history.back() : window.location.href = '#';" title="返回上级页面">
         ← 返回
     </button>
 
-    <h1>芬兰语日常与活动闪卡 (Kappale 16)</h1>
+    <h1>芬兰语电话用语闪卡 (Kappale 15)</h1>
 
     <div class="card-container">
-        </div>
+    </div>
 
     <script>
-        // TTS功能
-        let currentSpeech = null;
-        let isSpeaking = false;
+        function speak(text, clickedButton) {
+            const isCurrentlySpeaking = clickedButton.classList.contains('speaking');
 
-        function speak(text, button) {
-            // 立即停止当前播放并重置所有状态
-            if (isSpeaking && currentSpeech) {
-                speechSynthesis.cancel();
-                // 重置所有按钮状态
-                document.querySelectorAll('.tts-icon').forEach(btn => {
-                    btn.textContent = '🔊';
-                    btn.classList.remove('speaking');
-                });
-                isSpeaking = false;
-                currentSpeech = null;
+            speechSynthesis.cancel();
+            document.querySelectorAll('.tts-icon').forEach(btn => {
+                btn.textContent = '🔊';
+                btn.classList.remove('speaking');
+            });
+
+            if (isCurrentlySpeaking) {
+                return;
             }
 
-            // 检查浏览器支持
             if (!('speechSynthesis' in window)) {
-                console.log('浏览器不支持语音合成');
+                console.log('浏览器不支持语音合成，降级到Google TTS');
                 fallbackToGoogleTTS(text);
                 return;
             }
 
-            // 短暂延迟确保之前的播放完全停止
-            setTimeout(() => {
-                // 创建新的语音合成
-                currentSpeech = new SpeechSynthesisUtterance(text);
-                
-                // 设置语言为芬兰语
-                currentSpeech.lang = 'fi-FI';
-                currentSpeech.rate = 0.8;
-                currentSpeech.pitch = 1;
-                currentSpeech.volume = 1;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'fi-FI';
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
 
-                // 更新当前按钮状态
-                button.textContent = '🔇';
-                button.classList.add('speaking');
-                isSpeaking = true;
+            clickedButton.textContent = '🔇';
+            clickedButton.classList.add('speaking');
 
-                // 播放结束事件
-                currentSpeech.onend = function() {
-                    if (button) {
-                        button.textContent = '🔊';
-                        button.classList.remove('speaking');
-                    }
-                    isSpeaking = false;
-                    currentSpeech = null;
-                };
+            utterance.onend = function() {
+                clickedButton.textContent = '🔊';
+                clickedButton.classList.remove('speaking');
+            };
 
-                currentSpeech.onerror = function(event) {
-                    console.log('语音合成错误:', event.error);
-                    if (button) {
-                        button.textContent = '🔊';
-                        button.classList.remove('speaking');
-                    }
-                    isSpeaking = false;
-                    currentSpeech = null;
-                    // 降级到Google TTS
-                    fallbackToGoogleTTS(text);
-                };
+            utterance.onerror = function(event) {
+                console.error('语音合成错误:', event.error, '降级到Google TTS');
+                clickedButton.textContent = '🔊';
+                clickedButton.classList.remove('speaking');
+                fallbackToGoogleTTS(text);
+            };
 
-                // 开始播放
-                try {
-                    speechSynthesis.speak(currentSpeech);
-                } catch (error) {
-                    console.log('播放失败，尝试降级方案:', error);
-                    fallbackToGoogleTTS(text);
-                }
-            }, 50); // 50ms延迟确保完全停止
+            speechSynthesis.speak(utterance);
         }
 
         function fallbackToGoogleTTS(text) {
-            console.log('降级到Google TTS');
             const audioSrc = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=fi`;
             const audio = new Audio(audioSrc);
             audio.play().catch(e => {
-                console.log('Google TTS也无法播放:', e);
-                console.log('抱歉，当前无法播放音频。请检查网络连接或尝试刷新页面。');
+                console.error('Google TTS播放失败:', e);
             });
         }
 
         const flashcardData = [
-            { fi: "Kappale 16.", zh: "第16章/第16课。", grammar: "<strong>Kappale</strong>: 名词原型 <em>kappale</em> (章，课)。<strong>此处原文有笔误，应为 \"Kappale 16.\"，而不是 \"Kappalet 16.\"。</strong> 数字 \"16\" (kuusitoista)。" },
-            { fi: "Anteeksi, häiritsenkö?", zh: "对不起，我打扰了吗？", grammar: "<strong>Anteeksi</strong>: 副词/感叹词 (对不起，抱歉)。<strong>häiritsenkö?</strong>: 动词原型 <em>häiritä</em> (打扰) 的第一人称单数现在时 <em>häiritsen</em> 加上疑问后缀 <em>-kö</em>。" },
-            { fi: "Häiritset, minulla on kiire.", zh: "你打扰了，我正忙。", grammar: "<strong>Häiritset</strong>: 动词原型 <em>häiritä</em> 的第二人称单数现在时。<strong>minulla on kiire</strong>: 固定搭配 (我赶时间，我很忙)。<strong>minulla</strong>: 人称代词原型 <em>minä</em> (我) 的外格单数 (adessive case)，表示“在某人那里拥有”。<strong>kiire</strong>: 名词原型 <em>kiire</em> (匆忙，急事) 的主格单数。" },
-            { fi: "Mitä teet ensi lauantaina?", zh: "你下周六做什么？", grammar: "<strong>Mitä</strong>: 疑问代词原型 <em>mikä</em> (什么) 的部分格单数。<strong>teet</strong>: 动词原型 <em>tehdä</em> (做) 的第二人称单数现在时。<strong>ensi</strong>: 形容词/副词 (下个，下次)。<strong>lauantaina</strong>: 名词原型 <em>lauantai</em> (星期六) 的状格单数 (essive case)，表示“在…（时间）”。" },
-            { fi: "Pelaan tennistä Maijun kanssa.", zh: "我和迈尤打网球。", grammar: "<strong>Pelaan</strong>: 动词原型 <em>pelata</em> (玩，打) 的第一人称单数现在时。<strong>tennistä</strong>: 名词原型 <em>tennis</em> (网球) 的部分格单数。<strong>Maijun</strong>: 人名 <em>Maiju</em> 的属格单数。<strong>kanssa</strong>: 后置词 (和…一起)，与属格连用。" },
-            { fi: "Minä en osaa pelata tennistä, mutta osaan soittaa kitaraa.", zh: "我不会打网球，但我会弹吉他。", grammar: "<strong>Minä</strong>: 人称代词 (我)。<strong>en osaa</strong>: 动词原型 <em>osata</em> (会，懂得) 的第一人称单数否定形式 (en + osaa)。<strong>pelata</strong>: 动词原型 <em>pelata</em> 的不定式。<strong>tennistä</strong>: 名词原型 <em>tennis</em> 的部分格单数。<strong>mutta</strong>: 连词 (但是)。<strong>osaan</strong>: 动词原型 <em>osata</em> 的第一人称单数肯定形式。<strong>soittaa</strong>: 动词原型 <em>soittaa</em> (弹奏，打电话) 的不定式。<strong>kitaraa</strong>: 名词原型 <em>kitara</em> (吉他) 的部分格单数。" },
-            { fi: "Ai jaa.", zh: "哦，是吗。", grammar: "<strong>Ai jaa</strong>: 口语化的感叹词，表示“哦，原来如此”或“是吗”。" },
-            { fi: "Milloin sinä heräät?", zh: "你什么时候起床？", grammar: "<strong>Milloin</strong>: 疑问副词 (什么时候)。<strong>sinä</strong>: 人称代词 (你)。<strong>heräät</strong>: 动词原型 <em>herätä</em> (醒来，起床) 的第二人称单数现在时。" },
-            { fi: "Tavallisesti kello kuusi.", zh: "通常是六点。", grammar: "<strong>Tavallisesti</strong>: 副词原型 <em>tavallisesti</em> (通常地)。<strong>kello</strong>: 名词原型 <em>kello</em> (钟，点) 的主格单数，表示“在…点”。<strong>kuusi</strong>: 数字 \"6\"。" },
-            { fi: "Niin aikaisin. Minä en herää ennen kuin kello kymmenen.", zh: "这么早。我不到十点不起床。", grammar: "<strong>Niin</strong>: 副词 (如此，这么)。<strong>aikaisin</strong>: 副词原型 <em>aikaisin</em> (很早)。<strong>Minä en herää</strong>: 动词原型 <em>herätä</em> 的第一人称单数否定形式。<strong>ennen kuin</strong>: 连词 (在…之前)。<strong>kello kymmenen</strong>: “十点”。" },
-            { fi: "Niin myöhään.", zh: "这么晚。", grammar: "<strong>Niin</strong>: 副词 (如此)。<strong>myöhään</strong>: 副词原型 <em>myöhään</em> (很晚)。" },
-            { fi: "Mitä sinä haluat tehdä?", zh: "你想做什么？", grammar: "<strong>Mitä</strong>: 疑问代词原型 <em>mikä</em> 的部分格单数。<strong>sinä</strong>: 人称代词 (你)。<strong>haluat</strong>: 动词原型 <em>haluta</em> (想要) 的第二人称单数现在时。<strong>tehdä</strong>: 动词原型 <em>tehdä</em> (做) 的不定式。" },
-            { fi: "En tiedä. Sano sinä.", zh: "我不知道。你说。", grammar: "<strong>En tiedä</strong>: 动词原型 <em>tietää</em> (知道) 的第一人称单数否定形式。<strong>Sano</strong>: 动词原型 <em>sanoa</em> (说) 的第二人称单数命令式。<strong>sinä</strong>: 人称代词 (你)。" },
-            { fi: "Osaatko pelata korttia?", zh: "你会打牌吗？", grammar: "<strong>Osaatko</strong>: 动词原型 <em>osata</em> (会，懂得) 的第二人称单数疑问形式。<strong>pelata</strong>: 动词原型 <em>pelata</em> 的不定式。<strong>korttia</strong>: 名词原型 <em>kortti</em> (牌，卡) 的部分格单数。" },
-            { fi: "Joo. Osaan pelata bridgeä, pokkaa ja pasianssia.", zh: "嗯。我会打桥牌、扑克和纸牌。", grammar: "<strong>Joo</strong>: 口语化的“是的”。<strong>Osaan</strong>: 动词原型 <em>osata</em> 的第一人称单数现在时。<strong>pelata</strong>: 动词原型 <em>pelata</em> 的不定式。<strong>bridgeä</strong>: 名词原型 <em>bridge</em> (桥牌) 的部分格单数。<strong>pokkaa</strong>: 名词原型 <em>pokka</em> (扑克) 的部分格单数。<strong>ja</strong>: 连词 (和)。<strong>pasianssia</strong>: 名词原型 <em>pasianssi</em> (纸牌，单人纸牌游戏) 的部分格单数。" },
-            { fi: "Pelataanko pokkaa?", zh: "玩扑克吗？", grammar: "<strong>Pelataanko</strong>: 动词原型 <em>pelata</em> (玩，打) 的被动形式 <em>pelataan</em> 加上疑问后缀 <em>-ko</em>。被动式在这里常用于提出建议“我们玩…”或“是不是要玩…”。<strong>pokkaa</strong>: 名词原型 <em>pokka</em> 的部分格单数。" },
-            { fi: "No pelataan, mutta ei rahasta.", zh: "嗯，玩吧，但不是为了钱。", grammar: "<strong>No</strong>: 感叹词。<strong>pelataan</strong>: 动词原型 <em>pelata</em> 的被动形式，表示“让我们玩”。<strong>mutta</strong>: 连词 (但是)。<strong>ei rahasta</strong>: 固定搭配 (不是为了钱)。<strong>ei</strong>: 否定动词。<strong>rahasta</strong>: 名词原型 <em>raha</em> (钱) 的离格单数 (ablative case)，表示“从…中/为了…”。" },
-            { fi: "Mitä sinä haluat?", zh: "你想要什么？", grammar: "<strong>Mitä</strong>: 疑问代词原型 <em>mikä</em> 的部分格单数。<strong>sinä</strong>: 人称代词 (你)。<strong>haluat</strong>: 动词原型 <em>haluta</em> (想要) 的第二人称单数现在时。" },
-            { fi: "Anteeksi, en kai häiritse.", zh: "对不起，我大概没打扰你吧。", grammar: "<strong>Anteeksi</strong>: 对不起。<strong>en kai häiritse</strong>: 动词原型 <em>häiritä</em> 的第一人称单数否定形式 <em>en häiritse</em> 加上副词 <em>kai</em> (大概，恐怕)，表示不确定或委婉的疑问。" },
-            { fi: "Häiritset. Minä teen työtä. Mene pois.", zh: "你打扰了。我正在工作。走开。", grammar: "<strong>Häiritset</strong>: 动词原型 <em>häiritä</em> 的第二人称单数现在时。<strong>Minä teen</strong>: 动词原型 <em>tehdä</em> (做) 的第一人称单数现在时。<strong>työtä</strong>: 名词原型 <em>työ</em> (工作) 的部分格单数。<strong>Mene pois</strong>: 固定搭配 (走开，离开)。<strong>Mene</strong>: 动词原型 <em>mennä</em> (去，走) 的第二人称单数命令式。<strong>pois</strong>: 副词 (离开)。" },
-            { fi: "No mitä asiaa? Tarvitsetko jotakin?", zh: "嗯，什么事？你需要什么吗？", grammar: "<strong>No mitä asiaa?</strong>: 固定搭配 (有什么事？)，<strong>asiaa</strong>是名词 <em>asia</em> (事情，事由) 的部分格。<strong>Tarvitsetko</strong>: 动词原型 <em>tarvita</em> (需要) 的第二人称单数疑问形式。<strong>jotakin</strong>: 代词原型 <em>jokin</em> (某个) 的部分格单数。" },
-            { fi: "Tarvitsen rahaa. Voitko lainata minulle sata markkaa?", zh: "我需要钱。你能借我一百马克吗？", grammar: "<strong>Tarvitsen</strong>: 动词原型 <em>tarvita</em> (需要) 的第一人称单数现在时。<strong>rahaa</strong>: 名词原型 <em>raha</em> (钱) 的部分格单数。<strong>Voitko</strong>: 动词原型 <em>voida</em> (能，可以) 的第二人称单数疑问形式。<strong>lainata</strong>: 动词原型 <em>lainata</em> (借) 的不定式。<strong>minulle</strong>: 人称代词原型 <em>minä</em> (我) 的趋向格单数 (allative case)，表示“给我”。<strong>sata</strong>: 数字 \"100\"。<strong>markkaa</strong>: 名词原型 <em>markka</em> (马克) 的部分格单数。" },
-            { fi: "Paljonko sinä ansaitset kuukaudessa?", zh: "你一个月挣多少钱？", grammar: "<strong>Paljonko</strong>: 疑问副词 (多少)。<strong>sinä</strong>: 人称代词 (你)。<strong>ansaitset</strong>: 动词原型 <em>ansaita</em> (挣得，赚取) 的第二人称单数现在时。<strong>kuukaudessa</strong>: 名词原型 <em>kuukausi</em> (月份) 的内格单数，表示“在…月内”。" },
-            { fi: "En sano. Se on salaisuus.", zh: "我不说。那是秘密。", grammar: "<strong>En sano</strong>: 动词原型 <em>sanoa</em> (说) 的第一人称单数否定形式。<strong>Se</strong>: 代词 (它)。<strong>on</strong>: 动词原型 <em>olla</em> (是) 的第三人称单数现在时。<strong>salaisuus</strong>: 名词原型 <em>salaisuus</em> (秘密) 的主格单数。" },
-            { fi: "Täällä on kuuma. Avaanko ikkunan?", zh: "这里很热。我开窗吗？", grammar: "<strong>Täällä</strong>: 副词 (在这里)。<strong>on</strong>: 动词原型 <em>olla</em> (是) 的第三人称单数现在时。<strong>kuuma</strong>: 形容词原型 <em>kuuma</em> (热的) 的主格单数。<strong>Avaanko</strong>: 动词原型 <em>avata</em> (打开) 的第一人称单数疑问形式。<strong>ikkunan</strong>: 名词原型 <em>ikkuna</em> (窗户) 的宾格单数 (accusative case)。当动词表示完整完成的动作时，宾语通常用宾格或主格（在芬兰语中，宾格和主格形式有时相同）。" },
-            { fi: "Älä avaa. Minusta täällä on kylmä.", zh: "别开。我觉得这里很冷。", grammar: "<strong>Älä avaa</strong>: 动词原型 <em>avata</em> 的第二人称单数否定命令式 (älä + avaa)。<strong>Minusta</strong>: 人称代词原型 <em>minä</em> (我) 的离格单数 (ablative case)，此处用于表示“在我看来，我认为”。<strong>täällä</strong>: 副词 (在这里)。<strong>on</strong>: 动词原型 <em>olla</em> (是) 的第三人称单数现在时。<strong>kylmä</strong>: 形容词原型 <em>kylmä</em> (冷的) 的主格单数。" },
-            { fi: "Oletkohan sinä sairas?", zh: "你是不是生病了？", grammar: "<strong>Oletkohan</strong>: 动词原型 <em>olla</em> (是) 的第二人称单数 <em>olet</em> 加上疑问后缀 <em>-ko</em> 和疑问后缀 <em>-han</em>。<strong>sinä</strong>: 人称代词 (你)。<strong>sairas</strong>: 形容词原型 <em>sairas</em> (生病的) 的主格单数。" },
-            { fi: "Tykkäätkö sinä kävellä?", zh: "你喜欢散步吗？", grammar: "<strong>Tykkäätkö</strong>: 动词原型 <em>tykätä</em> (喜欢) 的第二人称单数疑问形式。<strong>sinä</strong>: 人称代词 (你)。<strong>kävellä</strong>: 动词原型 <em>kävellä</em> (散步，行走) 的不定式。" },
-            { fi: "En tykkää.", zh: "我不喜欢。", grammar: "<strong>En tykkää</strong>: 动词原型 <em>tykätä</em> 的第一人称单数否定形式。" },
-            { fi: "Mitä sinä ajattelet?", zh: "你在想什么？", grammar: "<strong>Mitä</strong>: 疑问代词原型 <em>mikä</em> 的部分格单数。<strong>sinä</strong>: 人称代词 (你)。<strong>ajattelet</strong>: 动词原型 <em>ajatella</em> (思考) 的第二人称单数现在时。" },
-            { fi: "En mitään.", zh: "没什么。", grammar: "<strong>En mitään</strong>: 固定搭配 (没什么)。<strong>En</strong>: 否定动词。<strong>mitään</strong>: 代词原型 <em>mikään</em> (任何) 的部分格单数，用于否定句。" },
-            { fi: "Kuuntele.", zh: "听我说。", grammar: "<strong>Kuuntele</strong>: 动词原型 <em>kuunnella</em> (听) 的第二人称单数命令式。" },
-            { fi: "No mitä?", zh: "嗯，什么？", grammar: "<strong>No</strong>: 感叹词。<strong>mitä</strong>: 疑问代词原型 <em>mikä</em> 的部分格单数。" },
-            { fi: "Tapaammeko huomenna?", zh: "我们明天见面吗？", grammar: "<strong>Tapaammeko</strong>: 动词原型 <em>tavata</em> (见面) 的第一人称复数现在时 <em>tapaamme</em> 加上疑问后缀 <em>-ko</em>。<strong>huomenna</strong>: 副词原型 <em>huomenna</em> (明天)。" },
-            { fi: "En tiedä. Ehkä.", zh: "我不知道。也许。", grammar: "<strong>En tiedä</strong>: 动词原型 <em>tietää</em> (知道) 的第一人称单数否定形式。<strong>Ehkä</strong>: 副词 (也许，可能)。" },
-            { fi: "Koska oli sunnuntai, Kyösti heräsi vasta kello yksitoista.", zh: "因为是星期天，基欧斯蒂直到十一点才起床。", grammar: "<strong>Koska</strong>: 连词 (因为)。<strong>oli</strong>: 动词原型 <em>olla</em> (是) 的第三人称单数过去时。<strong>sunnuntai</strong>: 名词原型 <em>sunnuntai</em> (星期天) 的主格单数。<strong>Kyösti</strong>: 人名。<strong>heräsi</strong>: 动词原型 <em>herätä</em> (醒来，起床) 的第三人称单数过去时。<strong>vasta</strong>: 副词 (直到，才)。<strong>kello yksitoista</strong>: “十一点”。" },
-            { fi: "Ensin hän joi kahvia, söi leipää ja juustoa ja kuunteli radiota.", zh: "他首先喝了咖啡，吃了面包和奶酪，并听了广播。", grammar: "<strong>Ensin</strong>: 副词 (首先)。<strong>hän</strong>: 人称代词 (他/她)。<strong>joi</strong>: 动词原型 <em>juoda</em> (喝) 的第三人称单数过去时。<strong>kahvia</strong>: 名词原型 <em>kahvi</em> (咖啡) 的部分格单数。<strong>söi</strong>: 动词原型 <em>syödä</em> (吃) 的第三人称单数过去时。<strong>leipää</strong>: 名词原型 <em>leipä</em> (面包) 的部分格单数。<strong>ja</strong>: 连词 (和)。<strong>juustoa</strong>: 名词原型 <em>juusto</em> (奶酪) 的部分格单数。<strong>kuunteli</strong>: 动词原型 <em>kuunnella</em> (听) 的第三人称单数过去时。<strong>radiota</strong>: 名词原型 <em>radio</em> (广播) 的部分格单数。" },
-            { fi: "Sitten hän meni suihkuun ja pani vaatteet päälle.", zh: "然后他去洗澡，穿上衣服。", grammar: "<strong>Sitten</strong>: 副词 (然后)。<strong>hän</strong>: 人称代词 (他/她)。<strong>meni</strong>: 动词原型 <em>mennä</em> (去) 的第三人称单数过去时。<strong>suihkuun</strong>: 名词原型 <em>suihku</em> (淋浴) 的入格单数 (illative case)，表示“进入…里面”。<strong>ja</strong>: 连词 (和)。<strong>pani</strong>: 动词原型 <em>panna</em> (放，穿上) 的第三人称单数过去时。<strong>vaatteet</strong>: 名词原型 <em>vaate</em> (衣服) 的主格复数。<strong>päälle</strong>: 副词/后置词 (在…上面)，此处是固定搭配 <em>panna päälle</em> (穿上)。" },
-            { fi: "Koska ilma oli kaunis, hän meni ulos.", zh: "因为天气很好，他出去了。", grammar: "<strong>Koska</strong>: 连词 (因为)。<strong>ilma</strong>: 名词原型 <em>ilma</em> (空气，天气) 的主格单数。<strong>oli</strong>: 动词原型 <em>olla</em> (是) 的第三人称单数过去时。<strong>kaunis</strong>: 形容词原型 <em>kaunis</em> (美丽，好) 的主格单数。<strong>hän</strong>: 人称代词 (他/她)。<strong>meni</strong>: 动词原型 <em>mennä</em> (去) 的第三人称单数过去时。<strong>ulos</strong>: 副词 (出去)。" },
-            { fi: "Hän käveli puistossa pari tuntia.", zh: "他在公园里走了几个小时。", grammar: "<strong>Hän</strong>: 人称代词 (他/她)。<strong>käveli</strong>: 动词原型 <em>kävellä</em> (散步，行走) 的第三人称单数过去时。<strong>puistossa</strong>: 名词原型 <em>puisto</em> (公园) 的内格单数。<strong>pari</strong>: 数字 (几个，一对)。<strong>tuntia</strong>: 名词原型 <em>tunti</em> (小时) 的部分格单数。" },
-            { fi: "Iltapäivällä hän teki ruokaa ja söi.", zh: "下午他做了饭并吃了。", grammar: "<strong>Iltapäivällä</strong>: 名词原型 <em>iltapäivä</em> (下午) 的外格单数，表示“在…（时间）”。<strong>hän</strong>: 人称代词 (他/她)。<strong>teki</strong>: 动词原型 <em>tehdä</em> (做) 的第三人称单数过去时。<strong>ruokaa</strong>: 名词原型 <em>ruoka</em> (食物) 的部分格单数。<strong>ja</strong>: 连词 (和)。<strong>söi</strong>: 动词原型 <em>syödä</em> (吃) 的第三人称单数过去时。" },
-            { fi: "Kello viisi hän meni pubiin.", zh: "五点他去了酒吧。", grammar: "<strong>Kello viisi</strong>: “五点”。<strong>hän</strong>: 人称代词 (他/她)。<strong>meni</strong>: 动词原型 <em>mennä</em> (去) 的第三人称单数过去时。<strong>pubiin</strong>: 名词原型 <em>pubi</em> (酒吧) 的入格单数。" },
-            { fi: "Siellä hän joi pari tuoppia olutta ja pelasi kaverin kanssa biljardia.", zh: "在那里他喝了几杯啤酒，并和朋友打台球。", grammar: "<strong>Siellä</strong>: 副词 (在那里)。<strong>hän</strong>: 人称代词 (他/她)。<strong>joi</strong>: 动词原型 <em>juoda</em> (喝) 的第三人称单数过去时。<strong>pari</strong>: 数字 (几个)。<strong>tuoppia</strong>: 名词原型 <em>tuoppi</em> (品脱杯) 的部分格单数。<strong>olutta</strong>: 名词原型 <em>olut</em> (啤酒) 的部分格单数。<strong>ja</strong>: 连词 (和)。<strong>pelasi</strong>: 动词原型 <em>pelata</em> (玩，打) 的第三人称单数过去时。<strong>kaverin</strong>: 名词原型 <em>kaveri</em> (朋友) 的属格单数。<strong>kanssa</strong>: 后置词 (和…一起)，与属格连用。<strong>biljardia</strong>: 名词原型 <em>biljardi</em> (台球) 的部分格单数。" },
-            { fi: "Hän tuli kotiin jo kello yhdeksän.", zh: "他晚上九点就回家了。", grammar: "<strong>Hän</strong>: 人称代词 (他/她)。<strong>tuli</strong>: 动词原型 <em>tulla</em> (来，到达) 的第三人称单数过去时。<strong>kotiin</strong>: 名词原型 <em>koti</em> (家) 的入格单数，表示“去家里”。<strong>jo</strong>: 副词 (已经，就)。<strong>kello yhdeksän</strong>: “九点”。" },
-            { fi: "Sitten hän katsoi vähän televisiota.", zh: "然后他看了一会儿电视。", grammar: "<strong>Sitten</strong>: 副词 (然后)。<strong>hän</strong>: 人称代词 (他/她)。<strong>katsoi</strong>: 动词原型 <em>katsoa</em> (看) 的第三人称单数过去时。<strong>vähän</strong>: 副词 (一点点)。<strong>televisiota</strong>: 名词原型 <em>televisio</em> (电视) 的部分格单数。" }
+            { fi: "Kappale 15.", zh: "第15章/第15课。", grammar: "<strong>Kappale</strong>: 名词原型 <em>kappale</em> (章，课)。数字 \"15\" (viisitoista)。" },
+            { fi: "Puhelin soi.", zh: "电话响了。", grammar: "<strong>Puhelin</strong>: 名词原型 <em>puhelin</em> (电话) 的主格单数。<strong>soi</strong>: 动词原型 <em>soida</em> (响，鸣) 的第三人称单数现在时。" },
+            { fi: "No vastaa.", zh: "嗯，接电话。/你接啊。", grammar: "<strong>No</strong>: 感叹词 (嗯，那么)。<strong>vastaa</strong>: 动词原型 <em>vastata</em> (回答，接听) 的第二人称单数命令式。" },
+            { fi: "Jaakko Suomalainen.", zh: "雅克·苏马莱宁 (人名)。", grammar: "专有名词。" },
+            { fi: "Hei, Meri täällä. Onkohan Liisa kotona?", zh: "喂，我是梅里。丽莎在家吗？", grammar: "<strong>Hei</strong>: 问候语 (喂，你好)。<strong>Meri</strong>: 人名。<strong>täällä</strong>: 副词原型 <em>täällä</em> (在这里)，电话中常用作“我是某某”。<strong>Onkohan</strong>: 动词原型 <em>olla</em> (是) 的疑问形式 <em>onko</em> 加上疑问后缀 <em>-han</em> (口语中常用于软化疑问，表示猜测或不确定)。<strong>Liisa</strong>: 人名。<strong>kotona</strong>: 副词原型 <em>kotona</em> (在家)，是名词 <em>koti</em> (家) 的静止内格形式。" },
+            { fi: "Joo, pieni hetki.", zh: "嗯，稍等一下。", grammar: "<strong>Joo</strong>: 口语化的“是的”。<strong>pieni</strong>: 形容词原型 <em>pieni</em> (小) 的主格单数。<strong>hetki</strong>: 名词原型 <em>hetki</em> (时刻，片刻) 的主格单数。固定搭配，表示“稍等片刻”。" },
+            { fi: "Ulla Salo.", zh: "乌拉·萨洛 (人名)。", grammar: "专有名词。" },
+            { fi: "Hei, Kalle täällä.", zh: "喂，我是卡勒。", grammar: "同“Hei, Meri täällä.”" },
+            { fi: "No moi, mitä kuuluu?", zh: "嗯，嗨，最近怎么样？", grammar: "<strong>No moi</strong>: 口语化的问候语。<strong>Mitä kuuluu?</strong>: 固定搭配，用于询问近况，意为“有什么听闻？”或“怎么样？”。<strong>Mitä</strong>: 疑问代词原型 <em>mikä</em> (什么) 的部分格单数。<strong>kuuluu</strong>: 动词原型 <em>kuulua</em> (属于，听起来) 的第三人称单数现在时。" },
+            { fi: "Kiitos, hyvää.", zh: "谢谢，很好。", grammar: "<strong>Kiitos</strong>: 感谢。<strong>hyvää</strong>: 形容词原型 <em>hyvä</em> (好) 的部分格单数，回答“Mitä kuuluu?”时常用。" },
+            { fi: "Janne Koski.", zh: "扬内·科斯基 (人名)。", grammar: "专有名词。" },
+            { fi: "Hei Janne, täällä Sanna. Onko Maisa kotona?", zh: "嗨扬内，我是桑娜。迈萨在家吗？", grammar: "同上文类似表达。" },
+            { fi: "Joo on, hetki vain.", zh: "嗯，在，稍等。", grammar: "<strong>Joo</strong>: 口语化的“是的”。<strong>on</strong>: 动词原型 <em>olla</em> (是) 的第三人称单数现在时，表示“她在”。<strong>hetki</strong>: 名词原型 <em>hetki</em> 的主格单数。<strong>vain</strong>: 副词 (只，仅仅)。意为“只是一会儿”。" },
+            { fi: "Moi, Lissu täällä. Häiritsenkö?", zh: "嗨，我是利苏。打扰了吗？", grammar: "<strong>Moi</strong>: 口语化的问候语 (嗨)。<strong>Lissu</strong>: 人名。<strong>täällä</strong>: 副词原型 <em>täällä</em> (在这里)。<strong>Häiritsenkö?</strong>: 动词原型 <em>häiritä</em> (打扰) 的第一人称单数现在时 <em>häiritsen</em> 加上疑问后缀 <em>-kö</em>。" },
+            { fi: "Et ollenkaan. Mitä kuuluu?", zh: "一点也没有。最近怎么样？", grammar: "<strong>Et</strong>: 否定动词原型 <em>ei</em> (不) 的第二人称单数形式。<strong>ollenkaan</strong>: 副词原型 <em>ollenkaan</em> (根本，丝毫)，通常与否定词连用，表示“一点也不”。<strong>Mitä kuuluu?</strong>: 同上文。" },
+            { fi: "Onkohan Harri Marjamaa tavattavissa?", zh: "哈里·马里亚马在吗？/能联系到哈里·马里亚马吗？", grammar: "<strong>Onkohan</strong>: 同上文。<strong>Harri Marjamaa</strong>: 人名。<strong>tavattavissa</strong>: 动词原型 <em>tavata</em> (见面) 的被动现在分词 (tavattava) 的内格复数形式 (tavattavissa)。此处作为固定搭配，表示“可被联系到/可会见的”。" },
+            { fi: "Puhelimessa.", zh: "在电话里。", grammar: "<strong>Puhelimessa</strong>: 名词原型 <em>puhelin</em> (电话) 的内格单数 (inessive case)。" },
+            { fi: "Täällä puhuu Salme Salonen. Hyvää päivää.", zh: "我是萨尔梅·萨洛宁。日安。", grammar: "<strong>Täällä puhuu</strong>: 固定搭配，电话中介绍自己时常用，意为“这里是某某说话”。<strong>Salme Salonen</strong>: 人名。<strong>Hyvää päivää</strong>: 固定问候语 (日安，你好)。<strong>Hyvää</strong>: 形容词原型 <em>hyvä</em> (好) 的部分格单数。<strong>päivää</strong>: 名词原型 <em>päivä</em> (天，日) 的部分格单数。" },
+            { fi: "Taksi.", zh: "出租车。", grammar: "<strong>Taksi</strong>: 名词原型 <em>taksi</em> (出租车) 的主格单数。" },
+            { fi: "Saanko Hämeentie 152, kiitos.", zh: "请问到哈梅街152号，谢谢。", grammar: "<strong>Saanko</strong>: 动词原型 <em>saada</em> (可以，得到) 的第一人称单数疑问形式，表示礼貌的请求或询问“我能得到/我能去吗？”。<strong>Hämeentie</strong>: 专有名词 (芬兰一条街道的名字)，主格单数。<strong>152</strong>: 数字。<strong>kiitos</strong>: 谢谢。" },
+            { fi: "Hämeentie 152. Autonumero 123 tulee.", zh: "哈梅街152号。车号123正在来。", grammar: "<strong>Hämeentie 152</strong>: 地址。<strong>Autonumero</strong>: 复合名词原型 <em>autonumero</em> (汽车号码) 的主格单数。由 <em>auto</em> (汽车) 和 <em>numero</em> (号码) 组成。<strong>123</strong>: 数字。<strong>tulee</strong>: 动词原型 <em>tulla</em> (来) 的第三人称单数现在时。" },
+            { fi: "Kiitos.", zh: "谢谢。", grammar: "<strong>Kiitos</strong>: 感谢。" },
+            { fi: "Yliopisto, hyvää päivää.", zh: "大学，日安。", grammar: "<strong>Yliopisto</strong>: 名词原型 <em>yliopisto</em> (大学) 的主格单数。<strong>hyvää päivää</strong>: 同上文。" },
+            { fi: "Saanko professori Lehto?", zh: "我能找莱赫托教授吗？", grammar: "<strong>Saanko</strong>: 同上文，此处表示“我能联系到/找到某人吗？”。<strong>professori Lehto</strong>: 专有名词，主格单数。" },
+            { fi: "Hetkinen, yhdistän.", zh: "稍等，我为您转接。", grammar: "<strong>Hetkinen</strong>: 名词原型 <em>hetkinen</em> (一小会儿) 的主格单数，常用于口语，意为“稍等”。<strong>yhdistän</strong>: 动词原型 <em>yhdistää</em> (连接，转接) 的第一人称单数现在时。" },
+            { fi: "Kiitos.", zh: "谢谢。", grammar: "<strong>Kiitos</strong>: 感谢。" },
+            { fi: "Numero on varattu, odotatteko?", zh: "电话占线，您要等吗？", grammar: "<strong>Numero</strong>: 名词原型 <em>numero</em> (号码) 的主格单数。<strong>on</strong>: 动词原型 <em>olla</em> (是) 的第三人称单数现在时。<strong>varattu</strong>: 形容词/过去分词原型 <em>varattu</em> (被预定的，占线的)，动词 <em>varata</em> (预定) 的过去被动分词。<strong>odotatteko?</strong>: 动词原型 <em>odottaa</em> (等待) 的第二人称复数现在时 <em>odotatte</em> 加上疑问后缀 <em>-ko</em> (此处用复数表示礼貌)。" },
+            { fi: "Soitan myöhemmin uudestaan.", zh: "我稍后会再打。", grammar: "<strong>Soitan</strong>: 动词原型 <em>soittaa</em> (打电话) 的第一人称单数现在时。<strong>myöhemmin</strong>: 副词原型 <em>myöhemmin</em> (稍后，更晚地)，是 <em>myöhään</em> (迟) 的比较级。<strong>uudestaan</strong>: 副词原型 <em>uudestaan</em> (再次，重新)。" },
+            { fi: "Kaisa Kanerva.", zh: "凯萨·卡内尔瓦 (人名)。", grammar: "专有名词。" },
+            { fi: "Täällä puhuu Meri Tjot. Hyvää päivää. Onkohan Tarmo Lahtinen tavattavissa?", zh: "我是梅里·乔特。日安。塔莫·拉赫蒂宁在吗？", grammar: "同上文类似表达。" },
+            { fi: "Teillä on väärä numero.", zh: "您打错电话了。", grammar: "<strong>Teillä</strong>: 人称代词原型 <em>te</em> (您) 的外格复数形式，此处表示“在您那里”或“您拥有”，用于表示“您打错了”。<strong>on</strong>: 动词原型 <em>olla</em> (是) 的第三人称单数现在时。<strong>väärä</strong>: 形容词原型 <em>väärä</em> (错误) 的主格单数。<strong>numero</strong>: 名词原型 <em>numero</em> (号码) 的主格单数。固定搭配。" },
+            { fi: "Voi anteeksi.", zh: "哎呀，对不起。", grammar: "<strong>Voi</strong>: 感叹词 (哎呀，哦)。<strong>anteeksi</strong>: 副词/感叹词 (对不起，抱歉)。" },
+            { fi: "No ei mitään.", zh: "没关系。", grammar: "<strong>No</strong>: 感叹词。<strong>ei mitään</strong>: 固定搭配 (没什么，没关系)。<strong>ei</strong>: 否定动词。<strong>mitään</strong>: 代词原型 <em>mikään</em> (任何) 的部分格单数，用于否定句。" },
+            { fi: "Haloo?", zh: "喂？", grammar: "<strong>Haloo</strong>: 问候语 (喂，通常用于接电话时)。" },
+            { fi: "Liisa.", zh: "丽莎。", grammar: "专有名词。" },
+            { fi: "Liisa? Ei, teillä on väärä numero.", zh: "丽莎？不，您打错电话了。", grammar: "同上文。" },
+            { fi: "Aijaa, sori.", zh: "哦，抱歉。", grammar: "<strong>Aijaa</strong>: 口语化的感叹词 (哦，原来如此)。<strong>sori</strong>: 口语化的“对不起”，是 <em>anteeksi</em> 的非正式缩略。" },
+            { fi: "Hei hei, hauskaa viikonloppua.", zh: "再见，周末愉快。", grammar: "<strong>Hei hei</strong>: 告别语 (再见)。<strong>hauskaa</strong>: 形容词原型 <em>hauska</em> (有趣的，愉快的) 的部分格单数，用于祝愿。<strong>viikonloppua</strong>: 复合名词原型 <em>viikonloppu</em> (周末) 的部分格单数。固定祝福语。" },
+            { fi: "Kiitos samoin, soitellaan.", zh: "谢谢，你也一样，我们再联系。", grammar: "<strong>Kiitos samoin</strong>: 固定搭配 (谢谢，你也一样)。<strong>samoin</strong>: 副词 (同样，一样)。<strong>soitellaan</strong>: 动词原型 <em>soitella</em> (打电话，经常性地打电话，是 <em>soittaa</em> 的频繁体) 的被动形式 (被动式在这里常用于表示“让我们”或“我们将来会”)，意为“保持联系，将来会再打电话”。" },
+            { fi: "Kiitos.", zh: "谢谢。", grammar: "<strong>Kiitos</strong>: 感谢。" }
         ];
 
         const container = document.querySelector('.card-container');
@@ -390,38 +338,33 @@
             const cardElement = document.createElement('div');
             cardElement.classList.add('card');
             
-            const numberWords = { '16': 'kuusitoista', '100': 'sata' };
-            let audioText = item.fi;
-            Object.keys(numberWords).forEach(num => {
-                const regex = new RegExp(`\\b${num}\\b`, 'g');
-                audioText = audioText.replace(regex, numberWords[num]);
-            });
-
-            const audioSrc = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(audioText)}&tl=fi`;
+            const speakText = item.fi.replace(/'/g, "\\'");
 
             cardElement.innerHTML = `
                 <div class="card-inner">
                     <div class="card-front">
                         <span class="card-number">${index + 1}</span>
                         <div class="card-title-container">
-                            <button class="tts-icon" onclick="speak('${audioText.replace(/'/g, "\\'")}', this)" title="播放芬兰语音频">🔊</button>
+                            <button class="tts-icon" onclick="speak('${speakText}', this)" title="播放芬兰语音频">🔊</button>
                             <h2>${item.fi}</h2>
                         </div>
                         <p class="instruction">点击卡片翻面</p>
                     </div>
                     <div class="card-back">
                         <span class="card-number">${index + 1}</span>
-                        <h3>中文解释</h3>
-                        <p>${item.zh}</p>
-                        <h3>语法分析</h3>
-                        <p>${item.grammar}</p>
+                        <div class="card-back-content">
+                            <h3>中文解释</h3>
+                            <p>${item.zh}</p>
+                            <h3>语法分析</h3>
+                            <p>${item.grammar}</p>
+                        </div>
                     </div>
                 </div>
             `;
             
             cardElement.addEventListener('click', function(e) {
-                // 防止点击 TTS 图标时翻转卡片
                 if (e.target.classList.contains('tts-icon')) {
+                    e.stopPropagation();
                     return;
                 }
                 this.classList.toggle('is-flipped');

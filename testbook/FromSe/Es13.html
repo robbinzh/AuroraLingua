@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>芬兰语闪卡游戏 - 第13课</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f7f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+            color: #333;
+        }
+
+        /* 返回按钮样式 */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        h1 {
+            width: 100%;
+            text-align: center;
+            color: #1f2d3d;
+            margin-bottom: 40px;
+            margin-top: 50px; /* 为返回按钮留出空间 */
+            font-weight: 700;
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1600px;
+        }
+
+        .card {
+            background-color: transparent;
+            width: 100%;
+            height: 260px;
+            perspective: 1200px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), box-shadow 0.3s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+        }
+        
+        .card:hover .card-inner {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 16px;
+        }
+
+        .card-front {
+            background-color: #ffffff;
+            color: black;
+            justify-content: center;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #3c4a5c, #2a3440);
+            color: white;
+            transform: rotateY(180deg);
+            padding: 45px 0 15px 0;
+        }
+        
+        .card-back-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 0 25px;
+            text-align: left;
+        }
+        
+        .card-back-content::-webkit-scrollbar {
+          width: 6px;
+        }
+        .card-back-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .card-back-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .card-number {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #d0d0d0;
+        }
+        
+        .card-back .card-number {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .card-front h2 {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin: 0;
+            padding: 0 10px;
+        }
+
+        .card-title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 0 30px; 
+        }
+        
+        .card-back h3 {
+            width: 100%;
+            margin: 0 0 8px 0;
+            font-size: 1.1em;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 5px;
+        }
+        .card-back-content h3:not(:first-child) {
+            margin-top: 15px;
+        }
+        
+        .card-back p {
+            width: 100%;
+            margin: 5px 0;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        
+        .card-back p em {
+            font-style: italic;
+            color: #aed9ff;
+        }
+        
+        .card-back p strong {
+            font-weight: 700;
+            color: #f5d38a;
+        }
+
+        .instruction {
+            font-size: 0.8em;
+            color: #aaa;
+            position: absolute;
+            bottom: 20px;
+        }
+
+        /* TTS图标样式 */
+        .tts-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+        }
+
+        .tts-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        .tts-icon.speaking {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.history.length > 1 ? window.history.back() : window.location.href = '#';" title="返回上级页面">
+        ← 返回
+    </button>
+
+    <h1>芬兰语性质与状态闪卡 (Kappale 13)</h1>
+
+    <div class="card-container">
+    </div>
+
+    <script>
+        function speak(text, clickedButton) {
+            const isCurrentlySpeaking = clickedButton.classList.contains('speaking');
+
+            speechSynthesis.cancel();
+            document.querySelectorAll('.tts-icon').forEach(btn => {
+                btn.textContent = '🔊';
+                btn.classList.remove('speaking');
+            });
+
+            if (isCurrentlySpeaking) {
+                return;
+            }
+
+            if (!('speechSynthesis' in window)) {
+                console.log('浏览器不支持语音合成，降级到Google TTS');
+                fallbackToGoogleTTS(text);
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'fi-FI';
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+
+            clickedButton.textContent = '🔇';
+            clickedButton.classList.add('speaking');
+
+            utterance.onend = function() {
+                clickedButton.textContent = '🔊';
+                clickedButton.classList.remove('speaking');
+            };
+
+            utterance.onerror = function(event) {
+                console.error('语音合成错误:', event.error, '降级到Google TTS');
+                clickedButton.textContent = '🔊';
+                clickedButton.classList.remove('speaking');
+                fallbackToGoogleTTS(text);
+            };
+
+            speechSynthesis.speak(utterance);
+        }
+
+        function fallbackToGoogleTTS(text) {
+            const audioSrc = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=fi`;
+            const audio = new Audio(audioSrc);
+            audio.play().catch(e => {
+                console.error('Google TTS播放失败:', e);
+            });
+        }
+
+        const flashcardData = [
+            { fi: "Kappale 13.", zh: "第13章/第13课。", grammar: "<strong>Kappale</strong>: 名词原型 <em>kappale</em> (章，课)。<strong>此处原文有笔误，应为 \"Kappale 13.\"，而不是 \"Kappalet 13.\"。</strong> 数字 \"13\" (kolmetoista)。" },
+            { fi: "Millaista kahvi on?", zh: "咖啡是什么样的？/这咖啡味道如何？", grammar: "<strong>Millaista</strong>: 疑问形容词原型 <em>millainen</em> (什么样的) 的部分格单数。用于询问物质或不可数名词的性质、味道等抽象特征。<strong>kahvi</strong>: 名词原型 <em>kahvi</em> (咖啡) 的主格单数。<strong>on</strong>: 动词原型 <em>olla</em> (是) 的第三人称单数现在时。" },
+            { fi: "Kuumaa.", zh: "热的。", grammar: "<strong>Kuumaa</strong>: 形容词原型 <em>kuuma</em> (热的) 的部分格单数。与疑问形容词 <em>millaista</em> (部分格) 保持格一致。" },
+            { fi: "Mitä tuo on?", zh: "那个是什么？", grammar: "<strong>Mitä</strong>: 疑问代词原型 <em>mikä</em> (什么) 的部分格单数。用于询问未知事物是何种物质或泛指概念。<strong>tuo</strong>: 指示代词原型 <em>tuo</em> (那个) 的主格单数。<strong>on</strong>: 动词原型 <em>olla</em> 的第三人称单数现在时。" },
+            { fi: "Kahvia.", zh: "咖啡。", grammar: "<strong>Kahvia</strong>: 名词原型 <em>kahvi</em> (咖啡) 的部分格单数。当指代某种物质时，常用部分格。" },
+            { fi: "Millaista se on?", zh: "那个怎么样？/它是什么味道？", grammar: "<strong>Millaista</strong>: 疑问形容词原型 <em>millainen</em> 的部分格单数。<strong>se</strong>: 人称/指示代词原型 <em>se</em> (它，那个) 的主格单数。<strong>on</strong>: 动词原型 <em>olla</em> 的第三人称单数现在时。" },
+            { fi: "Oikein hyvää.", zh: "很好的。", grammar: "<strong>Oikein</strong>: 副词原型 <em>oikein</em> (非常，确实)。<strong>hyvää</strong>: 形容词原型 <em>hyvä</em> (好) 的部分格单数。" },
+            { fi: "Mikä tuo on?", zh: "那个是什么？", grammar: "<strong>Mikä</strong>: 疑问代词原型 <em>mikä</em> (什么) 的主格单数。用于询问具体、可数或可识别的事物是什么。<strong>tuo</strong>: 指示代词原型 <em>tuo</em> (那个) 的主格单数。<strong>on</strong>: 动词原型 <em>olla</em> 的第三人称单数现在时。" },
+            { fi: "Sanakirja.", zh: "词典。", grammar: "<strong>Sanakirja</strong>: 复合名词原型 <em>sanakirja</em> (词典) 的主格单数。由 <em>sana</em> (单词) 和 <em>kirja</em> (书) 组成。回答 <em>Mikä</em> 疑问时，通常用主格。" },
+            { fi: "Millainen se on?", zh: "那个怎么样？/它是怎样的？", grammar: "<strong>Millainen</strong>: 疑问形容词原型 <em>millainen</em> (什么样的) 的主格单数。用于询问可数名词的特性、外观等。<strong>se</strong>: 人称/指示代词原型 <em>se</em> (它，那个) 的主格单数。<strong>on</strong>: 动词原型 <em>olla</em> 的第三人称单数现在时。" },
+            { fi: "Oikein hyvä.", zh: "很好。", grammar: "<strong>Oikein</strong>: 副词原型 <em>oikein</em> (非常，确实)。<strong>hyvä</strong>: 形容词原型 <em>hyvä</em> (好) 的主格单数。与疑问形容词 <em>millainen</em> (主格) 保持格一致。" },
+            { fi: "Mitä tuo on?", zh: "那个是什么？", grammar: "(重复，同上文)" },
+            { fi: "Kahvia.", zh: "咖啡。", grammar: "(重复，同上文)" },
+            { fi: "Millaista kahvi on?", zh: "咖啡是什么样的？", grammar: "(重复，同上文)" },
+            { fi: "Hyvää.", zh: "好的。", grammar: "(重复，同上文)" },
+            { fi: "Mitä tuo on?", zh: "那个是什么？", grammar: "(重复，同上文)" },
+            { fi: "Se on piimää.", zh: "那个是酸奶。", grammar: "<strong>Se</strong>: 人称/指示代词原型 <em>se</em> (它) 的主格单数。<strong>on</strong>: 动词原型 <em>olla</em> 的第三人称单数现在时。<strong>piimää</strong>: 名词原型 <em>piimä</em> (酸奶，酪乳) 的部分格单数。<em>Piimä</em> 是一种液体，被视为不可数名词，因此用部分格。" },
+            { fi: "Millaista se on?", zh: "那个怎么样？", grammar: "(重复，同上文)" },
+            { fi: "Pahaa.", zh: "坏的/难喝的。", grammar: "<strong>Pahaa</strong>: 形容词原型 <em>paha</em> (坏的) 的部分格单数。" },
+            { fi: "Mikä tuo on?", zh: "那个是什么？", grammar: "(重复，同上文)" },
+            { fi: "Sanakirja.", zh: "词典。", grammar: "(重复，同上文)" },
+            { fi: "Millainen kirja on?", zh: "这本书怎么样？/它是什么样的书？", grammar: "<strong>Millainen</strong>: 疑问形容词原型 <em>millainen</em> 的主格单数。<strong>kirja</strong>: 名词原型 <em>kirja</em> (书) 的主格单数。<strong>on</strong>: 动词原型 <em>olla</em> 的第三人称单数现在时。" },
+            { fi: "Hyvä.", zh: "好。", grammar: "<strong>Hyvä</strong>: 形容词原型 <em>hyvä</em> (好) 的主格单数。" },
+            { fi: "Hyi, laihaa kahvia!", zh: "呸，淡咖啡！", grammar: "<strong>Hyi</strong>: 感叹词 (呸，恶心)。<strong>laihaa</strong>: 形容词原型 <em>laiha</em> (稀的，淡的，瘦的) 的部分格单数。用于形容液体。<strong>kahvia</strong>: 名词原型 <em>kahvi</em> (咖啡) 的部分格单数。感叹句中常使用部分格。" },
+            { fi: "Eikä ole. Minusta tämä kahvi on vahvaa ja hyvää.", zh: "才不是呢。我觉得这咖啡很浓很好。", grammar: "<strong>Eikä ole</strong>: 固定搭配，口语中表示强烈否定“不，不是这样的”。<strong>Eikä</strong>: 由否定动词 <em>ei</em> 和连词 <em>kä</em> 组成。<strong>Minusta</strong>: 人称代词原型 <em>minä</em> (我) 的离格单数 (elative case)，表示“在我看来，我认为”。<strong>tämä</strong>: 指示代词原型 <em>tämä</em> (这) 的主格单数。<strong>kahvi</strong>: 名词原型 <em>kahvi</em> (咖啡) 的主格单数。<strong>on</strong>: 动词原型 <em>olla</em> 的第三人称单数现在时。<strong>vahvaa</strong>: 形容词原型 <em>vahva</em> (浓的，强的) 的部分格单数。<strong>ja</strong>: 连词 (和)。<strong>hyvää</strong>: 形容词原型 <em>hyvä</em> (好) 的部分格单数。这里，即使主语 <em>kahvi</em> 是主格，但描述其性质的形容词使用了部分格，这是芬兰语中当描述物质或质量时的常见现象。" },
+            { fi: "Suomalainen ruoka on hyvää.", zh: "芬兰食物很好。", grammar: "<strong>Suomalainen</strong>: 形容词原型 <em>suomalainen</em> (芬兰的) 的主格单数。<strong>ruoka</strong>: 名词原型 <em>ruoka</em> (食物) 的主格单数。<strong>on</strong>: 动词原型 <em>olla</em> 的第三人称单数现在时。<strong>hyvää</strong>: 形容词原型 <em>hyvä</em> (好) 的部分格单数。同上，<em>ruoka</em> 视为不可数名词，形容词用部分格。" },
+            { fi: "No jaa, minusta se on vähän liian rasvaista ja suolaista.", zh: "嗯，在我看来，它有点太油腻和咸了。", grammar: "<strong>No jaa</strong>: 口语感叹词，表示“嗯，好吧”或“见仁见智”。<strong>minusta</strong>: 人称代词原型 <em>minä</em> 的离格单数 (在我看来)。<strong>se</strong>: 人称/指示代词原型 <em>se</em> (它) 的主格单数。<strong>on</strong>: 动词原型 <em>olla</em> 的第三人称单数现在时。<strong>vähän</strong>: 副词原型 <em>vähän</em> (一点点)。<strong>liian</strong>: 副词原型 <em>liian</em> (太，过于)。<strong>rasvaista</strong>: 形容词原型 <em>rasvainen</em> (油腻的) 的部分格单数。<strong>ja</strong>: 连词 (和)。<strong>suolaista</strong>: 形容词原型 <em>suolainen</em> (咸的) 的部分格单数。" },
+            { fi: "Millaista tämä viini on?", zh: "这酒怎么样？", grammar: "<strong>Millaista</strong>: 疑问形容词原型 <em>millainen</em> 的部分格单数。<strong>tämä</strong>: 指示代词原型 <em>tämä</em> (这) 的主格单数。<strong>viini</strong>: 名词原型 <em>viini</em> (酒) 的主格单数。<strong>on</strong>: 动词原型 <em>olla</em> 的第三人称单数现在时。" },
+            { fi: "Liian makeaa.", zh: "太甜了。", grammar: "<strong>Liian</strong>: 副词原型 <em>liian</em> (太，过于)。<strong>makeaa</strong>: 形容词原型 <em>makea</em> (甜的) 的部分格单数。" },
+            { fi: "Millaista tuo keitto on?", zh: "那汤怎么样？", grammar: "<strong>Millaista</strong>: 疑问形容词原型 <em>millainen</em> 的部分格单数。<strong>tuo</strong>: 指示代词原型 <em>tuo</em> (那个) 的主格单数。<strong>keitto</strong>: 名词原型 <em>keitto</em> (汤) 的主格单数。<strong>on</strong>: 动词原型 <em>olla</em> 的第三人称单数现在时。" },
+            { fi: "Ööö, mmm, mielenkiintoista.", zh: "嗯……嗯……挺有趣的。", grammar: "<strong>Ööö, mmm</strong>: 芬兰语口语中表示思考或犹豫的语气词。<strong>mielenkiintoista</strong>: 形容词原型 <em>mielenkiintoinen</em> (有趣的) 的部分格单数。" },
+            { fi: "Kiitos kun katsoit!", zh: "感谢您的观看！", grammar: "<strong>Kiitos</strong>: 名词/感叹词 (感谢)。<strong>kun</strong>: 连词 (当…时，因为)，此处表示原因或目的，可译为“因为/为了”。<strong>katsoit</strong>: 动词原型 <em>katsoa</em> (看，观看) 的第二人称单数过去时。" }
+        ];
+
+        const container = document.querySelector('.card-container');
+
+        flashcardData.forEach((item, index) => {
+            const cardElement = document.createElement('div');
+            cardElement.classList.add('card');
+            
+            const speakText = item.fi.replace(/'/g, "\\'");
+
+            cardElement.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">
+                        <span class="card-number">${index + 1}</span>
+                        <div class="card-title-container">
+                            <button class="tts-icon" onclick="speak('${speakText}', this)" title="播放芬兰语音频">🔊</button>
+                            <h2>${item.fi}</h2>
+                        </div>
+                        <p class="instruction">点击卡片翻面</p>
+                    </div>
+                    <div class="card-back">
+                        <span class="card-number">${index + 1}</span>
+                        <div class="card-back-content">
+                            <h3>中文解释</h3>
+                            <p>${item.zh}</p>
+                            <h3>语法分析</h3>
+                            <p>${item.grammar}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            cardElement.addEventListener('click', function(e) {
+                if (e.target.classList.contains('tts-icon')) {
+                    e.stopPropagation();
+                    return;
+                }
+                this.classList.toggle('is-flipped');
+            });
+
+            container.appendChild(cardElement);
+        });
+    </script>
+
+</body>
+</html>

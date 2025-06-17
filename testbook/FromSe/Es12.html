@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>芬兰语闪卡游戏 - 第12课 (发音已修复)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f7f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+            color: #333;
+        }
+
+        /* 返回按钮样式 */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        h1 {
+            width: 100%;
+            text-align: center;
+            color: #1f2d3d;
+            margin-bottom: 40px;
+            margin-top: 50px; /* 为返回按钮留出空间 */
+            font-weight: 700;
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1600px;
+        }
+
+        .card {
+            background-color: transparent;
+            width: 100%;
+            height: 260px;
+            perspective: 1200px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), box-shadow 0.3s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+        }
+        
+        .card:hover .card-inner {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 16px;
+        }
+
+        .card-front {
+            background-color: #ffffff;
+            color: black;
+            justify-content: center;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #3c4a5c, #2a3440);
+            color: white;
+            transform: rotateY(180deg);
+            justify-content: flex-start;
+            text-align: left;
+            overflow-y: auto;
+        }
+        
+        .card-back::-webkit-scrollbar {
+          width: 6px;
+        }
+        .card-back::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .card-back::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .card-number {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #d0d0d0;
+        }
+        
+        .card-back .card-number {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .card-front h2 {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin: 0;
+            padding: 0 10px;
+        }
+
+        .card-title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 0 30px; /* 为两侧留出空间 */
+        }
+        
+        .card-back h3 {
+            width: 100%;
+            margin: 15px 0 8px 0;
+            font-size: 1.1em;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 5px;
+        }
+        .card-back h3:first-of-type {
+             margin-top: 35px;
+        }
+        
+        .card-back p {
+            width: 100%;
+            margin: 5px 0;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        
+        .card-back p em {
+            font-style: italic;
+            color: #aed9ff;
+        }
+        
+        .card-back p strong {
+            font-weight: 700;
+            color: #f5d38a;
+        }
+
+        .instruction {
+            font-size: 0.8em;
+            color: #aaa;
+            position: absolute;
+            bottom: 20px;
+        }
+
+        /* TTS图标样式 */
+        .tts-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+        }
+
+        .tts-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        .tts-icon.speaking {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.history.length > 1 ? window.history.back() : window.location.href = '#';" title="返回上级页面">
+        ← 返回
+    </button>
+
+    <h1>芬兰语时间表达闪卡 (Kappale 12)</h1>
+
+    <div class="card-container">
+        </div>
+
+    <script>
+        // --- 经过修正的TTS功能 ---
+        function speak(text, clickedButton) {
+            const isCurrentlySpeaking = clickedButton.classList.contains('speaking');
+
+            // 1. 无论如何，先停止所有正在进行的和等待中的发音，并重置所有按钮的UI
+            speechSynthesis.cancel();
+            document.querySelectorAll('.tts-icon').forEach(btn => {
+                btn.textContent = '🔊';
+                btn.classList.remove('speaking');
+            });
+
+            // 2. 如果点击的是正在播放的按钮，那么意图就是停止，我们已经停止了，所以直接退出
+            if (isCurrentlySpeaking) {
+                return;
+            }
+
+            // 3. 如果点击的是新按钮，则开始新的播放流程
+            if (!('speechSynthesis' in window)) {
+                console.log('浏览器不支持语音合成，降级到Google TTS');
+                fallbackToGoogleTTS(text);
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'fi-FI';
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+
+            // 更新当前按钮的UI
+            clickedButton.textContent = '🔇';
+            clickedButton.classList.add('speaking');
+
+            // 播放结束时，仅重置当前按钮的UI
+            utterance.onend = function() {
+                clickedButton.textContent = '🔊';
+                clickedButton.classList.remove('speaking');
+            };
+
+            utterance.onerror = function(event) {
+                console.error('语音合成错误:', event.error, '降级到Google TTS');
+                clickedButton.textContent = '🔊';
+                clickedButton.classList.remove('speaking');
+                fallbackToGoogleTTS(text);
+            };
+
+            speechSynthesis.speak(utterance);
+        }
+
+        function fallbackToGoogleTTS(text) {
+            const audioSrc = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=fi`;
+            const audio = new Audio(audioSrc);
+            audio.play().catch(e => {
+                console.error('Google TTS播放失败:', e);
+            });
+        }
+        // --- 功能区结束 ---
+
+
+        const flashcardData = [
+            { fi: "Kappale 12.", zh: "第12章/第12课。", grammar: "<strong>Kappale</strong>: 名词原型 <em>kappale</em> (章，课)。数字 \"12\" (kaksitoista)。" },
+            { fi: "Mitä kello on?", zh: "几点了？", grammar: "<strong>Mitä kello on?</strong>: 固定搭配，最常见的“几点了？”的问法。<strong>Mitä</strong>: 疑问代词原型 <em>mikä</em> (什么) 的部分格单数。<strong>kello</strong>: 名词原型 <em>kello</em> (钟，时间，几点) 的主格单数。<strong>on</strong>: 动词原型 <em>olla</em> (是) 的第三人称单数现在时。" },
+            { fi: "Kello on kolme.", zh: "三点。", grammar: "<strong>Kello on kolme</strong>: 固定搭配，表示“现在是三点”。<strong>kolme</strong>: 数字 \"3\"。" },
+            { fi: "Anteeksi, mitä kello on?", zh: "对不起，几点了？", grammar: "<strong>Anteeksi</strong>: 副词/感叹词 (对不起，抱歉)。其余同上。" },
+            { fi: "Tasan yksi.", zh: "刚好一点。", grammar: "<strong>Tasan</strong>: 副词原型 <em>tasan</em> (正好，恰好)。<strong>yksi</strong>: 数字 \"1\"。" },
+            { fi: "Melkein kaksi.", zh: "快两点了。", grammar: "<strong>Melkein</strong>: 副词原型 <em>melkein</em> (几乎，快要)。<strong>kaksi</strong>: 数字 \"2\"。" },
+            { fi: "Vähän vaille kaksi.", zh: "差一点两点。", grammar: "<strong>Vähän vaille</strong>: 固定搭配，表示“差一点点”。<strong>Vähän</strong>: 副词原型 <em>vähän</em> (一点点)。<strong>vaille</strong>: 后置词 (不足，缺少)。<strong>kaksi</strong>: 数字 \"2\"。" },
+            { fi: "Vähän yli kolme.", zh: "三点过一点。", grammar: "<strong>Vähän yli</strong>: 固定搭配，表示“过了一点点”。<strong>Yli</strong>: 后置词 (超过)。<strong>kolme</strong>: 数字 \"3\"。" },
+            { fi: "Kuinka paljon kello on?", zh: "几点了？ (较正式)", grammar: "<strong>Kuinka paljon kello on?</strong>: 另一种询问时间的表达，含义相同，语气稍正式。<strong>Kuinka paljon</strong>: 疑问短语 (多少)。" },
+            { fi: "Paljonko kello on?", zh: "几点了？ (常用，口语化)", grammar: "<strong>Paljonko kello on?</strong>: 与 <em>Mitä kello on?</em> 含义相同，更口语化。<strong>Paljonko</strong>: 疑问副词 (多少)。" },
+            { fi: "Kello on kaksi.", zh: "两点。", grammar: "<strong>kaksi</strong>: 数字 \"2\"。" },
+            { fi: "Kello on viisi minuuttia yli yhdeksän.", zh: "九点过五分。", grammar: "<strong>viisi</strong>: 数字 \"5\"。<strong>minuuttia</strong>: 名词原型 <em>minuutti</em> (分钟) 的部分格复数。数量词 (如数字) 后接名词通常用部分格。<strong>yhdeksän</strong>: 数字 \"9\"。" },
+            { fi: "Kello on puoli kolme.", zh: "两点半。", grammar: "<strong>Puoli kolme</strong>: 固定搭配，表示“两点半”。在芬兰语中，\"puoli X\" 指的是“X点的前半小时”，即“X-1点半”。<strong>Puoli</strong>: 名词原型 <em>puoli</em> (半)。<strong>kolme</strong>: 数字 \"3\"。" },
+            { fi: "Kello on viisi minuuttia vaille kuusi.", zh: "差五分六点。", grammar: "<strong>viisi minuuttia vaille</strong>: 固定搭配，表示“差五分钟”。<strong>kuusi</strong>: 数字 \"6\"。" },
+            { fi: "Milloin juna lähtee?", zh: "火车什么时候出发？", grammar: "<strong>Milloin</strong>: 疑问副词 (什么时候)，用于询问时间点。<strong>juna</strong>: 名词原型 <em>juna</em> (火车) 的主格单数。<strong>lähtee</strong>: 动词原型 <em>lähteä</em> (出发，离开) 的第三人称单数现在时。" },
+            { fi: "Kello kolmetoista viisitoista.", zh: "十三点十五分。(下午1点15分)", grammar: "<strong>kolmetoista</strong>: 数字 \"13\"。<strong>viisitoista</strong>: 数字 \"15\"。芬兰语中常使用24小时制。" },
+            { fi: "Milloin elokuva alkaa?", zh: "电影什么时候开始？", grammar: "<strong>elokuva</strong>: 名词原型 <em>elokuva</em> (电影) 的主格单数。<strong>alkaa</strong>: 动词原型 <em>alkaa</em> (开始) 的第三人称单数现在时。" },
+            { fi: "Kello kaksikymmentä kolme.", zh: "晚上八点零三分。", grammar: "<strong>kaksikymmentä</strong>: 数字 \"20\"。<strong>kolme</strong>: 数字 \"3\"。此处表示20:03。" },
+            { fi: "Milloin tulet?", zh: "你什么时候来？", grammar: "<strong>tulet</strong>: 动词原型 <em>tulla</em> (来) 的第二人称单数现在时。" },
+            { fi: "Maanantaina.", zh: "星期一。", grammar: "<strong>Maanantaina</strong>: 名词原型 <em>maanantai</em> (星期一) 的状格单数 (essive case)，表示“在某个日子”。" },
+            { fi: "Mihin aikaan?", zh: "几点？/什么时候？", grammar: "<strong>Mihin aikaan?</strong>: 固定搭配，询问具体时间点。<strong>Mihin</strong>: 疑问代词原型 <em>mikä</em> (什么) 的入格单数。<strong>aikaan</strong>: 名词原型 <em>aika</em> (时间) 的入格单数。" },
+            { fi: "En ole varma. Ehkä noin kello kolme.", zh: "我不确定。大概三点左右。", grammar: "<strong>En ole varma</strong>: 动词原型 <em>olla</em> (是) 的第一人称单数否定形式 <em>en ole</em> + 形容词原型 <em>varma</em> (确定)。<strong>Ehkä</strong>: 副词 (也许，可能)。<strong>noin</strong>: 副词 (大约，左右)。<strong>kello kolme</strong>: 三点。" },
+            { fi: "Milloin filmi alkaa?", zh: "电影什么时候开始？", grammar: "<strong>filmi</strong>: 名词原型 <em>filmi</em> (电影)，与 <em>elokuva</em> 同义。<strong>alkaa</strong>: 动词原型 <em>alkaa</em> (开始) 的第三人称单数现在时。" },
+            { fi: "Kello kahdeksantoista kolmekymmentä.", zh: "十八点三十分。(下午6点30分)", grammar: "<strong>kahdeksantoista</strong>: 数字 \"18\"。<strong>kolmekymmentä</strong>: 数字 \"30\"。" },
+            { fi: "Milloin se loppuu?", zh: "它什么时候结束？", grammar: "<strong>se</strong>: 人称代词原型 <em>se</em> (它) 的主格单数。<strong>loppuu</strong>: 动词原型 <em>loppua</em> (结束) 的第三人称单数现在时。" },
+            { fi: "Kello kaksikymmentä kolmekymmentä.", zh: "二十点三十分。(晚上8点30分)", grammar: "<strong>kaksikymmentä</strong>: 数字 \"20\"。<strong>kolmekymmentä</strong>: 数字 \"30\"。" },
+            { fi: "Milloin juna lähtee?", zh: "火车什么时候出发？", grammar: "同上文重复的句子。" },
+            { fi: "Kello seitsemäntoista kolmekymmentä.", zh: "十七点三十分。(下午5点30分)", grammar: "<strong>seitsemäntoista</strong>: 数字 \"17\"。<strong>kolmekymmentä</strong>: 数字 \"30\"。" },
+            { fi: "Milloin se on perillä?", zh: "它什么时候到达？", grammar: "<strong>perillä</strong>: 副词原型 <em>perillä</em> (已到达目的地)。固定搭配 <em>olla perillä</em> (到达)。" },
+            { fi: "Koska sä tuut?", zh: "你什么时候来？ (口语)", grammar: "<strong>Koska</strong>: 疑问副词 (什么时候)，在口语中比 <em>milloin</em> 更常用。<strong>sä</strong>: 人称代词原型 <em>sinä</em> (你) 的口语形式。<strong>tuut</strong>: 动词原型 <em>tulla</em> (来) 的第二人称单数现在时 <em>tulet</em> 的口语缩略形式。" },
+            { fi: "Kello kaksi.", zh: "两点。", grammar: "<strong>kaksi</strong>: 数字 \"2\"。" },
+            { fi: "Kiitos!", zh: "谢谢！", grammar: "<strong>Kiitos</strong>: 感谢，谢谢。" }
+        ];
+
+        const container = document.querySelector('.card-container');
+
+        flashcardData.forEach((item, index) => {
+            const cardElement = document.createElement('div');
+            cardElement.classList.add('card');
+            
+            // 为speak函数准备纯文本，并处理JS字符串中的单引号
+            const speakText = item.fi.replace(/'/g, "\\'");
+
+            cardElement.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">
+                        <span class="card-number">${index + 1}</span>
+                        <div class="card-title-container">
+                            <button class="tts-icon" onclick="speak('${speakText}', this)" title="播放芬兰语音频">🔊</button>
+                            <h2>${item.fi}</h2>
+                        </div>
+                        <p class="instruction">点击卡片翻面</p>
+                    </div>
+                    <div class="card-back">
+                        <span class="card-number">${index + 1}</span>
+                        <h3>中文解释</h3>
+                        <p>${item.zh}</p>
+                        <h3>语法分析</h3>
+                        <p>${item.grammar}</p>
+                    </div>
+                </div>
+            `;
+            
+            cardElement.addEventListener('click', function(e) {
+                // 防止点击 TTS 图标时翻转卡片
+                if (e.target.classList.contains('tts-icon')) {
+                    e.stopPropagation();
+                    return;
+                }
+                this.classList.toggle('is-flipped');
+            });
+
+            container.appendChild(cardElement);
+        });
+    </script>
+
+</body>
+</html>
