@@ -17,6 +17,29 @@
             color: #333;
         }
 
+        /* 返回按钮样式 */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
         h1 {
             width: 100%;
             text-align: center;
@@ -176,9 +199,54 @@
             height: 35px;
             flex-shrink: 0; 
         }
+
+        /* TTS图标样式 */
+        .card-title-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 15px 0;
+        }
+
+        .tts-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+        }
+
+        .tts-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        .tts-icon.speaking {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
+    <!-- 返回按钮 -->
+    <button class="back-button" onclick="history.back()" title="返回上级页面">
+        ← 返回
+    </button>
 
     <h1>芬兰语日常与活动闪卡 (Kappale 16)</h1>
 
@@ -186,6 +254,88 @@
         </div>
 
     <script>
+        // TTS功能
+        let currentSpeech = null;
+        let isSpeaking = false;
+
+        function speak(text, button) {
+            // 立即停止当前播放并重置所有状态
+            if (isSpeaking && currentSpeech) {
+                speechSynthesis.cancel();
+                // 重置所有按钮状态
+                document.querySelectorAll('.tts-icon').forEach(btn => {
+                    btn.textContent = '🔊';
+                    btn.classList.remove('speaking');
+                });
+                isSpeaking = false;
+                currentSpeech = null;
+            }
+
+            // 检查浏览器支持
+            if (!('speechSynthesis' in window)) {
+                console.log('浏览器不支持语音合成');
+                fallbackToGoogleTTS(text);
+                return;
+            }
+
+            // 短暂延迟确保之前的播放完全停止
+            setTimeout(() => {
+                // 创建新的语音合成
+                currentSpeech = new SpeechSynthesisUtterance(text);
+                
+                // 设置语言为芬兰语
+                currentSpeech.lang = 'fi-FI';
+                currentSpeech.rate = 0.8;
+                currentSpeech.pitch = 1;
+                currentSpeech.volume = 1;
+
+                // 更新当前按钮状态
+                button.textContent = '🔇';
+                button.classList.add('speaking');
+                isSpeaking = true;
+
+                // 播放结束事件
+                currentSpeech.onend = function() {
+                    if (button) {
+                        button.textContent = '🔊';
+                        button.classList.remove('speaking');
+                    }
+                    isSpeaking = false;
+                    currentSpeech = null;
+                };
+
+                currentSpeech.onerror = function(event) {
+                    console.log('语音合成错误:', event.error);
+                    if (button) {
+                        button.textContent = '🔊';
+                        button.classList.remove('speaking');
+                    }
+                    isSpeaking = false;
+                    currentSpeech = null;
+                    // 降级到Google TTS
+                    fallbackToGoogleTTS(text);
+                };
+
+                // 开始播放
+                try {
+                    speechSynthesis.speak(currentSpeech);
+                } catch (error) {
+                    console.log('播放失败，尝试降级方案:', error);
+                    fallbackToGoogleTTS(text);
+                }
+            }, 50); // 50ms延迟确保完全停止
+        }
+
+        function fallbackToGoogleTTS(text) {
+            console.log('降级到Google TTS');
+            const audioSrc = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=fi`;
+            const audio = new Audio(audioSrc);
+            audio.play().catch(e => {
+                console.log('Google TTS也无法播放:', e);
+                console.log('抱歉，当前无法播放音频。请检查网络连接或尝试刷新页面。');
+            });
+        }
+
         const flashcardData = [
             { fi: "Kappale 16.", zh: "第16章/第16课。", grammar: "<strong>Kappale</strong>: 名词原型 <em>kappale</em> (章，课)。<strong>此处原文有笔误，应为 \"Kappale 16.\"，而不是 \"Kappalet 16.\"。</strong> 数字 \"16\" (kuusitoista)。" },
             { fi: "Anteeksi, häiritsenkö?", zh: "对不起，我打扰了吗？", grammar: "<strong>Anteeksi</strong>: 副词/感叹词 (对不起，抱歉)。<strong>häiritsenkö?</strong>: 动词原型 <em>häiritä</em> (打扰) 的第一人称单数现在时 <em>häiritsen</em> 加上疑问后缀 <em>-kö</em>。" },
@@ -253,10 +403,10 @@
                 <div class="card-inner">
                     <div class="card-front">
                         <span class="card-number">${index + 1}</span>
-                        <h2>${item.fi}</h2>
-                        <audio controls src="${audioSrc}" preload="none">
-                            您的浏览器不支持音频播放。
-                        </audio>
+                        <div class="card-title-container">
+                            <button class="tts-icon" onclick="speak('${audioText.replace(/'/g, "\\'")}', this)" title="播放芬兰语音频">🔊</button>
+                            <h2>${item.fi}</h2>
+                        </div>
                         <p class="instruction">点击卡片翻面</p>
                     </div>
                     <div class="card-back">
@@ -270,9 +420,11 @@
             `;
             
             cardElement.addEventListener('click', function(e) {
-                if (e.target.tagName.toLowerCase() !== 'audio' && !e.target.closest('audio')) {
-                    this.classList.toggle('is-flipped');
+                // 防止点击 TTS 图标时翻转卡片
+                if (e.target.classList.contains('tts-icon')) {
+                    return;
                 }
+                this.classList.toggle('is-flipped');
             });
 
             container.appendChild(cardElement);
