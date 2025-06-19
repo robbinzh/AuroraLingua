@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>芬兰语闪卡游戏 - 第17课</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f7f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+            color: #333;
+        }
+
+        /* 返回按钮样式 */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        h1 {
+            width: 100%;
+            text-align: center;
+            color: #1f2d3d;
+            margin-bottom: 40px;
+            margin-top: 50px; /* 为返回按钮留出空间 */
+            font-weight: 700;
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1600px;
+        }
+
+        .card {
+            background-color: transparent;
+            width: 100%;
+            height: 260px;
+            perspective: 1200px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), box-shadow 0.3s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+        }
+        
+        .card:hover .card-inner {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 16px;
+        }
+
+        .card-front {
+            background-color: #ffffff;
+            color: black;
+            justify-content: center;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #3c4a5c, #2a3440);
+            color: white;
+            transform: rotateY(180deg);
+            padding: 45px 0 15px 0;
+        }
+        
+        .card-back-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 0 25px;
+            text-align: left;
+        }
+        
+        .card-back-content::-webkit-scrollbar {
+          width: 6px;
+        }
+        .card-back-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .card-back-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .card-number {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #d0d0d0;
+        }
+        
+        .card-back .card-number {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .card-front h2 {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin: 0;
+            padding: 0 10px;
+        }
+
+        .card-title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 0 30px; 
+        }
+        
+        .card-back h3 {
+            width: 100%;
+            margin: 0 0 8px 0;
+            font-size: 1.1em;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 5px;
+        }
+        .card-back-content h3:not(:first-child) {
+            margin-top: 15px;
+        }
+        
+        .card-back p {
+            width: 100%;
+            margin: 5px 0;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        
+        .card-back p em {
+            font-style: italic;
+            color: #aed9ff;
+        }
+        
+        .card-back p strong {
+            font-weight: 700;
+            color: #f5d38a;
+        }
+
+        .instruction {
+            font-size: 0.8em;
+            color: #aaa;
+            position: absolute;
+            bottom: 20px;
+        }
+
+        .tts-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+        }
+
+        .tts-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        .tts-icon.speaking {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.history.length > 1 ? window.history.back() : window.location.href = '#';" title="返回上级页面">
+        ← 返回
+    </button>
+
+    <h1>芬兰语地点与方向闪卡 (Kappale 17)</h1>
+
+    <div class="card-container">
+    </div>
+
+    <script>
+        function speak(text, clickedButton) {
+            const isCurrentlySpeaking = clickedButton.classList.contains('speaking');
+
+            speechSynthesis.cancel();
+            document.querySelectorAll('.tts-icon').forEach(btn => {
+                btn.textContent = '🔊';
+                btn.classList.remove('speaking');
+            });
+
+            if (isCurrentlySpeaking) {
+                return;
+            }
+
+            if (!('speechSynthesis' in window)) {
+                console.log('浏览器不支持语音合成，降级到Google TTS');
+                fallbackToGoogleTTS(text);
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'fi-FI';
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+
+            clickedButton.textContent = '🔇';
+            clickedButton.classList.add('speaking');
+
+            utterance.onend = function() {
+                clickedButton.textContent = '🔊';
+                clickedButton.classList.remove('speaking');
+            };
+
+            utterance.onerror = function(event) {
+                console.error('语音合成错误:', event.error, '降级到Google TTS');
+                clickedButton.textContent = '🔊';
+                clickedButton.classList.remove('speaking');
+                fallbackToGoogleTTS(text);
+            };
+
+            speechSynthesis.speak(utterance);
+        }
+
+        function fallbackToGoogleTTS(text) {
+            const audioSrc = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=fi`;
+            const audio = new Audio(audioSrc);
+            audio.play().catch(e => {
+                console.error('Google TTS播放失败:', e);
+            });
+        }
+
+        const flashcardData = [
+            { fi: "Kappale 17.", zh: "第17章/第17课。", grammar: "<strong>Kappale</strong>: 名词原型 <em>kappale</em> (章，课)。数字 \"17\" (seitsemäntoista)。" },
+            { fi: "Mihin sinä menet?", zh: "你去哪里？", grammar: "<strong>Mihin</strong>: 疑问代词原型 <em>mikä</em> (什么) 的入格单数 (illative case)，用于询问“去往…里面”。<strong>sinä</strong>: 人称代词 (你)。<strong>menet</strong>: 动词原型 <em>mennä</em> (去) 的第二人称单数现在时。" },
+            { fi: "Menen kauppaan.", zh: "我去商店。", grammar: "<strong>Menen</strong>: 动词原型 <em>mennä</em> (去) 的第一人称单数现在时。<strong>kauppaan</strong>: 名词原型 <em>kauppa</em> (商店) 的入格单数。" },
+            { fi: "Ensin pankkiin ja postiin ja sitten kirjastoon.", zh: "先去银行和邮局，然后去图书馆。", grammar: "<strong>Ensin</strong>: 副词 (首先)。<strong>pankkiin</strong>: 名词原型 <em>pankki</em> (银行) 的入格单数。<strong>ja</strong>: 连词 (和)。<strong>postiin</strong>: 名词原型 <em>posti</em> (邮局) 的入格单数。<strong>sitten</strong>: 副词 (然后)。<strong>kirjastoon</strong>: 名词原型 <em>kirjasto</em> (图书馆) 的入格单数。" },
+            { fi: "Mihin te menette?", zh: "你们/您去哪里？", grammar: "<strong>te</strong>: 人称代词 (你们/您)。<strong>menette</strong>: 动词原型 <em>mennä</em> (去) 的第二人称复数现在时。" },
+            { fi: "Ravintolaan syömään.", zh: "去餐馆吃饭。", grammar: "<strong>Ravintolaan</strong>: 名词原型 <em>ravintola</em> (餐馆) 的入格单数。<strong>syömään</strong>: 动词原型 <em>syödä</em> (吃) 的第三不定式入格形式 (third infinitive illative)，表示目的，“为了去吃”。" },
+            { fi: "Ai! Mihin ravintolaan?", zh: "啊！去哪家餐馆？", grammar: "<strong>Ai!</strong>: 感叹词。<strong>Mihin ravintolaan</strong>: 疑问形容词 <em>mihin</em> 和名词 <em>ravintolaan</em> 保持格的一致性。" },
+            { fi: "Luultavasti uuteen italialaiseen ravintolaan.", zh: "大概去一家新的意大利餐馆。", grammar: "<strong>Luultavasti</strong>: 副词 (大概，可能)。<strong>uuteen</strong>: 形容词原型 <em>uusi</em> (新的) 的入格单数。<strong>italialaiseen</strong>: 形容词原型 <em>italialainen</em> (意大利的) 的入格单数。<strong>ravintolaan</strong>: 名词原型 <em>ravintola</em> (餐馆) 的入格单数。形容词和名词保持格一致。" },
+            { fi: "Milloin menet työhön?", zh: "你什么时候去上班？", grammar: "<strong>Milloin</strong>: 疑问副词 (什么时候)。<strong>menet</strong>: 动词原型 <em>mennä</em> (去) 的第二人称单数现在时。<strong>työhön</strong>: 名词原型 <em>työ</em> (工作) 的入格单数。固定搭配 <em>mennä työhön</em> (去上班)。" },
+            { fi: "Huomenna matkustan kotiin Englantiin, Lontooseen.", zh: "明天我旅行回家，去英国，去伦敦。", grammar: "<strong>Huomenna</strong>: 副词 (明天)。<strong>matkustan</strong>: 动词原型 <em>matkustaa</em> (旅行) 的第一人称单数现在时。<strong>kotiin</strong>: 名词原型 <em>koti</em> (家) 的入格单数，表示“回家去”。<strong>Englantiin</strong>: 名词原型 <em>Englanti</em> (英国) 的入格单数。<strong>Lontooseen</strong>: 名词原型 <em>Lontoo</em> (伦敦) 的入格单数。" },
+            { fi: "Milloin tulet takaisin Suomeen?", zh: "你什么时候回芬兰？", grammar: "<strong>tulet</strong>: 动词原型 <em>tulla</em> (来) 的第二人称单数现在时。<strong>takaisin</strong>: 副词 (回来)。<strong>Suomeen</strong>: 名词原型 <em>Suomi</em> (芬兰) 的入格单数。" },
+            { fi: "En tiedä. Ehkä en koskaan.", zh: "我不知道。也许永远不回来了。", grammar: "<strong>En tiedä</strong>: 动词原型 <em>tietää</em> (知道) 的第一人称单数否定形式。<strong>Ehkä</strong>: 副词 (也许)。<strong>en koskaan</strong>: 动词原型 <em>tulla</em> (来) 的第一人称单数否定形式 <em>en tule</em> 的省略，<em>koskaan</em> (从不，任何时候) 通常与否定词连用。" },
+            { fi: "Minne te menette?", zh: "你们/您去哪里？", grammar: "<strong>Minne</strong>: 疑问代词，与 <em>Mihin</em> 同义，表示“去哪里”。" },
+            { fi: "Asemalle.", zh: "去车站。", grammar: "<strong>Asemalle</strong>: 名词原型 <em>asema</em> (车站) 的趋向格单数 (allative case)。用于表示去往某个开放空间或物体的表面/旁边。" },
+            { fi: "Miksi?", zh: "为什么？", grammar: "<strong>Miksi</strong>: 疑问副词 (为什么)，是 <em>mikä</em> 的变形。" },
+            { fi: "Me menemme Joensuuhun.", zh: "我们去约恩苏 (城市名)。", grammar: "<strong>Me</strong>: 人称代词 (我们)。<strong>menemme</strong>: 动词原型 <em>mennä</em> (去) 的第一人称复数现在时。<strong>Joensuuhun</strong>: 专有名词 <em>Joensuu</em> 的入格单数。" },
+            { fi: "Hei! Lähdetkö kahville?", zh: "嗨！一起去喝咖啡吗？", grammar: "<strong>Hei!</strong>: 问候语。<strong>Lähdetkö</strong>: 动词原型 <em>lähteä</em> (离开，出发) 的第二人称单数疑问形式。<strong>kahville</strong>: 名词原型 <em>kahvi</em> (咖啡) 的趋向格单数。固定搭配 <em>lähteä kahville</em> (去喝咖啡)。" },
+            { fi: "En voi. Olen menossa Suomen kurssille.", zh: "我不能。我正要去上芬兰语课。", grammar: "<strong>En voi</strong>: 动词原型 <em>voida</em> (能) 的第一人称单数否定形式。<strong>Olen menossa</strong>: 动词原型 <em>mennä</em> (去) 的第三不定式内格形式 (third infinitive inessive)，表示“正在去往…的路上”。<strong>Suomen</strong>: 名词原型 <em>Suomi</em> (芬兰) 的属格单数。<strong>kurssille</strong>: 名词原型 <em>kurssi</em> (课程) 的趋向格单数。" },
+            { fi: "Tule kahville kurssin jälkeen.", zh: "课后一起来喝咖啡吧。", grammar: "<strong>Tule</strong>: 动词原型 <em>tulla</em> (来) 的第二人称单数命令式。<strong>kahville</strong>: 名词原型 <em>kahvi</em> (咖啡) 的趋向格单数。<strong>kurssin</strong>: 名词原型 <em>kurssi</em> (课程) 的属格单数。<strong>jälkeen</strong>: 后置词 (在…之后)，与属格连用。" },
+            { fi: "Joo. Mihin?", zh: "好的。去哪里？", grammar: "<strong>Joo</strong>: 口语化的“是的”。<strong>Mihin?</strong>: 疑问代词原型 <em>mikä</em> 的入格单数。" },
+            { fi: "No vaikka kahvila kuppiin.", zh: "嗯，比如说去“杯子咖啡馆”。", grammar: "<strong>No vaikka</strong>: 口语短语 (嗯，比如说)。<strong>kahvila kuppiin</strong>: <strong>此处原文 `kahvilla kuppiin` 稍显口语化或不规范，更标准的写法是 `Kahvila Kuppiin` 或 `kahvilaan nimeltä Kuppi`</strong>。这里应理解为去一个叫“Kuppi”的咖啡馆。<strong>kahvila</strong>: 名词原型 <em>kahvila</em> (咖啡馆)。<strong>kuppiin</strong>: 名词原型 <em>kuppi</em> (杯子) 的入格单数。" },
+            { fi: "Missä se on?", zh: "它在哪里？", grammar: "<strong>Missä</strong>: 疑问代词原型 <em>mikä</em> 的内格单数 (inessive case)，询问“在…里面”。<strong>se</strong>: 代词 (它)。<strong>on</strong>: 动词原型 <em>olla</em> (是) 的第三人称单数现在时。" },
+            { fi: "Aleksanterin kadulla.", zh: "在亚历山大街。", grammar: "<strong>Aleksanterin</strong>: 专有名词 <em>Aleksanteri</em> 的属格单数。<strong>kadulla</strong>: 名词原型 <em>katu</em> (街道) 的外格单数 (adessive case)。街道名通常用外格。" },
+            { fi: "Okei. Nähdään siellä kello kaksitoista.", zh: "好的。十二点在那里见。", grammar: "<strong>Okei</strong>: 好的。<strong>Nähdään</strong>: 动词原型 <em>nähdä</em> (看见) 的被动形式，常用于表示“我们见面吧”。<strong>siellä</strong>: 副词 (在那里)。<strong>kello kaksitoista</strong>: 十二点。" },
+            { fi: "Mihin sinä menet?", zh: "你去哪里？", grammar: "(重复，同上文)" },
+            { fi: "Museoon. Tule mukaan.", zh: "去博物馆。一起来吧。", grammar: "<strong>Museoon</strong>: 名词原型 <em>museo</em> (博物馆) 的入格单数。<strong>Tule mukaan</strong>: 固定搭配 (一起来)。<strong>Tule</strong>: 动词原型 <em>tulla</em> (来) 的第二人称单数命令式。<strong>mukaan</strong>: 副词/后置词 (一起，随同)。" },
+            { fi: "Ääh! Tylsää! En viitsi. Menen kotiin nukkumaan.", zh: "唉！真无聊！我懒得去。我回家睡觉了。", grammar: "<strong>Ääh!</strong>: 感叹词。<strong>Tylsää!</strong>: 形容词原型 <em>tylsä</em> (无聊的) 的部分格单数，感叹句中常用。<strong>En viitsi</strong>: 固定搭配 (我懒得/不想)，动词原型 <em>viitsiä</em> 的第一人称单数否定形式。<strong>Menen kotiin</strong>: 去回家。<strong>nukkumaan</strong>: 动词原型 <em>nukkua</em> (睡觉) 的第三不定式入格形式，表示目的，“为了去睡觉”。" },
+            { fi: "Menen lomalle Italiaan.", zh: "我要去意大利度假。", grammar: "<strong>Menen lomalle</strong>: 固定搭配 (去度假)。<strong>lomalle</strong>: 名词原型 <em>loma</em> (假期) 的趋向格单数。<strong>Italiaan</strong>: 名词原型 <em>Italia</em> (意大利) 的入格单数。" },
+            { fi: "Ai kuinka ihanaa! Milloin?", zh: "哇，多棒啊！什么时候？", grammar: "<strong>Ai</strong>: 感叹词。<strong>kuinka</strong>: 副词 (多么)。<strong>ihanaa</strong>: 形容词原型 <em>ihana</em> (极好的，可爱的) 的部分格单数。<strong>Milloin?</strong>: 疑问副词 (什么时候)。" },
+            { fi: "Ensi viikolla.", zh: "下周。", grammar: "<strong>Ensi</strong>: 形容词/副词 (下个)。<strong>viikolla</strong>: 名词原型 <em>viikko</em> (星期) 的外格单数，表示时间“在下周”。" },
+            { fi: "[Loppuun musiikkia.]", zh: "[结尾是音乐。]", grammar: "<strong>Loppuun</strong>: 名词原型 <em>loppu</em> (结尾) 的入格单数，表示“到结尾处”。<strong>musiikkia</strong>: 名词原型 <em>musiikki</em> (音乐) 的部分格单数。" }
+        ];
+
+        const container = document.querySelector('.card-container');
+
+        flashcardData.forEach((item, index) => {
+            const cardElement = document.createElement('div');
+            cardElement.classList.add('card');
+            
+            // 为speak函数准备纯文本，并处理特殊字符
+            const plainText = item.fi.replace(/\[|\]|\./g, ''); // 移除方括号和句号
+            const speakText = plainText.replace(/'/g, "\\'"); // 处理JS字符串中的单引号
+
+            cardElement.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">
+                        <span class="card-number">${index + 1}</span>
+                        <div class="card-title-container">
+                            <button class="tts-icon" onclick="speak('${speakText}', this)" title="播放芬兰语音频">🔊</button>
+                            <h2>${item.fi}</h2>
+                        </div>
+                        <p class="instruction">点击卡片翻面</p>
+                    </div>
+                    <div class="card-back">
+                        <span class="card-number">${index + 1}</span>
+                        <div class="card-back-content">
+                            <h3>中文解释</h3>
+                            <p>${item.zh}</p>
+                            <h3>语法分析</h3>
+                            <p>${item.grammar}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            cardElement.addEventListener('click', function(e) {
+                if (e.target.classList.contains('tts-icon')) {
+                    e.stopPropagation();
+                    return;
+                }
+                this.classList.toggle('is-flipped');
+            });
+
+            container.appendChild(cardElement);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>芬兰语闪卡游戏 - 第20课</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f7f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+            color: #333;
+        }
+
+        /* 返回按钮样式 */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        h1 {
+            width: 100%;
+            text-align: center;
+            color: #1f2d3d;
+            margin-bottom: 40px;
+            margin-top: 50px; /* 为返回按钮留出空间 */
+            font-weight: 700;
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1600px;
+        }
+
+        .card {
+            background-color: transparent;
+            width: 100%;
+            height: 260px;
+            perspective: 1200px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), box-shadow 0.3s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+        }
+        
+        .card:hover .card-inner {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 16px;
+        }
+
+        .card-front {
+            background-color: #ffffff;
+            color: black;
+            justify-content: center;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #3c4a5c, #2a3440);
+            color: white;
+            transform: rotateY(180deg);
+            padding: 45px 0 15px 0;
+        }
+        
+        .card-back-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 0 25px;
+            text-align: left;
+        }
+        
+        .card-back-content::-webkit-scrollbar {
+          width: 6px;
+        }
+        .card-back-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .card-back-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .card-number {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #d0d0d0;
+        }
+        
+        .card-back .card-number {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .card-front h2 {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin: 0;
+            padding: 0 10px;
+        }
+
+        .card-title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 0 30px; 
+        }
+        
+        .card-back h3 {
+            width: 100%;
+            margin: 0 0 8px 0;
+            font-size: 1.1em;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 5px;
+        }
+        .card-back-content h3:not(:first-child) {
+            margin-top: 15px;
+        }
+        
+        .card-back p {
+            width: 100%;
+            margin: 5px 0;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        
+        .card-back p em {
+            font-style: italic;
+            color: #aed9ff;
+        }
+        
+        .card-back p strong {
+            font-weight: 700;
+            color: #f5d38a;
+        }
+
+        .instruction {
+            font-size: 0.8em;
+            color: #aaa;
+            position: absolute;
+            bottom: 20px;
+        }
+
+        .tts-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+        }
+
+        .tts-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        .tts-icon.speaking {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.history.length > 1 ? window.history.back() : window.location.href = '#';" title="返回上级页面">
+        ← 返回
+    </button>
+
+    <h1>芬兰语喜好与观点闪卡 (Kappale 20)</h1>
+
+    <div class="card-container">
+    </div>
+
+    <script>
+        function speak(text, clickedButton) {
+            const isCurrentlySpeaking = clickedButton.classList.contains('speaking');
+
+            speechSynthesis.cancel();
+            document.querySelectorAll('.tts-icon').forEach(btn => {
+                btn.textContent = '🔊';
+                btn.classList.remove('speaking');
+            });
+
+            if (isCurrentlySpeaking) {
+                return;
+            }
+
+            if (!('speechSynthesis' in window)) {
+                console.log('浏览器不支持语音合成，降级到Google TTS');
+                fallbackToGoogleTTS(text);
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'fi-FI';
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+
+            clickedButton.textContent = '🔇';
+            clickedButton.classList.add('speaking');
+
+            utterance.onend = function() {
+                clickedButton.textContent = '🔊';
+                clickedButton.classList.remove('speaking');
+            };
+
+            utterance.onerror = function(event) {
+                console.error('语音合成错误:', event.error, '降级到Google TTS');
+                clickedButton.textContent = '🔊';
+                clickedButton.classList.remove('speaking');
+                fallbackToGoogleTTS(text);
+            };
+
+            speechSynthesis.speak(utterance);
+        }
+
+        function fallbackToGoogleTTS(text) {
+            const audioSrc = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=fi`;
+            const audio = new Audio(audioSrc);
+            audio.play().catch(e => {
+                console.error('Google TTS播放失败:', e);
+            });
+        }
+
+        const flashcardData = [
+            { fi: "Kappale 20.", zh: "第20章/第20课。", grammar: "<strong>Kappale</strong>: 名词原型 <em>kappale</em> (章，课)。数字 \"20\" (kaksikymmentä)。" },
+            { fi: "Mistä sinä tykkäät?", zh: "你喜欢什么？", grammar: "<strong>Mistä</strong>: 疑问代词原型 <em>mikä</em> (什么) 的离格单数 (elative case)。<strong>语法要点</strong>: 动词 <em>tykätä</em> (喜欢) 要求其宾语使用离格。<strong>sinä</strong>: 人称代词 (你)。<strong>tykkäät</strong>: 动词原型 <em>tykätä</em> 的第二人称单数现在时。" },
+            { fi: "Tykkään musiikista.", zh: "我喜欢音乐。", grammar: "<strong>Tykkään</strong>: 动词原型 <em>tykätä</em> 的第一人称单数现在时。<strong>musiikista</strong>: 名词原型 <em>musiikki</em> (音乐) 的离格单数。" },
+            { fi: "Millaisesta musiikista?", zh: "什么样的音乐？", grammar: "<strong>Millaisesta</strong>: 疑问形容词原型 <em>millainen</em> (什么样的) 的离格单数，与其修饰的名词保持格的一致。" },
+            { fi: "Kansanmusiikista ja tietysti sinusta.", zh: "民间音乐，当然还有你。", grammar: "<strong>此处原文 `Kansan musiikista` 有笔误，应合并为 `Kansanmusiikista`。</strong> <strong>Kansanmusiikista</strong>: 复合名词原型 <em>kansanmusiikki</em> (民间音乐) 的离格单数。<strong>ja</strong>: 连词 (和)。<strong>tietysti</strong>: 副词 (当然)。<strong>sinusta</strong>: 人称代词原型 <em>sinä</em> (你) 的离格单数。" },
+            { fi: "Ihanaa, niin minäkin sinusta.", zh: "太好了，我也喜欢你。", grammar: "<strong>Ihanaa</strong>: 形容词原型 <em>ihana</em> (极好的，可爱的) 的部分格单数。<strong>niin minäkin sinusta</strong>: 固定搭配，表示“我也是”，此处的 <em>sinusta</em> 省略了动词 <em>tykkään</em>。<strong>-kin</strong>: 后缀 (也)。" },
+            { fi: "Menen illalla konserttiin. Tuletko mukaan?", zh: "我晚上去音乐会。你一起来吗？", grammar: "<strong>Menen</strong>: 动词原型 <em>mennä</em> (去) 的第一人称单数现在时。<strong>illalla</strong>: 名词原型 <em>ilta</em> (晚上) 的外格单数。<strong>konserttiin</strong>: 名词原型 <em>konsertti</em> (音乐会) 的入格单数。<strong>Tuletko mukaan?</strong>: 固定搭配 (你一起来吗？)。" },
+            { fi: "En. En tykkää klassisesta musiikista.", zh: "不去。我不喜欢古典音乐。", grammar: "<strong>En tykkää</strong>: 动词原型 <em>tykätä</em> 的第一人称单数否定形式。<strong>klassisesta</strong>: 形容词原型 <em>klassinen</em> (古典的) 的离格单数。" },
+            { fi: "Se on rock-konsertti.", zh: "那是摇滚音乐会。", grammar: "<strong>Se</strong>: 代词 (它)。<strong>rock-konsertti</strong>: 复合名词 (摇滚音乐会)。" },
+            { fi: "Ai jaa. Mikä bändi?", zh: "哦是吗。哪个乐队？", grammar: "<strong>Ai jaa</strong>: 口语感叹词 (哦，原来如此)。<strong>Mikä</strong>: 疑问代词原型 <em>mikä</em> (什么，哪个) 的主格单数。<strong>bändi</strong>: 名词原型 <em>bändi</em> (乐队) 的主格单数。" },
+            { fi: "Suomen paras rock-bändi.", zh: "芬兰最好的摇滚乐队。", grammar: "<strong>Suomen</strong>: 专有名词 <em>Suomi</em> (芬兰) 的属格单数。<strong>paras</strong>: 形容词原型 <em>hyvä</em> (好) 的最高级。" },
+            { fi: "Minä en tykkää rockistakaan.", zh: "我连摇滚也不喜欢。", grammar: "<strong>rockistakaan</strong>: 名词原型 <em>rock</em> 的离格单数 <em>rockista</em> + 后缀 <em>-kaan</em> (也不，用于否定句)。" },
+            { fi: "Mitä sinä teet vapaa-aikana?", zh: "你业余时间做什么？", grammar: "<strong>vapaa-aikana</strong>: 复合名词原型 <em>vapaa-aika</em> (业余时间) 的状格单数 (essive case)。" },
+            { fi: "Minä tykkään pelata golfia.", zh: "我喜欢打高尔夫。", grammar: "<strong>tykkään pelata</strong>: 动词原型 <em>tykätä</em> + 动词不定式 <em>pelata</em>。<strong>golfia</strong>: 名词原型 <em>golf</em> (高尔夫) 的部分格单数。" },
+            { fi: "Ai. Minä mieluummin katselen televisiota.", zh: "哦。我宁愿看电视。", grammar: "<strong>mieluummin</strong>: 副词，是 <em>mielellään</em> (乐意地) 的比较级，意为“宁愿”。<strong>katselen</strong>: 动词原型 <em>katsella</em> (观看) 的第一人称单数现在时。<strong>televisiota</strong>: 名词原型 <em>televisio</em> (电视) 的部分格单数。" },
+            { fi: "Golf on kiva harrastus. Ja terveellinen.", zh: "高尔夫是个不错的爱好。而且很健康。", grammar: "<strong>kiva</strong>: 形容词 (不错的)。<strong>harrastus</strong>: 名词原型 <em>harrastus</em> (爱好)。<strong>terveellinen</strong>: 形容词 (健康的)。" },
+            { fi: "Niin kai. Ja kallis.", zh: "大概是吧。而且很贵。", grammar: "<strong>Niin kai</strong>: 固定搭配 (大概是吧)。<strong>kallis</strong>: 形容词 (昂贵的)。" },
+            { fi: "Mistä sinä pidät?", zh: "你喜欢什么？", grammar: "<strong>pidät</strong>: 动词原型 <em>pitää</em> (喜欢) 的第二人称单数现在时。<strong>语法要点</strong>: 动词 <em>pitää</em> (喜欢) 和 <em>tykätä</em> 一样，要求宾语使用离格。" },
+            { fi: "Pidän kaikenlaisesta.", zh: "我喜欢各种各样的东西。", grammar: "<strong>Pidän</strong>: 动词原型 <em>pitää</em> 的第一人称单数现在时。<strong>kaikenlaisesta</strong>: 形容词原型 <em>kaikenlainen</em> (各种各样的) 的离格单数。" },
+            { fi: "Esimerkiksi musiikista, teatterista, urheilusta, lukemisesta.", zh: "例如音乐、戏剧、运动、阅读。", grammar: "<strong>teatterista</strong>: 名词原型 <em>teatteri</em> (戏剧) 的离格单数。<strong>urheilusta</strong>: 名词原型 <em>urheilu</em> (运动) 的离格单数。<strong>lukemisesta</strong>: 名词原型 <em>lukeminen</em> (阅读) 的离格单数。" },
+            { fi: "Mitä mieltä sinä olet Liisasta?", zh: "你对丽莎有什么看法？/你觉得丽莎怎么样？", grammar: "<strong>Mitä mieltä olet...sta?</strong>: 固定搭配，用于询问对某人/某事的看法。<strong>mieltä</strong>: 名词原型 <em>mieli</em> (意见，想法) 的部分格单数。<strong>Liisasta</strong>: 名词原型 <em>Liisa</em> 的离格单数。" },
+            { fi: "Minusta Liisa on ihan okei. Kiva tyttö.", zh: "我觉得丽莎还不错。是个好女孩。", grammar: "<strong>Minusta</strong>: 人称代词原型 <em>minä</em> (我) 的离格单数，此处意为“在我看来，我觉得”。<strong>ihan okei</strong>: “还不错”。<strong>Kiva tyttö</strong>: “不错的女孩”。" },
+            { fi: "Jaa. Minun mielestähän hän on vähän omituinen.", zh: "是吗。可我觉得她有点古怪。", grammar: "<strong>Minun mielestä</strong>: 固定搭配 (在我看来)。<em>minun</em> (属格) + <em>mieli</em> (想法) 的离格。<strong>-hän</strong>: 后缀，表示强调或个人观点。<strong>omituinen</strong>: 形容词 (古怪的)。" },
+            { fi: "Mitä tykkäät Helsingistä?", zh: "你觉得赫尔辛基怎么样？", grammar: "<strong>Mitä tykkäät...sta?</strong>: 固定搭配，与 <em>Mitä mieltä olet...sta?</em> 意思相近。<strong>Helsingistä</strong>: 专有名词 <em>Helsinki</em> 的离格单数。" },
+            { fi: "Minusta Helsinki on aika kiva kaupunki. Ainakin kesällä.", zh: "我觉得赫尔辛基是个挺不错的城市。至少在夏天是。", grammar: "<strong>aika</strong>: 副词 (相当)。<strong>kiva</strong>: 形容词 (不错的)。<strong>kaupunki</strong>: 名词 (城市)。<strong>Ainakin</strong>: 副词 (至少)。<strong>kesällä</strong>: 名词原型 <em>kesä</em> (夏天) 的外格单数。" },
+            { fi: "Tänään on kiva ilma.", zh: "今天天气不错。", grammar: "<strong>Tänään</strong>: 副词 (今天)。<strong>ilma</strong>: 名词 (天气)。" },
+            { fi: "Niin on. Olen samaa mieltä kuin sinä.", zh: "是的。我同意你的看法。", grammar: "<strong>Olen samaa mieltä</strong>: 固定搭配 (我同意)。<strong>samaa</strong>: 形容词原型 <em>sama</em> (相同的) 的部分格单数。<strong>mieltä</strong>: 名词原型 <em>mieli</em> (想法) 的部分格单数。" },
+            { fi: "Marcel puhuu suomea oikein hyvin.", zh: "马塞尔芬兰语说得很好。", grammar: "<strong>puhuu</strong>: 动词原型 <em>puhua</em> (说)。<strong>suomea</strong>: 名词原型 <em>suomi</em> (芬兰语) 的部分格单数。<strong>oikein hyvin</strong>: “非常好”。" },
+            { fi: "Niin puhuu.", zh: "确实说得很好。", grammar: "省略句，强调肯定。" },
+            { fi: "Minusta täällä on tylsää. Mitä mieltä sinä olet?", zh: "我觉得这里很无聊。你怎么看？", grammar: "<strong>täällä</strong>: 副词 (在这里)。<strong>tylsää</strong>: 形容词原型 <em>tylsä</em> (无聊的) 的部分格单数。" },
+            { fi: "No jaa. Minusta täällä on aika kivaa.", zh: "嗯……我觉得这里还挺不错的。", grammar: "<strong>aika kivaa</strong>: “挺不错的”。形容词用部分格描述抽象感觉。" },
+            { fi: "Sinun mielestä kaikki on aina tylsää.", zh: "在你看来，所有事情总是无聊的。", grammar: "<strong>Sinun mielestä</strong>: “在你看来”。<strong>kaikki</strong>: 代词 (所有)。<strong>aina</strong>: 副词 (总是)。" },
+            { fi: "Tämä on kiva disco.", zh: "这家迪斯科舞厅不错。", grammar: "" },
+            { fi: "Oletko sitä mieltä? Minä olen eri mieltä.", zh: "你是这么认为的吗？我持不同意见。", grammar: "<strong>Oletko sitä mieltä?</strong>: 固定搭配 (你这么认为吗？)。<strong>Minä olen eri mieltä</strong>: 固定搭配 (我不同意/我持不同意见)。<strong>eri</strong>: 不变形容词 (不同的)。" },
+            { fi: "Minusta tämä on ihan tylsä paikka. Ja kalliskin.", zh: "我觉得这地方真无聊。而且还很贵。", grammar: "<strong>tylsä paikka</strong>: “无聊的地方”。<strong>kalliskin</strong>: 形容词 <em>kallis</em> (昂贵的) + 后缀 <em>-kin</em> (也)。" }
+        ];
+
+        const container = document.querySelector('.card-container');
+
+        flashcardData.forEach((item, index) => {
+            const cardElement = document.createElement('div');
+            cardElement.classList.add('card');
+            
+            const speakText = item.fi.replace(/'/g, "\\'");
+
+            cardElement.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">
+                        <span class="card-number">${index + 1}</span>
+                        <div class="card-title-container">
+                            <button class="tts-icon" onclick="speak('${speakText}', this)" title="播放芬兰语音频">🔊</button>
+                            <h2>${item.fi}</h2>
+                        </div>
+                        <p class="instruction">点击卡片翻面</p>
+                    </div>
+                    <div class="card-back">
+                        <span class="card-number">${index + 1}</span>
+                        <div class="card-back-content">
+                            <h3>中文解释</h3>
+                            <p>${item.zh}</p>
+                            <h3>语法分析</h3>
+                            <p>${item.grammar}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            cardElement.addEventListener('click', function(e) {
+                if (e.target.classList.contains('tts-icon')) {
+                    e.stopPropagation();
+                    return;
+                }
+                this.classList.toggle('is-flipped');
+            });
+
+            container.appendChild(cardElement);
+        });
+    </script>
+
+</body>
+</html>
