@@ -183,11 +183,11 @@
             bottom: 15px;
         }
 
-                 audio {
-             margin-top: 15px;
-             width: 85%;
-             height: 35px;
-         }
+        audio {
+            margin-top: 15px;
+            width: 85%;
+            height: 35px;
+        }
 
          /* TTS图标样式 */
          .card-title-container {
@@ -399,7 +399,7 @@
                         <span class="card-number">${index + 1}</span>
                         <div class="card-title-container">
                             <button class="tts-icon" onclick="speak('${audioText.replace(/'/g, "\\'")}', this)" title="播放芬兰语音频">🔊</button>
-                            <h2>${item.fi}</h2>
+                        <h2>${item.fi}</h2>
                         </div>
                         <p class="instruction">点击卡片翻面</p>
                     </div>
@@ -418,7 +418,7 @@
                 if (e.target.classList.contains('tts-icon')) {
                     return;
                 }
-                this.classList.toggle('is-flipped');
+                    this.classList.toggle('is-flipped');
             });
 
             container.appendChild(cardElement);

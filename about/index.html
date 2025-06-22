@@ -351,6 +351,27 @@
             .experiment-grid {
                 grid-template-columns: 1fr;
             }
+            
+            /* Mobile responsive for new sections */
+            div[style*="grid-template-columns: 1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            div[style*="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .header .logo {
+                font-size: 2.5rem;
+            }
+            
+            .header .tagline {
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 1.6rem;
+            }
         }
     </style>
 </head>
@@ -371,43 +392,121 @@
         <main class="main-content">
             <!-- Experiment Overview -->
             <section class="experiment-section">
-                <h2 style="font-size: 2.2rem; margin-bottom: 20px;">🚀 革命性实验：芬兰语操作系统</h2>
-                <p style="font-size: 1.2rem; opacity: 0.95; margin-bottom: 25px; max-width: 800px; margin-left: auto; margin-right: auto;">
-                    我们将芬兰语学习重新定义为构建一个"语言操作系统"的过程
+                <h2 style="font-size: 2.2rem; margin-bottom: 20px;">🧠 一个关于语言认知重构的思想实验</h2>
+                <p style="font-size: 1.2rem; opacity: 0.95; margin-bottom: 25px; max-width: 900px; margin-left: auto; margin-right: auto; line-height: 1.7;">
+                    我们正在进行一个思想实验：<strong>如何为从中文到芬兰语的认知转换，构建一个高效的"神经通路重塑"模型？</strong>
+                    我们将芬兰语视为一套"智能乐高系统"，为中文母语者打造专属的"芬兰语虚拟机操作手册"。
                 </p>
                 <div class="experiment-grid">
                     <div class="experiment-card">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">🔬</div>
+                        <h4 style="margin-bottom: 10px;">实验起点</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">中文是"刚性积木"，芬兰语是"智能乐高"——两种截然不同的语言构建范式</p>
+                    </div>
+                    <div class="experiment-card">
                         <div style="font-size: 2rem; margin-bottom: 10px;">🎯</div>
-                        <h4 style="margin-bottom: 10px;">实验目标</h4>
-                        <p style="font-size: 0.9rem; opacity: 0.9;">构建基于名词-动词核心关系的语言学习新范式</p>
+                        <h4 style="margin-bottom: 10px;">我们交付什么</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">完整的"芬兰语API生态系统"——让你理解"为什么这么说"，而不只是"怎么说"</p>
                     </div>
                     <div class="experiment-card">
-                        <div style="font-size: 2rem; margin-bottom: 10px;">📦</div>
-                        <h4 style="margin-bottom: 10px;">交付形式</h4>
-                        <p style="font-size: 0.9rem; opacity: 0.9;">渐进式"系统更新"与"补丁包"学习模块</p>
+                        <div style="font-size: 2rem; margin-bottom: 10px;">🌟</div>
+                        <h4 style="margin-bottom: 10px;">最终愿景</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">让你成为芬兰语的"建筑师"，而不只是"使用者"——拥有真正的语言自信</p>
                     </div>
-                    <div class="experiment-card">
-                        <div style="font-size: 2rem; margin-bottom: 10px;">⚡</div>
-                        <h4 style="margin-bottom: 10px;">核心创新</h4>
-                        <p style="font-size: 0.9rem; opacity: 0.9;">像安装软件一样掌握语法结构</p>
+                </div>
+            </section>
+
+            <!-- Core Differences -->
+            <section style="margin: 50px 0;">
+                <h2 class="section-title">🧩 认知差异：两种语言的建构方式</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 30px 0;">
+                    <div style="background: #f8f9fa; border-radius: 20px; padding: 30px; border-left: 6px solid #e74c3c;">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <div style="font-size: 3rem; margin-bottom: 10px;">🧱</div>
+                            <h3 style="color: #2c3e50; margin-bottom: 15px;">中文：刚性积木系统</h3>
+                        </div>
+                        <ul style="color: #666; line-height: 1.8; list-style: none; padding: 0;">
+                            <li style="margin: 12px 0; padding-left: 20px; position: relative;">
+                                <span style="position: absolute; left: 0; color: #e74c3c;">•</span>
+                                词汇形态固定，永不变化
+                            </li>
+                            <li style="margin: 12px 0; padding-left: 20px; position: relative;">
+                                <span style="position: absolute; left: 0; color: #e74c3c;">•</span>
+                                依靠<strong>语序</strong>表达关系
+                            </li>
+                            <li style="margin: 12px 0; padding-left: 20px; position: relative;">
+                                <span style="position: absolute; left: 0; color: #e74c3c;">•</span>
+                                使用独立<strong>功能词</strong>连接
+                            </li>
+                            <li style="margin: 12px 0; padding-left: 20px; position: relative;">
+                                <span style="position: absolute; left: 0; color: #e74c3c;">•</span>
+                                例："我<u>在</u>吃苹果<u>了</u>"
+                            </li>
+                        </ul>
+                    </div>
+                    <div style="background: #f8f9fa; border-radius: 20px; padding: 30px; border-left: 6px solid #27ae60;">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <div style="font-size: 3rem; margin-bottom: 10px;">🔧</div>
+                            <h3 style="color: #2c3e50; margin-bottom: 15px;">芬兰语：智能乐高系统</h3>
+                        </div>
+                        <ul style="color: #666; line-height: 1.8; list-style: none; padding: 0;">
+                            <li style="margin: 12px 0; padding-left: 20px; position: relative;">
+                                <span style="position: absolute; left: 0; color: #27ae60;">•</span>
+                                词汇自带"接口"，可变形
+                            </li>
+                            <li style="margin: 12px 0; padding-left: 20px; position: relative;">
+                                <span style="position: absolute; left: 0; color: #27ae60;">•</span>
+                                关系信息<strong>烧录</strong>进词汇
+                            </li>
+                            <li style="margin: 12px 0; padding-left: 20px; position: relative;">
+                                <span style="position: absolute; left: 0; color: #27ae60;">•</span>
+                                通过<strong>词尾变化</strong>精确连接
+                            </li>
+                            <li style="margin: 12px 0; padding-left: 20px; position: relative;">
+                                <span style="position: absolute; left: 0; color: #27ae60;">•</span>
+                                例："Minä <u>syön</u> <u>omenaa</u>"
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </section>
 
             <!-- Teaching Philosophy -->
             <section style="margin: 50px 0;">
-                <h2 class="section-title">💡 核心教学理念</h2>
+                <h2 class="section-title">🎯 我们的解决方案</h2>
                 <div class="philosophy-section">
-                    <div style="text-align: center; margin-bottom: 30px;">
-                        <div style="font-size: 4rem; margin-bottom: 15px;">🖥️</div>
-                        <h3 style="font-size: 1.8rem; color: #2c3e50; margin-bottom: 20px;">芬兰语 = 语言操作系统</h3>
-                        <p style="font-size: 1.1rem; color: #666; line-height: 1.8; max-width: 800px; margin: 0 auto;">
-                            学习芬兰语，就像从零开始构建一个"操作系统"。我们首先安装最核心的两个驱动——
-                            <strong style="color: #667eea;">名词驱动 (Noun Driver)</strong> 和 
-                            <strong style="color: #764ba2;">动词驱动 (Verb Driver)</strong>，
-                            然后通过一系列的"系统更新"和"补丁包"，不断升级这两个驱动之间的"接口协议"，
-                            让它们能够协同工作，处理越来越复杂的现实世界任务。
+                    <div style="text-align: center; margin-bottom: 40px;">
+                        <div style="font-size: 4rem; margin-bottom: 15px;">⚡</div>
+                        <h3 style="font-size: 1.8rem; color: #2c3e50; margin-bottom: 20px;">芬兰语API生态系统</h3>
+                        <p style="font-size: 1.1rem; color: #666; line-height: 1.8; max-width: 900px; margin: 0 auto;">
+                            我们将芬兰语重新定义为一个<strong style="color: #667eea;">"基于接口调用的API系统"</strong>。
+                            每个词汇都是一个智能模块，自带清晰的接口规则。我们为你提供完整的"API文档"，
+                            让你理解每个"接口"的调用条件和返回结果，从而掌握语言的底层逻辑。
                         </p>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 40px;">
+                        <div style="background: white; border-radius: 15px; padding: 25px; border: 2px solid #3b82f6; text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 15px;">🔍</div>
+                            <h4 style="color: #2c3e50; margin-bottom: 15px;">引导式破解</h4>
+                            <p style="color: #666; font-size: 0.95rem; line-height: 1.6;">
+                                给你一个完整的芬兰语"建筑"，提供破解工具，引导你像系统分析师一样逆向工程，自行发现语言规律
+                            </p>
+                        </div>
+                        <div style="background: white; border-radius: 15px; padding: 25px; border: 2px solid #10b981; text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 15px;">🐛</div>
+                            <h4 style="color: #2c3e50; margin-bottom: 15px;">调试模式学习</h4>
+                            <p style="color: #666; font-size: 0.95rem; line-height: 1.6;">
+                                书面语追求精确，口语追求流利！说出有"bug"但能运行的句子，远比追求完美而沉默要好
+                            </p>
+                        </div>
+                        <div style="background: white; border-radius: 15px; padding: 25px; border: 2px solid #8b5cf6; text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 15px;">🏗️</div>
+                            <h4 style="color: #2c3e50; margin-bottom: 15px;">渐进式构建</h4>
+                            <p style="color: #666; font-size: 0.95rem; line-height: 1.6;">
+                                按A1-C2阶段严格排序，像安装软件一样逐步升级你的"芬兰语虚拟机"
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -514,11 +613,31 @@
 
             <!-- Mission Statement -->
             <section style="margin: 50px 0; padding: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; color: white; text-align: center;">
-                <h2 style="font-size: 2rem; margin-bottom: 20px;">🎯 我们的使命</h2>
-                <p style="font-size: 1.2rem; opacity: 0.95; line-height: 1.8; max-width: 800px; margin: 0 auto;">
-                    让每个人都能以最自然、最高效的方式掌握芬兰语，不仅仅是学会语言，更是学会用芬兰语思考和生活。
-                    我们相信，语言学习应该是一种愉悦的探索过程，而不是枯燥的记忆任务。
-                </p>
+                <h2 style="font-size: 2rem; margin-bottom: 30px;">🌟 最终愿景</h2>
+                <div style="max-width: 900px; margin: 0 auto;">
+                    <p style="font-size: 1.3rem; opacity: 0.95; line-height: 1.8; margin-bottom: 25px;">
+                        <strong>这个项目不仅仅是关于教芬兰语。</strong>
+                    </p>
+                    <p style="font-size: 1.1rem; opacity: 0.9; line-height: 1.8; margin-bottom: 25px;">
+                        它是一次关于<strong>如何学习的学习</strong>，一次关于<strong>如何理解的理解</strong>。
+                    </p>
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 30px; margin: 30px 0; backdrop-filter: blur(10px);">
+                        <p style="font-size: 1.1rem; opacity: 0.95; line-height: 1.8;">
+                            我们的目标是交付一个不仅教会学习者<strong>"说什么"</strong>和<strong>"怎么说"</strong>的课程，
+                            更重要的是，要让他们深刻理解<strong>"为什么这么说"</strong>。
+                        </p>
+                    </div>
+                    <p style="font-size: 1.1rem; opacity: 0.9; line-height: 1.8;">
+                        通过为你的大脑安装一个高效、兼容、且能自我调试的"芬兰语虚拟机"，
+                        我们希望赋予每一位学习者真正的语言自信——这种自信不是源于对规则的僵化记忆，
+                        而是源于对语言底层逻辑的深刻洞察。
+                    </p>
+                    <div style="margin-top: 30px; padding: 20px; background: rgba(255,255,255,0.15); border-radius: 10px; border: 2px solid rgba(255,255,255,0.2);">
+                        <p style="font-size: 1.2rem; font-weight: 600; margin: 0;">
+                            🏗️ 最终，你将不再是芬兰语的"使用者"，而是一个能欣赏其结构之美、并能自如地用它来搭建自己意义世界的"建筑师"。
+                        </p>
+                    </div>
+                </div>
             </section>
         </main>
         

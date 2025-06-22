@@ -142,7 +142,7 @@
         .card-back .card-number {
             color: rgba(255, 255, 255, 0.6);
         }
-        
+
         .card-front h2 {
             font-size: 1.5em;
             font-weight: 700;
@@ -207,7 +207,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
+            flex-shrink: 0; 
             box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
         }
 
@@ -236,7 +236,7 @@
     <h1>芬兰语电话用语闪卡 (Kappale 15)</h1>
 
     <div class="card-container">
-    </div>
+        </div>
 
     <script>
         function speak(text, clickedButton) {
@@ -346,17 +346,17 @@
                         <span class="card-number">${index + 1}</span>
                         <div class="card-title-container">
                             <button class="tts-icon" onclick="speak('${speakText}', this)" title="播放芬兰语音频">🔊</button>
-                            <h2>${item.fi}</h2>
+                        <h2>${item.fi}</h2>
                         </div>
                         <p class="instruction">点击卡片翻面</p>
                     </div>
                     <div class="card-back">
                         <span class="card-number">${index + 1}</span>
                         <div class="card-back-content">
-                            <h3>中文解释</h3>
-                            <p>${item.zh}</p>
-                            <h3>语法分析</h3>
-                            <p>${item.grammar}</p>
+                        <h3>中文解释</h3>
+                        <p>${item.zh}</p>
+                        <h3>语法分析</h3>
+                        <p>${item.grammar}</p>
                         </div>
                     </div>
                 </div>
