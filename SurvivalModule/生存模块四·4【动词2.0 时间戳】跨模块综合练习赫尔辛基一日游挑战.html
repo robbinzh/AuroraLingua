@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赫尔辛基一日游挑战 - Helsinki-päivän haaste</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #e0e0e0;
+            line-height: 1.7;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .game-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #0f3460, #2a3a60);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px solid #16213e;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.3em;
+            color: #8be9fd;
+            text-shadow: 0 0 10px #8be9fd;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: #c5c6c7;
+            opacity: 0.9;
+            margin: 10px 0 0 0;
+        }
+
+        .day-section {
+            display: none;
+            background-color: #16213e;
+            border: 1px solid #0f3460;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        .day-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            text-align: center;
+            color: #f9a826;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2a3a60;
+            padding-bottom: 10px;
+        }
+
+        .time-stamp {
+            background: #2a3a60;
+            color: #8be9fd;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .helsinki-map {
+            text-align: center;
+            font-size: 3em;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(139, 233, 253, 0.1);
+            border-radius: 10px;
+            line-height: 1.3;
+        }
+
+        .story-text {
+            font-size: 1.3em;
+            line-height: 1.8;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .story-text.clickable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .story-text.clickable:hover {
+            background: rgba(249, 168, 38, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .highlight {
+            color: #50fa7b;
+            font-weight: bold;
+            text-shadow: 0 0 5px #50fa7b;
+        }
+
+        .highlight-neg {
+            color: #ff5555;
+            font-weight: bold;
+            text-shadow: 0 0 5px #ff5555;
+        }
+
+        .highlight-space {
+            color: #8be9fd;
+            font-weight: bold;
+            text-shadow: 0 0 5px #8be9fd;
+        }
+
+        .highlight-reason {
+            color: #ff79c6;
+            font-weight: bold;
+            text-shadow: 0 0 5px #ff79c6;
+        }
+
+        .choice-section {
+            background: rgba(139, 233, 253, 0.1);
+            border-left: 4px solid #8be9fd;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+
+        .choice-question {
+            font-size: 1.2em;
+            color: #8be9fd;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .choice-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .choice-btn {
+            background: linear-gradient(135deg, #8be9fd, #50fa7b);
+            color: #16213e;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(139, 233, 253, 0.3);
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(139, 233, 253, 0.5);
+        }
+
+        .choice-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .result-box {
+            display: none;
+            background: rgba(249, 168, 38, 0.1);
+            border: 2px solid #f9a826;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 12px;
+            animation: slideIn 0.5s ease;
+        }
+
+        .result-box.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .continue-btn {
+            background: linear-gradient(135deg, #f9a826, #f57c00);
+            color: #16213e;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin: 20px auto;
+            display: block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(249, 168, 38, 0.3);
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(249, 168, 38, 0.5);
+        }
+
+        .controls {
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .tts-btn, .translation-toggle {
+            background: #2a3a60;
+            color: #f9a826;
+            border: 1px solid #f9a826;
+            border-radius: 20px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin: 0 5px;
+            transition: all 0.2s ease;
+        }
+
+        .tts-btn:hover, .translation-toggle:hover {
+            background: #f9a826;
+            color: #16213e;
+        }
+
+        .translation {
+            color: #a7a9be;
+            font-style: italic;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #0f3460;
+            border-radius: 8px;
+            display: none;
+            font-size: 1.1em;
+        }
+
+        .status-panel {
+            background: #2a3a60;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .budget-display {
+            color: #50fa7b;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .tasks-display {
+            color: #8be9fd;
+            font-size: 1.1em;
+        }
+
+        .weather-display {
+            color: #ff79c6;
+            font-size: 1.1em;
+        }
+
+        .celebration {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #50fa7b, #28a745);
+            color: #16213e;
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #2a3a60;
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: #f9a826;
+            transform: scale(1.2);
+        }
+
+        .progress-dot.completed {
+            background: #50fa7b;
+        }
+
+        .causal-flow {
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .causal-arrow {
+            text-align: center;
+            color: #ff79c6;
+            font-size: 1.2em;
+            margin: 10px 0;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div class="header">
+        <h1>赫尔辛基一日游挑战</h1>
+        <p>Helsinki-päivän haaste - 多分支决策练习</p>
+    </div>
+
+    <div class="progress-indicator">
+        <div class="progress-dot active" id="dot-0"></div>
+        <div class="progress-dot" id="dot-1"></div>
+        <div class="progress-dot" id="dot-2"></div>
+        <div class="progress-dot" id="dot-3"></div>
+        <div class="progress-dot" id="dot-4"></div>
+    </div>
+
+    <!-- 第0阶段：任务简报 -->
+    <div id="section-0" class="day-section active">
+        <div class="section-title">Tehtävänanto (任务简报)</div>
+        
+        <div class="helsinki-map">🏛️⛪🏰🌊🛍️<br>🗺️ Helsinki 🇫🇮</div>
+        
+        <div class="story-text clickable" onclick="speakText(this.textContent)">
+            <strong>Minun Helsinki-päiväni alkaa!</strong><br>
+            Tänään minä <span class="highlight-reason">haluan</span> viettää täydellisen päivän Helsingissä.
+        </div>
+        <div class="controls">
+            <button class="tts-btn" onclick="speakText('Minun Helsinki-päiväni alkaa! Tänään minä haluan viettää täydellisen päivän Helsingissä.')">🔊</button>
+            <button class="translation-toggle" onclick="toggleTranslation('trans-0-1')">中文</button>
+        </div>
+        <div id="trans-0-1" class="translation">
+            我的赫尔辛基一日开始了！<br>
+            今天我想在赫尔辛基度过完美的一天。
+        </div>
+
+        <div class="status-panel">
+            <div class="budget-display">💰 Budjetti: 50€</div>
+            <div class="weather-display">🌤️ Sää: Aurinkoista</div>
+        </div>
+
+        <div class="story-text">
+            <strong>Päivän tavoitteet (今日目标):</strong><br>
+            ✅ Käy yhdessä kuuluisassa paikassa<br>
+            ✅ Syö perinteistä suomalaista ruokaa<br>
+            ✅ Osta matkamuisto
+        </div>
+        <div class="controls">
+            <button class="translation-toggle" onclick="toggleTranslation('trans-0-2')">中文</button>
+        </div>
+        <div id="trans-0-2" class="translation">
+            参观一个著名景点<br>
+            吃一顿传统芬兰菜<br>
+            买一个纪念品
+        </div>
+
+        <button class="continue-btn" onclick="startAdventure()">Aloita seikkailu! 🚀</button>
+    </div>
+
+    <!-- 第1阶段：第一个决策 -->
+    <div id="section-1" class="day-section">
+        <div class="section-title">Aamun valinta (早晨选择)</div>
+        <div class="time-stamp">⏰ Kello 10:00</div>
+        
+        <div class="story-text clickable" onclick="speakText(this.textContent)">
+            Minä <span class="highlight">heräsin</span> <span class="highlight-space">hotellissa</span> ja <span class="highlight">söin</span> aamiaisen. 
+            Nyt minä <span class="highlight-reason">haluan mennä</span> johonkin mielenkiintoiseen paikkaan.
+        </div>
+        <div class="controls">
+            <button class="tts-btn" onclick="speakText('Minä heräsin hotellissa ja söin aamiaisen. Nyt minä haluan mennä johonkin mielenkiintoiseen paikkaan.')">🔊</button>
+            <button class="translation-toggle" onclick="toggleTranslation('trans-1')">中文</button>
+        </div>
+        <div id="trans-1" class="translation">
+            我在酒店醒来，吃了早餐。现在我想去一个有趣的地方。
+        </div>
+
+        <div class="choice-section">
+            <div class="choice-question">Minulla on kaksi vaihtoehtoa. Mitä valitsen?</div>
+            <div class="choice-buttons">
+                <button class="choice-btn" onclick="makeChoice1('church')">
+                    ⛪ Temppeliaukion kirkko<br>
+                    <small>(岩石教堂)</small>
+                </button>
+                <button class="choice-btn" onclick="makeChoice1('island')">
+                    🏝️ Seurasaaren ulkomuseo<br>
+                    <small>(伴侣岛露天博物馆)</small>
+                </button>
+            </div>
+        </div>
+
+        <div id="result-church" class="result-box">
+            <div class="story-text clickable" onclick="speakText(this.textContent)">
+                Minä <span class="highlight">valitsin</span> Temppeliaukion kirkon! 
+                Minä <span class="highlight">menin</span> <span class="highlight-space">kirkkoon</span> bussilla. 
+                Se <span class="highlight">oli</span> todella kaunis ja ainutlaatuinen. 
+                Lippu <span class="highlight">maksoi</span> 5 euroa. <span style="color: #ff5555; font-size: 0.9em;">(-5€)</span>
+            </div>
+            <div class="controls">
+                <button class="tts-btn" onclick="speakText('Minä valitsin Temppeliaukion kirkon! Minä menin kirkkoon bussilla. Se oli todella kaunis ja ainutlaatuinen. Lippu maksoi 5 euroa.')">🔊</button>
+                <button class="translation-toggle" onclick="toggleTranslation('trans-church')">中文</button>
+            </div>
+            <div id="trans-church" class="translation">
+                我选择了岩石教堂！我坐公交车去了教堂。它真的很美很独特。门票花了5欧元。
+            </div>
+            <div class="status-panel">
+                <div class="budget-display">💰 Jäljellä: 45€</div>
+                <div class="tasks-display">✅ Kuuluisa paikka ✅</div>
+            </div>
+        </div>
+
+        <div id="result-island" class="result-box">
+            <div class="story-text clickable" onclick="speakText(this.textContent)">
+                Minä <span class="highlight">valitsin</span> Seurasaaren! 
+                Minä <span class="highlight">menin</span> <span class="highlight-space">saarelle</span> lautalla. 
+                Sisäänpääsy <span class="highlight">oli</span> ilmainen! Minä <span class="highlight">kävelin</span> 
+                siellä kaksi tuntia ja <span class="highlight">näin</span> vanhoja puutaloja.
+            </div>
+            <div class="controls">
+                <button class="tts-btn" onclick="speakText('Minä valitsin Seurasaaren! Minä menin saarelle lautalla. Sisäänpääsy oli ilmainen! Minä kävelin siellä kaksi tuntia ja näin vanhoja puutaloja.')">🔊</button>
+                <button class="translation-toggle" onclick="toggleTranslation('trans-island')">中文</button>
+            </div>
+            <div id="trans-island" class="translation">
+                我选择了伴侣岛！我坐轮渡去了岛上。门票是免费的！我在那里走了两个小时，看到了古老的木房子。
+            </div>
+            <div class="status-panel">
+                <div class="budget-display">💰 Jäljellä: 50€</div>
+                <div class="tasks-display">✅ Kuuluisa paikka ✅</div>
+            </div>
+        </div>
+
+        <button id="continue-1" class="continue-btn" style="display:none;" onclick="showSection(2)">Jatka päivää... ⏰</button>
+    </div>
+
+    <!-- 第2阶段：午餐时间 -->
+    <div id="section-2" class="day-section">
+        <div class="section-title">Lounasaika (午餐时间)</div>
+        <div class="time-stamp">⏰ Kello 13:00</div>
+        
+        <div class="story-text clickable" onclick="speakText(this.textContent)">
+            Nyt minulla on nälkä! Minä <span class="highlight-reason">halusin syödä</span> 
+            lohikeittoa <span class="highlight-space">Kauppatorilla</span>, 
+            joten minä <span class="highlight">menin</span> sinne.
+        </div>
+        <div class="controls">
+            <button class="tts-btn" onclick="speakText('Nyt minulla on nälkä! Minä halusin syödä lohikeittoa Kauppatorilla, joten minä menin sinne.')">🔊</button>
+            <button class="translation-toggle" onclick="toggleTranslation('trans-2-1')">中文</button>
+        </div>
+        <div id="trans-2-1" class="translation">
+            现在我饿了！我想在集市广场喝三文鱼汤，所以我去了那里。
+        </div>
+
+        <div class="causal-flow">
+            <div class="story-text" style="background: rgba(255, 85, 85, 0.1); padding: 20px; border-radius: 10px;">
+                <strong>Mutta voi ei!</strong> 🚫<br>
+                Kaikki kalakojut <span class="highlight">olivat</span> jo <span class="highlight">suljettu</span>, 
+                koska oli maanantai. Minä <span class="highlight-neg">en siis syönyt</span> lohikeittoa.
+            </div>
+            <div class="controls">
+                <button class="tts-btn" onclick="speakText('Mutta voi ei! Kaikki kalakojut olivat jo suljettu, koska oli maanantai. Minä en siis syönyt lohikeittoa.')">🔊</button>
+                <button class="translation-toggle" onclick="toggleTranslation('trans-2-2')">中文</button>
+            </div>
+            <div id="trans-2-2" class="translation">
+                但是哦不！所有鱼摊都已经关了，因为是周一。所以我没喝到三文鱼汤。
+            </div>
+
+            <div class="causal-arrow">⬇️ SIKSI / 因此 ⬇️</div>
+
+            <div class="story-text clickable" onclick="speakText(this.textContent)">
+                <span class="highlight-reason">Siksi</span> minä <span class="highlight">etsin</span> toisen ravintolan. 
+                Minä <span class="highlight">löysin</span> pienen ravintolan ja <span class="highlight">söin</span> 
+                perinteisiä lihapullia perunoiden kanssa. Se <span class="highlight">maksoi</span> 15 euroa. 
+                <span style="color: #ff5555; font-size: 0.9em;">(-15€)</span>
+            </div>
+        </div>
+        <div class="controls">
+            <button class="tts-btn" onclick="speakText('Siksi minä etsin toisen ravintolan. Minä löysin pienen ravintolan ja söin perinteisiä lihapullia perunoiden kanssa. Se maksoi 15 euroa.')">🔊</button>
+            <button class="translation-toggle" onclick="toggleTranslation('trans-2-3')">中文</button>
+        </div>
+        <div id="trans-2-3" class="translation">
+            因此我找了另一家餐厅。我找到了一家小餐厅，吃了传统肉丸配土豆。花了15欧元。
+        </div>
+
+        <div class="status-panel">
+            <div class="budget-display" id="budget-after-lunch">💰 Jäljellä: €</div>
+            <div class="tasks-display">✅ Kuuluisa paikka ✅ | ✅ Suomalainen ruoka ✅</div>
+        </div>
+
+        <button class="continue-btn" onclick="showSection(3)">Mitä teet lounaan jälkeen? 🛍️</button>
+    </div>
+
+    <!-- 第3阶段：购物时间 -->
+    <div id="section-3" class="day-section">
+        <div class="section-title">Ostosaikaa (购物时间)</div>
+        <div class="time-stamp">⏰ Kello 15:00</div>
+        
+        <div class="story-text clickable" onclick="speakText(this.textContent)">
+            Lounaan jälkeen minä <span class="highlight-reason">halusin ostaa</span> matkamuiston. 
+            Minä <span class="highlight">kävelin</span> <span class="highlight-space">keskustassa</span> 
+            ja <span class="highlight">löysin</span> pienen souvenir-kaupan.
+        </div>
+        <div class="controls">
+            <button class="tts-btn" onclick="speakText('Lounaan jälkeen minä halusin ostaa matkamuiston. Minä kävelin keskustassa ja löysin pienen souvenir-kaupan.')">🔊</button>
+            <button class="translation-toggle" onclick="toggleTranslation('trans-3-1')">中文</button>
+        </div>
+        <div id="trans-3-1" class="translation">
+            午饭后我想买个纪念品。我在市中心走，找到了一家小纪念品店。
+        </div>
+
+        <div class="choice-section">
+            <div class="choice-question">Mitä ostan? Minulla on kaksi vaihtoehtoa:</div>
+            <div class="choice-buttons">
+                <button class="choice-btn" onclick="makeChoice2('mug')">
+                    ☕ Muumi-muki<br>
+                    <small>20€ (姆明马克杯)</small>
+                </button>
+                <button class="choice-btn" onclick="makeChoice2('keychain')">
+                    🔑 Helsingin avaimenperä<br>
+                    <small>8€ (赫尔辛基钥匙扣)</small>
+                </button>
+            </div>
+        </div>
+
+        <div id="result-mug" class="result-box">
+            <div class="story-text clickable" onclick="speakText(this.textContent)">
+                Minä <span class="highlight">ostin</span> Muumi-mukin! Se <span class="highlight">oli</span> 
+                vähän kallis, mutta todella kaunis. Moomin-hahmot ovat suomalaisia! 
+                <span style="color: #ff5555; font-size: 0.9em;">(-20€)</span>
+            </div>
+            <div class="controls">
+                <button class="tts-btn" onclick="speakText('Minä ostin Muumi-mukin! Se oli vähän kallis, mutta todella kaunis. Moomin-hahmot ovat suomalaisia!')">🔊</button>
+                <button class="translation-toggle" onclick="toggleTranslation('trans-mug')">中文</button>
+            </div>
+            <div id="trans-mug" class="translation">
+                我买了姆明马克杯！它有点贵，但真的很漂亮。姆明人物是芬兰的！
+            </div>
+        </div>
+
+        <div id="result-keychain" class="result-box">
+            <div class="story-text clickable" onclick="speakText(this.textContent)">
+                Minä <span class="highlight">ostin</span> pienen avaimenperän! Se <span class="highlight">oli</span> 
+                halpa ja käytännöllinen. Siinä on Helsingin tuomiokirkko. 
+                <span style="color: #ff5555; font-size: 0.9em;">(-8€)</span>
+            </div>
+            <div class="controls">
+                <button class="tts-btn" onclick="speakText('Minä ostin pienen avaimenperän! Se oli halpa ja käytännöllinen. Siinä on Helsingin tuomiokirkko.')">🔊</button>
+                <button class="translation-toggle" onclick="toggleTranslation('trans-keychain')">中文</button>
+            </div>
+            <div id="trans-keychain" class="translation">
+                我买了一个小钥匙扣！它便宜又实用。上面有赫尔辛基大教堂。
+            </div>
+        </div>
+
+        <button id="continue-3" class="continue-btn" style="display:none;" onclick="showSection(4)">Sää alkaa muuttua... ⛈️</button>
+    </div>
+
+    <!-- 第4阶段：天气变化和结局 -->
+    <div id="section-4" class="day-section">
+        <div class="section-title">Säänmuutos ja päivän loppu (天气变化和一天的结束)</div>
+        <div class="time-stamp">⏰ Kello 17:00</div>
+        
+        <div class="story-text" style="background: rgba(139, 233, 253, 0.1); padding: 20px; border-radius: 10px;">
+            Yhtäkkiä taivas <span class="highlight">muuttui</span> harmaaksi ja <span class="highlight">alkoi</span> sataa! ☔
+        </div>
+        <div class="controls">
+            <button class="tts-btn" onclick="speakText('Yhtäkkiä taivas muuttui harmaaksi ja alkoi sataa!')">🔊</button>
+            <button class="translation-toggle" onclick="toggleTranslation('trans-4-1')">中文</button>
+        </div>
+        <div id="trans-4-1" class="translation">
+            突然天空变灰了，开始下雨！
+        </div>
+
+        <div class="causal-flow">
+            <div class="story-text clickable" onclick="speakText(this.textContent)">
+                Minun alkuperäinen suunnitelmani <span class="highlight">oli</span> <span class="highlight">mennä</span> 
+                <span class="highlight-space">Suomenlinnaan</span> lautalla, mutta sateen <span class="highlight-reason">takia</span> 
+                minä <span class="highlight-neg">en mennyt</span> sinne. Harmi!
+            </div>
+            <div class="controls">
+                <button class="tts-btn" onclick="speakText('Minun alkuperäinen suunnitelmani oli mennä Suomenlinnaan lautalla, mutta sateen takia minä en mennyt sinne. Harmi!')">🔊</button>
+                <button class="translation-toggle" onclick="toggleTranslation('trans-4-2')">中文</button>
+            </div>
+            <div id="trans-4-2" class="translation">
+                我本来的计划是坐轮渡去芬兰堡，但因为下雨，我没去成。真可惜！
+            </div>
+
+            <div class="causal-arrow">⬇️ SEN SIJAAN / 作为替代 ⬇️</div>
+
+            <div class="story-text clickable" onclick="speakText(this.textContent)">
+                <span class="highlight-reason">Sen sijaan</span> minä <span class="highlight">menin</span> 
+                <span class="highlight-space">Kiasma-museoon</span>, koska se <span class="highlight">oli</span> sisällä. 
+                Siellä minä <span class="highlight">katsoin</span> nykyaikataidetta tunti.
+            </div>
+        </div>
+        <div class="controls">
+            <button class="tts-btn" onclick="speakText('Sen sijaan minä menin Kiasma-museoon, koska se oli sisällä. Siellä minä katsoin nykyaikataidetta tunti.')">🔊</button>
+            <button class="translation-toggle" onclick="toggleTranslation('trans-4-3')">中文</button>
+        </div>
+        <div id="trans-4-3" class="translation">
+            我去了Kiasma当代艺术馆作为替代，因为它在室内。我在那里看了一小时现代艺术。
+        </div>
+
+        <div class="story-text" style="background: rgba(80, 250, 123, 0.1); padding: 20px; border-radius: 10px;">
+            <strong>Päivä on ohi!</strong> 🌅<br>
+            Tänään minä...
+            <div id="daily-summary" style="margin-top: 15px;"></div>
+        </div>
+
+        <div class="status-panel">
+            <div class="budget-display" id="final-budget">💰 Lopullinen budjetti: €</div>
+            <div class="tasks-display">✅ Kaikki tavoitteet saavutettu! ✅</div>
+        </div>
+
+        <div class="celebration">
+            🎉 Onneksi olkoon! 🎉<br>
+            Suoritit Helsinki-päivän haasteen!<br><br>
+            
+            <div style="background: rgba(22, 33, 62, 0.3); padding: 20px; border-radius: 10px; margin: 15px 0; text-align: left;">
+                <strong>Päivän tavoitteiden yhteenveto:</strong><br><br>
+                <div id="goal-checklist">
+                    ✅ Kävin kuuluisassa paikassa<br>
+                    ✅ Söin perinteistä suomalaista ruokaa<br>
+                    ✅ Ostin matkamuiston<br>
+                    ❌ En mennyt Suomenlinnaan (satoi vettä)
+                </div>
+            </div>
+            
+            你成功完成了赫尔辛基一日游挑战！<br>
+            整合了：决策表达 + 因果关系 + 空间移动 + 时间叙事！
+        </div>
+
+        <button class="continue-btn" onclick="restartGame()">Pelaa uudelleen! 🔄</button>
+    </div>
+
+</div>
+
+<script>
+// 游戏状态变量
+let currentSection = 0;
+let budget = 50;
+let choice1 = ""; // "church" 或 "island"
+let choice2 = ""; // "mug" 或 "keychain"
+
+/**
+ * TTS语音播放功能
+ * @param {string} text - 要播放的文本
+ */
+function speakText(text) {
+    if (!text || text === '...') return;
+    const cleanText = text.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+    if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        utterance.lang = 'fi-FI';
+        utterance.rate = 0.85;
+        speechSynthesis.speak(utterance);
+    } else {
+        alert('抱歉，您的浏览器不支持语音功能。');
+    }
+}
+
+/**
+ * 切换中文翻译显示/隐藏
+ * @param {string} elementId - 翻译元素的ID
+ */
+function toggleTranslation(elementId) {
+    const element = document.getElementById(elementId);
+    element.style.display = (element.style.display === 'none' || element.style.display === '') ? 'block' : 'none';
+}
+
+/**
+ * 更新进度指示器
+ * @param {number} sectionNum - 当前章节号
+ */
+function updateProgress(sectionNum) {
+    for (let i = 0; i <= 4; i++) {
+        const dot = document.getElementById('dot-' + i);
+        if (i < sectionNum) {
+            dot.className = 'progress-dot completed';
+        } else if (i === sectionNum) {
+            dot.className = 'progress-dot active';
+        } else {
+            dot.className = 'progress-dot';
+        }
+    }
+}
+
+/**
+ * 显示指定章节
+ * @param {number} sectionNum - 要显示的章节号
+ */
+function showSection(sectionNum) {
+    // 隐藏所有章节
+    document.querySelectorAll('.day-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    // 显示目标章节
+    const targetSection = document.getElementById('section-' + sectionNum);
+    if (targetSection) {
+        targetSection.classList.add('active');
+        currentSection = sectionNum;
+        updateProgress(sectionNum);
+        
+        // 滚动到顶部
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+/**
+ * 开始冒险游戏
+ */
+function startAdventure() {
+    showSection(1);
+}
+
+/**
+ * 处理第一个选择（景点选择）
+ * @param {string} choice - "church" 或 "island"
+ */
+function makeChoice1(choice) {
+    choice1 = choice;
+    
+    // 隐藏选择按钮
+    document.querySelector('#section-1 .choice-section').style.display = 'none';
+    
+    // 显示对应结果
+    if (choice === 'church') {
+        budget = 45;
+        document.getElementById('result-church').classList.add('show');
+    } else {
+        budget = 50;
+        document.getElementById('result-island').classList.add('show');
+    }
+    
+    // 显示继续按钮
+    document.getElementById('continue-1').style.display = 'block';
+}
+
+/**
+ * 处理第二个选择（购物选择）
+ * @param {string} choice - "mug" 或 "keychain"
+ */
+function makeChoice2(choice) {
+    choice2 = choice;
+    
+    // 隐藏选择按钮
+    document.querySelector('#section-3 .choice-section').style.display = 'none';
+    
+    // 显示对应结果并更新预算
+    if (choice === 'mug') {
+        budget -= 20;
+        document.getElementById('result-mug').classList.add('show');
+    } else {
+        budget -= 8;
+        document.getElementById('result-keychain').classList.add('show');
+    }
+    
+    // 更新预算显示
+    updateBudgetDisplay();
+    
+    // 显示继续按钮
+    document.getElementById('continue-3').style.display = 'block';
+}
+
+/**
+ * 更新预算显示
+ */
+function updateBudgetDisplay() {
+    // 午餐后的预算
+    const lunchBudget = budget + (choice2 === 'mug' ? 20 : 8); // 还原购物费用，只显示午餐后
+    document.getElementById('budget-after-lunch').textContent = `💰 Jäljellä: ${lunchBudget - 15}€`;
+    
+    // 最终预算
+    document.getElementById('final-budget').textContent = `💰 Lopullinen budjetti: ${budget}€`;
+}
+
+/**
+ * 生成每日总结
+ */
+function generateDailySummary() {
+    const place1 = choice1 === 'church' ? 'Temppeliaukion kirkossa' : 'Seurasaaressa';
+    const souvenir = choice2 === 'mug' ? 'Muumi-mukin' : 'avaimenperän';
+    
+    const summary = `
+        ... <span class="highlight">kävin</span> <span class="highlight-space">${place1}</span>.<br>
+        ... <span class="highlight">söin</span> lihapullia, mutta <span class="highlight-neg">en syönyt</span> lohikeittoa.<br>
+        ... <span class="highlight">ostin</span> ${souvenir}.<br>
+        ... <span class="highlight-neg">en mennyt</span> Suomenlinnaan, koska <span class="highlight-reason">satoi</span> vettä.<br>
+        ... <span class="highlight">menin</span> <span class="highlight-space">Kiasma-museoon</span> <span class="highlight-reason">sen sijaan</span>.
+    `;
+    
+    document.getElementById('daily-summary').innerHTML = summary;
+}
+
+/**
+ * 重启游戏
+ */
+function restartGame() {
+    budget = 50;
+    choice1 = "";
+    choice2 = "";
+    currentSection = 0;
+    
+    // 重置所有结果框
+    document.querySelectorAll('.result-box').forEach(box => {
+        box.classList.remove('show');
+    });
+    
+    // 重置所有选择区域
+    document.querySelectorAll('.choice-section').forEach(section => {
+        section.style.display = 'block';
+    });
+    
+    // 重置继续按钮
+    document.querySelectorAll('.continue-btn').forEach(btn => {
+        if (btn.id.includes('continue-')) {
+            btn.style.display = 'none';
+        }
+    });
+    
+    showSection(0);
+}
+
+// 页面加载完成后的初始化
+window.onload = function() {
+    updateProgress(0);
+    
+    // 监听章节4的显示，生成总结
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.target.id === 'section-4' && mutation.target.classList.contains('active')) {
+                setTimeout(() => {
+                    generateDailySummary();
+                    updateBudgetDisplay();
+                }, 500);
+            }
+        });
+    });
+    
+    const section4 = document.getElementById('section-4');
+    if (section4) {
+        observer.observe(section4, { attributes: true, attributeFilter: ['class'] });
+    }
+};
+</script>
+
+</body>
+</html> 

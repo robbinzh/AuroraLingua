@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模块 4.1：否定过去时 - "事件撤销指令"</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(108,92,231,0.3);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .module {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 25px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid #6c5ce7;
+        }
+
+        .module h2 {
+            color: #6c5ce7;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .instructions {
+            background-color: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #17a2b8;
+        }
+
+        /* 三栏对比界面 */
+        .parallel-universe-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .universe-column {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+        .universe-column:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .universe-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: white;
+        }
+
+        .present-positive .universe-title {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .present-negative .universe-title {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+        }
+
+        .past-negative .universe-title {
+            background: linear-gradient(135deg, #dc3545, #e83e8c);
+        }
+
+        .sentence-display {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #dee2e6;
+        }
+
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 2px solid #ffeaa7;
+            font-weight: bold;
+        }
+
+        .highlight-negative {
+            background-color: #f8d7da;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 2px solid #f5c6cb;
+            font-weight: bold;
+            color: #721c24;
+        }
+
+        .translation {
+            font-style: italic;
+            color: #6c757d;
+            margin-top: 10px;
+            display: none;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(108,92,231,0.3);
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(108,92,231,0.4);
+        }
+
+        .tts-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .translation-toggle {
+            background: linear-gradient(135deg, #17a2b8, #20c997);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 1024px) {
+            .parallel-universe-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .sentence-display {
+                font-size: 1.2em;
+                word-break: break-word;
+                overflow-wrap: break-word;
+            }
+            
+            .universe-column {
+                min-width: 0; /* 防止flex item溢出 */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sentence-display {
+                font-size: 1.1em;
+                padding: 12px;
+            }
+            
+            .universe-title {
+                font-size: 1em;
+                padding: 6px 12px;
+            }
+        }
+
+        /* 通用防破框样式 */
+        .sentence-display {
+            word-break: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+        }
+
+        .parallel-universe-container {
+            overflow-x: auto;
+        }
+
+        .universe-column {
+            min-width: 280px; /* 确保最小宽度 */
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔄 模块 4.1：否定过去时</h1>
+        <p>"事件撤销指令" - 学会对过去说"不"</p>
+    </div>
+
+    <div class="module">
+        <h2>平行宇宙观察器 - "三栏时间穿梭机"</h2>
+        <p class="instructions">
+            <strong>认知任务：</strong>观察从"现在没做"到"昨天没做"，芬兰语动词发生了什么神奇的变化？<br>
+            <strong>操作指南：</strong>点击下方按钮生成新的对比句组，专注观察第二栏和第三栏的差异！
+        </p>
+
+        <div class="parallel-universe-container">
+            <!-- 第一栏：现在时肯定 -->
+            <div class="universe-column present-positive">
+                <div class="universe-title">NYT (Kyllä)<br>现在・肯定</div>
+                <div class="sentence-display" id="present-positive-sentence">
+                    点击下方按钮开始观察
+                </div>
+                <button class="tts-btn" onclick="speakText(document.getElementById('present-positive-sentence').textContent)">🔊</button>
+                <button class="translation-toggle" onclick="toggleTranslation('present-positive-translation')">中文</button>
+                <div id="present-positive-translation" class="translation"></div>
+            </div>
+
+            <!-- 第二栏：现在时否定 -->
+            <div class="universe-column present-negative">
+                <div class="universe-title">NYT (Ei)<br>现在・否定</div>
+                <div class="sentence-display" id="present-negative-sentence">
+                    点击下方按钮开始观察
+                </div>
+                <button class="tts-btn" onclick="speakText(document.getElementById('present-negative-sentence').textContent)">🔊</button>
+                <button class="translation-toggle" onclick="toggleTranslation('present-negative-translation')">中文</button>
+                <div id="present-negative-translation" class="translation"></div>
+            </div>
+
+            <!-- 第三栏：过去时否定 -->
+            <div class="universe-column past-negative">
+                <div class="universe-title">EILEN (Ei)<br>过去・否定</div>
+                <div class="sentence-display" id="past-negative-sentence">
+                    点击下方按钮开始观察
+                </div>
+                <button class="tts-btn" onclick="speakText(document.getElementById('past-negative-sentence').textContent)">🔊</button>
+                <button class="translation-toggle" onclick="toggleTranslation('past-negative-translation')">中文</button>
+                <div id="past-negative-translation" class="translation"></div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <button class="button" onclick="runParallelUniverse()">🔄 生成新的平行宇宙对比</button>
+        </div>
+    </div>
+
+    <div class="module" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-left: 5px solid #5a67d8;">
+        <h2 style="color: white; border-bottom: 2px solid rgba(255,255,255,0.3);">🧠 认知升华：芬兰语的"事件撤销指令"</h2>
+        
+        <div style="background-color: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 15px 0; border: 2px dashed rgba(255,255,255,0.3);">
+            <div style="font-family: 'Courier New', monospace; font-size: 1.3em; font-weight: bold; text-align: center; color: #fff3cd;">
+                KIELTOSANA (en/et/ei...) + VERBI (-nut/-nyt结尾)
+            </div>
+        </div>
+
+        <p><strong>核心原理：</strong></p>
+        <ul>
+            <li><strong>步骤1：</strong>先发出否定命令 (<code>en</code>, <code>et</code>, <code>ei</code>...)</li>
+            <li><strong>步骤2：</strong>将动词转换为"已发生"形态，即以 <code>-nut</code> 或 <code>-nyt</code> 结尾</li>
+            <li><strong>关键洞察：</strong><code>-nut/-nyt</code> 已经包含了"过去"的信息，所以不再需要过去时的 <code>-i-</code> 时间戳！</li>
+        </ul>
+
+        <p><strong>变位规律：</strong></p>
+        <ul>
+            <li><code>lukea</code> (读) → <code>lukenut</code> (已经读过)</li>
+            <li><code>syödä</code> (吃) → <code>syönyt</code> (已经吃过)</li>
+            <li><code>ostaa</code> (买) → <code>ostanut</code> (已经买过)</li>
+        </ul>
+    </div>
+
+    <div class="module" style="background-color: #e3f2fd; border-left: 4px solid #2196f3;">
+        <h3>🎯 微型验证练习</h3>
+        <div style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">
+            任务：为以下肯定过去时句子创建"撤销指令"
+        </div>
+        
+        <div id="practice-container">
+            <div style="background-color: #f0f4f8; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 3px solid #28a745;">
+                <strong>给定：</strong><span id="practice-given-sentence">点击生成练习</span>
+                <button class="tts-btn" onclick="speakText(document.getElementById('practice-given-sentence').textContent)" style="margin-left: 10px;">🔊</button>
+                <button class="translation-toggle" onclick="toggleTranslation('practice-given-translation')" style="margin-left: 5px;">中文</button>
+                <div id="practice-given-translation" class="translation"></div>
+            </div>
+            <div id="practice-answer" style="background-color: #fff3e0; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 3px solid #ff9800; display: none;">
+                <strong>答案：</strong><span id="practice-answer-sentence"></span>
+                <button class="tts-btn" onclick="speakText(document.getElementById('practice-answer-sentence').textContent)" style="margin-left: 10px;">🔊</button>
+                <button class="translation-toggle" onclick="toggleTranslation('practice-answer-translation')" style="margin-left: 5px;">中文</button>
+                <div id="practice-answer-translation" class="translation"></div>
+            </div>
+        </div>
+
+        <button class="button" onclick="generatePractice()">🎲 生成新练习</button>
+        <button class="translation-toggle" onclick="togglePracticeAnswer()">显示答案</button>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- 最终模块：系统整合 - "真实性核查模拟器" -->
+    <!-- ========================================================== -->
+    <div class="module" style="border-left: 5px solid #fd7e14; background: linear-gradient(135deg, #ff7675, #fdcb6e); color: white;">
+        <h2 style="color: white; border-bottom: 2px solid rgba(255,255,255,0.3);">🔍 系统整合：真实性核查模拟器 (Aitous-Tarkistin)</h2>
+        <p class="instructions" style="background-color: rgba(255,255,255,0.1); border-left: 4px solid rgba(255,255,255,0.5);">
+            <strong>认知冲击任务：</strong>你是一个事实核查员。系统会快速呈现一些关于"昨天"的陈述，有些是真的(✅)，有些是假的(❌)。你的任务是快速判断，并大声读出【正确的】芬兰语句子！
+        </p>
+
+        <div id="fact-checker-container" style="text-align: center; background-color: rgba(255,255,255,0.9); color: #333; padding: 30px; border-radius: 10px; border: 2px dashed rgba(255,255,255,0.7); margin: 20px 0;">
+            <div style="font-size: 1.2em; margin-bottom: 15px; font-weight: bold;">系统陈述:</div>
+            <div style="margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <div id="fact-checker-statement" style="font-size: 1.5em; background-color: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 3px solid #007bff; flex: 1;">
+                        点击下方按钮，开始核查...
+                    </div>
+                    <button class="tts-btn" onclick="speakText(document.getElementById('fact-checker-statement').textContent)" id="statement-tts" style="display: none;">🔊</button>
+                    <button class="translation-toggle" onclick="toggleTranslation('statement-translation')" id="statement-translation-btn" style="display: none;">中文</button>
+                </div>
+                <div id="statement-translation" class="translation" style="margin-top: 10px;"></div>
+            </div>
+            <div style="font-size: 1.2em; margin-bottom: 10px; font-weight: bold;">真实情况:</div>
+            <div id="fact-checker-truth-value" style="font-size: 3em; margin-bottom: 20px; font-weight: bold;">
+                ...
+            </div>
+            <div id="fact-checker-correct-sentence" style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 15px; border-radius: 8px; font-size: 1.3em; font-weight: bold; display: none; margin-top: 15px;">
+                <!-- 正确答案将显示在这里 -->
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="button" onclick="runFactChecker()">🔍 生成新陈述</button>
+            <button class="translation-toggle" onclick="toggleFactCheckerAnswer()">显示正确句子</button>
+            <button class="tts-btn" onclick="speakCorrectSentence()" id="fact-checker-tts" style="display: none;">🔊 听正确句子</button>
+        </div>
+    </div>
+
+    <script>
+        // 数据层
+        const negationData = [
+            {
+                presentPositive: "Minä <span class='highlight'>luen</span> kirjaa.",
+                presentNegative: "Minä <span class='highlight-negative'>en lue</span> kirjaa.",
+                pastNegative: "Minä <span class='highlight-negative'>en lukenut</span> kirjaa.",
+                translations: {
+                    presentPositive: "我正在读书。",
+                    presentNegative: "我不读书/没在读书。",
+                    pastNegative: "我昨天没读过书。"
+                }
+            },
+            {
+                presentPositive: "Hän <span class='highlight'>syö</span> omenaa.",
+                presentNegative: "Hän <span class='highlight-negative'>ei syö</span> omenaa.",
+                pastNegative: "Hän <span class='highlight-negative'>ei syönyt</span> omenaa.",
+                translations: {
+                    presentPositive: "他/她正在吃苹果。",
+                    presentNegative: "他/她不吃苹果。",
+                    pastNegative: "他/她昨天没吃苹果。"
+                }
+            },
+            {
+                presentPositive: "Me <span class='highlight'>ostamme</span> autoa.",
+                presentNegative: "Me <span class='highlight-negative'>emme osta</span> autoa.",
+                pastNegative: "Me <span class='highlight-negative'>emme ostaneet</span> autoa.",
+                translations: {
+                    presentPositive: "我们正在买车。",
+                    presentNegative: "我们不买车。",
+                    pastNegative: "我们昨天没买车。"
+                }
+            },
+            {
+                presentPositive: "Te <span class='highlight'>juotte</span> kahvia.",
+                presentNegative: "Te <span class='highlight-negative'>ette juo</span> kahvia.",
+                pastNegative: "Te <span class='highlight-negative'>ette juoneet</span> kahvia.",
+                translations: {
+                    presentPositive: "你们正在喝咖啡。",
+                    presentNegative: "你们不喝咖啡。",
+                    pastNegative: "你们昨天没喝咖啡。"
+                }
+            },
+            {
+                presentPositive: "He <span class='highlight'>kirjoittavat</span> kirjettä.",
+                presentNegative: "He <span class='highlight-negative'>eivät kirjoita</span> kirjettä.",
+                pastNegative: "He <span class='highlight-negative'>eivät kirjoittaneet</span> kirjettä.",
+                translations: {
+                    presentPositive: "他们正在写信。",
+                    presentNegative: "他们不写信。",
+                    pastNegative: "他们昨天没写信。"
+                }
+            },
+            {
+                presentPositive: "Sinä <span class='highlight'>kuuntelet</span> musiikkia.",
+                presentNegative: "Sinä <span class='highlight-negative'>et kuuntele</span> musiikkia.",
+                pastNegative: "Sinä <span class='highlight-negative'>et kuunnellut</span> musiikkia.",
+                translations: {
+                    presentPositive: "你正在听音乐。",
+                    presentNegative: "你不听音乐。",
+                    pastNegative: "你昨天没听音乐。"
+                }
+            }
+        ];
+
+        // 练习用的数据
+        const practiceData = [
+            {
+                given: "Hän osti auton.",
+                answer: "Hän ei ostanut autoa.",
+                translation: "他/她没买车。"
+            },
+            {
+                given: "Me söimme pizzan.",
+                answer: "Me emme syöneet pizzaa.",
+                translation: "我们没吃比萨。"
+            },
+            {
+                given: "Sinä luit kirjan.",
+                answer: "Sinä et lukenut kirjaa.",
+                translation: "你没读书。"
+            },
+            {
+                given: "He kuuntelivat musiikkia.",
+                answer: "He eivät kuunnelleet musiikkia.",
+                translation: "他们没听音乐。"
+            },
+            {
+                given: "Te kirjoititte kirjeen.",
+                answer: "Te ette kirjoittaneet kirjettä.",
+                translation: "你们没写信。"
+            },
+            {
+                given: "Minä join kahvin.",
+                answer: "Minä en juonut kahvia.",
+                translation: "我没喝咖啡。"
+            }
+        ];
+
+        // 事实核查器数据
+        const factCheckerData = [
+            {
+                verb: "lukea",
+                subject: "Hän",
+                subjectChinese: "他/她",
+                pastPositive: "luki",
+                pastNegative: "lukenut",
+                objectPartitive: "kirjaa",
+                objectGenitive: "kirjan",
+                negationWord: "ei",
+                actionChinese: "读了",
+                objectChinese: "书"
+            },
+            {
+                verb: "syödä", 
+                subject: "Minä",
+                subjectChinese: "我",
+                pastPositive: "söin",
+                pastNegative: "syönyt",
+                objectPartitive: "pizzaa",
+                objectGenitive: "pizzan",
+                negationWord: "en",
+                actionChinese: "吃了",
+                objectChinese: "比萨"
+            },
+            {
+                verb: "ostaa",
+                subject: "Me",
+                subjectChinese: "我们",
+                pastPositive: "ostimme",
+                pastNegative: "ostaneet",
+                objectPartitive: "autoa",
+                objectGenitive: "auton",
+                negationWord: "emme",
+                actionChinese: "买了",
+                objectChinese: "车"
+            },
+            {
+                verb: "juoda",
+                subject: "Te",
+                subjectChinese: "你们",
+                pastPositive: "joitte",
+                pastNegative: "juoneet",
+                objectPartitive: "kahvia",
+                objectGenitive: "kahvin",
+                negationWord: "ette",
+                actionChinese: "喝了",
+                objectChinese: "咖啡"
+            },
+            {
+                verb: "kirjoittaa",
+                subject: "He",
+                subjectChinese: "他们",
+                pastPositive: "kirjoittivat",
+                pastNegative: "kirjoittaneet",
+                objectPartitive: "kirjettä",
+                objectGenitive: "kirjeen",
+                negationWord: "eivät",
+                actionChinese: "写了",
+                objectChinese: "信"
+            },
+            {
+                verb: "kuunnella",
+                subject: "Sinä",
+                subjectChinese: "你",
+                pastPositive: "kuuntelit",
+                pastNegative: "kuunnellut",
+                objectPartitive: "musiikkia",
+                objectGenitive: "musiikin",
+                negationWord: "et",
+                actionChinese: "听了",
+                objectChinese: "音乐"
+            }
+        ];
+
+        let currentData = null;
+        let currentPracticeData = null;
+        let currentFactCheckerData = null;
+
+        // TTS函数
+        function speakText(text) {
+            const cleanText = text.replace(/<[^>]*>/g, '');
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.lang = 'fi-FI';
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // 翻译显示/隐藏函数
+        function toggleTranslation(elementId) {
+            const element = document.getElementById(elementId);
+            if (element.style.display === 'none' || element.style.display === '') {
+                element.style.display = 'block';
+            } else {
+                element.style.display = 'none';
+            }
+        }
+
+        // 生成平行宇宙对比
+        function runParallelUniverse() {
+            currentData = negationData[Math.floor(Math.random() * negationData.length)];
+            
+            document.getElementById('present-positive-sentence').innerHTML = currentData.presentPositive;
+            document.getElementById('present-negative-sentence').innerHTML = currentData.presentNegative;
+            document.getElementById('past-negative-sentence').innerHTML = currentData.pastNegative;
+            
+            document.getElementById('present-positive-translation').textContent = currentData.translations.presentPositive;
+            document.getElementById('present-negative-translation').textContent = currentData.translations.presentNegative;
+            document.getElementById('past-negative-translation').textContent = currentData.translations.pastNegative;
+        }
+
+        // 生成练习
+        function generatePractice() {
+            currentPracticeData = practiceData[Math.floor(Math.random() * practiceData.length)];
+            document.getElementById('practice-given-sentence').textContent = currentPracticeData.given;
+            document.getElementById('practice-answer-sentence').textContent = currentPracticeData.answer;
+            
+            // 设置中文翻译
+            // 对于给定句子（肯定过去时），提取对应的中文
+            const givenChinese = currentPracticeData.given
+                .replace(/Hän .*/, '他/她' + currentPracticeData.translation.replace(/^他\/她没/, '').replace(/^我们没/, '').replace(/^你没/, '').replace(/^他们没/, '').replace(/^你们没/, '').replace(/^我没/, ''))
+                .replace(/Me .*/, '我们' + currentPracticeData.translation.replace(/^他\/她没/, '').replace(/^我们没/, '').replace(/^你没/, '').replace(/^他们没/, '').replace(/^你们没/, '').replace(/^我没/, ''))
+                .replace(/Sinä .*/, '你' + currentPracticeData.translation.replace(/^他\/她没/, '').replace(/^我们没/, '').replace(/^你没/, '').replace(/^他们没/, '').replace(/^你们没/, '').replace(/^我没/, ''))
+                .replace(/He .*/, '他们' + currentPracticeData.translation.replace(/^他\/她没/, '').replace(/^我们没/, '').replace(/^你没/, '').replace(/^他们没/, '').replace(/^你们没/, '').replace(/^我没/, ''))
+                .replace(/Te .*/, '你们' + currentPracticeData.translation.replace(/^他\/她没/, '').replace(/^我们没/, '').replace(/^你没/, '').replace(/^他们没/, '').replace(/^你们没/, '').replace(/^我没/, ''))
+                .replace(/Minä .*/, '我' + currentPracticeData.translation.replace(/^他\/她没/, '').replace(/^我们没/, '').replace(/^你没/, '').replace(/^他们没/, '').replace(/^你们没/, '').replace(/^我没/, ''));
+            
+            // 简化：直接基于答案推导给定句的中文
+            let givenTranslation = currentPracticeData.translation.replace('没', '');
+            document.getElementById('practice-given-translation').textContent = givenTranslation;
+            document.getElementById('practice-answer-translation').textContent = currentPracticeData.translation;
+            
+            // 隐藏答案
+            document.getElementById('practice-answer').style.display = 'none';
+        }
+
+        // 显示/隐藏练习答案
+        function togglePracticeAnswer() {
+            const answerElement = document.getElementById('practice-answer');
+            if (answerElement.style.display === 'none' || answerElement.style.display === '') {
+                answerElement.style.display = 'block';
+            } else {
+                answerElement.style.display = 'none';
+            }
+        }
+
+        // 事实核查器逻辑
+        function runFactChecker() {
+            // 随机选择数据
+            currentFactCheckerData = factCheckerData[Math.floor(Math.random() * factCheckerData.length)];
+            
+            // 随机决定真实情况（真=肯定句正确，假=否定句正确）
+            const isTrue = Math.random() < 0.5;
+            
+            // 随机决定系统给出的陈述类型（肯定或否定）
+            const isPositiveStatement = Math.random() < 0.5;
+            
+            let systemStatement, correctAnswer, chineseTranslation, systemStatementChinese;
+            
+            if (isPositiveStatement) {
+                // 系统给出肯定陈述
+                systemStatement = `${currentFactCheckerData.subject} ${currentFactCheckerData.pastPositive} ${currentFactCheckerData.objectGenitive}.`;
+                systemStatementChinese = `${currentFactCheckerData.subjectChinese}${currentFactCheckerData.actionChinese}${currentFactCheckerData.objectChinese}。`;
+                
+                if (isTrue) {
+                    // 真实情况：确实发生了，肯定句是正确的
+                    correctAnswer = systemStatement;
+                    chineseTranslation = systemStatementChinese;
+                } else {
+                    // 真实情况：没有发生，否定句是正确的
+                    correctAnswer = `${currentFactCheckerData.subject} ${currentFactCheckerData.negationWord} ${currentFactCheckerData.pastNegative} ${currentFactCheckerData.objectPartitive}.`;
+                    chineseTranslation = `${currentFactCheckerData.subjectChinese}没${currentFactCheckerData.actionChinese.replace('了', '')}${currentFactCheckerData.objectChinese}。`;
+                }
+            } else {
+                // 系统给出否定陈述
+                systemStatement = `${currentFactCheckerData.subject} ${currentFactCheckerData.negationWord} ${currentFactCheckerData.pastNegative} ${currentFactCheckerData.objectPartitive}.`;
+                systemStatementChinese = `${currentFactCheckerData.subjectChinese}没${currentFactCheckerData.actionChinese.replace('了', '')}${currentFactCheckerData.objectChinese}。`;
+                
+                if (isTrue) {
+                    // 真实情况：确实发生了，肯定句是正确的
+                    correctAnswer = `${currentFactCheckerData.subject} ${currentFactCheckerData.pastPositive} ${currentFactCheckerData.objectGenitive}.`;
+                    chineseTranslation = `${currentFactCheckerData.subjectChinese}${currentFactCheckerData.actionChinese}${currentFactCheckerData.objectChinese}。`;
+                } else {
+                    // 真实情况：没有发生，否定句是正确的
+                    correctAnswer = systemStatement;
+                    chineseTranslation = systemStatementChinese;
+                }
+            }
+            
+            // 更新界面
+            document.getElementById('fact-checker-statement').textContent = systemStatement;
+            document.getElementById('fact-checker-truth-value').textContent = isTrue ? '✅ 真的' : '❌ 假的';
+            document.getElementById('fact-checker-correct-sentence').innerHTML = `<strong>正确句子：</strong>${correctAnswer}<br><em>${chineseTranslation}</em>`;
+            document.getElementById('statement-translation').textContent = systemStatementChinese;
+            
+            // 显示系统陈述的TTS和中文按钮，隐藏答案和答案TTS按钮
+            document.getElementById('statement-tts').style.display = 'inline-block';
+            document.getElementById('statement-translation-btn').style.display = 'inline-block';
+            document.getElementById('fact-checker-correct-sentence').style.display = 'none';
+            document.getElementById('fact-checker-tts').style.display = 'none';
+            
+            // 存储当前正确答案供TTS使用
+            currentFactCheckerData.correctAnswer = correctAnswer;
+        }
+
+        // 显示/隐藏事实核查器答案
+        function toggleFactCheckerAnswer() {
+            const answerElement = document.getElementById('fact-checker-correct-sentence');
+            const ttsButton = document.getElementById('fact-checker-tts');
+            
+            if (answerElement.style.display === 'none' || answerElement.style.display === '') {
+                answerElement.style.display = 'block';
+                ttsButton.style.display = 'inline-block';
+            } else {
+                answerElement.style.display = 'none';
+                ttsButton.style.display = 'none';
+            }
+        }
+
+        // 朗读正确句子
+        function speakCorrectSentence() {
+            if (currentFactCheckerData && currentFactCheckerData.correctAnswer) {
+                speakText(currentFactCheckerData.correctAnswer);
+            }
+        }
+
+        // 初始化
+        window.onload = () => {
+            runParallelUniverse();
+            generatePractice();
+            runFactChecker();
+        };
+    </script>
+</body>
+</html> 

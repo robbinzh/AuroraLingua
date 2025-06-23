@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模块 4.3：终极整合 - “昨日日志”模拟器</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', 'Noto Sans SC', sans-serif;
+            background-color: #1a1a2e;
+            color: #e0e0e0;
+            line-height: 1.7;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #e94560, #0f3460);
+            border-radius: 15px;
+            margin-bottom: 40px;
+            border: 2px solid #16213e;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #fff;
+            text-shadow: 0 0 10px #f9a826;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #c5c6c7;
+            opacity: 0.9;
+        }
+
+        .module {
+            background-color: #16213e;
+            border: 1px solid #0f3460;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .module h2 {
+            font-size: 2em;
+            color: #f9a826;
+            border-bottom: 2px solid #2a3a60;
+            padding-bottom: 15px;
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .instructions {
+            background-color: rgba(249, 168, 38, 0.1);
+            border-left: 5px solid #f9a826;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+            color: #f5f5f5;
+        }
+        
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #f9a826, #f57c00);
+            color: #16213e;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(249, 168, 38, 0.3);
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(249, 168, 38, 0.5);
+        }
+
+        .button:active {
+            transform: translateY(-1px);
+        }
+        
+        .tts-btn, .translation-toggle {
+            background: #2a3a60;
+            color: #f9a826;
+            border: 1px solid #f9a826;
+            border-radius: 20px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 10px;
+            transition: all 0.2s ease;
+        }
+        
+        .tts-btn:hover, .translation-toggle:hover {
+            background: #f9a826;
+            color: #16213e;
+        }
+
+        .translation {
+            color: #a7a9be;
+            font-style: italic;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #0f3460;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .highlight {
+            color: #50fa7b; /* Green */
+            font-weight: bold;
+            text-shadow: 0 0 5px #50fa7b;
+        }
+
+        .highlight-neg {
+            color: #ff5555; /* Red */
+            font-weight: bold;
+            text-shadow: 0 0 5px #ff5555;
+        }
+        
+        .highlight-space {
+            color: #8be9fd; /* Cyan */
+            font-weight: bold;
+            text-shadow: 0 0 5px #8be9fd;
+        }
+        
+        .highlight-reason {
+            color: #ff79c6; /* Pink */
+            font-weight: bold;
+            text-shadow: 0 0 5px #ff79c6;
+        }
+
+        /* Stage 1 Styles */
+        .alibi-container {
+            text-align: center;
+        }
+        .statement-box {
+            background-color: #0f3460;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px dashed #2a3a60;
+        }
+        .statement-box h3 {
+            color: #f9a826;
+            margin-top: 0;
+            font-size: 1.3em;
+        }
+        .statement-text {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff;
+            min-height: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .statement-text:hover {
+            background-color: rgba(249, 168, 38, 0.1);
+            border-radius: 5px;
+            padding: 5px;
+        }
+        #correct-rebuttal {
+            display: none;
+        }
+
+        /* Stage 2 Styles */
+        .generator-controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #log-entry-display {
+            background: rgba(0,0,0,0.3);
+            border: 2px solid #2a3a60;
+            padding: 30px;
+            border-radius: 10px;
+            font-size: 1.6em;
+            text-align: center;
+            min-height: 100px;
+            line-height: 1.5;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        #log-entry-display:hover {
+            background: rgba(249, 168, 38, 0.1);
+            border-color: #f9a826;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>模块 4.3: 终极整合</h1>
+        <p>“昨日日志”模拟器 (Eilisen Lokikirja -simulaattori)</p>
+    </div>
+
+    <!-- ============================================= -->
+    <!--  STAGE 1: INTERNAL CONSOLIDATION              -->
+    <!-- ============================================= -->
+    <div class="module">
+        <h2>阶段一: 快速反应不在场证明核实器</h2>
+        <div class="instructions">
+            <strong>认知冲击任务:</strong> 你是侦探。系统会给出嫌疑人关于昨天的陈述（肯定或否定）。你的任务是光速在脑中构建【相反】的陈述，然后点击按钮核对。目标：将正反两种过去时模式的切换焊接到你的直觉里！
+        </div>
+
+        <div class="alibi-container">
+            <div class="statement-box">
+                <h3>嫌疑人陈述 (Epäillyn Lausunto)</h3>
+                <p id="suspect-statement" class="statement-text" onclick="speakText(this.textContent)">...</p>
+                <button class="tts-btn" onclick="speakText(document.getElementById('suspect-statement').textContent)">🔊</button>
+                <button class="translation-toggle" onclick="toggleTranslation('suspect-translation')">中文</button>
+                <div id="suspect-translation" class="translation"></div>
+            </div>
+            
+            <button class="button" onclick="checkAlibi()">核对反驳</button>
+
+            <div id="correct-rebuttal" class="statement-box" style="margin-top: 20px; border-color: #f9a826;">
+                <h3>正确反驳 (Oikea Vastaväite)</h3>
+                <p id="rebuttal-statement" class="statement-text" onclick="speakText(this.textContent)">...</p>
+                <button class="tts-btn" onclick="speakText(document.getElementById('rebuttal-statement').textContent)">🔊</button>
+                <button class="translation-toggle" onclick="toggleTranslation('rebuttal-translation')">中文</button>
+                <div id="rebuttal-translation" class="translation"></div>
+            </div>
+
+            <button class="button" onclick="generateNewAlibi()" style="margin-top: 20px; background: linear-gradient(135deg, #50fa7b, #28a745); color: #16213e;">下一名嫌疑人 (Seuraava epäilty)</button>
+        </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!--  STAGE 2: CROSS-MODULE INTEGRATION            -->
+    <!-- ============================================= -->
+    <div class="module">
+        <h2>阶段二: 昨日日志动态内容生成器</h2>
+        <div class="instructions">
+            <strong>终极压力测试:</strong> 这里是信息的洪流。系统将生成包含【时间】、【空间】、【需求】等多个维度的复杂日志。你的唯一任务是：看懂、听懂。将你的大脑暴露在高信息密度的芬兰语环境中，让它自己学会游泳！
+        </div>
+
+        <div class="generator-controls">
+            <button class="button" onclick="generateLogEntry()">生成新的日志条目</button>
+        </div>
+
+        <div id="log-entry-display" onclick="speakText(this.innerText)">
+            点击按钮，开始接收信息流...
+        </div>
+        <div style="text-align: center; margin-top: 15px;">
+            <button class="tts-btn" onclick="speakText(document.getElementById('log-entry-display').innerText)">🔊</button>
+            <button class="translation-toggle" onclick="toggleTranslation('log-translation')">中文</button>
+        </div>
+        <div id="log-translation" class="translation" style="text-align: center;"></div>
+    </div>
+
+</div>
+
+<script>
+// =============================================
+//  DATA LAYER
+// =============================================
+
+const subjects = [
+    { fi: "Minä", fi_pers: "minä", zh: "我" },
+    { fi: "Sinä", fi_pers: "sinä", zh: "你" },
+    { fi: "Hän", fi_pers: "hän", zh: "他/她" },
+    { fi: "Pekka", fi_pers: "hän", zh: "佩卡" },
+    { fi: "Liisa", fi_pers: "hän", zh: "丽萨" },
+    { fi: "Mikko", fi_pers: "hän", zh: "米科" },
+    { fi: "Anna", fi_pers: "hän", zh: "安娜" },
+    { fi: "Jukka", fi_pers: "hän", zh: "尤卡" },
+    { fi: "Me", fi_pers: "me", zh: "我们" },
+    { fi: "Te", fi_pers: "te", zh: "你们" },
+    { fi: "He", fi_pers: "he", zh: "他们" },
+    { fi: "Minun ystäväni", fi_pers: "hän", zh: "我的朋友" },
+    { fi: "Minun äitini", fi_pers: "hän", zh: "我的妈妈" },
+    { fi: "Minun isäni", fi_pers: "hän", zh: "我的爸爸" },
+    { fi: "Minun veljeni", fi_pers: "hän", zh: "我的兄弟" },
+    { fi: "Minun siskoni", fi_pers: "hän", zh: "我的姐妹" },
+    { fi: "Opettaja", fi_pers: "hän", zh: "老师" },
+    { fi: "Lääkäri", fi_pers: "hän", zh: "医生" },
+    { fi: "Myyjä", fi_pers: "hän", zh: "售货员" },
+    { fi: "Opiskelija", fi_pers: "hän", zh: "学生" },
+    { fi: "Naapuri", fi_pers: "hän", zh: "邻居" },
+    { fi: "Kollega", fi_pers: "hän", zh: "同事" }
+];
+
+const verbs = [
+    // 模块2基础动词扩展
+    { root: "haluta", type: "want", imperf: { hän: "halusi" }, neg_part: "halunnut", zh: "想要" },
+    { root: "tarvita", type: "need", imperf: { hän: "tarvitsi" }, neg_part: "tarvinnut", zh: "需要" },
+    { root: "pitää", type: "like", imperf: { hän: "piti" }, neg_part: "pitänyt", zh: "喜欢" },
+    { root: "syödä", type: "eat", imperf: { hän: "söi" }, neg_part: "syönyt", zh: "吃" },
+    { root: "juoda", type: "drink", imperf: { hän: "joi" }, neg_part: "juonut", zh: "喝" },
+    { root: "ostaa", type: "buy", imperf: { hän: "osti" }, neg_part: "ostanut", zh: "买" },
+    
+    // 模块4核心动词
+    { root: "lukea", type: "read", imperf: { hän: "luki" }, neg_part: "lukenut", zh: "读" },
+    { root: "kirjoittaa", type: "write", imperf: { hän: "kirjoitti" }, neg_part: "kirjoittanut", zh: "写" },
+    { root: "piirtää", type: "draw", imperf: { hän: "piirsi" }, neg_part: "piirtänyt", zh: "画画" },
+    { root: "korjata", type: "fix", imperf: { hän: "korjasi" }, neg_part: "korjannut", zh: "修理" },
+    { root: "siivota", type: "clean", imperf: { hän: "siivosi" }, neg_part: "siivonut", zh: "打扫" },
+    { root: "sulkea", type: "close", imperf: { hän: "sulki" }, neg_part: "sulkenut", zh: "关闭" },
+    { root: "keittää", type: "cook", imperf: { hän: "keitti" }, neg_part: "keittänyt", zh: "煮" },
+    
+    // 模块3空间动词
+    { root: "mennä", type: "go", imperf: { hän: "meni" }, neg_part: "mennyt", zh: "去" },
+    { root: "tulla", type: "come", imperf: { hän: "tuli" }, neg_part: "tullut", zh: "来" },
+    { root: "lähteä", type: "leave", imperf: { hän: "lähti" }, neg_part: "lähtenyt", zh: "离开" },
+    { root: "ajaa", type: "drive", imperf: { hän: "aja" }, neg_part: "ajanut", zh: "开车" },
+    { root: "kävellä", type: "walk", imperf: { hän: "käveli" }, neg_part: "kävellyt", zh: "走路" },
+    { root: "juosta", type: "run", imperf: { hän: "juoksi" }, neg_part: "juossut", zh: "跑步" },
+    { root: "matkustaa", type: "travel", imperf: { hän: "matkusti" }, neg_part: "matkustanut", zh: "旅行" },
+    
+    // 扩展动词
+    { root: "nähdä", type: "see", imperf: { hän: "näki" }, neg_part: "nähnyt", zh: "看见" },
+    { root: "kuulla", type: "hear", imperf: { hän: "kuuli" }, neg_part: "kuullut", zh: "听见" },
+    { root: "puhua", type: "speak", imperf: { hän: "puhui" }, neg_part: "puhunut", zh: "说话" },
+    { root: "opiskella", type: "study", imperf: { hän: "opiskeli" }, neg_part: "opiskellut", zh: "学习" },
+    { root: "työskennellä", type: "work", imperf: { hän: "työskenteli" }, neg_part: "työskennellyt", zh: "工作" },
+    { root: "auttaa", type: "help", imperf: { hän: "auttoi" }, neg_part: "auttanut", zh: "帮助" },
+    { root: "tehdä", type: "do", imperf: { hän: "teki" }, neg_part: "tehnyt", zh: "做" },
+    { root: "etsiä", type: "search", imperf: { hän: "etsi" }, neg_part: "etsinyt", zh: "寻找" },
+    { root: "unohtaa", type: "forget", imperf: { hän: "unohti" }, neg_part: "unohtanut", zh: "忘记" },
+    { root: "löytää", type: "find", imperf: { hän: "löysi" }, neg_part: "löytänyt", zh: "找到" },
+    { root: "maksaa", type: "pay", imperf: { hän: "maksoi" }, neg_part: "maksanut", zh: "付款" },
+    { root: "odottaa", type: "wait", imperf: { hän: "odotti" }, neg_part: "odottanut", zh: "等待" }
+];
+
+const objects = [
+    // 模块2食物和饮料扩展
+    { nom: "omena", part: "omenaa", gen: "omenan", zh: "苹果" },
+    { nom: "kahvi", part: "kahvia", gen: "kahvin", zh: "咖啡" },
+    { nom: "leipä", part: "leipää", gen: "leivän", zh: "面包" },
+    { nom: "maito", part: "maitoa", gen: "maidon", zh: "牛奶" },
+    { nom: "juusto", part: "juustoa", gen: "juuston", zh: "奶酪" },
+    { nom: "liha", part: "lihaa", gen: "lihan", zh: "肉" },
+    { nom: "kala", part: "kalaa", gen: "kalan", zh: "鱼" },
+    { nom: "pizza", part: "pizzaa", gen: "pizzan", zh: "比萨" },
+    { nom: "keitto", part: "keittoa", gen: "keiton", zh: "汤" },
+    { nom: "vesi", part: "vettä", gen: "veden", zh: "水" },
+    { nom: "olut", part: "olutta", gen: "oluen", zh: "啤酒" },
+    { nom: "viini", part: "viiniä", gen: "viinin", zh: "葡萄酒" },
+    
+    // 学习和工作物品
+    { nom: "kirja", part: "kirjaa", gen: "kirjan", zh: "书" },
+    { nom: "kirje", part: "kirjettä", gen: "kirjeen", zh: "信" },
+    { nom: "kuva", part: "kuvaa", gen: "kuvan", zh: "图片" },
+    { nom: "paperi", part: "paperia", gen: "paperin", zh: "纸" },
+    { nom: "kynä", part: "kynää", gen: "kynän", zh: "笔" },
+    { nom: "tietokone", part: "tietokonetta", gen: "tietokoneen", zh: "电脑" },
+    { nom: "puhelin", part: "puhelinta", gen: "puhelimen", zh: "电话" },
+    { nom: "sanomalehti", part: "sanomalehteä", gen: "sanomalehden", zh: "报纸" },
+    { nom: "lehti", part: "lehteä", gen: "lehden", zh: "杂志" },
+    
+    // 交通和旅行
+    { nom: "auto", part: "autoa", gen: "auton", zh: "车" },
+    { nom: "bussi", part: "bussia", gen: "bussin", zh: "公交车" },
+    { nom: "juna", part: "junaa", gen: "junan", zh: "火车" },
+    { nom: "lippu", part: "lippua", gen: "lipun", zh: "票" },
+    { nom: "polkupyörä", part: "polkupyörää", gen: "polkupyörän", zh: "自行车" },
+    { nom: "avain", part: "avainta", gen: "avaimen", zh: "钥匙" },
+    { nom: "laukku", part: "laukkua", gen: "laukun", zh: "包" },
+    { nom: "matkalaukku", part: "matkalaukkua", gen: "matkalaukun", zh: "行李箱" },
+    
+    // 家居物品
+    { nom: "huone", part: "huonetta", gen: "huoneen", zh: "房间" },
+    { nom: "ovi", part: "ovea", gen: "oven", zh: "门" },
+    { nom: "ikkuna", part: "ikkunaa", gen: "ikkunan", zh: "窗户" },
+    { nom: "pöytä", part: "pöytää", gen: "pöydän", zh: "桌子" },
+    { nom: "tuoli", part: "tuolia", gen: "tuolin", zh: "椅子" },
+    { nom: "astia", part: "astiaa", gen: "astian", zh: "餐具" },
+    { nom: "lautanen", part: "lautasta", gen: "lautasen", zh: "盘子" },
+    { nom: "kuppi", part: "kuppia", gen: "kupin", zh: "杯子" },
+    
+    // 娱乐和休闲
+    { nom: "musiikki", part: "musiikkia", gen: "musiikin", zh: "音乐" },
+    { nom: "elokuva", part: "elokuvaa", gen: "elokuvan", zh: "电影" },
+    { nom: "peli", part: "peliä", gen: "pelin", zh: "游戏" },
+    { nom: "urheilu", part: "urheilua", gen: "urheilun", zh: "运动" },
+    
+    // 抽象概念
+    { nom: "työ", part: "työtä", gen: "työn", zh: "工作" },
+    { nom: "tehtävä", part: "tehtävää", gen: "tehtävän", zh: "任务" },
+    { nom: "asia", part: "asiaa", gen: "asian", zh: "事情" },
+    { nom: "ongelma", part: "ongelmaa", gen: "ongelman", zh: "问题" },
+    { nom: "vastaus", part: "vastausta", gen: "vastauksen", zh: "答案" },
+    { nom: "aika", part: "aikaa", gen: "ajan", zh: "时间" },
+    { nom: "raha", part: "rahaa", gen: "rahan", zh: "钱" }
+];
+
+const spatialPhrases = [
+    // 模块3 - 静态位置 (missä?)
+    { type: "missä", fi: "kotona", zh: "在家" },
+    { type: "missä", fi: "kaupassa", zh: "在商店里" },
+    { type: "missä", fi: "puistossa", zh: "在公园里" },
+    { type: "missä", fi: "ravintolassa", zh: "在餐厅里" },
+    { type: "missä", fi: "koulussa", zh: "在学校" },
+    { type: "missä", fi: "yliopistossa", zh: "在大学" },
+    { type: "missä", fi: "sairaalassa", zh: "在医院" },
+    { type: "missä", fi: "kirjastossa", zh: "在图书馆" },
+    { type: "missä", fi: "museossa", zh: "在博物馆" },
+    { type: "missä", fi: "teatterissa", zh: "在剧院" },
+    { type: "missä", fi: "elokuvateatterissa", zh: "在电影院" },
+    { type: "missä", fi: "hotelissa", zh: "在酒店" },
+    { type: "missä", fi: "asemalla", zh: "在车站" },
+    { type: "missä", fi: "lentokentällä", zh: "在机场" },
+    { type: "missä", fi: "baarissa", zh: "在酒吧" },
+    { type: "missä", fi: "kahvilassa", zh: "在咖啡厅" },
+    { type: "missä", fi: "toimistossa", zh: "在办公室" },
+    { type: "missä", fi: "huoneessa", zh: "在房间里" },
+    { type: "missä", fi: "keittiössä", zh: "在厨房" },
+    { type: "missä", fi: "olohuoneessa", zh: "在客厅" },
+    { type: "missä", fi: "makuuhuoneessa", zh: "在卧室" },
+    { type: "missä", fi: "kylpyhuoneessa", zh: "在浴室" },
+    { type: "missä", fi: "pöydällä", zh: "在桌子上" },
+    { type: "missä", fi: "tuolilla", zh: "在椅子上" },
+    { type: "missä", fi: "sohvalla", zh: "在沙发上" },
+    { type: "missä", fi: "sängyllä", zh: "在床上" },
+    { type: "missä", fi: "lattialla", zh: "在地板上" },
+    
+    // 模块3 - 去向 (mihin?)
+    { type: "mihin", fi: "kotiin", zh: "回家" },
+    { type: "mihin", fi: "kauppaan", zh: "去商店" },
+    { type: "mihin", fi: "työhön", zh: "去上班" },
+    { type: "mihin", fi: "kouluun", zh: "去学校" },
+    { type: "mihin", fi: "yliopistoon", zh: "去大学" },
+    { type: "mihin", fi: "sairaalaan", zh: "去医院" },
+    { type: "mihin", fi: "kirjastoon", zh: "去图书馆" },
+    { type: "mihin", fi: "museoon", zh: "去博物馆" },
+    { type: "mihin", fi: "ravintolaan", zh: "去餐厅" },
+    { type: "mihin", fi: "puistoon", zh: "去公园" },
+    { type: "mihin", fi: "asemalle", zh: "去车站" },
+    { type: "mihin", fi: "lentokentälle", zh: "去机场" },
+    { type: "mihin", fi: "Helsinkiin", zh: "去赫尔辛基" },
+    { type: "mihin", fi: "Turkuun", zh: "去图尔库" },
+    { type: "mihin", fi: "Tampereelle", zh: "去坦佩雷" },
+    { type: "mihin", fi: "huoneeseen", zh: "去房间" },
+    { type: "mihin", fi: "keittiöön", zh: "去厨房" },
+    { type: "mihin", fi: "pöydälle", zh: "到桌子上" },
+    { type: "mihin", fi: "tuolille", zh: "到椅子上" },
+    { type: "mihin", fi: "lattialle", zh: "到地板上" },
+    
+    // 模块3 - 来源 (mistä?)
+    { type: "mistä", fi: "kotoa", zh: "从家" },
+    { type: "mistä", fi: "kaupasta", zh: "从商店" },
+    { type: "mistä", fi: "työstä", zh: "从工作" },
+    { type: "mistä", fi: "koulusta", zh: "从学校" },
+    { type: "mistä", fi: "yliopistolta", zh: "从大学" },
+    { type: "mistä", fi: "sairaalasta", zh: "从医院" },
+    { type: "mistä", fi: "kirjastosta", zh: "从图书馆" },
+    { type: "mistä", fi: "museosta", zh: "从博物馆" },
+    { type: "mistä", fi: "ravintolasta", zh: "从餐厅" },
+    { type: "mistä", fi: "puistosta", zh: "从公园" },
+    { type: "mistä", fi: "asemalta", zh: "从车站" },
+    { type: "mistä", fi: "lentokentältä", zh: "从机场" },
+    { type: "mistä", fi: "Helsingistä", zh: "从赫尔辛基" },
+    { type: "mistä", fi: "Turusta", zh: "从图尔库" },
+    { type: "mistä", fi: "Tampereelta", zh: "从坦佩雷" },
+    { type: "mistä", fi: "huoneesta", zh: "从房间" },
+    { type: "mistä", fi: "keittiöstä", zh: "从厨房" },
+    { type: "mistä", fi: "pöydältä", zh: "从桌子上" },
+    { type: "mistä", fi: "tuolilta", zh: "从椅子上" },
+    { type: "mistä", fi: "lattialta", zh: "从地板上" }
+];
+
+const reasonClauses = [
+    // 模块2基础需求表达
+    { fi: "halusin", zh: "想要" },
+    { fi: "tarvitsin", zh: "需要" },
+    { fi: "en halunnut", zh: "不想要" },
+    { fi: "en tarvinnut", zh: "不需要" },
+    { fi: "pidin siitä", zh: "喜欢它" },
+    { fi: "en pitänyt siitä", zh: "不喜欢它" },
+    
+    // 扩展原因从句
+    { fi: "olin väsynyt", zh: "累了" },
+    { fi: "olin nälkäinen", zh: "饿了" },
+    { fi: "olin janoinen", zh: "渴了" },
+    { fi: "olin kiireinen", zh: "忙" },
+    { fi: "en ollut kotona", zh: "不在家" },
+    { fi: "en ollut kiireinen", zh: "不忙" },
+    { fi: "en ehtinyt", zh: "来不及" },
+    { fi: "unohdin", zh: "忘记了" },
+    { fi: "en muistanut", zh: "不记得" },
+    { fi: "oli liian kallis", zh: "太贵了" },
+    { fi: "oli liian vaikea", zh: "太难了" },
+    { fi: "oli liian kaukana", zh: "太远了" },
+    { fi: "sääli huono", zh: "天气不好" },
+    { fi: "ei ollut aikaa", zh: "没有时间" },
+    { fi: "ei ollut rahaa", zh: "没有钱" }
+];
+
+const imperfEndings = {
+    minä: "n", sinä: "t", hän: "", me: "mme", te: "tte", he: "vat"
+};
+const negWords = {
+    minä: "en", sinä: "et", hän: "ei", me: "emme", te: "ette", he: "eivät"
+};
+const negPartEndings = {
+    minä: "", sinä: "", hän: "", me: "neet", te: "neet", he: "neet"
+};
+
+// =============================================
+//  LOGIC LAYER
+// =============================================
+
+let currentAlibi = {};
+let currentLogEntry = {};
+
+function getRandomElement(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// --- TTS Function ---
+function speakText(text) {
+    if (!text || text === '...') return;
+    const cleanText = text.replace(/<[^>]*>/g, '');
+    if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        utterance.lang = 'fi-FI';
+        utterance.rate = 0.9;
+        speechSynthesis.speak(utterance);
+    } else {
+        alert('抱歉，您的浏览器不支持语音功能。');
+    }
+}
+
+// --- Translation Toggle ---
+function toggleTranslation(elementId) {
+    const element = document.getElementById(elementId);
+    element.style.display = (element.style.display === 'none' || element.style.display === '') ? 'block' : 'none';
+}
+
+// --- Verb Conjugation Helper ---
+function getVerbForm(verbRoot, person, isPositive) {
+    // This is a simplified conjugator for this demo
+    let stem = verbRoot;
+    let imperfBase = "";
+    
+    // Simplified logic for imperf stem
+    if (verbRoot.endsWith('a')) { // lukea -> luki, ostaa -> osti
+        imperfBase = verbRoot.slice(0, -1) + 'i';
+    } else if (verbRoot.endsWith('dä')) { // syödä -> söi
+        imperfBase = verbRoot.slice(0, -2) + 'i';
+    } else if (verbRoot.endsWith('nnä')) { // mennä -> meni
+        imperfBase = verbRoot.slice(0, -3) + 'i';
+    } else if (verbRoot.endsWith('hdä')) { // tehdä -> teki
+        imperfBase = verbRoot.slice(0, -3) + 'ki';
+    } else {
+        imperfBase = verbRoot + 'i'; // Fallback
+    }
+
+    if (isPositive) {
+        if (person === 'hän') return imperfBase;
+        return imperfBase + imperfEndings[person];
+    } else {
+        // Negative
+        let negPartBase = "";
+        if (verbRoot.endsWith('ut') || verbRoot.endsWith('yt')) {
+             negPartBase = verbRoot;
+        } else if (['l','n','r','s','t'].includes(verbRoot.slice(-2,-1)) && verbRoot.endsWith('a')) { //antaa -> antanut
+            negPartBase = verbRoot.slice(0,-1) + 'anut';
+        } else { // Fallback, good for syödä, juoda etc.
+            negPartBase = verbRoot.slice(0,-1) + (['a','o','u'].includes(verbRoot.slice(-2,-1)) ? 'anut' : 'enyt');
+            if (verbRoot === 'syödä') negPartBase = 'syönyt';
+            if (verbRoot === 'juoda') negPartBase = 'juonut';
+            if (verbRoot === 'lukea') negPartBase = 'lukenut';
+            if (verbRoot === 'mennä') negPartBase = 'mennyt';
+            if (verbRoot === 'tehdä') negPartBase = 'tehnyt';
+        }
+
+        return negWords[person] + " " + negPartBase.slice(0,-1) + (['me','te','he'].includes(person) ? 'eet' : negPartBase.slice(-1));
+    }
+}
+
+
+// --- STAGE 1 LOGIC ---
+function generateNewAlibi() {
+    const subjectData = getRandomElement(subjects);
+    const verbData = getRandomElement(verbs);
+    const objectData = getRandomElement(objects);
+
+    const isPositive = Math.random() < 0.5;
+
+    let statement, rebuttal, statement_zh, rebuttal_zh;
+
+    // A more robust verb form getter
+    const getImperf = (v_root, s_pers) => {
+        // Simplified, but covers some cases
+        let base = v_root.imperf.hän;
+        if (s_pers === 'hän') return base;
+        if (base.endsWith('i')) return base + imperfEndings[s_pers];
+        return base; // Fallback
+    }
+    const getNeg = (v_root, s_pers) => {
+        let ending = (s_pers === 'me' || s_pers === 'te' || s_pers === 'he') ? 'eet' : '';
+        return `${negWords[s_pers]} ${v_root.neg_part}${ending}`;
+    }
+
+    if (isPositive) {
+        statement = `<span class="highlight">${getImperf(verbData, subjectData.fi_pers)}</span> ${objectData.gen}`;
+        rebuttal = `Ei, ${subjectData.fi} <span class="highlight-neg">${getNeg(verbData, subjectData.fi_pers)}</span> ${objectData.part}.`;
+        statement_zh = `${subjectData.zh}${verbData.zh}了${objectData.zh}。`;
+        rebuttal_zh = `不，${subjectData.zh}没${verbData.zh}${objectData.zh}。`;
+    } else {
+        statement = `<span class="highlight-neg">${getNeg(verbData, subjectData.fi_pers)}</span> ${objectData.part}`;
+        rebuttal = `Kyllä, ${subjectData.fi} <span class="highlight">${getImperf(verbData, subjectData.fi_pers)}</span> ${objectData.gen}.`;
+        statement_zh = `${subjectData.zh}没${verbData.zh}${objectData.zh}。`;
+        rebuttal_zh = `是的，${subjectData.zh}${verbData.zh}了${objectData.zh}。`;
+    }
+
+    currentAlibi = {
+        statement: `${subjectData.fi} ${statement}.`,
+        statement_zh: statement_zh,
+        rebuttal: rebuttal,
+        rebuttal_zh: rebuttal_zh
+    };
+
+    document.getElementById('suspect-statement').innerHTML = currentAlibi.statement;
+    document.getElementById('suspect-translation').textContent = currentAlibi.statement_zh;
+    document.getElementById('correct-rebuttal').style.display = 'none';
+    document.getElementById('rebuttal-statement').innerHTML = '';
+    document.getElementById('rebuttal-translation').textContent = '';
+    
+    // 自动播放新的嫌疑人陈述
+    setTimeout(() => {
+        speakText(currentAlibi.statement);
+    }, 100);
+}
+
+function checkAlibi() {
+    document.getElementById('rebuttal-statement').innerHTML = currentAlibi.rebuttal;
+    document.getElementById('rebuttal-translation').textContent = currentAlibi.rebuttal_zh;
+    document.getElementById('correct-rebuttal').style.display = 'block';
+    
+    // 自动播放反驳
+    setTimeout(() => {
+        speakText(currentAlibi.rebuttal);
+    }, 100);
+}
+
+// --- STAGE 2 LOGIC ---
+function generateLogEntry() {
+    const templateType = Math.random();
+    let entry, translation;
+
+    const subject = getRandomElement(subjects);
+    const verb = getRandomElement(verbs);
+    const object = getRandomElement(objects);
+    
+    // 更强大的动词变位函数
+    const getImperf = (v, s_pers) => {
+        const base = v.imperf.hän;
+        if (s_pers === 'hän') return base;
+        if (s_pers === 'minä') return base + 'n';
+        if (s_pers === 'sinä') return base + 't';
+        if (s_pers === 'me') return base + 'mme';
+        if (s_pers === 'te') return base + 'tte';
+        if (s_pers === 'he') return base + 'vat';
+        return base;
+    };
+    
+    const getNeg = (v, s_pers) => {
+        const ending = ['me','te','he'].includes(s_pers) ? 'neet' : '';
+        return `${negWords[s_pers]} ${v.neg_part}${ending}`;
+    };
+
+    if (templateType < 0.15) { // Template A: 简单过去时 (肯定)
+        const vForm = getImperf(verb, subject.fi_pers);
+        entry = `${subject.fi} <span class="highlight">${vForm}</span> ${object.gen} eilen.`;
+        translation = `${subject.zh}昨天${verb.zh}了${object.zh}。`;
+
+    } else if (templateType < 0.30) { // Template B: 简单过去时 (否定)
+        const vForm = getNeg(verb, subject.fi_pers);
+        entry = `${subject.fi} <span class="highlight-neg">${vForm}</span> ${object.part} eilen.`;
+        translation = `${subject.zh}昨天没${verb.zh}${object.zh}。`;
+
+    } else if (templateType < 0.45) { // Template C: 时间+空间 (静态)
+        const sp = getRandomElement(spatialPhrases.filter(p => p.type === 'missä'));
+        const isPositive = Math.random() > 0.5;
+        
+        if (isPositive) {
+            const vForm = getImperf(verb, subject.fi_pers);
+            entry = `${subject.fi} <span class="highlight">${vForm}</span> ${object.gen} <span class="highlight-space">${sp.fi}</span>.`;
+            translation = `${subject.zh}${sp.zh}${verb.zh}了${object.zh}。`;
+        } else {
+            const vForm = getNeg(verb, subject.fi_pers);
+            entry = `${subject.fi} <span class="highlight-neg">${vForm}</span> ${object.part} <span class="highlight-space">${sp.fi}</span>.`;
+            translation = `${subject.zh}没${sp.zh}${verb.zh}${object.zh}。`;
+        }
+
+    } else if (templateType < 0.60) { // Template D: 空间移动 (模块3高级)
+        const movementVerbs = verbs.filter(v => ['go', 'come', 'leave', 'drive', 'walk', 'run', 'travel'].includes(v.type));
+        if (movementVerbs.length > 0) {
+            const moveVerb = getRandomElement(movementVerbs);
+            const spType = getRandomElement(['mihin', 'mistä']);
+            const sp = getRandomElement(spatialPhrases.filter(p => p.type === spType));
+            
+            const isPositive = Math.random() > 0.5;
+            if (isPositive) {
+                const vForm = getImperf(moveVerb, subject.fi_pers);
+                entry = `${subject.fi} <span class="highlight">${vForm}</span> <span class="highlight-space">${sp.fi}</span> aamulla.`;
+                translation = `${subject.zh}早上${sp.zh}${moveVerb.zh}了。`;
+            } else {
+                const vForm = getNeg(moveVerb, subject.fi_pers);
+                entry = `${subject.fi} <span class="highlight-neg">${vForm}</span> <span class="highlight-space">${sp.fi}</span> aamulla.`;
+                translation = `${subject.zh}早上没${sp.zh}${moveVerb.zh}。`;
+            }
+        } else {
+            // Fallback to template C
+            const sp = getRandomElement(spatialPhrases.filter(p => p.type === 'missä'));
+            const vForm = getImperf(verb, subject.fi_pers);
+            entry = `${subject.fi} <span class="highlight">${vForm}</span> ${object.gen} <span class="highlight-space">${sp.fi}</span>.`;
+            translation = `${subject.zh}${sp.zh}${verb.zh}了${object.zh}。`;
+        }
+
+    } else if (templateType < 0.80) { // Template E: 时间+空间+原因 (中级复杂度)
+        const sp = getRandomElement(spatialPhrases.filter(p => p.type === 'missä'));
+        const reason = getRandomElement(reasonClauses);
+        const isPositive = Math.random() > 0.5;
+        
+        if (isPositive) {
+            const vForm = getImperf(verb, subject.fi_pers);
+            entry = `${subject.fi} <span class="highlight">${vForm}</span> ${object.gen} <span class="highlight-space">${sp.fi}</span>, koska <span class="highlight-reason">${reason.fi}</span>.`;
+            translation = `${subject.zh}${sp.zh}${verb.zh}了${object.zh}，因为他/她${reason.zh}。`;
+        } else {
+            const vForm = getNeg(verb, subject.fi_pers);
+            entry = `${subject.fi} <span class="highlight-neg">${vForm}</span> ${object.part} <span class="highlight-space">${sp.fi}</span>, koska <span class="highlight-reason">${reason.fi}</span>.`;
+            translation = `${subject.zh}没${sp.zh}${verb.zh}${object.zh}，因为他/她${reason.zh}。`;
+        }
+
+    } else { // Template F: 终极复杂句 (高级整合)
+        const subject2 = getRandomElement(subjects);
+        const verb2 = getRandomElement(verbs);
+        const object2 = getRandomElement(objects);
+        const sp1 = getRandomElement(spatialPhrases.filter(p => p.type === 'missä'));
+        const sp2 = getRandomElement(spatialPhrases.filter(p => p.type === 'mihin'));
+        
+        const vForm1 = getImperf(verb, subject.fi_pers);
+        const vForm2 = Math.random() > 0.5 ? getImperf(verb2, subject2.fi_pers) : getNeg(verb2, subject2.fi_pers);
+        
+        if (vForm2.includes('en ') || vForm2.includes('ei ') || vForm2.includes('emme ')) {
+            // 包含否定的复合句
+            entry = `Kun ${subject.fi} <span class="highlight">${vForm1}</span> ${object.gen} <span class="highlight-space">${sp1.fi}</span>, ${subject2.fi} <span class="highlight-neg">${vForm2}</span> ${object2.part} <span class="highlight-space">${sp2.fi}</span>.`;
+            translation = `当${subject.zh}${sp1.zh}${verb.zh}${object.zh}时，${subject2.zh}没有${sp2.zh}${verb2.zh}${object2.zh}。`;
+        } else {
+            // 双重肯定的复合句
+            entry = `Kun ${subject.fi} <span class="highlight">${vForm1}</span> ${object.gen} <span class="highlight-space">${sp1.fi}</span>, ${subject2.fi} <span class="highlight">${vForm2}</span> ${object2.gen} <span class="highlight-space">${sp2.fi}</span>.`;
+            translation = `当${subject.zh}${sp1.zh}${verb.zh}${object.zh}时，${subject2.zh}${sp2.zh}${verb2.zh}了${object2.zh}。`;
+        }
+    }
+    
+    // 显示内容并自动播放
+    document.getElementById('log-entry-display').innerHTML = entry;
+    document.getElementById('log-translation').textContent = translation;
+    
+    // 自动播放新生成的句子
+    setTimeout(() => {
+        speakText(entry);
+    }, 100);
+}
+
+// --- INITIALIZATION ---
+window.onload = () => {
+    generateNewAlibi();
+    generateLogEntry();
+};
+
+</script>
+</body>
+</html>

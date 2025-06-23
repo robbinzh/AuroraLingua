@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>佩卡的失落钥匙 - Pekan kadonneet avaimet</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #e0e0e0;
+            line-height: 1.7;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .story-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #e94560, #0f3460);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px solid #16213e;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            color: #fff;
+            text-shadow: 0 0 10px #f9a826;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: #c5c6c7;
+            opacity: 0.9;
+            margin: 10px 0 0 0;
+        }
+
+        .memory-fragment {
+            display: none;
+            background-color: #16213e;
+            border: 1px solid #0f3460;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        .memory-fragment.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scene {
+            text-align: center;
+            font-size: 4em;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(249, 168, 38, 0.1);
+            border-radius: 10px;
+            line-height: 1.2;
+        }
+
+        .story-title {
+            text-align: center;
+            color: #f9a826;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2a3a60;
+            padding-bottom: 10px;
+        }
+
+        .story-text {
+            font-size: 1.3em;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .story-text.clickable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .story-text.clickable:hover {
+            background: rgba(249, 168, 38, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .highlight {
+            color: #50fa7b;
+            font-weight: bold;
+            text-shadow: 0 0 5px #50fa7b;
+        }
+
+        .highlight-neg {
+            color: #ff5555;
+            font-weight: bold;
+            text-shadow: 0 0 5px #ff5555;
+        }
+
+        .highlight-space {
+            color: #8be9fd;
+            font-weight: bold;
+            text-shadow: 0 0 5px #8be9fd;
+        }
+
+        .highlight-reason {
+            color: #ff79c6;
+            font-weight: bold;
+            text-shadow: 0 0 5px #ff79c6;
+        }
+
+        .comprehension-check {
+            background: rgba(80, 250, 123, 0.1);
+            border-left: 4px solid #50fa7b;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .comprehension-check:hover {
+            background: rgba(80, 250, 123, 0.2);
+        }
+
+        .comprehension-question {
+            font-size: 1.1em;
+            color: #50fa7b;
+            margin-bottom: 10px;
+        }
+
+        .answer {
+            display: none;
+            background: rgba(249, 168, 38, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 1.1em;
+            color: #f9a826;
+        }
+
+        .answer.show {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; }
+            to { opacity: 1; max-height: 100px; }
+        }
+
+        .next-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #f9a826, #f57c00);
+            color: #16213e;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin: 20px auto;
+            display: block;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(249, 168, 38, 0.3);
+        }
+
+        .next-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(249, 168, 38, 0.5);
+        }
+
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .tts-btn, .translation-toggle {
+            background: #2a3a60;
+            color: #f9a826;
+            border: 1px solid #f9a826;
+            border-radius: 20px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin: 0 5px;
+            transition: all 0.2s ease;
+        }
+
+        .tts-btn:hover, .translation-toggle:hover {
+            background: #f9a826;
+            color: #16213e;
+        }
+
+        .translation {
+            color: #a7a9be;
+            font-style: italic;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #0f3460;
+            border-radius: 8px;
+            display: none;
+            font-size: 1.1em;
+        }
+
+        .celebration {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #50fa7b, #28a745);
+            color: #16213e;
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #2a3a60;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f9a826, #50fa7b);
+            border-radius: 3px;
+            transition: width 0.6s ease;
+        }
+    </style>
+</head>
+<body>
+
+<div class="story-container">
+    <div class="header">
+        <h1>佩卡的失落钥匙</h1>
+        <p>Pekan kadonneet avaimet - 综合叙事练习</p>
+    </div>
+
+    <div class="progress-bar">
+        <div id="progress-fill" class="progress-fill" style="width: 20%;"></div>
+    </div>
+
+    <!-- 记忆片段 0: 开篇 -->
+    <div id="memory-0" class="memory-fragment active">
+        <div class="story-title">Ongelma syntyy (问题出现)</div>
+        <div class="scene">🏠🧍‍♂️😰🔑❓</div>
+        <div class="story-text clickable" onclick="speakText(this.textContent)">
+            <strong>Pekka seisoo kotinsa edessä.</strong><br>
+            "Voi ei! Minä <span class="highlight-neg">en löydä</span> avaimiani! Missä ne ovat?"
+        </div>
+        <div class="controls">
+            <button class="tts-btn" onclick="speakText('Voi ei! Minä en löydä avaimiani! Missä ne ovat?')">🔊</button>
+            <button class="translation-toggle" onclick="toggleTranslation('trans-0')">中文</button>
+        </div>
+        <div id="trans-0" class="translation">
+            佩卡站在家门口。<br>
+            "哦不！我找不到我的钥匙了！它们在哪里？"
+        </div>
+        
+        <div class="story-text" style="margin-top: 30px;">
+            <strong>Pekka ajattelee:</strong><br>
+            "Auta minua muistamaan, mitä minä <span class="highlight">tein</span> eilen!"
+        </div>
+        <div class="controls">
+            <button class="tts-btn" onclick="speakText('Auta minua muistamaan, mitä minä tein eilen!')">🔊</button>
+            <button class="translation-toggle" onclick="toggleTranslation('trans-0b')">中文</button>
+        </div>
+        <div id="trans-0b" class="translation">
+            佩卡想："帮我回忆一下，我昨天做了什么！"
+        </div>
+
+        <button class="next-button" onclick="showMemory(1)">Aloita muistojen selvittäminen</button>
+    </div>
+
+    <!-- 记忆片段 1: 昨天早上在家 -->
+    <div id="memory-1" class="memory-fragment">
+        <div class="story-title">Muistikuva 1: Eilen aamulla kotona</div>
+        <div class="scene">🏠☕📖😌</div>
+        <div class="story-text clickable" onclick="speakText(this.textContent)">
+            "Eilen aamulla minä <span class="highlight">olin</span> <span class="highlight-space">kotona</span>. 
+            Minä <span class="highlight">join</span> kahvia ja <span class="highlight">luin</span> kirjaa. 
+            Minä <span class="highlight-neg">en nähnyt</span> avaimia pöydällä."
+        </div>
+        <div class="controls">
+            <button class="tts-btn" onclick="speakText('Eilen aamulla minä olin kotona. Minä join kahvia ja luin kirjaa. Minä en nähnyt avaimia pöydällä.')">🔊</button>
+            <button class="translation-toggle" onclick="toggleTranslation('trans-1')">中文</button>
+        </div>
+        <div id="trans-1" class="translation">
+            "昨天早上我在家。我喝了咖啡，读了书。我没在桌子上看到钥匙。"
+        </div>
+
+        <div class="comprehension-check" onclick="toggleAnswer('answer-1')">
+            <div class="comprehension-question">🤔 理解检查：Oliko avaimet kotona pöydällä?</div>
+            <div id="answer-1" class="answer">
+                ✅ <strong>Ei!</strong> Pekka ei nähnyt avaimia pöydällä.<br>
+                不！佩卡没在桌子上看到钥匙。
+            </div>
+        </div>
+
+        <button class="next-button" onclick="showMemory(2)">Seuraava muistikuva...</button>
+    </div>
+
+    <!-- 记忆片段 2: 去办公室的路上 -->
+    <div id="memory-2" class="memory-fragment">
+        <div class="story-title">Muistikuva 2: Matkalla toimistoon</div>
+        <div class="scene">🚌🎵🧍‍♂️🚏</div>
+        <div class="story-text clickable" onclick="speakText(this.textContent)">
+            "Sitten minä <span class="highlight">menin</span> <span class="highlight-space">toimistoon</span>. 
+            Minä <span class="highlight">odotin</span> bussia <span class="highlight-space">pysäkillä</span>. 
+            Bussissa minä <span class="highlight">kuuntelin</span> musiikkia. 
+            Minä <span class="highlight-neg">en käyttänyt</span> avaimia."
+        </div>
+        <div class="controls">
+            <button class="tts-btn" onclick="speakText('Sitten minä menin toimistoon. Minä odotin bussia pysäkillä. Bussissa minä kuuntelin musiikkia. Minä en käyttänyt avaimia.')">🔊</button>
+            <button class="translation-toggle" onclick="toggleTranslation('trans-2')">中文</button>
+        </div>
+        <div id="trans-2" class="translation">
+            "然后我去了办公室。我在车站等公交车。在公交车上我听音乐。我没用钥匙。"
+        </div>
+
+        <div class="comprehension-check" onclick="toggleAnswer('answer-2')">
+            <div class="comprehension-question">🤔 理解检查：Mitä Pekka teki bussissa?</div>
+            <div id="answer-2" class="answer">
+                ✅ <strong>Hän kuunteli musiikkia!</strong><br>
+                他听音乐！
+            </div>
+        </div>
+
+        <button class="next-button" onclick="showMemory(3)">Seuraava muistikuva...</button>
+    </div>
+
+    <!-- 记忆片段 3: 在办公室工作 -->
+    <div id="memory-3" class="memory-fragment">
+        <div class="story-title">Muistikuva 3: Toimistossa työskentelemässä</div>
+        <div class="scene">💼💻📧⌚</div>
+        <div class="story-text clickable" onclick="speakText(this.textContent)">
+            "Minä <span class="highlight">työskentelin</span> koko päivän <span class="highlight-space">toimistossa</span>. 
+            Minä <span class="highlight">kirjoitin</span> monta sähköpostia. 
+            Minä <span class="highlight">pidin</span> kokouksen kollegojen kanssa."
+        </div>
+        <div class="controls">
+            <button class="tts-btn" onclick="speakText('Minä työskentelin koko päivän toimistossa. Minä kirjoitin monta sähköpostia. Minä pidin kokouksen kollegojen kanssa.')">🔊</button>
+            <button class="translation-toggle" onclick="toggleTranslation('trans-3')">中文</button>
+        </div>
+        <div id="trans-3" class="translation">
+            "我在办公室工作了一整天。我写了很多邮件。我和同事们开了个会。"
+        </div>
+
+        <div class="story-text" style="margin-top: 25px; font-style: italic;">
+            "Kun minä <span class="highlight">lähdin</span> <span class="highlight-space">kotiin</span>..."
+        </div>
+
+        <button class="next-button" onclick="showMemory(4)">Mitä tapahtui sitten?</button>
+    </div>
+
+    <!-- 记忆片段 4: 关键发现（高潮） -->
+    <div id="memory-4" class="memory-fragment">
+        <div class="story-title">Oivallus! (恍然大悟！)</div>
+        <div class="scene">💡🤯🔑📋</div>
+        <div class="story-text clickable" onclick="speakText(this.textContent)" style="background: rgba(255, 85, 85, 0.1); padding: 20px; border-radius: 10px;">
+            <strong style="font-size: 1.3em;">"Ah! Nyt minä muistan!"</strong><br><br>
+            "Minä <span class="highlight-neg">en laittanut</span> avaimia takaisin taskuun! 
+            Minä <span class="highlight">jätin</span> ne <span class="highlight-space">toimiston pöydälle</span>!"
+        </div>
+        <div class="controls">
+            <button class="tts-btn" onclick="speakText('Ah! Nyt minä muistan! Minä en laittanut avaimia takaisin taskuun! Minä jätin ne toimiston pöydälle!')">🔊</button>
+            <button class="translation-toggle" onclick="toggleTranslation('trans-4')">中文</button>
+        </div>
+        <div id="trans-4" class="translation">
+            "啊！现在我想起来了！<br>
+            我没有把钥匙放回口袋里！我把它们忘在办公室的桌子上了！"
+        </div>
+
+        <div class="comprehension-check" onclick="toggleAnswer('answer-4')">
+            <div class="comprehension-question">🔍 关键语法：注意否定过去时的结构</div>
+            <div id="answer-4" class="answer">
+                <strong>En laittanut</strong> = 我没有放<br>
+                否定词 + 过去分词（没有人称变化）<br>
+                这是芬兰语否定过去时的标准结构！
+            </div>
+        </div>
+
+        <button class="next-button" onclick="showMemory(5)">Mene toimistoon etsimään!</button>
+    </div>
+
+    <!-- 记忆片段 5: 结局 -->
+    <div id="memory-5" class="memory-fragment">
+        <div class="story-title">Onnellinen loppu (圆满结局)</div>
+        <div class="scene">🏢🔑😊✅</div>
+        <div class="story-text clickable" onclick="speakText(this.textContent)">
+            <strong>"Jee! Avaimet <span class="highlight">olivat</span> täällä!"</strong><br>
+            "Ne <span class="highlight">olivat</span> <span class="highlight-space">toimiston pöydällä</span>, 
+            juuri siinä missä minä ne <span class="highlight">jätin</span>!"
+        </div>
+        <div class="controls">
+            <button class="tts-btn" onclick="speakText('Jee! Avaimet olivat täällä! Ne olivat toimiston pöydällä, juuri siinä missä minä ne jätin!')">🔊</button>
+            <button class="translation-toggle" onclick="toggleTranslation('trans-5')">中文</button>
+        </div>
+        <div id="trans-5" class="translation">
+            "耶！钥匙在这里！<br>
+            它们在办公室的桌子上，就在我放它们的地方！"
+        </div>
+
+        <div class="celebration">
+            🎉 Kiitos avusta! Tarina on päättynyt! 🎉<br>
+            谢谢帮助！故事结束了！<br><br>
+            你成功整合了：过去时 + 否定过去时 + 空间格 + 叙事逻辑！
+        </div>
+
+        <button class="next-button" onclick="showMemory(0); updateProgress(20);">Lue tarina uudelleen</button>
+    </div>
+
+</div>
+
+<script>
+// TTS 语音功能
+function speakText(text) {
+    if (!text || text === '...') return;
+    const cleanText = text.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+    if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        utterance.lang = 'fi-FI';
+        utterance.rate = 0.85;
+        speechSynthesis.speak(utterance);
+    } else {
+        alert('抱歉，您的浏览器不支持语音功能。');
+    }
+}
+
+// 翻译切换
+function toggleTranslation(elementId) {
+    const element = document.getElementById(elementId);
+    element.style.display = (element.style.display === 'none' || element.style.display === '') ? 'block' : 'none';
+}
+
+// 显示记忆片段
+function showMemory(memoryNumber) {
+    // 隐藏所有片段
+    document.querySelectorAll('.memory-fragment').forEach(el => {
+        el.classList.remove('active');
+    });
+    
+    // 显示目标片段
+    const targetMemory = document.getElementById('memory-' + memoryNumber);
+    if (targetMemory) {
+        targetMemory.classList.add('active');
+        
+        // 滚动到顶部
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // 更新进度条
+        const progress = ((memoryNumber + 1) / 6) * 100;
+        updateProgress(progress);
+    }
+}
+
+// 更新进度条
+function updateProgress(percentage) {
+    const progressFill = document.getElementById('progress-fill');
+    progressFill.style.width = percentage + '%';
+}
+
+// 切换答案显示
+function toggleAnswer(answerId) {
+    const answer = document.getElementById(answerId);
+    answer.classList.toggle('show');
+}
+
+// 初始化
+window.onload = function() {
+    updateProgress(20);
+};
+
+</script>
+
+</body>
+</html> 

@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>芬兰语模块四：时间戳驱动 (Verb 2.0) 原型</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2, h3 {
+            color: #003580; /* Finnish Flag Blue */
+            border-bottom: 2px solid #e7e9ec;
+            padding-bottom: 10px;
+        }
+
+        h1 { font-size: 2em; text-align: center; }
+        h2 { font-size: 1.6em; margin-top: 40px; }
+        h3 { font-size: 1.2em; }
+
+        .module {
+            margin-bottom: 50px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+
+        .instructions {
+            background-color: #e6f3ff;
+            border-left: 5px solid #0056b3;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #0056b3;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .button:hover {
+            background-color: #003580;
+        }
+
+        .highlight {
+            color: #d9534f;
+            font-weight: bold;
+        }
+        
+        /* TTS and Translation Styles */
+        .tts-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .tts-btn:hover {
+            background-color: #218838;
+        }
+        
+        .translation-toggle {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .translation-toggle:hover {
+            background-color: #5a6268;
+        }
+        
+        .translation {
+            color: #666;
+            font-style: italic;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .sentence-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        /* Stage 1: Aikakone */
+        #aikakone-display {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            font-size: 1.2em;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        /* Stage 2: Tapahtumatoistin */
+        .image-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: 250px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            background-color: #eee;
+        }
+        
+        /* Visual Event Animations */
+        .visual-event {
+            width: 100%;
+            height: 250px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .visual-event.process {
+            background: linear-gradient(135deg, #E8D8A7, #F5E6B3);
+        }
+        
+        .visual-event.result {
+            background: linear-gradient(135deg, #A3C9A8, #B8D4BD);
+        }
+        
+        .event-emoji {
+            font-size: 80px;
+            margin-bottom: 10px;
+        }
+        
+        .event-action {
+            font-size: 40px;
+            opacity: 0.7;
+        }
+        
+        .event-label {
+            position: absolute;
+            bottom: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        /* Specific animations for each event */
+        @keyframes eating {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-15deg); }
+        }
+        
+        @keyframes drinking {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes reading {
+            0%, 100% { transform: rotateY(0deg); }
+            50% { transform: rotateY(15deg); }
+        }
+        
+        @keyframes writing {
+            0%, 100% { transform: translate(0px, 0px); }
+            25% { transform: translate(5px, -5px); }
+            75% { transform: translate(-5px, 5px); }
+        }
+        
+        @keyframes painting {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+        }
+        
+        @keyframes cleaning {
+            0%, 100% { transform: translateX(0px); }
+            50% { transform: translateX(20px); }
+        }
+        
+        @keyframes shopping {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes fixing {
+            0%, 100% { transform: rotateZ(0deg); }
+            25% { transform: rotateZ(10deg); }
+            75% { transform: rotateZ(-10deg); }
+        }
+        
+        @keyframes closing {
+            0% { transform: scaleX(1); }
+            100% { transform: scaleX(0.1); }
+        }
+        
+        @keyframes cooking {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(360deg); }
+        }
+        
+        .process .eating { animation: eating 2s infinite; }
+        .process .drinking { animation: drinking 1.5s infinite; }
+        .process .reading { animation: reading 2s infinite; }
+        .process .writing { animation: writing 1s infinite; }
+        .process .painting { animation: painting 1.5s infinite; }
+        .process .cleaning { animation: cleaning 1.5s infinite; }
+        .process .shopping { animation: shopping 2s infinite; }
+        .process .fixing { animation: fixing 1s infinite; }
+        .process .closing { animation: closing 3s infinite; }
+        .process .cooking { animation: cooking 2s infinite; }
+        
+        .result .event-emoji {
+            opacity: 0.8;
+            filter: brightness(1.2);
+        }
+        #tapahtumatoistin-sentence {
+            font-size: 1.3em;
+            text-align: center;
+            font-weight: bold;
+            padding: 10px;
+        }
+        #tapahtumatoistin-answer {
+            background-color: #dff0d8;
+            border: 1px solid #d6e9c6;
+            color: #3c763d;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        .controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        /* Stage 3: Kielioppimatriisi */
+        #sentence-display {
+            font-size: 2em;
+            text-align: center;
+            font-weight: bold;
+            padding: 30px 10px;
+            background-color: #fcf8e3;
+            border: 2px dashed #f0ad4e;
+            color: #8a6d3b;
+            min-height: 70px;
+            border-radius: 5px;
+        }
+        
+        /* Stage 4: Cognitive Upgrade */
+        .guided-question {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .guided-question h3 {
+            color: #007bff;
+            margin-top: 0;
+            font-size: 1.3em;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .guided-question p {
+            line-height: 1.7;
+            font-size: 1.05em;
+            color: #495057;
+        }
+        
+        .answer-space {
+            min-height: 60px;
+            border: 2px dashed #dee2e6;
+            border-radius: 5px;
+            margin: 15px 0;
+            background-color: #fff;
+            position: relative;
+        }
+        
+        .answer-space::before {
+            content: "💭 思考空间：请在脑中或纸上回答这个问题...";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #6c757d;
+            font-style: italic;
+            text-align: center;
+            opacity: 0.7;
+        }
+        
+        .completion-message {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 30px;
+            box-shadow: 0 4px 15px rgba(40,167,69,0.3);
+        }
+        
+        .completion-message h3 {
+            margin-top: 0;
+            font-size: 1.5em;
+            border-bottom: none;
+            padding-bottom: 0;
+            color: white;
+        }
+        
+        .completion-message p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>模块四：时间戳驱动 (Verb 2.0) 原型</h1>
+        <p class="instructions">这是一个交互式原型，用于实践芬兰语过去时(Imperfekti)及其与宾语格的联动。请按照三个阶段的顺序进行练习。</p>
+
+        <!-- ========================================================== -->
+        <!-- 阶段一：隔离安装 (Aikakone) -->
+        <!-- ========================================================== -->
+        <div class="module">
+            <h2>阶段一：隔离安装 - "时间穿梭机"</h2>
+            <p class="instructions"><strong>目标：</strong>建立动词过去时的声音直觉。请大声跟读，只需关注<span class="highlight">动词</span>的发音变化。</p>
+            <div id="aikakone-display">
+                <div class="aikakone-column">
+                    <h3>NYT (现在)</h3>
+                    <div class="sentence-container">
+                        <p id="aikakone-nyt">...</p>
+                        <button class="tts-btn" onclick="speakText(document.getElementById('aikakone-nyt').textContent)">🔊</button>
+                        <button class="translation-toggle" onclick="toggleTranslation('aikakone-nyt-translation')">中文</button>
+                    </div>
+                    <div id="aikakone-nyt-translation" class="translation"></div>
+                </div>
+                <div class="aikakone-column">
+                    <h3>EILEN (昨天)</h3>
+                    <div class="sentence-container">
+                        <p id="aikakone-eilen">...</p>
+                        <button class="tts-btn" onclick="speakText(document.getElementById('aikakone-eilen').textContent)">🔊</button>
+                        <button class="translation-toggle" onclick="toggleTranslation('aikakone-eilen-translation')">中文</button>
+                    </div>
+                    <div id="aikakone-eilen-translation" class="translation"></div>
+                </div>
+            </div>
+            <button class="button" onclick="runAikakone()">下一组 (Seuraava)</button>
+        </div>
+
+        <!-- ========================================================== -->
+        <!-- 阶段二：联动协议激活 (Tapahtumatoistin) -->
+        <!-- ========================================================== -->
+        <div class="module">
+            <h2>阶段二：联动协议激活 - "事件回放模拟器"</h2>
+            <p class="instructions"><strong>目标：</strong>将"过去时动词"和"完成态宾语"进行因果绑定。感受图片和句子如何同步变化。</p>
+            
+            <div class="controls">
+                <label for="event-select">选择事件:</label>
+                <select id="event-select" onchange="runTapahtumatoistin(true)">
+                    <!-- Options will be populated by JS -->
+                </select>
+                <div>
+                    <input type="radio" id="mode-passive" name="tapahtumatoistin-mode" value="passive" checked onchange="runTapahtumatoistin(true)">
+                    <label for="mode-passive">被动学习</label>
+                </div>
+                 <div>
+                    <input type="radio" id="mode-active" name="tapahtumatoistin-mode" value="active" onchange="runTapahtumatoistin(true)">
+                    <label for="mode-active">主动回放</label>
+                </div>
+            </div>
+
+            <div class="image-container">
+                <div id="tapahtumatoistin-visual" class="visual-event">
+                    <div id="event-emoji" class="event-emoji">🍎</div>
+                    <div id="event-action" class="event-action">✨</div>
+                    <div id="event-label" class="event-label">过程中...</div>
+                </div>
+            </div>
+            <div class="sentence-container">
+                <p id="tapahtumatoistin-sentence">...</p>
+                <button class="tts-btn" onclick="speakText(document.getElementById('tapahtumatoistin-sentence').textContent)">🔊</button>
+                <button class="translation-toggle" onclick="toggleTranslation('tapahtumatoistin-sentence-translation')">中文</button>
+            </div>
+            <div id="tapahtumatoistin-sentence-translation" class="translation"></div>
+            <div id="tapahtumatoistin-answer-container" style="display: none;">
+                <div class="sentence-container">
+                    <p id="tapahtumatoistin-answer">...</p>
+                    <button class="tts-btn" onclick="speakText(document.getElementById('tapahtumatoistin-answer').textContent)">🔊</button>
+                    <button class="translation-toggle" onclick="toggleTranslation('tapahtumatoistin-answer-translation')">中文</button>
+                </div>
+                <div id="tapahtumatoistin-answer-translation" class="translation"></div>
+            </div>
+            <button class="button" id="tapahtumatoistin-button" onclick="handleTapahtumatoistinClick()">Valmis! (完成!)</button>
+        </div>
+
+        <!-- ========================================================== -->
+        <!-- 阶段三：系统自动化 (Kielioppimatriisi) -->
+        <!-- ========================================================== -->
+        <div class="module">
+            <h2>阶段三：系统自动化 - "语法矩阵"</h2>
+            <p class="instructions"><strong>目标：</strong>通过认知冲击，将语法模式内化为本能。<strong>你的任务不是理解，而是跟上节奏，快速跟读！</strong></p>
+            <div class="sentence-container">
+                <div id="sentence-display">点击下方按钮生成句子。</div>
+                <button class="tts-btn" onclick="speakText(document.getElementById('sentence-display').textContent)" style="align-self: flex-start;">🔊</button>
+                <button class="translation-toggle" onclick="toggleTranslation('sentence-display-translation')" style="align-self: flex-start;">中文</button>
+            </div>
+            <div id="sentence-display-translation" class="translation"></div>
+            <button class="button" onclick="runKielioppimatriisi()">Luo uusi lause (生成新句子)</button>
+        </div>
+
+        <!-- ========================================================== -->
+        <!-- 阶段四：认知升华 (Kokonaiskuva) -->
+        <!-- ========================================================== -->
+        <div class="module">
+            <h2>阶段四：认知升华 - "总设计师蓝图"</h2>
+            <p class="instructions">
+                <strong>目标：</strong>将你已经内化的"语感"转化为清晰的"设计规则"。请回答以下问题，将你的发现整理成你的私人芬兰语知识库！
+            </p>
+
+            <div class="guided-question">
+                <h3>问题1：时间的印记</h3>
+                <p>回顾阶段一和二，当你想要描述一件【昨天发生】的事时，芬兰语的动词本身发生了什么最核心的变化？（提示：观察那些高亮的动词，它们共同的"声音密码"是什么？）</p>
+                <div class="answer-space">
+                    <!-- 学习者可以在脑中或纸上回答 -->
+                </div>
+                <button class="translation-toggle" onclick="toggleTranslation('answer1')">点击查看认知锚点</button>
+                <div id="answer1" class="translation">
+                    <p><strong>认知锚点：</strong>动词的中间通常会加入一个 <strong>-i-</strong> 标记，这就是芬兰语过去时的"时间戳"。例如：lukea -> luk<strong>i</strong>, syödä -> sö<strong>i</strong>。你已经掌握了启动"时间穿梭机"的第一个密码！</p>
+                </div>
+            </div>
+
+            <div class="guided-question">
+                <h3>问题2：完成的信号</h3>
+                <p>观察阶段二的"事件回放模拟器"。当一个动作【正在进行】(esim. 正在吃苹果) 时，句子的宾语 (苹果) 是什么形式？当这个动作【已经完成】(esim. 吃完了苹果) 时，宾语的形式又发生了什么神奇的变化？</p>
+                <div class="answer-space"></div>
+                <button class="translation-toggle" onclick="toggleTranslation('answer2')">点击查看认知锚点</button>
+                <div id="answer2" class="translation">
+                    <p><strong>认知锚点：</strong>没错！</p>
+                    <ul>
+                        <li><strong>进行中 (部分格, Partitiivi):</strong> `omenaa` (-a/ä, -ta/tä, -tta/ttä结尾)。这表示动作作用于物体的一部分，或结果不确定。</li>
+                        <li><strong>已完成 (属格/宾格, Genetiivi/Akkusatiivi):</strong> `omenan` (-n结尾)。这像一个"完成"的印章，表示整个动作结束，并产出了一个完整的结果。</li>
+                    </ul>
+                    <p><strong>这就是芬兰语宾语格的核心秘密：它不仅仅说明"谁是宾语"，更重要的是描述了"动作的状态和结果"！</strong></p>
+                </div>
+            </div>
+            
+            <div class="guided-question">
+                <h3>问题3：你的设计蓝图</h3>
+                <p>现在，请试着用你自己的话，总结一下：如果我昨天【完成】了一件事（比如"我读完了一本书"），我需要对句子里的哪两个部分进行"编译"，以及如何"编译"？</p>
+                <div class="answer-space"></div>
+                <button class="translation-toggle" onclick="toggleTranslation('answer3')">点击查看认知锚点</button>
+                <div id="answer3" class="translation">
+                    <p><strong>一个优秀的设计蓝图可能是这样的：</strong></p>
+                    <p>1. 找到【动词】，给它打上过去的【时间戳】，通常是加入 <strong>-i-</strong> (esim. `lukea` -> `luin`)。</p>
+                    <p>2. 找到【宾语】，给它盖上【已完成】的印章，通常是把它变成 <strong>-n</strong> 结尾的形式 (esim. `kirja` -> `kirjan`)。</p>
+                    <p>3. 组合起来：`Minä luin kirjan.` (我读完了一本书。) 恭喜你，你已经从一个使用者，晋升为芬兰语的"句子设计师"了！</p>
+                </div>
+            </div>
+
+            <div class="guided-question">
+                <h3>问题4：迁移与应用</h3>
+                <p>基于你刚才总结的"设计蓝图"，试着构造这个句子："昨天我完成了作业。"你会如何"编译"这个芬兰语句子？（提示：tehdä = 做，kotitehtävä = 作业）</p>
+                <div class="answer-space"></div>
+                <button class="translation-toggle" onclick="toggleTranslation('answer4')">点击查看认知锚点</button>
+                <div id="answer4" class="translation">
+                    <p><strong>认知锚点：</strong></p>
+                    <p>按照你的设计蓝图：</p>
+                    <p>1. 动词：`tehdä` -> `tein` (加入时间戳 -i-)</p>
+                    <p>2. 宾语：`kotitehtävä` -> `kotitehtävän` (加上完成印章 -n)</p>
+                    <p>3. 组合：`Minä tein kotitehtävän.` (我完成了作业。)</p>
+                    <p><strong>🎉 恭喜！你已经能够独立设计芬兰语句子了！这正是真正的语言掌控力！</strong></p>
+                </div>
+            </div>
+
+            <div class="completion-message">
+                <h3>🏆 认知升华完成</h3>
+                <p>你已经成功完成了从"感性体验"到"理性掌控"的认知升华！现在你拥有的不再只是"语感"，而是可以清晰表述、主动运用、灵活迁移的"设计能力"。</p>
+                <p><strong>下一步：</strong>将这些认知锚点记录在你的学习笔记中，它们将成为你芬兰语学习路上最有价值的指南针！</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ==========================================================
+        // 数据层 (Data Layer)
+        // ==========================================================
+        
+        // --- 阶段一数据：恒定部分格动词（包含中文翻译） ---
+        const aikakoneData = [
+            { 
+                verbi: "rakastaa", 
+                preesens: { minä: "rakastan", sinä: "rakastat", hän: "rakastaa", me: "rakastamme", te: "rakastatte", he: "rakastavat" }, 
+                imperfekti: { minä: "rakastin", sinä: "rakastit", hän: "rakasti", me: "rakastimme", te: "rakastitte", he: "rakastivat" }, 
+                objekti: "sinua",
+                translations: {
+                    preesens: { minä: "我爱", sinä: "你爱", hän: "他/她爱", me: "我们爱", te: "你们爱", he: "他们爱" },
+                    imperfekti: { minä: "我爱过", sinä: "你爱过", hän: "他/她爱过", me: "我们爱过", te: "你们爱过", he: "他们爱过" },
+                    objekti: "你"
+                }
+            },
+            { 
+                verbi: "odottaa", 
+                preesens: { minä: "odotan", sinä: "odotat", hän: "odottaa", me: "odotamme", te: "odotatte", he: "odottavat" }, 
+                imperfekti: { minä: "odotin", sinä: "odotit", hän: "odotti", me: "odotimme", te: "odotitte", he: "odottivat" }, 
+                objekti: "bussia",
+                translations: {
+                    preesens: { minä: "我在等", sinä: "你在等", hän: "他/她在等", me: "我们在等", te: "你们在等", he: "他们在等" },
+                    imperfekti: { minä: "我等了", sinä: "你等了", hän: "他/她等了", me: "我们等了", te: "你们等了", he: "他们等了" },
+                    objekti: "公交车"
+                }
+            },
+            { 
+                verbi: "pelata", 
+                preesens: { minä: "pelaan", sinä: "pelaat", hän: "pelaa", me: "pelaamme", te: "pelaatte", he: "pelaavat" }, 
+                imperfekti: { minä: "pelasin", sinä: "pelasit", hän: "pelasi", me: "pelasimme", te: "pelasitte", he: "pelasivat" }, 
+                objekti: "jalkapalloa",
+                translations: {
+                    preesens: { minä: "我在踢", sinä: "你在踢", hän: "他/她在踢", me: "我们在踢", te: "你们在踢", he: "他们在踢" },
+                    imperfekti: { minä: "我踢了", sinä: "你踢了", hän: "他/她踢了", me: "我们踢了", te: "你们踢了", he: "他们踢了" },
+                    objekti: "足球"
+                }
+            },
+            { 
+                verbi: "soittaa", 
+                preesens: { minä: "soitan", sinä: "soitat", hän: "soittaa", me: "soitamme", te: "soitatte", he: "soittavat" }, 
+                imperfekti: { minä: "soitin", sinä: "soitit", hän: "soitti", me: "soitimme", te: "soititte", he: "soittivat" }, 
+                objekti: "pianoa",
+                translations: {
+                    preesens: { minä: "我在弹", sinä: "你在弹", hän: "他/她在弹", me: "我们在弹", te: "你们在弹", he: "他们在弹" },
+                    imperfekti: { minä: "我弹了", sinä: "你弹了", hän: "他/她弹了", me: "我们弹了", te: "你们弹了", he: "他们弹了" },
+                    objekti: "钢琴"
+                }
+            },
+            { 
+                verbi: "kuunnella", 
+                preesens: { minä: "kuuntelen", sinä: "kuuntelet", hän: "kuuntelee", me: "kuuntelemme", te: "kuuntelette", he: "kuuntelevat" }, 
+                imperfekti: { minä: "kuuntelin", sinä: "kuuntelit", hän: "kuunteli", me: "kuuntelimme", te: "kuuntelitte", he: "kuuntelivat" }, 
+                objekti: "musiikkia",
+                translations: {
+                    preesens: { minä: "我在听", sinä: "你在听", hän: "他/她在听", me: "我们在听", te: "你们在听", he: "他们在听" },
+                    imperfekti: { minä: "我听了", sinä: "你听了", hän: "他/她听了", me: "我们听了", te: "你们听了", he: "他们听了" },
+                    objekti: "音乐"
+                }
+            },
+            { 
+                verbi: "katsoa", 
+                preesens: { minä: "katson", sinä: "katsot", hän: "katsoo", me: "katsomme", te: "katsotte", he: "katsovat" }, 
+                imperfekti: { minä: "katsoin", sinä: "katsoit", hän: "katsoi", me: "katsoimme", te: "katsoitte", he: "katsoivat" }, 
+                objekti: "televisiota",
+                translations: {
+                    preesens: { minä: "我在看", sinä: "你在看", hän: "他/她在看", me: "我们在看", te: "你们在看", he: "他们在看" },
+                    imperfekti: { minä: "我看了", sinä: "你看了", hän: "他/她看了", me: "我们看了", te: "你们看了", he: "他们看了" },
+                    objekti: "电视"
+                }
+            },
+            { 
+                verbi: "puhua", 
+                preesens: { minä: "puhun", sinä: "puhut", hän: "puhuu", me: "puhumme", te: "puhutte", he: "puhuvat" }, 
+                imperfekti: { minä: "puhuin", sinä: "puhuit", hän: "puhui", me: "puhuimme", te: "puhuitte", he: "puhuivat" }, 
+                objekti: "suomea",
+                translations: {
+                    preesens: { minä: "我在说", sinä: "你在说", hän: "他/她在说", me: "我们在说", te: "你们在说", he: "他们在说" },
+                    imperfekti: { minä: "我说了", sinä: "你说了", hän: "他/她说了", me: "我们说了", te: "你们说了", he: "他们说了" },
+                    objekti: "芬兰语"
+                }
+            },
+            { 
+                verbi: "opiskella", 
+                preesens: { minä: "opiskelen", sinä: "opiskelet", hän: "opiskelee", me: "opiskelemme", te: "opiskelette", he: "opiskelevat" }, 
+                imperfekti: { minä: "opiskelin", sinä: "opiskelit", hän: "opiskeli", me: "opiskelimme", te: "opiskelitte", he: "opiskelivat" }, 
+                objekti: "kieltä",
+                translations: {
+                    preesens: { minä: "我在学", sinä: "你在学", hän: "他/她在学", me: "我们在学", te: "你们在学", he: "他们在学" },
+                    imperfekti: { minä: "我学了", sinä: "你学了", hän: "他/她学了", me: "我们学了", te: "你们学了", he: "他们学了" },
+                    objekti: "语言"
+                }
+            },
+            { 
+                verbi: "työskennellä", 
+                preesens: { minä: "työskentelen", sinä: "työskentelet", hän: "työskentelee", me: "työskentelemme", te: "työskentelette", he: "työskentelevät" }, 
+                imperfekti: { minä: "työskentelin", sinä: "työskentelit", hän: "työskenteli", me: "työskentelimme", te: "työskentelitte", he: "työskentelivät" }, 
+                objekti: "projektia",
+                translations: {
+                    preesens: { minä: "我在做", sinä: "你在做", hän: "他/她在做", me: "我们在做", te: "你们在做", he: "他们在做" },
+                    imperfekti: { minä: "我做了", sinä: "你做了", hän: "他/她做了", me: "我们做了", te: "你们做了", he: "他们做了" },
+                    objekti: "项目"
+                }
+            },
+            { 
+                verbi: "auttaa", 
+                preesens: { minä: "autan", sinä: "autat", hän: "auttaa", me: "autamme", te: "autatte", he: "auttavat" }, 
+                imperfekti: { minä: "autin", sinä: "autit", hän: "auttoi", me: "autoimme", te: "autoitte", he: "auttoivat" }, 
+                objekti: "ystävää",
+                translations: {
+                    preesens: { minä: "我在帮", sinä: "你在帮", hän: "他/她在帮", me: "我们在帮", te: "你们在帮", he: "他们在帮" },
+                    imperfekti: { minä: "我帮了", sinä: "你帮了", hän: "他/她帮了", me: "我们帮了", te: "你们帮了", he: "他们帮了" },
+                    objekti: "朋友"
+                }
+            }
+        ];
+
+        // --- 阶段二数据：事件回放（包含中文翻译和视觉元素） ---
+        const tapahtumatoistinData = [
+            { 
+                id: 1, nimi: "吃苹果", 
+                kuva_prosessi: "https://placehold.co/600x400/E8D8A7/000000?text=Sy%C3%B6n+omenaa...", 
+                kuva_tulos: "https://placehold.co/600x400/A3C9A8/000000?text=S%C3%B6in+omenan!", 
+                lause_prosessi: "Minä syön <span class='highlight'>omenaa</span>.", 
+                lause_tulos: "Minä <span class='highlight'>söin</span> <span class='highlight'>omenan</span>.",
+                visual: {
+                    emoji: "🍎",
+                    action_process: "👄",
+                    action_result: "✅",
+                    animation_class: "eating",
+                    label_process: "正在吃...",
+                    label_result: "吃完了！"
+                },
+                translations: {
+                    prosessi: "我在吃苹果。（动作进行中）",
+                    tulos: "我吃了苹果。（动作已完成）"
+                }
+            },
+            { 
+                id: 2, nimi: "喝咖啡", 
+                kuva_prosessi: "https://placehold.co/600x400/E8D8A7/000000?text=Juon+kahvia...", 
+                kuva_tulos: "https://placehold.co/600x400/A3C9A8/000000?text=Join+kahvin!", 
+                lause_prosessi: "Sinä juot <span class='highlight'>kahvia</span>.", 
+                lause_tulos: "Sinä <span class='highlight'>joit</span> <span class='highlight'>kahvin</span>.",
+                visual: {
+                    emoji: "☕",
+                    action_process: "👄",
+                    action_result: "✅",
+                    animation_class: "drinking",
+                    label_process: "正在喝...",
+                    label_result: "喝完了！"
+                },
+                translations: {
+                    prosessi: "你在喝咖啡。（动作进行中）",
+                    tulos: "你喝了咖啡。（动作已完成）"
+                }
+            },
+            { 
+                id: 3, nimi: "读书", 
+                kuva_prosessi: "https://placehold.co/600x400/E8D8A7/000000?text=Luen+kirjaa...", 
+                kuva_tulos: "https://placehold.co/600x400/A3C9A8/000000?text=Luin+kirjan!", 
+                lause_prosessi: "Hän lukee <span class='highlight'>kirjaa</span>.", 
+                lause_tulos: "Hän <span class='highlight'>luki</span> <span class='highlight'>kirjan</span>.",
+                visual: {
+                    emoji: "📖",
+                    action_process: "👀",
+                    action_result: "✅",
+                    animation_class: "reading",
+                    label_process: "正在读...",
+                    label_result: "读完了！"
+                },
+                translations: {
+                    prosessi: "他/她在读书。（动作进行中）",
+                    tulos: "他/她读了书。（动作已完成）"
+                }
+            },
+            { 
+                id: 4, nimi: "写信", 
+                kuva_prosessi: "https://placehold.co/600x400/E8D8A7/000000?text=Kirjoitan+kirjett%C3%A4...", 
+                kuva_tulos: "https://placehold.co/600x400/A3C9A8/000000?text=Kirjoitin+kirjeen!", 
+                lause_prosessi: "Me kirjoitamme <span class='highlight'>kirjettä</span>.", 
+                lause_tulos: "Me <span class='highlight'>kirjoitimme</span> <span class='highlight'>kirjeen</span>.",
+                visual: {
+                    emoji: "✉️",
+                    action_process: "✍️",
+                    action_result: "✅",
+                    animation_class: "writing",
+                    label_process: "正在写...",
+                    label_result: "写完了！"
+                },
+                translations: {
+                    prosessi: "我们在写信。（动作进行中）",
+                    tulos: "我们写了信。（动作已完成）"
+                }
+            },
+            { 
+                id: 5, nimi: "画画", 
+                kuva_prosessi: "https://placehold.co/600x400/E8D8A7/000000?text=Maalaan+taulua...", 
+                kuva_tulos: "https://placehold.co/600x400/A3C9A8/000000?text=Maalasin+taulun!", 
+                lause_prosessi: "He maalaavat <span class='highlight'>taulua</span>.", 
+                lause_tulos: "He <span class='highlight'>maalasivat</span> <span class='highlight'>taulun</span>.",
+                visual: {
+                    emoji: "🎨",
+                    action_process: "🖌️",
+                    action_result: "✅",
+                    animation_class: "painting",
+                    label_process: "正在画...",
+                    label_result: "画完了！"
+                },
+                translations: {
+                    prosessi: "他们在画画。（动作进行中）",
+                    tulos: "他们画了画。（动作已完成）"
+                }
+            },
+            { 
+                id: 6, nimi: "打扫房间", 
+                kuva_prosessi: "https://placehold.co/600x400/E8D8A7/000000?text=Siivoan+huonetta...", 
+                kuva_tulos: "https://placehold.co/600x400/A3C9A8/000000?text=Siivosin+huoneen!", 
+                lause_prosessi: "Minä siivoan <span class='highlight'>huonetta</span>.", 
+                lause_tulos: "Minä <span class='highlight'>siivosin</span> <span class='highlight'>huoneen</span>.",
+                visual: {
+                    emoji: "🏠",
+                    action_process: "🧹",
+                    action_result: "✨",
+                    animation_class: "cleaning",
+                    label_process: "正在扫...",
+                    label_result: "扫完了！"
+                },
+                translations: {
+                    prosessi: "我在打扫房间。（动作进行中）",
+                    tulos: "我打扫了房间。（动作已完成）"
+                }
+            },
+            { 
+                id: 7, nimi: "买车", 
+                kuva_prosessi: "https://placehold.co/600x400/E8D8A7/000000?text=Ostan+autoa...", 
+                kuva_tulos: "https://placehold.co/600x400/A3C9A8/000000?text=Ostin+auton!", 
+                lause_prosessi: "Hän ostaa <span class='highlight'>autoa</span>.", 
+                lause_tulos: "Hän <span class='highlight'>osti</span> <span class='highlight'>auton</span>.",
+                visual: {
+                    emoji: "🚗",
+                    action_process: "👀",
+                    action_result: "🔑",
+                    animation_class: "shopping",
+                    label_process: "正在选...",
+                    label_result: "买到了！"
+                },
+                translations: {
+                    prosessi: "他/她在买车。（动作进行中）",
+                    tulos: "他/她买了车。（动作已完成）"
+                }
+            },
+            { 
+                id: 8, nimi: "修自行车", 
+                kuva_prosessi: "https://placehold.co/600x400/E8D8A7/000000?text=Korjaan+py%C3%B6r%C3%A4%C3%A4...", 
+                kuva_tulos: "https://placehold.co/600x400/A3C9A8/000000?text=Korjasin+py%C3%B6r%C3%A4n!", 
+                lause_prosessi: "Sinä korjaat <span class='highlight'>pyörää</span>.", 
+                lause_tulos: "Sinä <span class='highlight'>korjasit</span> <span class='highlight'>pyörän</span>.",
+                visual: {
+                    emoji: "🚲",
+                    action_process: "🔧",
+                    action_result: "✅",
+                    animation_class: "fixing",
+                    label_process: "正在修...",
+                    label_result: "修好了！"
+                },
+                translations: {
+                    prosessi: "你在修自行车。（动作进行中）",
+                    tulos: "你修了自行车。（动作已完成）"
+                }
+            },
+            { 
+                id: 9, nimi: "关门", 
+                kuva_prosessi: "https://placehold.co/600x400/E8D8A7/000000?text=Suljen+ovea...", 
+                kuva_tulos: "https://placehold.co/600x400/A3C9A8/000000?text=Suljin+oven!", 
+                lause_prosessi: "Hän sulkee <span class='highlight'>ovea</span>.", 
+                lause_tulos: "Hän <span class='highlight'>sulki</span> <span class='highlight'>oven</span>.",
+                visual: {
+                    emoji: "🚪",
+                    action_process: "👋",
+                    action_result: "🔒",
+                    animation_class: "closing",
+                    label_process: "正在关...",
+                    label_result: "关上了！"
+                },
+                translations: {
+                    prosessi: "他/她在关门。（动作进行中）",
+                    tulos: "他/她关了门。（动作已完成）"
+                }
+            },
+            { 
+                id: 10, nimi: "煮汤", 
+                kuva_prosessi: "https://placehold.co/600x400/E8D8A7/000000?text=Keit%C3%A4n+keittoa...", 
+                kuva_tulos: "https://placehold.co/600x400/A3C9A8/000000?text=Keitin+keiton!", 
+                lause_prosessi: "Me keitämme <span class='highlight'>keittoa</span>.", 
+                lause_tulos: "Me <span class='highlight'>keitimme</span> <span class='highlight'>keiton</span>.",
+                visual: {
+                    emoji: "🍲",
+                    action_process: "🥄",
+                    action_result: "🍽️",
+                    animation_class: "cooking",
+                    label_process: "正在煮...",
+                    label_result: "煮好了！"
+                },
+                translations: {
+                    prosessi: "我们在煮汤。（动作进行中）",
+                    tulos: "我们煮了汤。（动作已完成）"
+                }
+            }
+        ];
+
+        // --- 阶段三数据：语法矩阵（包含中文翻译） ---
+        const subjektit = ["Minä", "Sinä", "Hän", "Pekka", "Liisa", "Opettaja", "Lapsi", "Äiti", "Isä", "Ystävä", "Veli", "Sisko", "Mummi", "Vaari", "Naapuri", "Kollega", "Opiskelija", "Lääkäri", "Me", "Te", "He"];
+        const persoonaMap = { 
+            "Minä": "minä", "Sinä": "sinä", "Hän": "hän", "Pekka": "hän", "Liisa": "hän", "Opettaja": "hän", "Lapsi": "hän", 
+            "Äiti": "hän", "Isä": "hän", "Ystävä": "hän", "Veli": "hän", "Sisko": "hän", "Mummi": "hän", "Vaari": "hän", 
+            "Naapuri": "hän", "Kollega": "hän", "Opiskelija": "hän", "Lääkäri": "hän", "Me": "me", "Te": "te", "He": "he" 
+        };
+        const subjektitTranslations = { 
+            "Minä": "我", "Sinä": "你", "Hän": "他/她", "Pekka": "佩卡", "Liisa": "丽萨", "Opettaja": "老师", "Lapsi": "孩子", 
+            "Äiti": "妈妈", "Isä": "爸爸", "Ystävä": "朋友", "Veli": "哥哥/弟弟", "Sisko": "姐姐/妹妹", "Mummi": "奶奶", "Vaari": "爷爷", 
+            "Naapuri": "邻居", "Kollega": "同事", "Opiskelija": "学生", "Lääkäri": "医生", "Me": "我们", "Te": "你们", "He": "他们" 
+        };
+
+        const verbiObjektiLinkit = [
+            { verbi: { minä: "söin", sinä: "söit", hän: "söi", me: "söimme", te: "söitte", he: "söivät" }, objekti_gen: "omenan", translations: { verbi: "吃了", objekti: "苹果" } },
+            { verbi: { minä: "join", sinä: "joit", hän: "joi", me: "joimme", te: "joitte", he: "joivat" }, objekti_gen: "kahvin", translations: { verbi: "喝了", objekti: "咖啡" } },
+            { verbi: { minä: "luin", sinä: "luit", hän: "luki", me: "luimme", te: "luitte", he: "lukivat" }, objekti_gen: "kirjan", translations: { verbi: "读了", objekti: "书" } },
+            { verbi: { minä: "ostin", sinä: "ostit", hän: "osti", me: "ostimme", te: "ostitte", he: "ostivat" }, objekti_gen: "auton", translations: { verbi: "买了", objekti: "汽车" } },
+            { verbi: { minä: "tein", sinä: "teit", hän: "teki", me: "teimme", te: "teitte", he: "tekivät" }, objekti_gen: "ruoan", translations: { verbi: "做了", objekti: "食物" } },
+            { verbi: { minä: "kirjoitin", sinä: "kirjoitit", hän: "kirjoitti", me: "kirjoitimme", te: "kirjoititte", he: "kirjoittivat" }, objekti_gen: "kirjeen", translations: { verbi: "写了", objekti: "信" } },
+            { verbi: { minä: "maalasin", sinä: "maalasit", hän: "maalasi", me: "maalasimme", te: "maalasitte", he: "maalasivat" }, objekti_gen: "talon", translations: { verbi: "画了", objekti: "房子" } },
+            { verbi: { minä: "siivosin", sinä: "siivosit", hän: "siivosi", me: "siivosimme", te: "siivositte", he: "siivosivat" }, objekti_gen: "huoneen", translations: { verbi: "打扫了", objekti: "房间" } },
+            { verbi: { minä: "korjasin", sinä: "korjasit", hän: "korjasi", me: "korjasimme", te: "korjasitte", he: "korjasivat" }, objekti_gen: "pyörän", translations: { verbi: "修了", objekti: "自行车" } },
+            { verbi: { minä: "suljin", sinä: "suljit", hän: "sulki", me: "suljimme", te: "suljitte", he: "sulkivat" }, objekti_gen: "oven", translations: { verbi: "关了", objekti: "门" } },
+            { verbi: { minä: "avasin", sinä: "avasit", hän: "avasi", me: "avasimme", te: "avasitte", he: "avasivat" }, objekti_gen: "ikkunan", translations: { verbi: "打开了", objekti: "窗户" } },
+            { verbi: { minä: "maksoin", sinä: "maksoit", hän: "maksoi", me: "maksoimme", te: "maksoitte", he: "maksoivat" }, objekti_gen: "laskun", translations: { verbi: "支付了", objekti: "账单" } },
+            { verbi: { minä: "kuuntelin", sinä: "kuuntelit", hän: "kuunteli", me: "kuuntelimme", te: "kuuntelitte", he: "kuuntelivat" }, objekti_gen: "musiikin", translations: { verbi: "听了", objekti: "音乐" } },
+            { verbi: { minä: "katsoin", sinä: "katsoit", hän: "katsoi", me: "katsoimme", te: "katsoitte", he: "katsoivat" }, objekti_gen: "elokuvan", translations: { verbi: "看了", objekti: "电影" } },
+            { verbi: { minä: "puhuin", sinä: "puhuit", hän: "puhui", me: "puhuimme", te: "puhuitte", he: "puhuivat" }, objekti_gen: "äidin", translations: { verbi: "和...说话了", objekti: "妈妈" } },
+            { verbi: { minä: "opiskelin", sinä: "opiskelit", hän: "opiskeli", me: "opiskelimme", te: "opiskelitte", he: "opiskelivat" }, objekti_gen: "matematiikan", translations: { verbi: "学了", objekti: "数学" } },
+            { verbi: { minä: "työskentelin", sinä: "työskentelit", hän: "työskenteli", me: "työskentelimme", te: "työskentelitte", he: "työskentelivät" }, objekti_gen: "tehtävän", translations: { verbi: "做了", objekti: "任务" } },
+            { verbi: { minä: "autin", sinä: "autit", hän: "auttoi", me: "autoimme", te: "autoitte", he: "auttoivat" }, objekti_gen: "ystävän", translations: { verbi: "帮了", objekti: "朋友" } },
+            { verbi: { minä: "soitin", sinä: "soitit", hän: "soitti", me: "soitimme", te: "soititte", he: "soittivat" }, objekti_gen: "kitaran", translations: { verbi: "弹了", objekti: "吉他" } },
+            { verbi: { minä: "söin", sinä: "söit", hän: "söi", me: "söimme", te: "söitte", he: "söivät" }, objekti_gen: "pizzan", translations: { verbi: "吃了", objekti: "比萨" } },
+            { verbi: { minä: "pesin", sinä: "pesit", hän: "pesi", me: "pesimme", te: "pesitte", he: "pesivät" }, objekti_gen: "astiat", translations: { verbi: "洗了", objekti: "餐具" } },
+            { verbi: { minä: "löysin", sinä: "löysit", hän: "löysi", me: "löysimme", te: "löysitte", he: "löysivät" }, objekti_gen: "avaimen", translations: { verbi: "找到了", objekti: "钥匙" } },
+            { verbi: { minä: "unohdin", sinä: "unohtit", hän: "unohti", me: "unohdimme", te: "unohditte", he: "unohtivat" }, objekti_gen: "laukun", translations: { verbi: "忘了", objekti: "包" } },
+            { verbi: { minä: "oppisin", sinä: "oppisit", hän: "oppisi", me: "oppisimme", te: "oppisitte", he: "oppisiit" }, objekti_gen: "sanan", translations: { verbi: "学会了", objekti: "单词" } }
+        ];
+
+        // ==========================================================
+        // 逻辑层 (Logic Layer)
+        // ==========================================================
+
+        // --- TTS函数 ---
+        function speakText(text) {
+            // 移除HTML标签
+            const cleanText = text.replace(/<[^>]*>/g, '');
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.lang = 'fi-FI';
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+            } else {
+                alert('抱歉，您的浏览器不支持语音播放功能。');
+            }
+        }
+
+        // --- 翻译显示/隐藏函数 ---
+        function toggleTranslation(elementId) {
+            const element = document.getElementById(elementId);
+            if (element.style.display === 'none' || element.style.display === '') {
+                element.style.display = 'block';
+            } else {
+                element.style.display = 'none';
+            }
+        }
+
+        // --- DOM 元素引用 ---
+        const aikakoneNytEl = document.getElementById('aikakone-nyt');
+        const aikakoneEilenEl = document.getElementById('aikakone-eilen');
+        const aikakoneNytTranslationEl = document.getElementById('aikakone-nyt-translation');
+        const aikakoneEilenTranslationEl = document.getElementById('aikakone-eilen-translation');
+        
+        const eventSelectEl = document.getElementById('event-select');
+        const tapahtumatoistinVisualEl = document.getElementById('tapahtumatoistin-visual');
+        const eventEmojiEl = document.getElementById('event-emoji');
+        const eventActionEl = document.getElementById('event-action');
+        const eventLabelEl = document.getElementById('event-label');
+        const tapahtumatoistinSentenceEl = document.getElementById('tapahtumatoistin-sentence');
+        const tapahtumatoistinSentenceTranslationEl = document.getElementById('tapahtumatoistin-sentence-translation');
+        const tapahtumatoistinButtonEl = document.getElementById('tapahtumatoistin-button');
+        const tapahtumatoistinAnswerContainerEl = document.getElementById('tapahtumatoistin-answer-container');
+        const tapahtumatoistinAnswerEl = document.getElementById('tapahtumatoistin-answer');
+        const tapahtumatoistinAnswerTranslationEl = document.getElementById('tapahtumatoistin-answer-translation');
+
+        const sentenceDisplayEl = document.getElementById('sentence-display');
+        const sentenceDisplayTranslationEl = document.getElementById('sentence-display-translation');
+
+        // --- 状态变量 ---
+        let tapahtumatoistinState = {
+            isShowingProcess: true
+        };
+
+        let currentAikakoneData = null;
+        let currentTapahtumatoistinData = null;
+        let currentKielioppimatriisiTranslation = "";
+
+        // --- 随机选择函数 ---
+        function getRandomElement(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        // --- 阶段一逻辑 ---
+        function runAikakone() {
+            currentAikakoneData = getRandomElement(aikakoneData);
+            const subjektiObj = getRandomElement(Object.keys(currentAikakoneData.preesens));
+            const subjektiText = subjektiObj.charAt(0).toUpperCase() + subjektiObj.slice(1);
+            
+            const preesensLause = `${subjektiText} <span class="highlight">${currentAikakoneData.preesens[subjektiObj]}</span> ${currentAikakoneData.objekti}.`;
+            const imperfektiLause = `${subjektiText} <span class="highlight">${currentAikakoneData.imperfekti[subjektiObj]}</span> ${currentAikakoneData.objekti}.`;
+
+            aikakoneNytEl.innerHTML = preesensLause;
+            aikakoneEilenEl.innerHTML = imperfektiLause;
+
+            // 设置翻译
+            aikakoneNytTranslationEl.textContent = `${currentAikakoneData.translations.preesens[subjektiObj]}${currentAikakoneData.translations.objekti}。`;
+            aikakoneEilenTranslationEl.textContent = `${currentAikakoneData.translations.imperfekti[subjektiObj]}${currentAikakoneData.translations.objekti}。`;
+        }
+
+        // --- 阶段二逻辑 ---
+        function runTapahtumatoistin(reset = false) {
+            if (reset) {
+                tapahtumatoistinState.isShowingProcess = true;
+            }
+
+            const selectedEventId = parseInt(eventSelectEl.value);
+            currentTapahtumatoistinData = tapahtumatoistinData.find(e => e.id === selectedEventId);
+            const mode = document.querySelector('input[name="tapahtumatoistin-mode"]:checked').value;
+
+            tapahtumatoistinAnswerContainerEl.style.display = 'none'; // Hide answer by default
+
+            // 更新视觉元素
+            const visual = currentTapahtumatoistinData.visual;
+            eventEmojiEl.textContent = visual.emoji;
+            
+            // 清除之前的动画类
+            tapahtumatoistinVisualEl.className = 'visual-event';
+            eventActionEl.className = 'event-action';
+
+            if (mode === 'passive') {
+                if (tapahtumatoistinState.isShowingProcess) {
+                    // 显示过程状态
+                    tapahtumatoistinVisualEl.classList.add('process');
+                    eventActionEl.textContent = visual.action_process;
+                    eventActionEl.classList.add(visual.animation_class);
+                    eventLabelEl.textContent = visual.label_process;
+                    tapahtumatoistinSentenceEl.innerHTML = currentTapahtumatoistinData.lause_prosessi;
+                    tapahtumatoistinSentenceTranslationEl.textContent = currentTapahtumatoistinData.translations.prosessi;
+                    tapahtumatoistinButtonEl.textContent = 'Valmis! (完成!)';
+                } else {
+                    // 显示结果状态
+                    tapahtumatoistinVisualEl.classList.add('result');
+                    eventActionEl.textContent = visual.action_result;
+                    eventLabelEl.textContent = visual.label_result;
+                    tapahtumatoistinSentenceEl.innerHTML = currentTapahtumatoistinData.lause_tulos;
+                    tapahtumatoistinSentenceTranslationEl.textContent = currentTapahtumatoistinData.translations.tulos;
+                    tapahtumatoistinButtonEl.textContent = 'Uudelleen (再来一次)';
+                }
+            } else { // active mode
+                // 显示结果状态（主动模式下显示最终状态）
+                tapahtumatoistinVisualEl.classList.add('result');
+                eventActionEl.textContent = visual.action_result;
+                eventLabelEl.textContent = '?';
+                tapahtumatoistinSentenceEl.innerHTML = 'Mitä eilen tapahtui?';
+                tapahtumatoistinSentenceTranslationEl.textContent = '昨天发生了什么？';
+                tapahtumatoistinAnswerEl.innerHTML = currentTapahtumatoistinData.lause_tulos;
+                tapahtumatoistinAnswerTranslationEl.textContent = currentTapahtumatoistinData.translations.tulos;
+                tapahtumatoistinButtonEl.textContent = 'Näytä vastaus (显示答案)';
+            }
+        }
+        
+        function handleTapahtumatoistinClick() {
+            const mode = document.querySelector('input[name="tapahtumatoistin-mode"]:checked').value;
+            if (mode === 'passive') {
+                tapahtumatoistinState.isShowingProcess = !tapahtumatoistinState.isShowingProcess;
+                runTapahtumatoistin();
+            } else { // active mode
+                tapahtumatoistinAnswerContainerEl.style.display = 'block';
+            }
+        }
+        
+        // --- 阶段三逻辑 ---
+        function runKielioppimatriisi() {
+            const subjekti = getRandomElement(subjektit);
+            const verbiObj = getRandomElement(verbiObjektiLinkit);
+            const persoona = persoonaMap[subjekti];
+            const verbi = verbiObj.verbi[persoona];
+            
+            const lause = `${subjekti} <span class="highlight">${verbi}</span> ${verbiObj.objekti_gen}.`;
+            sentenceDisplayEl.innerHTML = lause;
+
+            // 设置翻译
+            const subjektiTranslation = subjektitTranslations[subjekti];
+            currentKielioppimatriisiTranslation = `${subjektiTranslation}${verbiObj.translations.verbi}${verbiObj.translations.objekti}。`;
+            sentenceDisplayTranslationEl.textContent = currentKielioppimatriisiTranslation;
+            
+            // 自动发音
+            const cleanSentence = lause.replace(/<[^>]*>/g, ''); // 移除HTML标签
+            speakText(cleanSentence);
+        }
+
+
+        // ==========================================================
+        // 初始化 (Initialization)
+        // ==========================================================
+        window.onload = () => {
+            // Populate event selector
+            tapahtumatoistinData.forEach(event => {
+                const option = document.createElement('option');
+                option.value = event.id;
+                option.textContent = event.nimi;
+                eventSelectEl.appendChild(option);
+            });
+
+            // Initial runs
+            runAikakone();
+            runTapahtumatoistin(true);
+            runKielioppimatriisi();
+        };
+
+    </script>
+</body>
+</html>
