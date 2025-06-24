@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>闪卡舱 - 世界感知协议</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+            color: white;
+            overflow: hidden;
+        }
+        
+        /* 顶部控制栏 */
+        .control-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .pod-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .pod-emoji {
+            font-size: 1.5rem;
+        }
+        
+        .pod-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .progress-info {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-1px);
+        }
+        
+        .btn.exit {
+            background: rgba(231, 76, 60, 0.7);
+        }
+        
+        .btn.exit:hover {
+            background: rgba(231, 76, 60, 0.9);
+        }
+        
+        /* 主闪卡区域 */
+        .flashcard-container {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            bottom: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+        
+        .flashcard {
+            width: 80vw;
+            max-width: 600px;
+            height: 70vh;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+        
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        
+        .card-front {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-back {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            transform: rotateY(180deg);
+        }
+        
+        .card-emoji {
+            font-size: 8rem;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .finnish-word {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .chinese-word {
+            font-size: 2.5rem;
+            font-weight: 500;
+            opacity: 0.95;
+            margin-bottom: 30px;
+        }
+        
+        .pronunciation {
+            font-size: 1.5rem;
+            opacity: 0.8;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        
+        .play-sound {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .play-sound:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            margin: 0 30px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        /* 模式切换 */
+        .mode-toggle {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .mode-btn {
+            display: block;
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+        
+        .mode-btn:last-child {
+            margin-bottom: 0;
+        }
+        
+        .mode-btn.active {
+            background: rgba(255,255,255,0.4);
+        }
+        
+        .mode-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .flashcard {
+                width: 95vw;
+                height: 60vh;
+            }
+            
+            .card-emoji {
+                font-size: 6rem;
+            }
+            
+            .finnish-word {
+                font-size: 2.5rem;
+            }
+            
+            .chinese-word {
+                font-size: 2rem;
+            }
+            
+            .mode-toggle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部控制栏 -->
+    <div class="control-bar">
+        <div class="pod-info">
+            <span class="pod-emoji" id="podEmoji">🌟</span>
+            <span class="pod-title" id="podTitle">加载中...</span>
+        </div>
+        <div class="controls">
+            <span class="progress-info" id="progressInfo">0 / 0</span>
+            <button class="btn" onclick="toggleAutoPlay()" id="autoPlayBtn" title="开启连续自动播放">▶️ 连续</button>
+            <button class="btn exit" onclick="exitPod()">← 退出</button>
+        </div>
+    </div>
+    
+    <!-- 主闪卡区域 -->
+    <div class="flashcard-container">
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+            <div class="card-face card-front">
+                <div class="card-emoji" id="cardEmoji">🌟</div>
+                <div class="finnish-word" id="finnishWord">Tervetuloa</div>
+                <button class="play-sound" onclick="playAudio(event)">🔊</button>
+            </div>
+            <div class="card-face card-back">
+                <div class="chinese-word" id="chineseWord">欢迎</div>
+                <div class="pronunciation" id="pronunciation">[ter-ve-tu-lo-a]</div>
+                <button class="play-sound" onclick="playAudio(event)">🔊</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+        <button class="nav-btn" id="prevBtn" onclick="previousCard()">
+            ← 上一个
+        </button>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <button class="nav-btn" id="nextBtn" onclick="nextCard()">
+            下一个 →
+        </button>
+    </div>
+    
+    <!-- 模式切换 -->
+    <div class="mode-toggle">
+        <button class="mode-btn active" onclick="setMode('normal')" title="正常模式：婴儿模仿学习">📚</button>
+        <button class="mode-btn" onclick="setMode('review')" title="复习模式：主动回忆测试">🧠</button>
+        <button class="mode-btn" onclick="setMode('quick')" title="快速模式：密集训练">⚡</button>
+    </div>
+    
+    <script>
+        // 完整的400词汇数据库 - 基于您提供的词汇表
+        const vocabularyData = {
+            'perhe': {
+                emoji: '👨‍👩‍👧‍👦',
+                title: 'Minun Perheeni',
+                words: [
+                    { finnish: 'äiti', chinese: '妈妈', emoji: '👩' },
+                    { finnish: 'isä', chinese: '爸爸', emoji: '👨' },
+                    { finnish: 'vauva', chinese: '婴儿', emoji: '👶' },
+                    { finnish: 'lapsi', chinese: '孩子', emoji: '🧒' },
+                    { finnish: 'poika', chinese: '男孩', emoji: '👦' },
+                    { finnish: 'tyttö', chinese: '女孩', emoji: '👧' },
+                    { finnish: 'veli', chinese: '兄弟', emoji: '👦' },
+                    { finnish: 'sisko', chinese: '姐妹', emoji: '👧' },
+                    { finnish: 'ukki', chinese: '(外)祖父', emoji: '👴' },
+                    { finnish: 'mummi', chinese: '(外)祖母', emoji: '👵' },
+                    { finnish: 'perhe', chinese: '家庭', emoji: '👨‍👩‍👧‍👦' },
+                    { finnish: 'ystävä', chinese: '朋友', emoji: '👫' },
+                    { finnish: 'nainen', chinese: '女人', emoji: '👩' },
+                    { finnish: 'mies', chinese: '男人', emoji: '👨' },
+                    { finnish: 'täti', chinese: '阿姨/姑姑', emoji: '👩' },
+                    { finnish: 'setä', chinese: '叔叔/伯伯', emoji: '👨' },
+                    { finnish: 'naapuri', chinese: '邻居', emoji: '🏠' }
+                ]
+            },
+            'keho': {
+                emoji: '🧍‍♂️',
+                title: 'Minun Kehoni',
+                words: [
+                    { finnish: 'pää', chinese: '头', emoji: '🙂' },
+                    { finnish: 'hiukset', chinese: '头发', emoji: '💇‍♀️' },
+                    { finnish: 'kasvot', chinese: '脸', emoji: '😊' },
+                    { finnish: 'silmä', chinese: '眼睛', emoji: '👁️' },
+                    { finnish: 'korva', chinese: '耳朵', emoji: '👂' },
+                    { finnish: 'nenä', chinese: '鼻子', emoji: '👃' },
+                    { finnish: 'suu', chinese: '嘴巴', emoji: '👄' },
+                    { finnish: 'hammas', chinese: '牙齿', emoji: '🦷' },
+                    { finnish: 'kieli', chinese: '舌头', emoji: '👅' },
+                    { finnish: 'kaula', chinese: '脖子', emoji: '🧣' },
+                    { finnish: 'olkapää', chinese: '肩膀', emoji: '💪' },
+                    { finnish: 'selkä', chinese: '背', emoji: '🫏' },
+                    { finnish: 'vatsa', chinese: '肚子', emoji: '🫃' },
+                    { finnish: 'käsi', chinese: '手/手臂', emoji: '🤚' },
+                    { finnish: 'sormi', chinese: '手指', emoji: '☝️' },
+                    { finnish: 'peukalo', chinese: '拇指', emoji: '👍' },
+                    { finnish: 'jalka', chinese: '腿/脚', emoji: '🦵' },
+                    { finnish: 'polvi', chinese: '膝盖', emoji: '🦵' },
+                    { finnish: 'varvas', chinese: '脚趾', emoji: '🦶' }
+                ]
+            },
+            'ruoka': {
+                emoji: '🍽️',
+                title: 'Ruoka ja Juoma',
+                words: [
+                    { finnish: 'ruoka', chinese: '食物', emoji: '🍽️' },
+                    { finnish: 'juoma', chinese: '饮料', emoji: '🥤' },
+                    { finnish: 'vesi', chinese: '水', emoji: '💧' },
+                    { finnish: 'maito', chinese: '牛奶', emoji: '🥛' },
+                    { finnish: 'mehu', chinese: '果汁', emoji: '🧃' },
+                    { finnish: 'leipä', chinese: '面包', emoji: '🍞' },
+                    { finnish: 'juusto', chinese: '奶酪', emoji: '🧀' },
+                    { finnish: 'voi', chinese: '黄油', emoji: '🧈' },
+                    { finnish: 'muna', chinese: '鸡蛋', emoji: '🥚' },
+                    { finnish: 'liha', chinese: '肉', emoji: '🥩' },
+                    { finnish: 'kana', chinese: '鸡肉', emoji: '🍗' },
+                    { finnish: 'kala', chinese: '鱼肉', emoji: '🐟' },
+                    { finnish: 'riisi', chinese: '米饭', emoji: '🍚' },
+                    { finnish: 'peruna', chinese: '土豆', emoji: '🥔' },
+                    { finnish: 'porkkana', chinese: '胡萝卜', emoji: '🥕' },
+                    { finnish: 'sipuli', chinese: '洋葱', emoji: '🧅' },
+                    { finnish: 'herne', chinese: '豌豆', emoji: '🟢' },
+                    { finnish: 'omena', chinese: '苹果', emoji: '🍎' },
+                    { finnish: 'banaani', chinese: '香蕉', emoji: '🍌' },
+                    { finnish: 'mansikka', chinese: '草莓', emoji: '🍓' },
+                    { finnish: 'mustikka', chinese: '蓝莓', emoji: '🫐' },
+                    { finnish: 'appelsiini', chinese: '橙子', emoji: '🍊' },
+                    { finnish: 'viinirypäle', chinese: '葡萄', emoji: '🍇' },
+                    { finnish: 'puuro', chinese: '粥', emoji: '🥣' },
+                    { finnish: 'keitto', chinese: '汤', emoji: '🍲' },
+                    { finnish: 'salaatti', chinese: '沙拉', emoji: '🥗' },
+                    { finnish: 'kakku', chinese: '蛋糕', emoji: '🎂' },
+                    { finnish: 'karkki', chinese: '糖果', emoji: '🍬' },
+                    { finnish: 'keksi', chinese: '饼干', emoji: '🍪' },
+                    { finnish: 'jäätelö', chinese: '冰淇淋', emoji: '🍦' },
+                    { finnish: 'suklaa', chinese: '巧克力', emoji: '🍫' },
+                    { finnish: 'suola', chinese: '盐', emoji: '🧂' },
+                    { finnish: 'sokeri', chinese: '糖', emoji: '🍯' }
+                ]
+            },
+            'koti': {
+                emoji: '🏠',
+                title: 'Kotini ja Tavarat',
+                words: [
+                    { finnish: 'koti', chinese: '家', emoji: '🏠' },
+                    { finnish: 'talo', chinese: '房子', emoji: '🏘️' },
+                    { finnish: 'huone', chinese: '房间', emoji: '🏠' },
+                    { finnish: 'ovi', chinese: '门', emoji: '🚪' },
+                    { finnish: 'ikkuna', chinese: '窗户', emoji: '🪟' },
+                    { finnish: 'katto', chinese: '屋顶/天花板', emoji: '🏠' },
+                    { finnish: 'lattia', chinese: '地板', emoji: '⬛' },
+                    { finnish: 'seinä', chinese: '墙', emoji: '🧱' },
+                    { finnish: 'sänky', chinese: '床', emoji: '🛏️' },
+                    { finnish: 'peitto', chinese: '被子', emoji: '🛌' },
+                    { finnish: 'tyyny', chinese: '枕头', emoji: '🛌' },
+                    { finnish: 'pöytä', chinese: '桌子', emoji: '🪑' },
+                    { finnish: 'tuoli', chinese: '椅子', emoji: '🪑' },
+                    { finnish: 'sohva', chinese: '沙发', emoji: '🛋️' },
+                    { finnish: 'kaappi', chinese: '柜子', emoji: '🗄️' },
+                    { finnish: 'hylly', chinese: '架子', emoji: '📚' },
+                    { finnish: 'laatikko', chinese: '抽屉/盒子', emoji: '📦' },
+                    { finnish: 'lamppu', chinese: '灯', emoji: '💡' },
+                    { finnish: 'valo', chinese: '光/灯', emoji: '💡' },
+                    { finnish: 'peili', chinese: '镜子', emoji: '🪞' },
+                    { finnish: 'kello', chinese: '钟', emoji: '🕐' },
+                    { finnish: 'avain', chinese: '钥匙', emoji: '🔑' },
+                    { finnish: 'puhelin', chinese: '电话', emoji: '📞' },
+                    { finnish: 'tietokone', chinese: '电脑', emoji: '💻' },
+                    { finnish: 'televisio', chinese: '电视', emoji: '📺' },
+                    { finnish: 'kirja', chinese: '书', emoji: '📖' },
+                    { finnish: 'kynä', chinese: '笔', emoji: '✏️' },
+                    { finnish: 'paperi', chinese: '纸', emoji: '📄' },
+                    { finnish: 'sakset', chinese: '剪刀', emoji: '✂️' },
+                    { finnish: 'keittiö', chinese: '厨房', emoji: '🍳' },
+                    { finnish: 'olohuone', chinese: '客厅', emoji: '🛋️' },
+                    { finnish: 'makuuhuone', chinese: '卧室', emoji: '🛏️' },
+                    { finnish: 'kylpyhuone', chinese: '浴室', emoji: '🛁' },
+                    { finnish: 'vessa', chinese: '厕所', emoji: '🚽' },
+                    { finnish: 'suihku', chinese: '淋浴', emoji: '🚿' },
+                    { finnish: 'hana', chinese: '水龙头', emoji: '🚰' },
+                    { finnish: 'saippua', chinese: '肥皂', emoji: '🧼' },
+                    { finnish: 'pyyhe', chinese: '毛巾', emoji: '🟫' },
+                    { finnish: 'harja', chinese: '刷子', emoji: '🪥' },
+                    { finnish: 'roskakori', chinese: '垃圾桶', emoji: '🗑️' },
+                    { finnish: 'muki', chinese: '马克杯', emoji: '☕' },
+                    { finnish: 'lasi', chinese: '玻璃杯', emoji: '🥛' },
+                    { finnish: 'lautanen', chinese: '盘子', emoji: '🍽️' },
+                    { finnish: 'kulho', chinese: '碗', emoji: '🍜' },
+                    { finnish: 'haarukka', chinese: '叉子', emoji: '🍴' },
+                    { finnish: 'veitsi', chinese: '刀', emoji: '🔪' },
+                    { finnish: 'lusikka', chinese: '勺子', emoji: '🥄' },
+                    { finnish: 'hammasharja', chinese: '牙刷', emoji: '🪥' },
+                    { finnish: 'hammastahna', chinese: '牙膏', emoji: '🦷' },
+                    { finnish: 'laukku', chinese: '包', emoji: '👜' },
+                    { finnish: 'reppu', chinese: '背包', emoji: '🎒' },
+                    { finnish: 'lompakko', chinese: '钱包', emoji: '👛' }
+                ]
+            },
+            'vaatteet': {
+                emoji: '👕',
+                title: 'Vaatteet',
+                words: [
+                    { finnish: 'vaatteet', chinese: '衣服(总称)', emoji: '👕' },
+                    { finnish: 'paita', chinese: '上衣', emoji: '👔' },
+                    { finnish: 'T-paita', chinese: 'T恤', emoji: '👕' },
+                    { finnish: 'housut', chinese: '裤子', emoji: '👖' },
+                    { finnish: 'mekko', chinese: '连衣裙', emoji: '👗' },
+                    { finnish: 'hame', chinese: '半身裙', emoji: '👗' },
+                    { finnish: 'takki', chinese: '外套', emoji: '🧥' },
+                    { finnish: 'villapaita', chinese: '毛衣', emoji: '🧥' },
+                    { finnish: 'shortsit', chinese: '短裤', emoji: '🩳' },
+                    { finnish: 'sukka', chinese: '袜子', emoji: '🧦' },
+                    { finnish: 'kenkä', chinese: '鞋子', emoji: '👟' },
+                    { finnish: 'saappaat', chinese: '靴子', emoji: '👢' },
+                    { finnish: 'tossut', chinese: '拖鞋', emoji: '🩴' },
+                    { finnish: 'hattu', chinese: '帽子', emoji: '👒' },
+                    { finnish: 'pipo', chinese: '(无檐)便帽', emoji: '🧢' },
+                    { finnish: 'huivi', chinese: '围巾', emoji: '🧣' },
+                    { finnish: 'käsineet', chinese: '手套', emoji: '🧤' },
+                    { finnish: 'pyjama', chinese: '睡衣', emoji: '🥱' }
+                ]
+            },
+            'luonto': {
+                emoji: '🌳',
+                title: 'Luonto ja Sää',
+                words: [
+                    { finnish: 'luonto', chinese: '自然', emoji: '🌿' },
+                    { finnish: 'aurinko', chinese: '太阳', emoji: '☀️' },
+                    { finnish: 'kuu', chinese: '月亮', emoji: '🌙' },
+                    { finnish: 'tähti', chinese: '星星', emoji: '⭐' },
+                    { finnish: 'taivas', chinese: '天空', emoji: '☁️' },
+                    { finnish: 'pilvi', chinese: '云', emoji: '☁️' },
+                    { finnish: 'sade', chinese: '雨', emoji: '🌧️' },
+                    { finnish: 'lumi', chinese: '雪', emoji: '❄️' },
+                    { finnish: 'tuuli', chinese: '风', emoji: '💨' },
+                    { finnish: 'ilma', chinese: '空气/天气', emoji: '🌤️' },
+                    { finnish: 'maa', chinese: '土地/国家', emoji: '🌍' },
+                    { finnish: 'kivi', chinese: '石头', emoji: '🪨' },
+                    { finnish: 'hiekka', chinese: '沙子', emoji: '🏖️' },
+                    { finnish: 'meri', chinese: '大海', emoji: '🌊' },
+                    { finnish: 'järvi', chinese: '湖', emoji: '🏞️' },
+                    { finnish: 'joki', chinese: '河流', emoji: '🏞️' },
+                    { finnish: 'saari', chinese: '岛屿', emoji: '🏝️' },
+                    { finnish: 'vuori', chinese: '山', emoji: '⛰️' },
+                    { finnish: 'puu', chinese: '树', emoji: '🌳' },
+                    { finnish: 'metsä', chinese: '森林', emoji: '🌲' },
+                    { finnish: 'kukka', chinese: '花', emoji: '🌸' },
+                    { finnish: 'ruoho', chinese: '草', emoji: '🌱' },
+                    { finnish: 'lehti', chinese: '叶子', emoji: '🍃' },
+                    { finnish: 'jää', chinese: '冰', emoji: '🧊' },
+                    { finnish: 'tuli', chinese: '火', emoji: '🔥' },
+                    { finnish: 'sää', chinese: '天气', emoji: '🌤️' },
+                    { finnish: 'aurinkoinen', chinese: '晴朗的', emoji: '☀️' },
+                    { finnish: 'pilvinen', chinese: '多云的', emoji: '☁️' },
+                    { finnish: 'sateinen', chinese: '下雨的', emoji: '🌧️' },
+                    { finnish: 'luminen', chinese: '下雪的', emoji: '❄️' },
+                    { finnish: 'tuulinen', chinese: '有风的', emoji: '💨' },
+                    { finnish: 'myrsky', chinese: '暴风雨', emoji: '⛈️' },
+                    { finnish: 'ukkonen', chinese: '雷', emoji: '⚡' },
+                    { finnish: 'salama', chinese: '闪电', emoji: '⚡' }
+                ]
+            },
+            'elaimet': {
+                emoji: '🐕',
+                title: 'Eläimet',
+                words: [
+                    { finnish: 'eläin', chinese: '动物', emoji: '🐾' },
+                    { finnish: 'koira', chinese: '狗', emoji: '🐕' },
+                    { finnish: 'kissa', chinese: '猫', emoji: '🐱' },
+                    { finnish: 'lintu', chinese: '鸟', emoji: '🐦' },
+                    { finnish: 'kala', chinese: '鱼', emoji: '🐟' },
+                    { finnish: 'hevonen', chinese: '马', emoji: '🐴' },
+                    { finnish: 'lehmä', chinese: '奶牛', emoji: '🐄' },
+                    { finnish: 'lammas', chinese: '羊', emoji: '🐑' },
+                    { finnish: 'sika', chinese: '猪', emoji: '🐷' },
+                    { finnish: 'kana', chinese: '鸡', emoji: '🐔' },
+                    { finnish: 'ankka', chinese: '鸭子', emoji: '🦆' },
+                    { finnish: 'karhu', chinese: '熊', emoji: '🐻' },
+                    { finnish: 'kettu', chinese: '狐狸', emoji: '🦊' },
+                    { finnish: 'susi', chinese: '狼', emoji: '🐺' },
+                    { finnish: 'jänis', chinese: '兔子', emoji: '🐰' },
+                    { finnish: 'hiiri', chinese: '老鼠', emoji: '🐭' },
+                    { finnish: 'orava', chinese: '松鼠', emoji: '🐿️' },
+                    { finnish: 'siili', chinese: '刺猬', emoji: '🦔' },
+                    { finnish: 'apina', chinese: '猴子', emoji: '🐒' },
+                    { finnish: 'norsu', chinese: '大象', emoji: '🐘' },
+                    { finnish: 'leijona', chinese: '狮子', emoji: '🦁' },
+                    { finnish: 'tiikeri', chinese: '老虎', emoji: '🐅' },
+                    { finnish: 'kirahvi', chinese: '长颈鹿', emoji: '🦒' },
+                    { finnish: 'perhonen', chinese: '蝴蝶', emoji: '🦋' },
+                    { finnish: 'hämähäkki', chinese: '蜘蛛', emoji: '🕷️' },
+                    { finnish: 'muurahainen', chinese: '蚂蚁', emoji: '🐜' },
+                    { finnish: 'sammakko', chinese: '青蛙', emoji: '🐸' }
+                ]
+            },
+            'liikenne': {
+                emoji: '🚗',
+                title: 'Liikenne',
+                words: [
+                    { finnish: 'auto', chinese: '汽车', emoji: '🚗' },
+                    { finnish: 'bussi', chinese: '公共汽车', emoji: '🚌' },
+                    { finnish: 'juna', chinese: '火车', emoji: '🚂' },
+                    { finnish: 'laiva', chinese: '船', emoji: '🚢' },
+                    { finnish: 'vene', chinese: '小船', emoji: '⛵' },
+                    { finnish: 'lentokone', chinese: '飞机', emoji: '✈️' },
+                    { finnish: 'polkupyörä', chinese: '自行车', emoji: '🚲' },
+                    { finnish: 'moottoripyörä', chinese: '摩托车', emoji: '🏍️' },
+                    { finnish: 'traktori', chinese: '拖拉机', emoji: '🚜' },
+                    { finnish: 'kuorma-auto', chinese: '卡车', emoji: '🚛' },
+                    { finnish: 'paloauto', chinese: '消防车', emoji: '🚒' },
+                    { finnish: 'ambulanssi', chinese: '救护车', emoji: '🚑' },
+                    { finnish: 'taksi', chinese: '出租车', emoji: '🚕' }
+                ]
+            },
+            'paikat': {
+                emoji: '🏫',
+                title: 'Paikat ja Leikit',
+                words: [
+                    { finnish: 'paikka', chinese: '地方', emoji: '📍' },
+                    { finnish: 'kauppa', chinese: '商店', emoji: '🏪' },
+                    { finnish: 'koulu', chinese: '学校', emoji: '🏫' },
+                    { finnish: 'päiväkoti', chinese: '幼儿园', emoji: '🧒' },
+                    { finnish: 'puisto', chinese: '公园', emoji: '🌳' },
+                    { finnish: 'leikkipuisto', chinese: '游乐场', emoji: '🎠' },
+                    { finnish: 'ranta', chinese: '海滩/岸边', emoji: '🏖️' },
+                    { finnish: 'sairaala', chinese: '医院', emoji: '🏥' },
+                    { finnish: 'kirjasto', chinese: '图书馆', emoji: '📚' },
+                    { finnish: 'katu', chinese: '街道', emoji: '🛣️' },
+                    { finnish: 'tie', chinese: '路', emoji: '🛤️' },
+                    { finnish: 'silta', chinese: '桥', emoji: '🌉' },
+                    { finnish: 'asema', chinese: '车站', emoji: '🚉' },
+                    { finnish: 'lentokenttä', chinese: '机场', emoji: '✈️' },
+                    { finnish: 'lelu', chinese: '玩具', emoji: '🧸' },
+                    { finnish: 'pallo', chinese: '球', emoji: '⚽' },
+                    { finnish: 'nukke', chinese: '娃娃', emoji: '🪆' },
+                    { finnish: 'palikka', chinese: '积木块', emoji: '🧱' },
+                    { finnish: 'palapeli', chinese: '拼图', emoji: '🧩' },
+                    { finnish: 'peli', chinese: '游戏', emoji: '🎮' },
+                    { finnish: 'piirustus', chinese: '图画', emoji: '🎨' },
+                    { finnish: 'laulu', chinese: '歌曲', emoji: '🎵' },
+                    { finnish: 'tanssi', chinese: '舞蹈', emoji: '💃' },
+                    { finnish: 'keinu', chinese: '秋千', emoji: '🪀' },
+                    { finnish: 'liukumäki', chinese: '滑梯', emoji: '🛝' }
+                ]
+            },
+            'perusta': {
+                emoji: '🔢',
+                title: 'Peruskäsitteet',
+                words: [
+                    // 时间
+                    { finnish: 'aika', chinese: '时间', emoji: '⏰' },
+                    { finnish: 'päivä', chinese: '天/白天', emoji: '☀️' },
+                    { finnish: 'yö', chinese: '夜晚', emoji: '🌙' },
+                    { finnish: 'aamu', chinese: '早上', emoji: '🌅' },
+                    { finnish: 'ilta', chinese: '晚上', emoji: '🌆' },
+                    { finnish: 'tunti', chinese: '小时', emoji: '🕐' },
+                    { finnish: 'minuutti', chinese: '分钟', emoji: '⏱️' },
+                    { finnish: 'viikko', chinese: '星期', emoji: '📅' },
+                    { finnish: 'kuukausi', chinese: '月', emoji: '📅' },
+                    { finnish: 'vuosi', chinese: '年', emoji: '📅' },
+                    { finnish: 'tänään', chinese: '今天', emoji: '📅' },
+                    { finnish: 'huomenna', chinese: '明天', emoji: '➡️' },
+                    { finnish: 'eilen', chinese: '昨天', emoji: '⬅️' },
+                    
+                    // 数字
+                    { finnish: 'nolla', chinese: '零', emoji: '0️⃣' },
+                    { finnish: 'yksi', chinese: '一', emoji: '1️⃣' },
+                    { finnish: 'kaksi', chinese: '二', emoji: '2️⃣' },
+                    { finnish: 'kolme', chinese: '三', emoji: '3️⃣' },
+                    { finnish: 'neljä', chinese: '四', emoji: '4️⃣' },
+                    { finnish: 'viisi', chinese: '五', emoji: '5️⃣' },
+                    { finnish: 'kuusi', chinese: '六', emoji: '6️⃣' },
+                    { finnish: 'seitsemän', chinese: '七', emoji: '7️⃣' },
+                    { finnish: 'kahdeksan', chinese: '八', emoji: '8️⃣' },
+                    { finnish: 'yhdeksän', chinese: '九', emoji: '9️⃣' },
+                    { finnish: 'kymmenen', chinese: '十', emoji: '🔟' },
+                    
+                    // 颜色和形容词
+                    { finnish: 'väri', chinese: '颜色', emoji: '🎨' },
+                    { finnish: 'punainen', chinese: '红色', emoji: '🔴' },
+                    { finnish: 'sininen', chinese: '蓝色', emoji: '🔵' },
+                    { finnish: 'keltainen', chinese: '黄色', emoji: '🟡' },
+                    { finnish: 'vihreä', chinese: '绿色', emoji: '🟢' },
+                    { finnish: 'valkoinen', chinese: '白色', emoji: '⚪' },
+                    { finnish: 'musta', chinese: '黑色', emoji: '⚫' },
+                    { finnish: 'harmaa', chinese: '灰色', emoji: '🩶' },
+                    { finnish: 'ruskea', chinese: '棕色', emoji: '🟤' },
+                    { finnish: 'oranssi', chinese: '橙色', emoji: '🟠' },
+                    { finnish: 'violetti', chinese: '紫色', emoji: '🟣' },
+                    
+                    { finnish: 'iso', chinese: '大的', emoji: '🔺' },
+                    { finnish: 'pieni', chinese: '小的', emoji: '🔻' },
+                    { finnish: 'pitkä', chinese: '长的', emoji: '📏' },
+                    { finnish: 'lyhyt', chinese: '短的', emoji: '📐' },
+                    { finnish: 'uusi', chinese: '新的', emoji: '✨' },
+                    { finnish: 'vanha', chinese: '旧的/老的', emoji: '📜' },
+                    { finnish: 'hyvä', chinese: '好的', emoji: '👍' },
+                    { finnish: 'paha', chinese: '坏的', emoji: '👎' },
+                    { finnish: 'kaunis', chinese: '漂亮的', emoji: '😍' },
+                    { finnish: 'ruma', chinese: '丑的', emoji: '😤' },
+                    { finnish: 'iloinen', chinese: '高兴的', emoji: '😊' },
+                    { finnish: 'surullinen', chinese: '伤心的', emoji: '😢' },
+                    { finnish: 'väsynyt', chinese: '累的', emoji: '😴' },
+                    { finnish: 'sairas', chinese: '生病的', emoji: '🤒' },
+                    { finnish: 'terve', chinese: '健康的', emoji: '💪' },
+                    { finnish: 'kuuma', chinese: '热的', emoji: '🔥' },
+                    { finnish: 'kylmä', chinese: '冷的', emoji: '🧊' },
+                    { finnish: 'märkä', chinese: '湿的', emoji: '💧' },
+                    { finnish: 'kuiva', chinese: '干的', emoji: '🏜️' },
+                    { finnish: 'nopea', chinese: '快的', emoji: '💨' },
+                    { finnish: 'hidas', chinese: '慢的', emoji: '🐌' },
+                    
+                    // 基础动词
+                    { finnish: 'olla', chinese: '是/有', emoji: '✨' },
+                    { finnish: 'mennä', chinese: '去', emoji: '➡️' },
+                    { finnish: 'tulla', chinese: '来', emoji: '⬅️' },
+                    { finnish: 'syödä', chinese: '吃', emoji: '🍽️' },
+                    { finnish: 'juoda', chinese: '喝', emoji: '🥤' },
+                    { finnish: 'nukkua', chinese: '睡觉', emoji: '😴' },
+                    { finnish: 'herätä', chinese: '醒来', emoji: '⏰' },
+                    { finnish: 'leikkiä', chinese: '玩耍', emoji: '🎮' },
+                    { finnish: 'pelata', chinese: '玩(游戏/球类)', emoji: '⚽' },
+                    { finnish: 'katsoa', chinese: '看', emoji: '👀' },
+                    { finnish: 'nähdä', chinese: '看见', emoji: '👁️' },
+                    { finnish: 'kuunnella', chinese: '听', emoji: '👂' },
+                    { finnish: 'kuulla', chinese: '听见', emoji: '👂' },
+                    { finnish: 'puhua', chinese: '说', emoji: '💬' },
+                    { finnish: 'sanoa', chinese: '说出', emoji: '🗣️' },
+                    { finnish: 'laulaa', chinese: '唱歌', emoji: '🎵' },
+                    { finnish: 'tanssia', chinese: '跳舞', emoji: '💃' },
+                    { finnish: 'piirtää', chinese: '画画', emoji: '🎨' },
+                    { finnish: 'lukea', chinese: '阅读', emoji: '📖' },
+                    { finnish: 'kirjoittaa', chinese: '写字', emoji: '✏️' },
+                    { finnish: 'oppia', chinese: '学习', emoji: '📚' },
+                    { finnish: 'antaa', chinese: '给', emoji: '🎁' },
+                    { finnish: 'ottaa', chinese: '拿/取', emoji: '🤏' },
+                    { finnish: 'saada', chinese: '得到', emoji: '📨' },
+                    { finnish: 'laittaa', chinese: '放', emoji: '📥' },
+                    { finnish: 'tehdä', chinese: '做', emoji: '⚒️' },
+                    { finnish: 'auttaa', chinese: '帮助', emoji: '🤝' },
+                    { finnish: 'rakastaa', chinese: '爱', emoji: '❤️' },
+                    { finnish: 'tykätä', chinese: '喜欢', emoji: '😊' },
+                    { finnish: 'haluta', chinese: '想要', emoji: '🙏' },
+                    { finnish: 'itkeä', chinese: '哭', emoji: '😭' },
+                    { finnish: 'nauraa', chinese: '笑', emoji: '😂' },
+                    { finnish: 'hymyillä', chinese: '微笑', emoji: '😊' },
+                    { finnish: 'juosta', chinese: '跑', emoji: '🏃' },
+                    { finnish: 'kävellä', chinese: '走/散步', emoji: '🚶' },
+                    { finnish: 'hyppiä', chinese: '跳', emoji: '🦘' },
+                    { finnish: 'istua', chinese: '坐', emoji: '🪑' },
+                    { finnish: 'seisoa', chinese: '站', emoji: '🧍' },
+                    { finnish: 'avata', chinese: '打开', emoji: '🔓' },
+                    { finnish: 'sulkea', chinese: '关闭', emoji: '🔒' },
+                    { finnish: 'pestä', chinese: '洗', emoji: '🧽' },
+                    { finnish: 'siivota', chinese: '打扫', emoji: '🧹' },
+                    { finnish: 'löytää', chinese: '找到', emoji: '🔍' },
+                    { finnish: 'tietää', chinese: '知道', emoji: '💡' },
+                    { finnish: 'osata', chinese: '会/能够', emoji: '👌' },
+                    
+                    // 其他常用词
+                    { finnish: 'kyllä', chinese: '是的', emoji: '✅' },
+                    { finnish: 'ei', chinese: '不/不是', emoji: '❌' },
+                    { finnish: 'kiitos', chinese: '谢谢', emoji: '🙏' },
+                    { finnish: 'anteeksi', chinese: '对不起', emoji: '🙇' },
+                    { finnish: 'hei', chinese: '你好/嗨', emoji: '👋' },
+                    { finnish: 'hei hei', chinese: '再见', emoji: '👋' },
+                    { finnish: 'ja', chinese: '和', emoji: '➕' },
+                    { finnish: 'tai', chinese: '或者', emoji: '❓' },
+                    { finnish: 'mutta', chinese: '但是', emoji: '↔️' },
+                    { finnish: 'koska', chinese: '因为', emoji: '❓' },
+                    { finnish: 'kuka', chinese: '谁', emoji: '👤' },
+                    { finnish: 'mitä', chinese: '什么', emoji: '❓' },
+                    { finnish: 'missä', chinese: '在哪里', emoji: '📍' },
+                    { finnish: 'milloin', chinese: '什么时候', emoji: '⏰' },
+                    { finnish: 'miksi', chinese: '为什么', emoji: '❓' },
+                    { finnish: 'miten', chinese: '怎么样', emoji: '❓' }
+                ]
+            }
+        };
+        
+        // 全局变量
+        let currentPod = '';
+        let currentWords = [];
+        let currentIndex = 0;
+        let isFlipped = false;
+        let autoPlayMode = false;
+        let learningMode = 'normal';
+        let audioSupported = false;
+        
+        /**
+         * 初始化页面
+         */
+        function init() {
+            // 获取URL参数
+            const urlParams = new URLSearchParams(window.location.search);
+            currentPod = urlParams.get('pod') || 'perhe';
+            
+            // 设置默认学习模式为正常模式
+            learningMode = 'normal';
+            
+            // 检查音频支持
+            checkAudioSupport();
+            
+            // 加载词汇数据
+            loadVocabulary();
+            
+            // 稍微延迟显示第一张卡片，确保音频系统就绪
+            setTimeout(() => {
+                showCard(0);
+                // 确保第一张卡片在正常模式下自动发音
+                if (learningMode === 'normal') {
+                    setTimeout(() => {
+                        const word = currentWords[0];
+                        playTTS(word.finnish, 'fi-FI');
+                    }, 1000);
+                }
+            }, 200);
+            
+            // 设置键盘事件
+            setupKeyboardEvents();
+        }
+        
+        /**
+         * 检查音频支持
+         */
+        function checkAudioSupport() {
+            if ('speechSynthesis' in window) {
+                audioSupported = true;
+            }
+        }
+        
+        /**
+         * 加载词汇数据
+         */
+        function loadVocabulary() {
+            const podData = vocabularyData[currentPod];
+            if (!podData) {
+                alert('未找到对应的词汇数据！');
+                exitPod();
+                return;
+            }
+            
+            currentWords = podData.words;
+            
+            // 更新界面信息
+            document.getElementById('podEmoji').textContent = podData.emoji;
+            document.getElementById('podTitle').textContent = podData.title;
+            document.getElementById('progressInfo').textContent = `1 / ${currentWords.length}`;
+        }
+        
+        /**
+         * 显示指定索引的卡片
+         */
+        function showCard(index) {
+            if (index < 0 || index >= currentWords.length) return;
+            
+            currentIndex = index;
+            const word = currentWords[index];
+            
+            // 重置翻转状态
+            isFlipped = false;
+            document.getElementById('flashcard').classList.remove('flipped');
+            
+            // 更新卡片内容
+            document.getElementById('cardEmoji').textContent = word.emoji;
+            document.getElementById('finnishWord').textContent = word.finnish;
+            document.getElementById('chineseWord').textContent = word.chinese;
+            document.getElementById('pronunciation').textContent = generatePronunciation(word.finnish);
+            
+            // 更新进度
+            updateProgress();
+            
+            // 默认进入就自动发音（正常模式和快速模式）
+            if (learningMode === 'normal' || learningMode === 'quick' || autoPlayMode) {
+                setTimeout(() => playTTS(word.finnish, 'fi-FI'), 800);
+            }
+        }
+        
+        /**
+         * 生成发音标注
+         */
+        function generatePronunciation(word) {
+            // 简化的芬兰语发音规则
+            return `[${word.toLowerCase().split('').join('-')}]`;
+        }
+        
+        /**
+         * 翻转卡片
+         */
+        function flipCard() {
+            const flashcard = document.getElementById('flashcard');
+            isFlipped = !isFlipped;
+            
+            if (isFlipped) {
+                flashcard.classList.add('flipped');
+                // 用户主动翻转时播放中文发音
+                const word = currentWords[currentIndex];
+                setTimeout(() => playTTS(word.chinese, 'zh-CN'), 300);
+            } else {
+                flashcard.classList.remove('flipped');
+                // 翻回正面时播放芬兰语
+                const word = currentWords[currentIndex];
+                setTimeout(() => playTTS(word.finnish, 'fi-FI'), 300);
+            }
+        }
+        
+        /**
+         * 下一张卡片
+         */
+        function nextCard() {
+            if (currentIndex < currentWords.length - 1) {
+                showCard(currentIndex + 1);
+            }
+        }
+        
+        /**
+         * 上一张卡片
+         */
+        function previousCard() {
+            if (currentIndex > 0) {
+                showCard(currentIndex - 1);
+            }
+        }
+        
+        /**
+         * 播放音频
+         */
+        function playAudio(event) {
+            event.stopPropagation();
+            const word = currentWords[currentIndex];
+            
+            if (isFlipped) {
+                playTTS(word.chinese, 'zh-CN');
+            } else {
+                playTTS(word.finnish, 'fi-FI');
+            }
+        }
+        
+        /**
+         * 文本转语音
+         */
+        function playTTS(text, lang = 'fi-FI') {
+            if (!audioSupported) return;
+            
+            speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            utterance.rate = 0.8;
+            utterance.pitch = 1.0;
+            
+            speechSynthesis.speak(utterance);
+        }
+        
+        /**
+         * 切换自动播放
+         */
+        function toggleAutoPlay() {
+            autoPlayMode = !autoPlayMode;
+            const btn = document.getElementById('autoPlayBtn');
+            btn.textContent = autoPlayMode ? '⏸️ 连续' : '▶️ 连续';
+            
+            if (autoPlayMode) {
+                // 开始自动播放流
+                startAutoPlayFlow();
+            } else {
+                // 停止自动播放
+                clearTimeout(window.autoPlayTimer);
+            }
+        }
+        
+        /**
+         * 开始自动播放流
+         */
+        function startAutoPlayFlow() {
+            if (!autoPlayMode) return;
+            
+            const word = currentWords[currentIndex];
+            
+            // 播放芬兰语
+            playTTS(word.finnish, 'fi-FI');
+            
+            // 所有模式都不自动翻转，快速模式2秒后切换，其他模式4秒后切换
+            const switchDelay = learningMode === 'quick' ? 2000 : 4000;
+            
+            window.autoPlayTimer = setTimeout(() => {
+                if (!autoPlayMode) return;
+                
+                if (currentIndex < currentWords.length - 1) {
+                    nextCard();
+                    // 0.5秒后继续自动播放流
+                    setTimeout(() => {
+                        if (autoPlayMode) startAutoPlayFlow();
+                    }, 500);
+                } else {
+                    // 到达最后一张，停止自动播放
+                    autoPlayMode = false;
+                    document.getElementById('autoPlayBtn').textContent = '▶️ 连续';
+                    alert('🎉 恭喜！您已完成本舱室的所有词汇学习！');
+                }
+            }, switchDelay);
+        }
+        
+        /**
+         * 设置学习模式
+         */
+        function setMode(mode) {
+            learningMode = mode;
+            
+            // 更新按钮状态
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 重置当前卡片状态
+            const flashcard = document.getElementById('flashcard');
+            flashcard.classList.remove('flipped');
+            isFlipped = false;
+            
+            // 应用模式特定的行为
+            switch(mode) {
+                case 'normal':
+                    // 正常模式：婴儿模仿学习
+                    document.querySelector('.finnish-word').style.opacity = '1';
+                    document.querySelector('.card-emoji').style.opacity = '1';
+                    // 立即播放芬兰语
+                    setTimeout(() => {
+                        const word = currentWords[currentIndex];
+                        playTTS(word.finnish, 'fi-FI');
+                    }, 300);
+                    break;
+                    
+                case 'review':
+                    // 复习模式：主动回忆测试
+                    document.querySelector('.finnish-word').style.opacity = '0.1';
+                    document.querySelector('.card-emoji').style.opacity = '1';
+                    // 用户需要主动点击来听音频和查看答案
+                    alert('复习模式：看到图像后，先尝试自己说出芬兰语，然后点击🔊验证');
+                    break;
+                    
+                case 'quick':
+                    // 快速模式：密集训练，发音后立即切换，不翻转中文
+                    document.querySelector('.finnish-word').style.opacity = '1';
+                    autoPlayMode = true;
+                    document.getElementById('autoPlayBtn').textContent = '⏸️ 连续';
+                    // 启动连续播放流
+                    startAutoPlayFlow();
+                    break;
+            }
+        }
+        
+        /**
+         * 更新进度显示
+         */
+        function updateProgress() {
+            const progress = ((currentIndex + 1) / currentWords.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressInfo').textContent = `${currentIndex + 1} / ${currentWords.length}`;
+            
+            // 更新按钮状态
+            document.getElementById('prevBtn').disabled = currentIndex === 0;
+            document.getElementById('nextBtn').disabled = currentIndex === currentWords.length - 1;
+        }
+        
+        /**
+         * 设置键盘事件
+         */
+        function setupKeyboardEvents() {
+            document.addEventListener('keydown', (e) => {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        previousCard();
+                        break;
+                    case 'ArrowRight':
+                        nextCard();
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        flipCard();
+                        break;
+                    case 'Enter':
+                        playAudio({ stopPropagation: () => {} });
+                        break;
+                    case 'Escape':
+                        exitPod();
+                        break;
+                }
+            });
+        }
+        
+        /**
+         * 退出闪卡舱
+         */
+        function exitPod() {
+            // 保存学习进度
+            saveProgress();
+            
+            // 返回场景选择器
+            window.location.href = '生存模块一·世界感知协议.html';
+        }
+        
+        /**
+         * 保存学习进度
+         */
+        function saveProgress() {
+            const progress = {
+                completedCards: currentIndex + 1,
+                totalCards: currentWords.length,
+                completed: currentIndex === currentWords.length - 1,
+                lastStudied: new Date().toISOString()
+            };
+            
+            const allProgress = JSON.parse(localStorage.getItem('auroraling_module1_progress') || '{}');
+            allProgress[currentPod] = progress;
+            localStorage.setItem('auroraling_module1_progress', JSON.stringify(allProgress));
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', init);
+        
+        // 页面卸载时保存进度
+        window.addEventListener('beforeunload', saveProgress);
+    </script>
+</body>
+</html> 
