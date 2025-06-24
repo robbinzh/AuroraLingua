@@ -1,0 +1,14 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- 桌面 -->
+  <rect x="20" y="30" width="60" height="8" fill="#8B4513" rx="2"/>
+  <!-- 左前腿 -->
+  <rect x="22" y="38" width="4" height="40" fill="#654321"/>
+  <!-- 右前腿 -->
+  <rect x="74" y="38" width="4" height="40" fill="#654321"/>
+  <!-- 左后腿 -->
+  <rect x="22" y="38" width="4" height="40" fill="#654321" transform="translate(0,-2)"/>
+  <!-- 右后腿 -->
+  <rect x="74" y="38" width="4" height="40" fill="#654321" transform="translate(0,-2)"/>
+  <!-- 桌面阴影效果 -->
+  <rect x="20" y="36" width="60" height="2" fill="#5D2F0A" opacity="0.5" rx="1"/>
+</svg> 

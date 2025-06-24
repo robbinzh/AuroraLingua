@@ -463,7 +463,7 @@
                     { finnish: 'sänky', chinese: '床', emoji: '🛏️' },
                     { finnish: 'peitto', chinese: '被子', emoji: '🛌' },
                     { finnish: 'tyyny', chinese: '枕头', emoji: '🛌' },
-                    { finnish: 'pöytä', chinese: '桌子', emoji: '🪑' },
+                    { finnish: 'pöytä', chinese: '桌子', emoji: '../../assets/icons/table.svg', isImage: true },
                     { finnish: 'tuoli', chinese: '椅子', emoji: '🪑' },
                     { finnish: 'sohva', chinese: '沙发', emoji: '🛋️' },
                     { finnish: 'kaappi', chinese: '柜子', emoji: '🗄️' },
@@ -873,20 +873,35 @@
             // 加载词汇数据
             loadVocabulary();
             
-            // 稍微延迟显示第一张卡片，确保音频系统就绪
-            setTimeout(() => {
-                showCard(0);
-                // 确保第一张卡片在正常模式下自动发音
-                if (learningMode === 'normal') {
-                    setTimeout(() => {
-                        const word = currentWords[0];
-                        playTTS(word.finnish, 'fi-FI');
-                    }, 1000);
-                }
-            }, 200);
+            // 启动自动跳转序列：准备页面 -> 第一张卡片
+            startAutoIntro();
             
             // 设置键盘事件
             setupKeyboardEvents();
+        }
+        
+        /**
+         * 启动自动介绍序列
+         */
+        function startAutoIntro() {
+            // 立即显示准备页面
+            showCard(0);
+            
+            // 2秒后自动跳转到第一张正式卡片
+            setTimeout(() => {
+                if (currentWords.length > 1) {
+                    showCard(1);
+                    // 如果是正常模式，第一张正式卡片自动发音
+                    if (learningMode === 'normal') {
+                        setTimeout(() => {
+                            const word = currentWords[1];
+                            if (!word.isStart) {
+                                playTTS(word.finnish, 'fi-FI');
+                            }
+                        }, 800);
+                    }
+                }
+            }, 2000);
         }
         
         /**
