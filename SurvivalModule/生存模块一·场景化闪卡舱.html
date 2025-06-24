@@ -396,15 +396,15 @@
                     { finnish: 'hammas', chinese: '牙齿', emoji: '🦷' },
                     { finnish: 'kieli', chinese: '舌头', emoji: '👅' },
                     { finnish: 'kaula', chinese: '脖子', emoji: '🧣' },
-                    { finnish: 'olkapää', chinese: '肩膀', emoji: '💪' },
-                    { finnish: 'selkä', chinese: '背', emoji: '🫏' },
+                    { finnish: 'olkapää', chinese: '肩膀', emoji: '../assets/icons/shoulder.svg', isImage: true },
+                    { finnish: 'selkä', chinese: '背', emoji: '../assets/icons/back.svg', isImage: true },
                     { finnish: 'vatsa', chinese: '肚子', emoji: '🫃' },
                     { finnish: 'käsi', chinese: '手/手臂', emoji: '🤚' },
                     { finnish: 'sormi', chinese: '手指', emoji: '☝️' },
                     { finnish: 'peukalo', chinese: '拇指', emoji: '👍' },
                     { finnish: 'jalka', chinese: '腿/脚', emoji: '🦵' },
-                    { finnish: 'polvi', chinese: '膝盖', emoji: '🦵' },
-                    { finnish: 'varvas', chinese: '脚趾', emoji: '🦶' }
+                    { finnish: 'polvi', chinese: '膝盖', emoji: '../assets/icons/knee.svg', isImage: true },
+                    { finnish: 'varvas', chinese: '脚趾', emoji: '../assets/icons/toes.svg', isImage: true }
                 ]
             },
             'ruoka': {
@@ -658,12 +658,12 @@
                     { finnish: 'liukumäki', chinese: '滑梯', emoji: '🛝' }
                 ]
             },
-            'perusta': {
-                emoji: '🔢',
-                title: 'Peruskäsitteet',
+            'aika': {
+                emoji: '⏰',
+                title: 'Aika ja Numerot',
                 words: [
                     { finnish: '', chinese: '', emoji: '🎯', isStart: true },
-                    // 时间
+                    // 时间相关
                     { finnish: 'aika', chinese: '时间', emoji: '⏰' },
                     { finnish: 'päivä', chinese: '天/白天', emoji: '☀️' },
                     { finnish: 'yö', chinese: '夜晚', emoji: '🌙' },
@@ -679,6 +679,7 @@
                     { finnish: 'eilen', chinese: '昨天', emoji: '⬅️' },
                     
                     // 数字
+                    { finnish: 'numero', chinese: '数字', emoji: '🔢' },
                     { finnish: 'nolla', chinese: '零', emoji: '0️⃣' },
                     { finnish: 'yksi', chinese: '一', emoji: '1️⃣' },
                     { finnish: 'kaksi', chinese: '二', emoji: '2️⃣' },
@@ -689,9 +690,15 @@
                     { finnish: 'seitsemän', chinese: '七', emoji: '7️⃣' },
                     { finnish: 'kahdeksan', chinese: '八', emoji: '8️⃣' },
                     { finnish: 'yhdeksän', chinese: '九', emoji: '9️⃣' },
-                    { finnish: 'kymmenen', chinese: '十', emoji: '🔟' },
-                    
-                    // 颜色和形容词
+                    { finnish: 'kymmenen', chinese: '十', emoji: '🔟' }
+                ]
+            },
+            'varit': {
+                emoji: '🎨',
+                title: 'Värit ja Adjektiivit',
+                words: [
+                    { finnish: '', chinese: '', emoji: '🎯', isStart: true },
+                    // 颜色
                     { finnish: 'väri', chinese: '颜色', emoji: '🎨' },
                     { finnish: 'punainen', chinese: '红色', emoji: '🔴' },
                     { finnish: 'sininen', chinese: '蓝色', emoji: '🔵' },
@@ -704,6 +711,7 @@
                     { finnish: 'oranssi', chinese: '橙色', emoji: '🟠' },
                     { finnish: 'violetti', chinese: '紫色', emoji: '🟣' },
                     
+                    // 形容词
                     { finnish: 'iso', chinese: '大的', emoji: '🔺' },
                     { finnish: 'pieni', chinese: '小的', emoji: '🔻' },
                     { finnish: 'pitkä', chinese: '长的', emoji: '📏' },
@@ -724,72 +732,117 @@
                     { finnish: 'märkä', chinese: '湿的', emoji: '💧' },
                     { finnish: 'kuiva', chinese: '干的', emoji: '🏜️' },
                     { finnish: 'nopea', chinese: '快的', emoji: '💨' },
-                    { finnish: 'hidas', chinese: '慢的', emoji: '🐌' },
-                    
-                    // 基础动词
+                    { finnish: 'hidas', chinese: '慢的', emoji: '🐌' }
+                ]
+            },
+            'verbit': {
+                emoji: '🏃',
+                title: 'Perustoimintaverbit',
+                words: [
+                    { finnish: '', chinese: '', emoji: '🎯', isStart: true },
+                    // 核心动词
                     { finnish: 'olla', chinese: '是/有', emoji: '✨' },
                     { finnish: 'mennä', chinese: '去', emoji: '➡️' },
                     { finnish: 'tulla', chinese: '来', emoji: '⬅️' },
+                    { finnish: 'tehdä', chinese: '做', emoji: '⚒️' },
+                    { finnish: 'saada', chinese: '得到', emoji: '📨' },
+                    { finnish: 'antaa', chinese: '给', emoji: '🎁' },
+                    { finnish: 'ottaa', chinese: '拿/取', emoji: '🤏' },
+                    { finnish: 'laittaa', chinese: '放', emoji: '📥' },
+                    
+                    // 生活动词
                     { finnish: 'syödä', chinese: '吃', emoji: '🍽️' },
                     { finnish: 'juoda', chinese: '喝', emoji: '🥤' },
                     { finnish: 'nukkua', chinese: '睡觉', emoji: '😴' },
                     { finnish: 'herätä', chinese: '醒来', emoji: '⏰' },
-                    { finnish: 'leikkiä', chinese: '玩耍', emoji: '🎮' },
-                    { finnish: 'pelata', chinese: '玩(游戏/球类)', emoji: '⚽' },
+                    { finnish: 'avata', chinese: '打开', emoji: '🔓' },
+                    { finnish: 'sulkea', chinese: '关闭', emoji: '🔒' },
+                    { finnish: 'pestä', chinese: '洗', emoji: '🧽' },
+                    { finnish: 'siivota', chinese: '打扫', emoji: '🧹' },
+                    
+                    // 感知动词
                     { finnish: 'katsoa', chinese: '看', emoji: '👀' },
                     { finnish: 'nähdä', chinese: '看见', emoji: '👁️' },
                     { finnish: 'kuunnella', chinese: '听', emoji: '👂' },
                     { finnish: 'kuulla', chinese: '听见', emoji: '👂' },
                     { finnish: 'puhua', chinese: '说', emoji: '💬' },
                     { finnish: 'sanoa', chinese: '说出', emoji: '🗣️' },
-                    { finnish: 'laulaa', chinese: '唱歌', emoji: '🎵' },
-                    { finnish: 'tanssia', chinese: '跳舞', emoji: '💃' },
-                    { finnish: 'piirtää', chinese: '画画', emoji: '🎨' },
-                    { finnish: 'lukea', chinese: '阅读', emoji: '📖' },
-                    { finnish: 'kirjoittaa', chinese: '写字', emoji: '✏️' },
-                    { finnish: 'oppia', chinese: '学习', emoji: '📚' },
-                    { finnish: 'antaa', chinese: '给', emoji: '🎁' },
-                    { finnish: 'ottaa', chinese: '拿/取', emoji: '🤏' },
-                    { finnish: 'saada', chinese: '得到', emoji: '📨' },
-                    { finnish: 'laittaa', chinese: '放', emoji: '📥' },
-                    { finnish: 'tehdä', chinese: '做', emoji: '⚒️' },
-                    { finnish: 'auttaa', chinese: '帮助', emoji: '🤝' },
+                    
+                    // 情感动词
                     { finnish: 'rakastaa', chinese: '爱', emoji: '❤️' },
                     { finnish: 'tykätä', chinese: '喜欢', emoji: '😊' },
                     { finnish: 'haluta', chinese: '想要', emoji: '🙏' },
                     { finnish: 'itkeä', chinese: '哭', emoji: '😭' },
                     { finnish: 'nauraa', chinese: '笑', emoji: '😂' },
                     { finnish: 'hymyillä', chinese: '微笑', emoji: '😊' },
+                    
+                    // 活动动词
+                    { finnish: 'leikkiä', chinese: '玩耍', emoji: '🎮' },
+                    { finnish: 'pelata', chinese: '玩(游戏/球类)', emoji: '⚽' },
+                    { finnish: 'laulaa', chinese: '唱歌', emoji: '🎵' },
+                    { finnish: 'tanssia', chinese: '跳舞', emoji: '💃' },
+                    { finnish: 'piirtää', chinese: '画画', emoji: '🎨' },
+                    { finnish: 'lukea', chinese: '阅读', emoji: '📖' },
+                    { finnish: 'kirjoittaa', chinese: '写字', emoji: '✏️' },
+                    { finnish: 'oppia', chinese: '学习', emoji: '📚' },
+                    
+                    // 运动动词
                     { finnish: 'juosta', chinese: '跑', emoji: '🏃' },
                     { finnish: 'kävellä', chinese: '走/散步', emoji: '🚶' },
                     { finnish: 'hyppiä', chinese: '跳', emoji: '🦘' },
                     { finnish: 'istua', chinese: '坐', emoji: '🪑' },
                     { finnish: 'seisoa', chinese: '站', emoji: '🧍' },
-                    { finnish: 'avata', chinese: '打开', emoji: '🔓' },
-                    { finnish: 'sulkea', chinese: '关闭', emoji: '🔒' },
-                    { finnish: 'pestä', chinese: '洗', emoji: '🧽' },
-                    { finnish: 'siivota', chinese: '打扫', emoji: '🧹' },
-                    { finnish: 'löytää', chinese: '找到', emoji: '🔍' },
+                    
+                    // 认知动词
                     { finnish: 'tietää', chinese: '知道', emoji: '💡' },
                     { finnish: 'osata', chinese: '会/能够', emoji: '👌' },
-                    
-                    // 其他常用词
+                    { finnish: 'löytää', chinese: '找到', emoji: '🔍' },
+                    { finnish: 'auttaa', chinese: '帮助', emoji: '🤝' }
+                ]
+            },
+            'muut': {
+                emoji: '💬',
+                title: 'Muut Yleissanat',
+                words: [
+                    { finnish: '', chinese: '', emoji: '🎯', isStart: true },
+                    // 基本应答
                     { finnish: 'kyllä', chinese: '是的', emoji: '✅' },
                     { finnish: 'ei', chinese: '不/不是', emoji: '❌' },
+                    { finnish: 'ehkä', chinese: '也许', emoji: '🤔' },
+                    
+                    // 礼貌用语
                     { finnish: 'kiitos', chinese: '谢谢', emoji: '🙏' },
                     { finnish: 'anteeksi', chinese: '对不起', emoji: '🙇' },
                     { finnish: 'hei', chinese: '你好/嗨', emoji: '👋' },
                     { finnish: 'hei hei', chinese: '再见', emoji: '👋' },
+                    { finnish: 'ole hyvä', chinese: '请/不客气', emoji: '🤲' },
+                    
+                    // 连词
                     { finnish: 'ja', chinese: '和', emoji: '➕' },
                     { finnish: 'tai', chinese: '或者', emoji: '❓' },
                     { finnish: 'mutta', chinese: '但是', emoji: '↔️' },
-                    { finnish: 'koska', chinese: '因为', emoji: '❓' },
+                    { finnish: 'koska', chinese: '因为', emoji: '💭' },
+                    { finnish: 'jos', chinese: '如果', emoji: '🤨' },
+                    
+                    // 疑问词
                     { finnish: 'kuka', chinese: '谁', emoji: '👤' },
                     { finnish: 'mitä', chinese: '什么', emoji: '❓' },
                     { finnish: 'missä', chinese: '在哪里', emoji: '📍' },
                     { finnish: 'milloin', chinese: '什么时候', emoji: '⏰' },
                     { finnish: 'miksi', chinese: '为什么', emoji: '❓' },
-                    { finnish: 'miten', chinese: '怎么样', emoji: '❓' }
+                    { finnish: 'miten', chinese: '怎么样', emoji: '❓' },
+                    { finnish: 'kuinka', chinese: '多少/如何', emoji: '❓' },
+                    
+                    // 副词
+                    { finnish: 'hyvin', chinese: '很好/很', emoji: '👌' },
+                    { finnish: 'paljon', chinese: '很多', emoji: '📚' },
+                    { finnish: 'vähän', chinese: '一点', emoji: '🤏' },
+                    { finnish: 'täällä', chinese: '这里', emoji: '📍' },
+                    { finnish: 'siellä', chinese: '那里', emoji: '👉' },
+                    { finnish: 'tuolla', chinese: '在那边', emoji: '👆' },
+                    { finnish: 'nyt', chinese: '现在', emoji: '⏰' },
+                    { finnish: 'myös', chinese: '也', emoji: '➕' },
+                    { finnish: 'vain', chinese: '只/仅仅', emoji: '☝️' }
                 ]
             }
         };
@@ -878,7 +931,15 @@
             document.getElementById('flashcard').classList.remove('flipped');
             
             // 更新卡片内容
-            document.getElementById('cardEmoji').textContent = word.emoji;
+            const emojiElement = document.getElementById('cardEmoji');
+            if (word.isImage) {
+                // 如果是图片，创建img元素
+                emojiElement.innerHTML = `<img src="${word.emoji}" alt="${word.chinese}" style="width: 6rem; height: 6rem; object-fit: contain;">`;
+            } else {
+                // 如果是emoji，直接显示文本
+                emojiElement.textContent = word.emoji;
+                emojiElement.innerHTML = emojiElement.textContent; // 清除可能的img标签
+            }
             
             // 如果是准备页面，不显示文字
             if (word.isStart) {

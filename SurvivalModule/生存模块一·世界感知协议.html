@@ -113,6 +113,26 @@
             background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
         }
         
+        .pod-card.completed::after {
+            content: '✅';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .pod-card.completed .pod-number {
+            background: #28a745;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
         .pod-number {
             position: absolute;
             top: 15px;
@@ -274,7 +294,9 @@
             </div>
             
             <div class="progress-section">
-                <h3>🎯 学习进度</h3>
+                <h3>🎯 学习进度
+                    <button onclick="resetProgress()" style="margin-left: 15px; background: #dc3545; color: white; padding: 5px 12px; border: none; border-radius: 15px; font-size: 0.8rem; font-weight: 500; cursor: pointer;" title="重置学习进度">🔄</button>
+                </h3>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
@@ -405,16 +427,52 @@
                     <span class="word-count">25个词汇</span>
                 </div>
                 
-                <!-- 闪卡舱10：基础概念 -->
-                <div class="pod-card" onclick="enterPod('perusta')" data-pod="perusta">
+                <!-- 闪卡舱10：时间数字 -->
+                <div class="pod-card" onclick="enterPod('aika')" data-pod="aika">
                     <div class="pod-number">10</div>
-                    <span class="pod-emoji">🔢</span>
-                    <h3 class="pod-title">Peruskäsitteet</h3>
-                    <p class="pod-subtitle">基础概念</p>
+                    <span class="pod-emoji">⏰</span>
+                    <h3 class="pod-title">Aika ja Numerot</h3>
+                    <p class="pod-subtitle">时间与数字</p>
                     <div class="scaffold-text">
-                        最后，我们学习一些基础而重要的概念：数字、颜色、时间和简单的表达。
+                        时间是生活的节拍，数字是世界的密码。感受时间流逝，学会数字表达。
                     </div>
-                    <span class="word-count">115个词汇</span>
+                    <span class="word-count">24个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱11：颜色形容词 -->
+                <div class="pod-card" onclick="enterPod('varit')" data-pod="varit">
+                    <div class="pod-number">11</div>
+                    <span class="pod-emoji">🎨</span>
+                    <h3 class="pod-title">Värit ja Adjektiivit</h3>
+                    <p class="pod-subtitle">颜色与形容词</p>
+                    <div class="scaffold-text">
+                        世界是五彩斑斓的！学会用颜色和形容词来描述你看到的一切。
+                    </div>
+                    <span class="word-count">31个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱12：基础动词 -->
+                <div class="pod-card" onclick="enterPod('verbit')" data-pod="verbit">
+                    <div class="pod-number">12</div>
+                    <span class="pod-emoji">🏃</span>
+                    <h3 class="pod-title">Perustoimintaverbit</h3>
+                    <p class="pod-subtitle">基础动作动词</p>
+                    <div class="scaffold-text">
+                        动词让语言活起来！这些基础动词涵盖日常生活的核心动作。
+                    </div>
+                    <span class="word-count">39个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱13：其他常用词 -->
+                <div class="pod-card" onclick="enterPod('muut')" data-pod="muut">
+                    <div class="pod-number">13</div>
+                    <span class="pod-emoji">💬</span>
+                    <h3 class="pod-title">Muut Yleissanat</h3>
+                    <p class="pod-subtitle">其他常用词汇</p>
+                    <div class="scaffold-text">
+                        最后，学习一些重要的小词：疑问词、礼貌用语、连接词。它们是语言的粘合剂。
+                    </div>
+                    <span class="word-count">26个词汇</span>
                 </div>
             </div>
         </main>
@@ -439,7 +497,10 @@
             'elaimet': 27,
             'liikenne': 13,
             'paikat': 25,
-            'perusta': 115
+            'aika': 24,
+            'varit': 31,
+            'verbit': 39,
+            'muut': 26
         };
         
         /**
@@ -483,6 +544,26 @@
                     }
                 }
             });
+        }
+        
+        /**
+         * 重置学习进度
+         */
+        function resetProgress() {
+            if (confirm('确定要重置所有学习进度吗？这将清除您在所有舱室的学习记录。')) {
+                // 清除本地存储
+                localStorage.removeItem(STORAGE_KEY);
+                
+                // 移除所有卡片的完成状态
+                document.querySelectorAll('.pod-card').forEach(card => {
+                    card.classList.remove('completed');
+                });
+                
+                // 更新显示
+                updateProgressDisplay();
+                
+                alert('✅ 学习进度已重置！现在可以重新开始学习了。');
+            }
         }
         
         /**

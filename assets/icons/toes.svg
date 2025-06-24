@@ -1,0 +1,27 @@
+<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+  <!-- 脚部轮廓 -->
+  <!-- 脚掌 -->
+  <ellipse cx="30" cy="35" rx="12" ry="8" fill="#ffdbac" stroke="#333" stroke-width="1"/>
+  
+  <!-- 脚踝 -->
+  <rect x="26" y="45" width="8" height="10" rx="2" fill="#ffdbac" stroke="#333" stroke-width="1"/>
+  
+  <!-- 五个脚趾 -->
+  <!-- 大拇趾 -->
+  <ellipse cx="20" cy="28" rx="3" ry="4" fill="#ffdbac" stroke="#333" stroke-width="1"/>
+  <!-- 二趾 -->
+  <ellipse cx="26" cy="25" rx="2.5" ry="4" fill="#ffdbac" stroke="#333" stroke-width="1"/>
+  <!-- 三趾 -->
+  <ellipse cx="30" cy="24" rx="2.5" ry="4" fill="#ffdbac" stroke="#333" stroke-width="1"/>
+  <!-- 四趾 -->
+  <ellipse cx="34" cy="25" rx="2" ry="3.5" fill="#ffdbac" stroke="#333" stroke-width="1"/>
+  <!-- 小趾 -->
+  <ellipse cx="37" cy="27" rx="2" ry="3" fill="#ffdbac" stroke="#333" stroke-width="1"/>
+  
+  <!-- 指向脚趾的箭头 -->
+  <path d="M 45 15 L 38 18 L 45 21 Z" fill="#ff6b6b"/>
+  <line x1="45" y1="18" x2="38" y2="18" stroke="#ff6b6b" stroke-width="2"/>
+  
+  <!-- 脚趾区域标注 -->
+  <ellipse cx="29" cy="26" rx="10" ry="6" fill="none" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="3,2"/>
+</svg> 
