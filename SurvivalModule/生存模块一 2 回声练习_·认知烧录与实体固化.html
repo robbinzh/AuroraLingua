@@ -129,54 +129,65 @@
         
         /* 导航按钮 */
         .nav-container {
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-top: 30px;
+            gap: 20px;
         }
         
         .nav-button {
-            background: linear-gradient(135deg, #6c757d, #495057);
-            color: white;
-            border: none;
+            padding: 12px 24px;
+            border: 2px solid #667eea;
             border-radius: 25px;
-            padding: 12px 25px;
+            background: white;
+            color: #667eea;
             font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            margin: 0 10px;
             transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
         
         .nav-button:hover {
+            background: #667eea;
+            color: white;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
         
         .nav-button.primary {
             background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .nav-button.primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #5a67d8, #6b46c1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
         
         .nav-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
-            box-shadow: none;
         }
         
         /* 场景选择器样式 */
         .scenes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-            max-height: 60vh;
-            overflow-y: auto;
-            padding: 5px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
         
         .scene-card {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border: 2px solid #dee2e6;
-            border-radius: 12px;
-            padding: 15px;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -228,41 +239,7 @@
             display: inline-block;
         }
         
-        /* 快速开始按钮 */
-        .quick-start-container {
-            position: sticky;
-            bottom: 0;
-            background: white;
-            padding: 15px 0;
-            border-top: 1px solid #dee2e6;
-            margin: 0 -40px -40px -40px;
-            text-align: center;
-        }
-        
-        .quick-start-btn {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            padding: 12px 30px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-        }
-        
-        .quick-start-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
-        }
-        
-        .quick-start-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
-        }
+
         
         /* 训练界面样式 */
         .training-container {
@@ -1262,7 +1239,6 @@
             
             <div class="nav-container">
                 <button class="nav-button" onclick="exitModule()">← 返回模块一</button>
-                <button class="nav-button primary" id="continueButton" onclick="showSceneSelector()" disabled>继续 →</button>
             </div>
         </div>
 
@@ -1270,21 +1246,11 @@
         <div class="stage-selector hidden" id="sceneSelector">
             <h2>🗂️ 选择训练场景</h2>
             <p style="text-align: center; color: #6c757d; margin-bottom: 20px;">
-                选择您想要练习的词汇场景，每个场景包含不同数量的高频词汇
+                点击场景卡片直接开始训练
             </p>
             
             <div class="scenes-grid">
                 <!-- 场景卡片将通过JavaScript动态生成 -->
-            </div>
-            
-            <!-- 快速开始按钮 -->
-            <div class="quick-start-container">
-                <button class="quick-start-btn" id="quickStartButton" onclick="startTraining()" disabled>
-                    🚀 开始训练
-                </button>
-                <p style="font-size: 0.8rem; color: #6c757d; margin: 8px 0 0 0;" id="selectedInfo">
-                    请先选择一个场景
-                </p>
             </div>
             
             <div class="nav-container">
@@ -1492,12 +1458,8 @@
         function selectStage(stage) {
             currentStage = stage;
             
-            // 更新UI
-            document.querySelectorAll('.stage-card').forEach(card => card.classList.remove('active'));
-            event.target.closest('.stage-card').classList.add('active');
-            
-            // 启用继续按钮
-            document.getElementById('continueButton').disabled = false;
+            // 直接进入场景选择
+            showSceneSelector();
         }
         
         /**
@@ -1541,23 +1503,13 @@
         }
         
         /**
-         * 选择场景
+         * 选择场景并直接开始训练
          */
         function selectScene(sceneKey) {
             selectedScene = sceneKey;
             
-            // 更新UI
-            document.querySelectorAll('.scene-card').forEach(card => card.classList.remove('selected'));
-            event.target.closest('.scene-card').classList.add('selected');
-            
-            // 启用快速开始按钮
-            const quickStartBtn = document.getElementById('quickStartButton');
-            const selectedInfo = document.getElementById('selectedInfo');
-            
-            quickStartBtn.disabled = false;
-            const stageName = currentStage === 1 ? '回声定位器' : '心像生成器';
-            const sceneName = sceneData[selectedScene].title;
-            selectedInfo.textContent = `${stageName} × ${sceneName}`;
+            // 直接开始训练
+            startTraining();
         }
         
         /**
@@ -1569,8 +1521,6 @@
             
             // 清除场景选择
             selectedScene = '';
-            document.getElementById('quickStartButton').disabled = true;
-            document.getElementById('selectedInfo').textContent = '请先选择一个场景';
         }
         
         // 完整词汇数据 - 复用场景化闪卡舱的词汇库
@@ -2586,24 +2536,13 @@
         function flipWrongCard(card) {
             card.classList.toggle('flipped');
             
-            // 播放芬兰语发音
-            if (!card.classList.contains('flipped')) {
-                const finnishText = card.querySelector('.wrong-card-finnish').textContent;
-                if ('speechSynthesis' in window) {
-                    const utterance = new SpeechSynthesisUtterance(finnishText);
-                    utterance.lang = 'fi-FI';
-                    utterance.rate = 0.8;
-                    speechSynthesis.speak(utterance);
-                }
-            } else {
-                // 播放中文发音
-                const chineseText = card.querySelector('.wrong-card-chinese').textContent;
-                if ('speechSynthesis' in window) {
-                    const utterance = new SpeechSynthesisUtterance(chineseText);
-                    utterance.lang = 'zh-CN';
-                    utterance.rate = 0.8;
-                    speechSynthesis.speak(utterance);
-                }
+            // 每次点击都播放芬兰语发音
+            const finnishText = card.querySelector('.wrong-card-finnish').textContent;
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(finnishText);
+                utterance.lang = 'fi-FI';
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
             }
         }
         
