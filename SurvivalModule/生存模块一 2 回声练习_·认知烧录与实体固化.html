@@ -822,6 +822,30 @@
                 text-align: center;
             }
             
+            .wrong-words-btn {
+                font-size: 0.7em;
+                padding: 4px 8px;
+                margin-right: 5px;
+            }
+            
+            .wrong-words-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 10px;
+                padding: 15px;
+            }
+            
+            .wrong-word-card {
+                height: 100px;
+            }
+            
+            .wrong-card-finnish {
+                font-size: 1em;
+            }
+            
+            .wrong-card-chinese {
+                font-size: 0.9em;
+            }
+            
             .options-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 15px;
@@ -870,9 +894,335 @@
                 margin-top: 8px;
             }
         }
+        
+        /* 错题集样式 */
+        .wrong-words-btn {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 6px 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+        
+        .wrong-words-btn:hover {
+            background: linear-gradient(135deg, #c82333, #bd2130);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 12px rgba(220, 53, 69, 0.4);
+        }
+        
+        .wrong-words-panel {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #dc3545;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.1);
+        }
+        
+        .wrong-words-header {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 13px 13px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .wrong-words-header h4 {
+            margin: 0;
+            font-size: 1.1em;
+        }
+        
+        .close-wrong-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-wrong-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .wrong-words-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+        
+        .wrong-word-card {
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #dee2e6;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            height: 120px;
+            position: relative;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+        
+        .wrong-word-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .wrong-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .wrong-word-card.flipped .wrong-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .wrong-card-front, .wrong-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .wrong-card-front {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+        
+        .wrong-card-back {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            transform: rotateY(180deg);
+        }
+        
+        .wrong-card-finnish {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .wrong-card-chinese {
+            font-size: 1em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .remove-wrong-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .remove-wrong-btn:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+        
+        .wrong-words-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+        
+        .wrong-words-empty p {
+            margin: 0;
+            font-size: 1.1em;
+        }
+        
+        /* 全局错题集浮动按钮 */
+        .global-wrong-words-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+        
+        .global-wrong-words-btn:hover {
+            background: linear-gradient(135deg, #c82333, #bd2130);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        }
+        
+        /* 全局错题集弹窗 */
+        .global-wrong-words-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80%;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3em;
+        }
+        
+        .close-modal-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-modal-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .modal-body {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .global-wrong-words-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
+        
+        .global-wrong-words-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid #dee2e6;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        .clear-all-btn, .export-btn {
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .clear-all-btn {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+        }
+        
+        .clear-all-btn:hover {
+            background: linear-gradient(135deg, #5a6268, #495057);
+        }
+        
+        .export-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+        
+        .export-btn:hover {
+            background: linear-gradient(135deg, #20c997, #17a2b8);
+        }
     </style>
 </head>
 <body>
+    <!-- 全局错题集浮动按钮 -->
+    <div class="global-wrong-words-btn" id="globalWrongWordsBtn" onclick="openGlobalWrongWords()">
+        ❌ 错题集 (<span id="globalWrongWordsCount">0</span>)
+    </div>
+    
+    <!-- 全局错题集弹窗 -->
+    <div class="global-wrong-words-modal hidden" id="globalWrongWordsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📚 全局错题集</h3>
+                <button class="close-modal-btn" onclick="closeGlobalWrongWords()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="global-wrong-words-grid" id="globalWrongWordsGrid">
+                    <!-- 错题卡片将通过JavaScript动态生成 -->
+                </div>
+                <div class="global-wrong-words-empty hidden" id="globalWrongWordsEmpty">
+                    <p>🎉 暂无错题，继续加油！</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="clear-all-btn" onclick="clearAllWrongWords()">清空所有错题</button>
+            </div>
+        </div>
+    </div>
+    
     <div class="container">
         <!-- 页面头部 -->
         <header class="header">
@@ -954,7 +1304,24 @@
                 </div>
                 <div class="training-progress">
                     <span id="echoProgress">0 / 0</span>
+                    <button class="wrong-words-btn" onclick="toggleWrongWords()" id="wrongWordsBtn">
+                        ❌ 错题集 (<span id="wrongWordsCount">0</span>)
+                    </button>
                     <button class="exit-btn" onclick="exitTraining()">✕</button>
+                </div>
+            </div>
+
+            <!-- 错题集界面 -->
+            <div class="wrong-words-panel hidden" id="wrongWordsPanel">
+                <div class="wrong-words-header">
+                    <h4>📚 错题集</h4>
+                    <button class="close-wrong-btn" onclick="toggleWrongWords()">收起</button>
+                </div>
+                <div class="wrong-words-grid" id="wrongWordsGrid">
+                    <!-- 错题卡片将通过JavaScript动态生成 -->
+                </div>
+                <div class="wrong-words-empty hidden" id="wrongWordsEmpty">
+                    <p>🎉 暂无错题，继续加油！</p>
                 </div>
             </div>
 
@@ -1055,8 +1422,52 @@
 
     <script>
         // 全局变量
-        let currentStage = 0;
+        let currentScene = 0;
+        let isPlaying = false;
+        let grammarHighlightEnabled = true;
+        let chineseScaffoldVisible = false;
+        
+        // 训练相关变量
         let selectedScene = '';
+        let currentStage = 1; // 1: 回声定位器, 2: 心像生成器
+        let currentWords = [];
+        let totalQuestions = 0;
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        let userAnswered = false;
+        let currentAnswer = null;
+        
+        // 错题集
+        let wrongWords = new Set(); // 使用Set避免重复
+        
+        /**
+         * 初始化错题集（从localStorage加载）
+         */
+        function initWrongWords() {
+            try {
+                const savedWrongWords = localStorage.getItem('auroralingua_wrong_words');
+                if (savedWrongWords) {
+                    const wordsArray = JSON.parse(savedWrongWords);
+                    wrongWords = new Set(wordsArray);
+                }
+            } catch (error) {
+                console.warn('加载错题集失败:', error);
+                wrongWords = new Set();
+            }
+            updateWrongWordsCount();
+        }
+        
+        /**
+         * 保存错题集到localStorage
+         */
+        function saveWrongWords() {
+            try {
+                const wordsArray = Array.from(wrongWords);
+                localStorage.setItem('auroralingua_wrong_words', JSON.stringify(wordsArray));
+            } catch (error) {
+                console.warn('保存错题集失败:', error);
+            }
+        }
         
         // 场景数据 - 复用场景化闪卡舱的分类
         const sceneData = {
@@ -1634,14 +2045,6 @@
             }
         };
         
-        // 训练状态变量
-        let currentWords = [];
-        let currentQuestion = 0;
-        let currentAnswer = null;
-        let totalQuestions = 0;
-        let correctAnswers = 0;
-        let userAnswered = false;
-        
         /**
          * 开始训练
          */
@@ -1815,6 +2218,9 @@
             // 更新统计
             if (isCorrect) {
                 correctAnswers++;
+            } else {
+                // 答错时添加到错题集
+                addToWrongWords(currentAnswer);
             }
             
             // 显示反馈
@@ -2065,6 +2471,235 @@
         function exitModule() {
             if (confirm('确定要退出模块1.5吗？')) {
                 window.location.href = '生存模块一·1 世界感知协议.html';
+            }
+        }
+        
+        /**
+         * 添加词汇到错题集
+         */
+        function addToWrongWords(word) {
+            // 使用芬兰语作为唯一标识
+            wrongWords.add(JSON.stringify(word));
+            updateWrongWordsCount();
+            saveWrongWords(); // 保存到localStorage
+        }
+        
+        /**
+         * 从错题集中移除词汇
+         */
+        function removeFromWrongWords(word) {
+            wrongWords.delete(JSON.stringify(word));
+            updateWrongWordsCount();
+            renderWrongWords();
+            renderGlobalWrongWords(); // 同时更新全局错题集显示
+            saveWrongWords(); // 保存到localStorage
+        }
+        
+        /**
+         * 更新错题集计数显示
+         */
+        function updateWrongWordsCount() {
+            const countElement = document.getElementById('wrongWordsCount');
+            if (countElement) {
+                countElement.textContent = wrongWords.size;
+            }
+            // 同时更新全局错题集计数
+            const globalCountElement = document.getElementById('globalWrongWordsCount');
+            if (globalCountElement) {
+                globalCountElement.textContent = wrongWords.size;
+            }
+        }
+        
+        /**
+         * 切换错题集面板显示/隐藏
+         */
+        function toggleWrongWords() {
+            const panel = document.getElementById('wrongWordsPanel');
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                renderWrongWords();
+            } else {
+                panel.classList.add('hidden');
+            }
+        }
+        
+        /**
+         * 渲染错题集
+         */
+        function renderWrongWords() {
+            const grid = document.getElementById('wrongWordsGrid');
+            const emptyMsg = document.getElementById('wrongWordsEmpty');
+            
+            if (wrongWords.size === 0) {
+                grid.style.display = 'none';
+                emptyMsg.classList.remove('hidden');
+                return;
+            }
+            
+            grid.style.display = 'grid';
+            emptyMsg.classList.add('hidden');
+            grid.innerHTML = '';
+            
+            wrongWords.forEach(wordStr => {
+                const word = JSON.parse(wordStr);
+                const cardElement = createWrongWordCard(word);
+                grid.appendChild(cardElement);
+            });
+        }
+        
+        /**
+         * 创建错题卡片
+         */
+        function createWrongWordCard(word) {
+            const card = document.createElement('div');
+            card.className = 'wrong-word-card';
+            card.onclick = () => flipWrongCard(card);
+            
+            // 处理图片或emoji
+            let emojiContent;
+            if (word.isImage) {
+                emojiContent = `<img src="${word.emoji}" alt="${word.chinese}" style="width: 40px; height: 40px;">`;
+            } else {
+                emojiContent = `<div style="font-size: 2em;">${word.emoji}</div>`;
+            }
+            
+            card.innerHTML = `
+                <div class="wrong-card-inner">
+                    <div class="wrong-card-front">
+                        <div class="wrong-card-finnish">${word.finnish}</div>
+                        <div style="font-size: 0.8em; color: #999;">点击查看中文</div>
+                    </div>
+                    <div class="wrong-card-back">
+                        ${emojiContent}
+                        <div class="wrong-card-chinese">${word.chinese}</div>
+                    </div>
+                </div>
+                <button class="remove-wrong-btn" onclick="event.stopPropagation(); removeFromWrongWords(${JSON.stringify(word).replace(/"/g, '&quot;')})">×</button>
+            `;
+            
+            return card;
+        }
+        
+        /**
+         * 翻转错题卡片
+         */
+        function flipWrongCard(card) {
+            card.classList.toggle('flipped');
+            
+            // 播放芬兰语发音
+            if (!card.classList.contains('flipped')) {
+                const finnishText = card.querySelector('.wrong-card-finnish').textContent;
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(finnishText);
+                    utterance.lang = 'fi-FI';
+                    utterance.rate = 0.8;
+                    speechSynthesis.speak(utterance);
+                }
+            } else {
+                // 播放中文发音
+                const chineseText = card.querySelector('.wrong-card-chinese').textContent;
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(chineseText);
+                    utterance.lang = 'zh-CN';
+                    utterance.rate = 0.8;
+                    speechSynthesis.speak(utterance);
+                }
+            }
+        }
+        
+        // 页面加载时初始化错题集
+        document.addEventListener('DOMContentLoaded', function() {
+            initWrongWords();
+        });
+        
+        /**
+         * 打开全局错题集弹窗
+         */
+        function openGlobalWrongWords() {
+            const modal = document.getElementById('globalWrongWordsModal');
+            modal.classList.remove('hidden');
+            renderGlobalWrongWords();
+        }
+        
+        /**
+         * 关闭全局错题集弹窗
+         */
+        function closeGlobalWrongWords() {
+            const modal = document.getElementById('globalWrongWordsModal');
+            modal.classList.add('hidden');
+        }
+        
+        /**
+         * 渲染全局错题集
+         */
+        function renderGlobalWrongWords() {
+            const grid = document.getElementById('globalWrongWordsGrid');
+            const emptyMsg = document.getElementById('globalWrongWordsEmpty');
+            
+            if (wrongWords.size === 0) {
+                grid.style.display = 'none';
+                emptyMsg.classList.remove('hidden');
+                return;
+            }
+            
+            grid.style.display = 'grid';
+            emptyMsg.classList.add('hidden');
+            grid.innerHTML = '';
+            
+            wrongWords.forEach(wordStr => {
+                const word = JSON.parse(wordStr);
+                const cardElement = createGlobalWrongWordCard(word);
+                grid.appendChild(cardElement);
+            });
+        }
+        
+        /**
+         * 创建全局错题卡片
+         */
+        function createGlobalWrongWordCard(word) {
+            const card = document.createElement('div');
+            card.className = 'wrong-word-card';
+            card.onclick = () => flipWrongCard(card);
+            
+            // 处理图片或emoji
+            let emojiContent;
+            if (word.isImage) {
+                emojiContent = `<img src="${word.emoji}" alt="${word.chinese}" style="width: 30px; height: 30px;">`;
+            } else {
+                emojiContent = `<div style="font-size: 1.5em;">${word.emoji}</div>`;
+            }
+            
+            card.innerHTML = `
+                <div class="wrong-card-inner">
+                    <div class="wrong-card-front">
+                        <div class="wrong-card-finnish">${word.finnish}</div>
+                        <div style="font-size: 0.7em; color: #999;">点击查看中文</div>
+                    </div>
+                    <div class="wrong-card-back">
+                        ${emojiContent}
+                        <div class="wrong-card-chinese">${word.chinese}</div>
+                    </div>
+                </div>
+                <button class="remove-wrong-btn" onclick="event.stopPropagation(); removeFromWrongWords(${JSON.stringify(word).replace(/"/g, '&quot;')})">×</button>
+            `;
+            
+            return card;
+        }
+        
+        /**
+         * 清空所有错题
+         */
+        function clearAllWrongWords() {
+            if (confirm('确定要清空所有错题吗？此操作无法撤销。')) {
+                wrongWords.clear();
+                saveWrongWords();
+                updateWrongWordsCount();
+                renderGlobalWrongWords();
+                // 如果在训练页面，也更新训练页面的错题集显示
+                const wrongWordsPanel = document.getElementById('wrongWordsPanel');
+                if (wrongWordsPanel && !wrongWordsPanel.classList.contains('hidden')) {
+                    renderWrongWords();
+                }
             }
         }
     </script>
