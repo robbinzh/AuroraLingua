@@ -132,15 +132,23 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px;
+            padding: 10px;
             border-right: 2px solid #e9ecef;
         }
         
         .illustration {
-            font-size: 4rem;
-            text-align: center;
-            line-height: 1.2;
-            max-width: 100%;
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .illustration:hover {
+            transform: scale(1.02);
         }
         
         .illustration-title {
@@ -447,7 +455,7 @@
                     <!-- 场景内容将在这里动态加载 -->
                     <div class="illustration-panel">
                         <div>
-                            <div class="illustration" id="sceneIllustration">🚌🚕</div>
+                            <img class="illustration" id="sceneIllustration" src="../assets/image/M1_city_S1.png" alt="街道场景">
                             <div class="illustration-title" id="sceneIllustrationTitle">街道 Katu</div>
                         </div>
                     </div>
@@ -499,7 +507,8 @@
                 id: 1,
                 title: "Matkalle lähtö",
                 titleChinese: "出发上路",
-                emoji: "🚌🚕🚶‍♂️🏃‍♀️",
+                imagePath: "../assets/image/M1_city_S1.png",
+                imageAlt: "街道场景",
                 illustrationTitle: "街道 Katu",
                 content: `
                     <p><span class="vocab-word">Hei</span> <span class="grammar-sina">sinä</span>! Tänään me <span class="grammar-verb">tutkimme</span> <span class="vocab-word">kaupunkia</span>!</p>
@@ -512,7 +521,8 @@
                 id: 2,
                 title: "Kaupassa",
                 titleChinese: "在商店里",
-                emoji: "🍬🍪🛒💳",
+                imagePath: "../assets/image/M1_city_S2.png",
+                imageAlt: "商店场景",
                 illustrationTitle: "商店 Kauppa",
                 content: `
                     <p>Nyt minä <span class="grammar-olla">olen</span> <span class="grammar-static">kaupassa</span>.</p>
@@ -525,7 +535,8 @@
                 id: 3,
                 title: "Leikkipuistossa",
                 titleChinese: "在游乐场",
-                emoji: "⚽🎨✈️🪆",
+                imagePath: "../assets/image/M1_city_S3.png",
+                imageAlt: "游乐场场景",
                 illustrationTitle: "游乐场 Leikkipuisto",
                 content: `
                     <p>Tämä <span class="grammar-olla">on</span> <span class="vocab-word">leikkipuisto</span>. Täällä minä <span class="grammar-verb">leikin</span>.</p>
@@ -538,7 +549,8 @@
                 id: 4,
                 title: "Kirjastossa", 
                 titleChinese: "在图书馆",
-                emoji: "📚🤫📖✨",
+                imagePath: "../assets/image/M1_city_S4.png",
+                imageAlt: "图书馆场景",
                 illustrationTitle: "图书馆 Kirjasto",
                 content: `
                     <p>Nyt minä <span class="grammar-olla">olen</span> <span class="grammar-static">kirjastossa</span>.</p>
@@ -552,7 +564,8 @@
                 id: 5,
                 title: "Kotiinpaluu junalla",
                 titleChinese: "坐火车回家",
-                emoji: "🚂😴👋🏠",
+                imagePath: "../assets/image/M1_city_S5.png",
+                imageAlt: "火车回家场景",
                 illustrationTitle: "火车 Juna",
                 content: `
                     <p>Nyt minä <span class="grammar-olla">olen</span> <span class="vocab-word">väsynyt</span>. <span class="grammar-olla">On</span> aika <span class="grammar-verb">mennä</span> kotiin.</p>
@@ -970,7 +983,17 @@
             const scene = storyScenes[sceneIndex];
             
             // 更新图画
-            document.getElementById('sceneIllustration').textContent = scene.emoji;
+            const illustrationElement = document.getElementById('sceneIllustration');
+            if (scene.imagePath) {
+                // 使用图片
+                illustrationElement.src = scene.imagePath;
+                illustrationElement.alt = scene.imageAlt || scene.title;
+            } else if (scene.emoji) {
+                // 对于仍使用emoji的场景，需要改回div元素
+                // 这里暂时保持img元素，但设置一个默认图片或处理方式
+                illustrationElement.src = "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3e%3ctext x='50%25' y='50%25' font-size='60' text-anchor='middle' dy='.35em'%3e" + scene.emoji + "%3c/text%3e%3c/svg%3e";
+                illustrationElement.alt = scene.title;
+            }
             document.getElementById('sceneIllustrationTitle').textContent = scene.illustrationTitle;
             
             // 更新标题
