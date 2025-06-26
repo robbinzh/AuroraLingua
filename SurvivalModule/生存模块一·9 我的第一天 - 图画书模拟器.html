@@ -132,15 +132,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px;
+            padding: 20px;
             border-right: 2px solid #e9ecef;
         }
         
         .illustration {
-            font-size: 4rem;
-            text-align: center;
-            line-height: 1.2;
-            max-width: 100%;
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+        
+        .illustration:hover {
+            transform: scale(1.02);
         }
         
         .illustration-title {
@@ -476,7 +482,7 @@
             }
             
             .illustration {
-                font-size: 3rem;
+                max-height: 200px;
             }
             
             .text-panel {
@@ -496,7 +502,7 @@
         
         @media (max-width: 480px) {
             .illustration {
-                font-size: 2.5rem;
+                max-height: 150px;
             }
             
             .story-text {
@@ -533,7 +539,7 @@
                     <!-- 场景内容将在这里动态加载 -->
                     <div class="illustration-panel">
                         <div>
-                            <div class="illustration" id="sceneIllustration">🛏️🌅</div>
+                            <img class="illustration" id="sceneIllustration" src="../assets/image/M1_myday_S1.jpeg" alt="卧室场景" />
                             <div class="illustration-title" id="sceneIllustrationTitle">卧室 Makuuhuone</div>
                         </div>
                     </div>
@@ -585,7 +591,8 @@
                 id: 1,
                 title: "Herään makuuhuoneessa",
                 titleChinese: "我在卧室醒来",
-                emoji: "🛏️🌅🪟💡",
+                imagePath: "../assets/image/M1_myday_S1.jpeg",
+                imageAlt: "卧室场景",
                 illustrationTitle: "卧室 Makuuhuone",
                 content: `
                     <p><span class="vocab-word">Aurinko</span> paistaa. Minä <span class="grammar-olla">olen</span> hereillä.</p>
@@ -599,7 +606,8 @@
                 id: 2,
                 title: "Aamutoimet kylpyhuoneessa", 
                 titleChinese: "我在浴室晨间洗漱",
-                emoji: "🚿🪥🪞💧",
+                imagePath: "../assets/image/M1_myday_S2.jpeg",
+                imageAlt: "浴室场景",
                 illustrationTitle: "浴室 Kylpyhuone",
                 content: `
                     <p>Minä <span class="grammar-verb">menen</span> <span class="grammar-dynamic">kylpyhuoneeseen</span>.</p>
@@ -613,7 +621,8 @@
                 id: 3,
                 title: "Aamiainen keittiössä",
                 titleChinese: "我在厨房吃早餐", 
-                emoji: "🍞🧀🥛🍎🐱",
+                imagePath: "../assets/image/M1_myday_S3.jpeg",
+                imageAlt: "厨房场景",
                 illustrationTitle: "厨房 Keittiö",
                 content: `
                     <p>Nyt minä <span class="grammar-verb">syön</span> aamiaista <span class="grammar-static">keittiössä</span>.</p>
@@ -627,7 +636,8 @@
                 id: 4,
                 title: "Valmistautuminen piknikille",
                 titleChinese: "准备去野餐",
-                emoji: "🎒💧🥪📖👒",
+                imagePath: "../assets/image/M1_myday_S4.png",
+                imageAlt: "准备野餐场景",
                 illustrationTitle: "准备 Valmistautuminen", 
                 content: `
                     <p>Tänään <span class="grammar-olla">on</span> <span class="vocab-word">kaunis</span> <span class="vocab-word">päivä</span>! Minä <span class="grammar-verb">menen</span> piknikille.</p>
@@ -643,7 +653,8 @@
                 id: 5,
                 title: "Piknik puistossa",
                 titleChinese: "在公园野餐",
-                emoji: "🌳🌱🏞️☁️😊", 
+                imagePath: "../assets/image/M1_myday_S5.png",
+                imageAlt: "公园野餐场景", 
                 illustrationTitle: "公园 Puisto",
                 content: `
                     <p>Minä <span class="grammar-verb">istun</span> <span class="grammar-static">puistossa</span>. <span class="vocab-word">Puisto</span> <span class="grammar-olla">on</span> <span class="vocab-word">iso</span> ja <span class="vocab-word">vihreä</span>.</p>
@@ -916,8 +927,10 @@
             
             const scene = storyScenes[sceneIndex];
             
-            // 更新图画
-            document.getElementById('sceneIllustration').textContent = scene.emoji;
+            // 更新图片
+            const illustrationImg = document.getElementById('sceneIllustration');
+            illustrationImg.src = scene.imagePath;
+            illustrationImg.alt = scene.imageAlt;
             document.getElementById('sceneIllustrationTitle').textContent = scene.illustrationTitle;
             
             // 更新标题
