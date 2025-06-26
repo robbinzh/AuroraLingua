@@ -172,33 +172,26 @@
         .toolbar {
             display: flex;
             gap: 10px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            justify-content: center;
+            margin-bottom: 20px;
         }
         
         .toolbar-btn {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border: 1px solid #dee2e6;
-            border-radius: 20px;
-            padding: 8px 16px;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
-            color: #495057;
-            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .toolbar-btn:hover {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-        
-        .toolbar-btn.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
         
         /* 故事文字样式 */
@@ -277,20 +270,26 @@
             color: #495057;
         }
         
-        /* 词汇高亮样式 */
+        /* 词汇样式 */
         .vocab-word {
-            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-            padding: 2px 6px;
-            border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
-            border-bottom: 2px solid #f39c12;
+            position: relative;
+        }
+        
+        /* 变位词汇（有原型透视）的特殊样式 */
+        .has-inflection {
+            border-bottom: 2px dotted #f39c12 !important;
+            font-weight: 500;
         }
         
         .vocab-word:hover {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            color: white;
-            transform: translateY(-1px);
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 3px;
+        }
+        
+        .vocab-word.has-inflection:hover {
+            text-decoration-color: #667eea;
         }
         
         /* 语法高亮样式 */
@@ -379,6 +378,24 @@
             transform: translateX(-50%);
             border: 5px solid transparent;
             border-bottom-color: rgba(0,0,0,0.9);
+        }
+        
+        /* 语法高亮关闭状态 */
+        .story-text.no-grammar .grammar-olla,
+        .story-text.no-grammar .grammar-existence,
+        .story-text.no-grammar .grammar-static,
+        .story-text.no-grammar .grammar-dynamic,
+        .story-text.no-grammar .grammar-partitive,
+        .story-text.no-grammar .grammar-accusative,
+        .story-text.no-grammar .grammar-verb,
+        .story-text.no-grammar .grammar-sina,
+        .story-text.no-grammar .grammar-question,
+        .story-text.no-grammar .grammar-negative,
+        .story-text.no-grammar .grammar-modal,
+        .story-text.no-grammar .grammar-past {
+            color: inherit;
+            background: none;
+            font-weight: normal;
         }
         
         /* 响应式设计 */
@@ -939,8 +956,6 @@
             window.addEventListener('resize', function() {
                 hideWordTooltip();
             });
-            
-            console.log('城市探险图画书模拟器初始化完成');
         }
         
         /**
@@ -964,17 +979,20 @@
             // 更新故事内容
             let storyContent = scene.content;
             
-            // 如果语法高亮关闭，去除语法标记
-            if (!grammarHighlightEnabled) {
-                storyContent = storyContent.replace(/<span class="grammar-[^"]*">/g, '').replace(/<\/span>/g, '');
-            }
-            
             // 添加中文脚手架（如果开启）
             if (chineseScaffoldVisible) {
                 storyContent = addChineseScaffold(storyContent);
             }
             
-            document.getElementById('storyText').innerHTML = storyContent;
+            const storyText = document.getElementById('storyText');
+            storyText.innerHTML = storyContent;
+            
+            // 应用语法高亮状态
+            if (!grammarHighlightEnabled) {
+                storyText.classList.add('no-grammar');
+            } else {
+                storyText.classList.remove('no-grammar');
+            }
             
             // 重新设置词汇交互
             setupWordInteraction();
@@ -1110,14 +1128,17 @@
         function toggleGrammarHighlight() {
             grammarHighlightEnabled = !grammarHighlightEnabled;
             const btn = document.getElementById('grammarBtn');
+            const storyText = document.getElementById('storyText');
+            
             btn.textContent = `🎨 语法高亮: ${grammarHighlightEnabled ? '开' : '关'}`;
+            
             if (grammarHighlightEnabled) {
                 btn.classList.add('active');
+                storyText.classList.remove('no-grammar');
             } else {
                 btn.classList.remove('active');
+                storyText.classList.add('no-grammar');
             }
-            // 重新加载当前场景以应用高亮变化
-            loadScene(currentScene);
         }
         
         /**
@@ -1206,6 +1227,14 @@
             const interactiveElements = storyText.querySelectorAll('.vocab-word, [class^="grammar-"]');
             
             interactiveElements.forEach(element => {
+                const finnishWord = element.textContent.toLowerCase();
+                const wordData = vocabularyData[finnishWord];
+                
+                // 为有原型透视功能的词汇添加特殊样式
+                if (wordData && typeof wordData === 'object' && wordData.prototype) {
+                    element.classList.add('has-inflection');
+                }
+                
                 element.addEventListener('click', function(e) {
                     e.stopPropagation();
                     showWordTooltip(this, e);
