@@ -304,6 +304,24 @@
             nav div {
                 justify-content: center;
             }
+            
+            /* FAQ Responsive Design */
+            .faq-grid {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* FAQ Card Mobile */
+            [onclick="openFAQModal()"] {
+                bottom: 20px !important;
+                right: 20px !important;
+                max-width: 60px !important;
+                padding: 12px !important;
+                border-radius: 50% !important;
+            }
+            
+            [onclick="openFAQModal()"] span:last-child {
+                display: none !important;
+            }
         }
         
         /* Animations */
@@ -328,6 +346,10 @@
         
                  .module-card {
              animation: fadeInUp 0.6s ease-out;
+         }
+         
+         .faq-section {
+             animation: fadeInUp 0.8s ease-out;
          }
          
 
@@ -399,6 +421,7 @@
                 </div>
             </section>
             
+
             <!-- Statistics -->
             <section class="stats">
                 <div class="stat-item">
@@ -464,10 +487,157 @@
             </section>
         </main>
         
+        <!-- FAQ Quick Access Card -->
+        <div onclick="openFAQModal()" style="position: fixed; bottom: 30px; right: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; border-radius: 50px; cursor: pointer; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3); transition: all 0.3s ease; z-index: 1000; display: flex; align-items: center; gap: 10px; max-width: 200px;">
+            <span style="font-size: 1.2rem;">❓</span>
+            <span style="font-weight: 600; font-size: 0.9rem;">系统要求与FAQ</span>
+        </div>
+        
+        <!-- FAQ Modal -->
+        <div id="faqModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; padding: 20px;">
+            <div style="background: white; border-radius: 20px; max-width: 800px; max-height: 90vh; overflow-y: auto; position: relative;">
+                <div style="padding: 40px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                        <h2 style="color: #667eea; margin: 0; font-size: 1.8rem;">❓ 系统要求与常见问题</h2>
+                        <button onclick="closeFAQModal()" style="background: none; border: none; font-size: 2rem; cursor: pointer; color: #999; padding: 0; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                            ×
+                        </button>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; border-radius: 15px; padding: 25px; margin-bottom: 20px;">
+                        <h3 style="color: #667eea; margin-bottom: 15px; display: flex; align-items: center; font-size: 1.2rem;">
+                            <span style="margin-right: 10px;">🔊</span>
+                            语音朗读功能需要什么环境？
+                        </h3>
+                        <div style="color: #666; line-height: 1.6;">
+                            <p style="margin-bottom: 12px;"><strong>💻 电脑端推荐：</strong></p>
+                            <ul style="margin-left: 20px; margin-bottom: 15px; font-size: 0.95rem;">
+                                <li>✅ Chrome/Edge 33+ (推荐，芬兰语支持最佳)</li>
+                                <li>✅ Firefox 49+ | Safari 7+ (macOS)</li>
+                                <li>❌ IE 不支持</li>
+                            </ul>
+                            
+                            <p style="margin-bottom: 12px;"><strong>📱 手机端推荐：</strong></p>
+                            <ul style="margin-left: 20px; margin-bottom: 15px; font-size: 0.95rem;">
+                                <li>✅ Safari (iOS 7+) - 芬兰语发音质量很好</li>
+                                <li>✅ Chrome Mobile (Android 4.4+) - 需要Google TTS语音包</li>
+                                <li>⚠️ 微信浏览器 - 部分功能受限</li>
+                            </ul>
+                            
+                            <div style="background: #e8f4fd; border-left: 4px solid #667eea; padding: 12px; border-radius: 6px;">
+                                <p style="margin: 0; color: #2c5282; font-size: 0.9rem;">
+                                    <strong>💡 首次使用提示：</strong> 请允许浏览器的音频权限，并确保系统已安装芬兰语语音包。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; border-radius: 15px; padding: 25px; margin-bottom: 20px;">
+                        <h3 style="color: #667eea; margin-bottom: 15px; display: flex; align-items: center; font-size: 1.2rem;">
+                            <span style="margin-right: 10px;">🔧</span>
+                            没有芬兰语语音怎么办？
+                        </h3>
+                        <div style="color: #666; line-height: 1.6; font-size: 0.95rem;">
+                            <p style="margin-bottom: 8px;"><strong>Windows系统：</strong></p>
+                            <p style="margin-left: 20px; margin-bottom: 12px;">设置 → 时间和语言 → 语音 → 添加芬兰语</p>
+                            
+                            <p style="margin-bottom: 8px;"><strong>Android系统：</strong></p>
+                            <p style="margin-left: 20px; margin-bottom: 8px;">1. 安装 Google "Speech Recognition & Synthesis" 应用</p>
+                            <p style="margin-left: 20px; margin-bottom: 8px;">2. 设置 → 辅助功能 → 文字转语音输出 → 选择芬兰语</p>
+                            <p style="margin-left: 20px; margin-bottom: 12px; font-size: 0.9rem; color: #888;">(需要Google语音服务 + 系统TTS芬兰语设置)</p>
+                            
+                            <p style="margin-bottom: 8px;"><strong>iOS系统：</strong></p>
+                            <p style="margin-left: 20px; margin-bottom: 8px;">1. 设置 → 通用 → 语言与地区 → 添加芬兰语</p>
+                            <p style="margin-left: 20px; margin-bottom: 8px;">2. Safari → 首选语言 → 选择芬兰语</p>
+                            <p style="margin-left: 20px; margin-bottom: 0; font-size: 0.9rem; color: #888;">(需要安装芬兰语语言包并配置Safari首选语言)</p>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; border-radius: 15px; padding: 25px;">
+                        <h3 style="color: #667eea; margin-bottom: 15px; display: flex; align-items: center; font-size: 1.2rem;">
+                            <span style="margin-right: 10px;">⚡</span>
+                            最佳学习配置推荐
+                        </h3>
+                        <div style="color: #666; line-height: 1.6;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                                <div style="background: #e8f4fd; border-radius: 10px; padding: 15px;">
+                                    <h4 style="color: #667eea; margin-bottom: 8px; font-size: 1rem;">🖥️ 桌面端</h4>
+                                    <p style="margin: 0; font-size: 0.9rem;">Chrome + Windows 10/11<br>+ 芬兰语语音包</p>
+                                </div>
+                                <div style="background: #e8f4fd; border-radius: 10px; padding: 15px;">
+                                    <h4 style="color: #667eea; margin-bottom: 8px; font-size: 1rem;">📱 移动端</h4>
+                                    <p style="margin: 0; font-size: 0.9rem;">Safari + iOS 或<br>Chrome + Android</p>
+                                </div>
+                            </div>
+                            
+                            <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; border-radius: 6px;">
+                                <p style="margin: 0; color: #856404; font-size: 0.9rem;">
+                                    <strong>🎧 学习建议：</strong> 建议佩戴耳机获得最佳音频体验，音量调节适中。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- Footer -->
         <footer class="footer">
             <p>&copy; 2024 AuroraLingua. 让每个人都能自信地使用芬兰语。</p>
         </footer>
     </div>
+
+    <script>
+        // FAQ Modal Functions
+        function openFAQModal() {
+            const modal = document.getElementById('faqModal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // Animate in
+            setTimeout(() => {
+                modal.style.opacity = '1';
+            }, 10);
+        }
+        
+        function closeFAQModal() {
+            const modal = document.getElementById('faqModal');
+            modal.style.opacity = '0';
+            document.body.style.overflow = 'auto';
+            
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('faqModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeFAQModal();
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeFAQModal();
+            }
+        });
+        
+        // FAQ card hover effect
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqCard = document.querySelector('[onclick="openFAQModal()"]');
+            
+            faqCard.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px) scale(1.05)';
+                this.style.boxShadow = '0 12px 35px rgba(102, 126, 234, 0.4)';
+            });
+            
+            faqCard.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+                this.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.3)';
+            });
+        });
+    </script>
 </body>
 </html> 
