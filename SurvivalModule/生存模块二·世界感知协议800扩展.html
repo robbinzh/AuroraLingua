@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模块二：世界感知协议800扩展 - 场景化闪卡版</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+        
+        .header .description {
+            font-size: 1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .principle-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .principle-box h2 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        
+        .principle-box p {
+            font-size: 1rem;
+            opacity: 0.95;
+            line-height: 1.5;
+        }
+        
+        .pods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .pod-card {
+            background: #f8f9fa;
+            border: 3px solid transparent;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pod-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.2);
+        }
+        
+        .pod-card.completed {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        }
+        
+        .pod-card.completed::after {
+            content: '✅';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .pod-card.completed .pod-number {
+            background: #28a745;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .pod-number {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #dee2e6;
+        }
+        
+        .pod-emoji {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .pod-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .pod-subtitle {
+            font-size: 1rem;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        
+        .scaffold-text {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 10px;
+            font-style: italic;
+            color: #495057;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .word-count {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .progress-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            background: #e9ecef;
+            height: 8px;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .back-link a {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .back-link a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .pods-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🌟 模块二：世界感知协议800扩展</h1>
+            <p class="subtitle">场景化闪卡版 - 高频词汇进阶系统</p>
+            <p class="description">
+                进入芬兰语学习的进阶阶段！在基础400词的基础上，我们将扩展您的词汇量，
+                深入探索更丰富的表达方式和生活场景。
+            </p>
+        </header>
+        
+        <main class="main-content">
+            <div class="principle-box">
+                <h2>🧠 进阶词汇建构原则</h2>
+                <p>
+                    在这个阶段，您将接触到更多实用的高频词汇。每个闪卡舱都是一个专业的词汇库，
+                    帮助您构建更完整的芬兰语表达体系。
+                </p>
+            </div>
+            
+            <div class="progress-section">
+                <h3>🎯 学习进度
+                    <button onclick="resetProgress()" style="margin-left: 15px; background: #dc3545; color: white; padding: 5px 12px; border: none; border-radius: 15px; font-size: 0.8rem; font-weight: 500; cursor: pointer;" title="重置学习进度">🔄</button>
+                </h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="completedPods">0</span>
+                        <span class="stat-label">已完成舱室</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="learnedWords">0</span>
+                        <span class="stat-label">已学词汇</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">800+</span>
+                        <span class="stat-label">总词汇数</span>
+                    </div>
+                </div>
+            </div>
+            
+            <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">🎴 选择您的闪卡舱</h2>
+            
+            <div class="pods-grid">
+                <!-- 闪卡舱1：家庭与人物扩展 -->
+                <div class="pod-card" onclick="enterPod('perhe_extended')" data-pod="perhe_extended">
+                    <div class="pod-number">01</div>
+                    <span class="pod-emoji">👨‍👩‍👧‍👦</span>
+                    <h3 class="pod-title">Perhe Laajennettu</h3>
+                    <p class="pod-subtitle">家庭与人物 (扩展)</p>
+                    <div class="scaffold-text">
+                        认识更多的家庭成员和社会角色。从亲戚到邻居，扩展您的人际词汇。
+                    </div>
+                    <span class="word-count">8个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱2：职业与社会 -->
+                <div class="pod-card" onclick="enterPod('ammatit')" data-pod="ammatit">
+                    <div class="pod-number">02</div>
+                    <span class="pod-emoji">👩‍⚕️</span>
+                    <h3 class="pod-title">Ammatit ja Yhteiskunta</h3>
+                    <p class="pod-subtitle">职业与社会</p>
+                    <div class="scaffold-text">
+                        了解各种职业和社会角色。从医生到工程师，掌握职场必备词汇。
+                    </div>
+                    <span class="word-count">15个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱3：身体部位扩展 -->
+                <div class="pod-card" onclick="enterPod('keho_extended')" data-pod="keho_extended">
+                    <div class="pod-number">03</div>
+                    <span class="pod-emoji">🧍</span>
+                    <h3 class="pod-title">Keho Laajennettu</h3>
+                    <p class="pod-subtitle">身体部位 (扩展)</p>
+                    <div class="scaffold-text">
+                        更详细地了解人体构造。从外表特征到内部器官，完善身体词汇。
+                    </div>
+                    <span class="word-count">10个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱4：食物和饮料扩展 -->
+                <div class="pod-card" onclick="enterPod('ruoka_extended')" data-pod="ruoka_extended">
+                    <div class="pod-number">04</div>
+                    <span class="pod-emoji">🍽️</span>
+                    <h3 class="pod-title">Ruoka ja Juoma Laajennettu</h3>
+                    <p class="pod-subtitle">食物与饮料 (扩展)</p>
+                    <div class="scaffold-text">
+                        探索更丰富的美食世界。从早餐到晚餐，从调料到饮品，满足您的味蕾词汇需求。
+                    </div>
+                    <span class="word-count">26个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱5：家里物品扩展 -->
+                <div class="pod-card" onclick="enterPod('koti_extended')" data-pod="koti_extended">
+                    <div class="pod-number">05</div>
+                    <span class="pod-emoji">🏠</span>
+                    <h3 class="pod-title">Koti Laajennettu</h3>
+                    <p class="pod-subtitle">家里物品 (扩展)</p>
+                    <div class="scaffold-text">
+                        深入了解现代家居。从家电到装饰，掌握现代生活必需品的芬兰语表达。
+                    </div>
+                    <span class="word-count">10个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱6：教育与工作 -->
+                <div class="pod-card" onclick="enterPod('työ_koulutus')" data-pod="työ_koulutus">
+                    <div class="pod-number">06</div>
+                    <span class="pod-emoji">🎓</span>
+                    <h3 class="pod-title">Työ ja Koulutus</h3>
+                    <p class="pod-subtitle">教育与工作</p>
+                    <div class="scaffold-text">
+                        进入学习和职场世界。从学校生活到职业发展，建立专业词汇基础。
+                    </div>
+                    <span class="word-count">14个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱7：地点和建筑扩展 -->
+                <div class="pod-card" onclick="enterPod('paikat_extended')" data-pod="paikat_extended">
+                    <div class="pod-number">07</div>
+                    <span class="pod-emoji">🏫</span>
+                    <h3 class="pod-title">Paikat Laajennettu</h3>
+                    <p class="pod-subtitle">地点和建筑 (扩展)</p>
+                    <div class="scaffold-text">
+                        探索更广阔的城市空间。从餐厅到博物馆，从银行到剧院，熟悉都市生活。
+                    </div>
+                    <span class="word-count">19个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱8：时间扩展 -->
+                <div class="pod-card" onclick="enterPod('aika_extended')" data-pod="aika_extended">
+                    <div class="pod-number">08</div>
+                    <span class="pod-emoji">⏰</span>
+                    <h3 class="pod-title">Aika Laajennettu</h3>
+                    <p class="pod-subtitle">时间 (扩展)</p>
+                    <div class="scaffold-text">
+                        精确掌握时间表达。从星期到季节，从过去到未来，完善您的时间概念。
+                    </div>
+                    <span class="word-count">19个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱9：爱好与休闲 -->
+                <div class="pod-card" onclick="enterPod('harrastukset')" data-pod="harrastukset">
+                    <div class="pod-number">09</div>
+                    <span class="pod-emoji">🎵</span>
+                    <h3 class="pod-title">Harrastukset</h3>
+                    <p class="pod-subtitle">爱好与休闲</p>
+                    <div class="scaffold-text">
+                        享受生活的乐趣。从音乐到运动，从阅读到旅行，表达您的兴趣爱好。
+                    </div>
+                    <span class="word-count">10个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱10：形容词扩展 -->
+                <div class="pod-card" onclick="enterPod('adjektiivit')" data-pod="adjektiivit">
+                    <div class="pod-number">10</div>
+                    <span class="pod-emoji">🎨</span>
+                    <h3 class="pod-title">Adjektiivit Laajennettu</h3>
+                    <p class="pod-subtitle">形容词 (扩展)</p>
+                    <div class="scaffold-text">
+                        丰富您的描述能力。从情感状态到物理特征，用更精确的形容词表达想法。
+                    </div>
+                    <span class="word-count">30个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱11：动词扩展-认知 -->
+                <div class="pod-card" onclick="enterPod('verbit_kognitio')" data-pod="verbit_kognitio">
+                    <div class="pod-number">11</div>
+                    <span class="pod-emoji">🧠</span>
+                    <h3 class="pod-title">Verbit - Kognitio</h3>
+                    <p class="pod-subtitle">动词 (扩展 - 认知)</p>
+                    <div class="scaffold-text">
+                        表达思维活动。思考、理解、记忆、决定——掌握认知相关的动词。
+                    </div>
+                    <span class="word-count">10个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱12：动词扩展-交流 -->
+                <div class="pod-card" onclick="enterPod('verbit_kommunikaatio')" data-pod="verbit_kommunikaatio">
+                    <div class="pod-number">12</div>
+                    <span class="pod-emoji">💬</span>
+                    <h3 class="pod-title">Verbit - Kommunikaatio</h3>
+                    <p class="pod-subtitle">动词 (扩展 - 交流)</p>
+                    <div class="scaffold-text">
+                        增强交流能力。问、答、讨论、解释——建立完整的沟通词汇体系。
+                    </div>
+                    <span class="word-count">7个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱13：动词扩展-行为 -->
+                <div class="pod-card" onclick="enterPod('verbit_toiminta')" data-pod="verbit_toiminta">
+                    <div class="pod-number">13</div>
+                    <span class="pod-emoji">🏃</span>
+                    <h3 class="pod-title">Verbit - Toiminta</h3>
+                    <p class="pod-subtitle">动词 (扩展 - 行为)</p>
+                    <div class="scaffold-text">
+                        描述各种行为。从日常动作到复杂活动，让语言更加生动有力。
+                    </div>
+                    <span class="word-count">23个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱14：副词与小品词 -->
+                <div class="pod-card" onclick="enterPod('adverbit_partikkelit')" data-pod="adverbit_partikkelit">
+                    <div class="pod-number">14</div>
+                    <span class="pod-emoji">🔄</span>
+                    <h3 class="pod-title">Adverbit ja Partikkelit</h3>
+                    <p class="pod-subtitle">副词与小品词</p>
+                    <div class="scaffold-text">
+                        语言的润滑剂。时间、地点、程度、方式——这些小词让表达更加精确。
+                    </div>
+                    <span class="word-count">33个词汇</span>
+                </div>
+                
+                <!-- 闪卡舱15：抽象概念 -->
+                <div class="pod-card" onclick="enterPod('abstraktit_kaasitteet')" data-pod="abstraktit_kaasitteet">
+                    <div class="pod-number">15</div>
+                    <span class="pod-emoji">💭</span>
+                    <h3 class="pod-title">Abstraktit Käsitteet</h3>
+                    <p class="pod-subtitle">抽象概念 (高级)</p>
+                    <div class="scaffold-text">
+                        探索深层思维。情感、理念、价值观——表达复杂的抽象概念和哲学思考。
+                    </div>
+                    <span class="word-count">40个词汇</span>
+                </div>
+            </div>
+        </main>
+        
+        <div class="back-link">
+            <a href="../">← 返回生存模块主页</a>
+        </div>
+    </div>
+    
+    <script>
+        // 本地存储键名
+        const STORAGE_KEY = 'auroraling_module2_800_progress';
+        
+        // 闪卡舱词汇数量
+        const podWordCounts = {
+            'perhe_extended': 8,
+            'ammatit': 15,
+            'keho_extended': 10,
+            'ruoka_extended': 26,
+            'koti_extended': 10,
+            'työ_koulutus': 14,
+            'paikat_extended': 19,
+            'aika_extended': 19,
+            'harrastukset': 10,
+            'adjektiivit': 30,
+            'verbit_kognitio': 10,
+            'verbit_kommunikaatio': 7,
+            'verbit_toiminta': 23,
+            'adverbit_partikkelit': 33,
+            'abstraktit_kaasitteet': 40
+        };
+        
+        /**
+         * 获取学习进度
+         */
+        function getProgress() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : {};
+        }
+        
+        /**
+         * 更新进度显示
+         */
+        function updateProgressDisplay() {
+            const progress = getProgress();
+            const completedPods = Object.keys(progress).length;
+            const totalPods = Object.keys(podWordCounts).length;
+            
+            // 计算已学词汇数
+            let learnedWords = 0;
+            Object.keys(progress).forEach(pod => {
+                if (progress[pod].completed) {
+                    learnedWords += podWordCounts[pod];
+                }
+            });
+            
+            // 更新显示
+            document.getElementById('completedPods').textContent = completedPods;
+            document.getElementById('learnedWords').textContent = learnedWords;
+            
+            // 更新进度条
+            const progressPercent = (completedPods / totalPods) * 100;
+            document.getElementById('progressFill').style.width = progressPercent + '%';
+            
+            // 更新卡片状态
+            Object.keys(progress).forEach(podId => {
+                if (progress[podId].completed) {
+                    const card = document.querySelector(`[data-pod="${podId}"]`);
+                    if (card) {
+                        card.classList.add('completed');
+                    }
+                }
+            });
+        }
+        
+        /**
+         * 重置学习进度
+         */
+        function resetProgress() {
+            if (confirm('确定要重置所有学习进度吗？这将清除您在所有舱室的学习记录。')) {
+                // 清除本地存储
+                localStorage.removeItem(STORAGE_KEY);
+                
+                // 移除所有卡片的完成状态
+                document.querySelectorAll('.pod-card').forEach(card => {
+                    card.classList.remove('completed');
+                });
+                
+                // 更新显示
+                updateProgressDisplay();
+                
+                alert('✅ 学习进度已重置！现在可以重新开始学习了。');
+            }
+        }
+        
+        /**
+         * 进入闪卡舱
+         */
+        function enterPod(podId) {
+            // 播放点击音效（可选）
+            playClickSound();
+            
+            // 添加点击动画
+            const card = document.querySelector(`[data-pod="${podId}"]`);
+            card.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                // 跳转到闪卡舱页面
+                window.location.href = `生存模块二·场景化闪卡舱800扩展.html?pod=${podId}`;
+            }, 200);
+        }
+        
+        /**
+         * 播放点击音效
+         */
+        function playClickSound() {
+            // 使用Web Audio API创建简单的点击音效
+            if (window.AudioContext || window.webkitAudioContext) {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            }
+        }
+        
+        // 页面加载时更新进度显示
+        document.addEventListener('DOMContentLoaded', updateProgressDisplay);
+        
+        // 添加卡片悬停音效
+        document.querySelectorAll('.pod-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html> 
