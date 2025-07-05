@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>模块二·9：扮演医生的一天 - 图画书模拟器 | AuroraLingua</title>
+    <title>扮演医生的一天 - 模块二图画书模拟器</title>
     <style>
         * {
             margin: 0;
@@ -16,7 +16,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
-            color: #333;
+            line-height: 1.6;
         }
         
         .storybook-container {
@@ -24,43 +24,24 @@
             margin: 0 auto;
             background: white;
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
             overflow: hidden;
-            min-height: calc(100vh - 40px);
-            display: flex;
-            flex-direction: column;
         }
         
         /* 顶部标题栏 */
         .header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
             color: white;
             padding: 20px 30px;
-            text-align: center;
             position: relative;
         }
         
-        .header h1 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        
-        .header .subtitle {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-        
         .exit-btn {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
             background: rgba(255,255,255,0.2);
             border: none;
             color: white;
-            padding: 10px 15px;
-            border-radius: 10px;
+            padding: 8px 16px;
+            border-radius: 20px;
             cursor: pointer;
             font-size: 0.9rem;
             transition: all 0.3s ease;
@@ -68,7 +49,18 @@
         
         .exit-btn:hover {
             background: rgba(255,255,255,0.3);
-            transform: translateY(-50%) translateY(-2px);
+            transform: translateX(-2px);
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin: 15px 0 5px 0;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            opacity: 0.9;
+            font-size: 0.95rem;
         }
         
         /* 进度指示器 */
@@ -79,278 +71,199 @@
         }
         
         .progress-bar {
-            width: 100%;
-            height: 8px;
+            height: 6px;
             background: #e9ecef;
-            border-radius: 4px;
+            border-radius: 3px;
             overflow: hidden;
-            margin-bottom: 10px;
         }
         
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+            background: linear-gradient(90deg, #ff6b6b, #ee5a24);
             transition: width 0.5s ease;
-            border-radius: 4px;
         }
         
         .progress-text {
             text-align: center;
+            margin-top: 8px;
             font-size: 0.9rem;
             color: #666;
-            font-weight: 500;
         }
         
         /* 主要内容区域 */
         .main-content {
-            flex: 1;
-            display: flex;
+            min-height: 500px;
             position: relative;
-            overflow: hidden;
-        }
-        
-        /* 场景容器 */
-        .scene-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            display: flex;
         }
         
         .scene-content {
-            width: 100%;
-            height: 100%;
             display: flex;
-            align-items: center;
-            transition: transform 0.6s ease;
+            min-height: 500px;
+            transition: opacity 0.3s ease;
         }
         
-        /* 左侧图画区 */
         .illustration-panel {
-            flex: 0 0 50%;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 10px;
+            background: linear-gradient(45deg, #ffecd2, #fcb69f);
             border-right: 2px solid #e9ecef;
+            padding: 20px;
+            min-height: 500px;
         }
         
         .illustration {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-            display: block;
-            margin: 0 auto;
-        }
-        
-        .illustration:hover {
-            transform: scale(1.02);
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         
         .illustration-title {
-            font-size: 1.2rem;
-            color: #666;
-            margin-top: 20px;
-            font-weight: 500;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 600;
+            color: #8b4513;
+            font-size: 1.1rem;
         }
         
-        /* 右侧文字区 */
         .text-panel {
-            flex: 0 0 50%;
-            padding: 40px;
+            flex: 1.2;
+            padding: 30px;
+            background: white;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            background: white;
         }
         
         .scene-title {
             font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 25px;
-            font-weight: 600;
-            text-align: center;
+            color: #d63031;
+            margin-bottom: 20px;
+            font-weight: 700;
         }
         
-        /* 工具栏 */
         .toolbar {
             display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 25px;
+            gap: 10px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
         
         .toolbar-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 8px 12px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 0.85rem;
-            font-weight: 500;
             transition: all 0.3s ease;
-            white-space: nowrap;
         }
         
         .toolbar-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(116, 185, 255, 0.3);
         }
         
         .story-text {
             font-size: 1.1rem;
             line-height: 1.8;
-            color: #444;
-            margin-bottom: 30px;
+            flex-grow: 1;
         }
         
         .story-text p {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             cursor: pointer;
-            padding: 8px;
-            border-radius: 5px;
             transition: background-color 0.2s ease;
-            position: relative;
+            padding: 4px;
+            border-radius: 4px;
         }
         
         .story-text p:hover {
-            background: rgba(102, 126, 234, 0.05);
+            background-color: rgba(116, 185, 255, 0.05);
         }
         
-        .story-text p::before {
-            content: '🔊';
-            opacity: 0;
-            position: absolute;
-            left: -25px;
-            transition: opacity 0.2s ease;
-            font-size: 0.9rem;
-        }
-        
-        .story-text p:hover::before {
-            opacity: 0.6;
-        }
-        
-        /* 词汇高亮样式 */
-        .vocab-word {
-            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-            color: #856404;
-            padding: 2px 6px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s ease;
+        /* 变位词汇（有原型透视）的特殊样式 */
+        .has-inflection {
+            border-bottom: 2px dotted #f39c12 !important;
             font-weight: 500;
-            position: relative;
         }
         
         .vocab-word:hover {
-            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
-            transform: translateY(-1px);
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 3px;
+        }
+        
+        .vocab-word.has-inflection:hover {
+            text-decoration-color: #667eea;
         }
         
         /* 语法高亮样式 */
-        .grammar-olla {
-            background: rgba(0, 123, 255, 0.1);
-            color: #0056b3;
-            border-bottom: 2px solid rgba(0, 123, 255, 0.3);
-            font-weight: 500;
-        }
-        
-        .grammar-existence {
-            background: rgba(40, 167, 69, 0.1);
-            color: #155724;
-            border-bottom: 2px solid rgba(40, 167, 69, 0.3);
-            font-weight: 500;
-        }
-        
-        .grammar-static {
-            background: rgba(102, 16, 242, 0.1);
-            color: #4c0080;
-            border-bottom: 2px solid rgba(102, 16, 242, 0.3);
-            font-weight: 500;
-        }
-        
-        .grammar-dynamic {
-            background: rgba(255, 193, 7, 0.15);
-            color: #856404;
-            border-bottom: 2px solid rgba(255, 193, 7, 0.4);
-            font-weight: 500;
-        }
-        
-        .grammar-partitive {
-            background: rgba(220, 53, 69, 0.1);
-            color: #721c24;
-            border-bottom: 2px solid rgba(220, 53, 69, 0.3);
-            font-weight: 500;
-        }
-        
-        .grammar-accusative {
-            background: rgba(23, 162, 184, 0.1);
-            color: #0c5460;
-            border-bottom: 2px solid rgba(23, 162, 184, 0.3);
-            font-weight: 500;
-        }
-        
-        .grammar-verb {
-            background: rgba(253, 126, 20, 0.1);
-            color: #8a4a00;
-            border-bottom: 2px solid rgba(253, 126, 20, 0.3);
-            font-weight: 500;
-        }
-        
-        /* 新增：认知动词样式 */
-        .grammar-cognitive {
-            background: rgba(156, 39, 176, 0.1);
-            color: #4a148c;
-            border-bottom: 2px solid rgba(156, 39, 176, 0.3);
-            font-weight: 500;
-        }
-        
-        /* 新增：职业名词样式 */
-        .grammar-profession {
-            background: rgba(76, 175, 80, 0.1);
-            color: #1b5e20;
-            border-bottom: 2px solid rgba(76, 175, 80, 0.3);
-            font-weight: 500;
-        }
+        .grammar-olla { background: linear-gradient(135deg, #d1ecf1, #bee5eb); padding: 2px 4px; border-radius: 3px; }
+        .grammar-verb { background: linear-gradient(135deg, #d4edda, #c3e6cb); padding: 2px 4px; border-radius: 3px; }
+        .grammar-static { background: linear-gradient(135deg, #e2e3e5, #d6d8db); padding: 2px 4px; border-radius: 3px; }
+        .grammar-dynamic { background: linear-gradient(135deg, #fff3cd, #ffeaa7); padding: 2px 4px; border-radius: 3px; }
+        .grammar-partitive { background: linear-gradient(135deg, #f8d7da, #f5c6cb); padding: 2px 4px; border-radius: 3px; }
+        .grammar-accusative { background: linear-gradient(135deg, #d1ecf1, #bee5eb); padding: 2px 4px; border-radius: 3px; }
+        .grammar-existence { background: linear-gradient(135deg, #e7e3ff, #d0c9ff); padding: 2px 4px; border-radius: 3px; }
+        .grammar-cognitive { background: linear-gradient(135deg, #ffccf2, #ff99e6); padding: 2px 4px; border-radius: 3px; }
+        .grammar-profession { background: linear-gradient(135deg, #d4edda, #c3e6cb); padding: 2px 4px; border-radius: 3px; }
         
         /* 词汇提示框 */
         .word-tooltip {
-            position: fixed;
-            background: rgba(0,0,0,0.9);
+            position: absolute;
+            background: rgba(0,0,0,0.95);
             color: white;
             padding: 12px 16px;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 0.9rem;
+            font-weight: 500;
             z-index: 1000;
             opacity: 0;
             transform: translateY(10px);
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             pointer-events: none;
-            max-width: 300px;
+            max-width: 280px;
+            text-align: left;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* 原型透视样式 */
+        .prototype-view {
             line-height: 1.4;
         }
         
-        .word-tooltip .finnish-word {
-            font-weight: bold;
-            color: #ffeaa7;
-            display: block;
-            margin-bottom: 4px;
+        .prototype-header {
+            font-size: 1rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
         
-        .word-tooltip .word-type {
-            color: #74b9ff;
-            font-size: 0.8rem;
+        .chinese-meaning {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #4fc3f7;
+            margin-bottom: 6px;
+        }
+        
+        .form-info {
+            margin-bottom: 8px;
+            opacity: 0.9;
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+        
+        .type-badge {
             text-align: center;
             margin-top: 6px;
         }
         
-        .word-tooltip .simple-translation {
+        .simple-translation {
             text-align: center;
             font-size: 1rem;
             font-weight: 600;
@@ -371,29 +284,33 @@
             border-bottom-color: rgba(0,0,0,0.9);
         }
         
-        /* 中文脚手架样式 */
-        .chinese-scaffold {
-            color: #666;
-            font-size: 0.85rem;
-            text-align: center;
-            margin-top: 8px;
-            padding: 6px 12px;
-            background: rgba(0, 123, 255, 0.05);
-            border-radius: 8px;
-            border-left: 3px solid #007bff;
-            font-style: italic;
+        /* 语法高亮关闭状态 */
+        .story-text.no-grammar .grammar-olla,
+        .story-text.no-grammar .grammar-verb,
+        .story-text.no-grammar .grammar-static,
+        .story-text.no-grammar .grammar-dynamic,
+        .story-text.no-grammar .grammar-partitive,
+        .story-text.no-grammar .grammar-accusative,
+        .story-text.no-grammar .grammar-existence,
+        .story-text.no-grammar .grammar-cognitive,
+        .story-text.no-grammar .grammar-profession {
+            color: inherit;
+            background: none;
+            font-weight: normal;
+            padding: 0;
         }
         
-        /* 语法高亮禁用状态 */
-        .no-grammar .grammar-verb,
-        .no-grammar .grammar-olla,
-        .no-grammar .grammar-dynamic,
-        .no-grammar .grammar-static,
-        .no-grammar .grammar-cognitive,
-        .no-grammar .grammar-profession {
-            background: none !important;
-            color: inherit !important;
-            border-bottom: none !important;
+        /* 中文脚手架样式 */
+        .chinese-scaffold {
+            color: #888 !important;
+            font-size: 0.9em !important;
+            margin-top: 5px !important;
+            margin-bottom: 10px !important;
+            font-style: italic !important;
+            background: rgba(136, 136, 136, 0.05);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border-left: 3px solid #ccc;
         }
         
         /* 底部导航 */
@@ -436,140 +353,17 @@
             color: #495057;
         }
         
-        /* 词汇提示框 */
-        .word-tooltip {
-            position: fixed;
-            background: rgba(0,0,0,0.9);
-            color: white;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            z-index: 1000;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.2s ease;
-            pointer-events: none;
-            max-width: 300px;
-            line-height: 1.4;
-        }
-        
-        .word-tooltip .finnish-word {
-            font-weight: bold;
-            color: #ffeaa7;
-            display: block;
-            margin-bottom: 4px;
-        }
-        
-        .word-tooltip .word-type {
-            color: #74b9ff;
-            font-size: 0.8rem;
-            text-align: center;
-            margin-top: 6px;
-        }
-        
-        .word-tooltip .simple-translation {
-            text-align: center;
-            font-size: 1rem;
-            font-weight: 600;
-        }
-        
-        .word-tooltip.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .word-tooltip::before {
-            content: '';
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 5px solid transparent;
-            border-bottom-color: rgba(0,0,0,0.9);
-        }
-        
-        /* 语法高亮关闭状态 */
-        .story-text.no-grammar .grammar-olla,
-        .story-text.no-grammar .grammar-existence,
-        .story-text.no-grammar .grammar-static,
-        .story-text.no-grammar .grammar-dynamic,
-        .story-text.no-grammar .grammar-partitive,
-        .story-text.no-grammar .grammar-accusative,
-        .story-text.no-grammar .grammar-verb,
-        .story-text.no-grammar .grammar-cognitive,
-        .story-text.no-grammar .grammar-profession {
-            color: inherit;
-            background: none;
-            font-weight: normal;
-            border-bottom: none;
-        }
-        
-        /* 中文脚手架样式 */
-        .chinese-scaffold {
-            color: #888 !important;
-            font-size: 0.9em !important;
-            margin-top: 5px !important;
-            margin-bottom: 10px !important;
-            font-style: italic !important;
-            background: rgba(136, 136, 136, 0.05);
-            padding: 4px 8px;
-            border-radius: 4px;
-            border-left: 3px solid #ccc;
-        }
-        
         /* 响应式设计 */
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            
-            .header {
-                padding: 15px 20px;
-            }
-            
-            .header h1 {
-                font-size: 1.4rem;
-            }
-            
-            .scene-content {
-                flex-direction: column;
-            }
-            
-            .illustration-panel,
-            .text-panel {
-                flex: none;
-                width: 100%;
-            }
-            
-            .illustration-panel {
-                min-height: 200px;
-                border-right: none;
-                border-bottom: 2px solid #e9ecef;
-            }
-            
-            .text-panel {
-                padding: 20px;
-            }
-            
-            .navigation {
-                padding: 15px 20px;
-            }
-            
-            .nav-btn {
-                min-width: 80px;
-                padding: 10px 16px;
-                font-size: 0.9rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .story-text {
-                font-size: 1rem;
-            }
-            
-            .scene-title {
-                font-size: 1.2rem;
-            }
+            body { padding: 10px; }
+            .header { padding: 15px 20px; }
+            .header h1 { font-size: 1.4rem; }
+            .scene-content { flex-direction: column; }
+            .illustration-panel, .text-panel { flex: none; width: 100%; }
+            .illustration-panel { min-height: 200px; border-right: none; border-bottom: 2px solid #e9ecef; }
+            .text-panel { padding: 20px; }
+            .navigation { padding: 15px 20px; }
+            .nav-btn { min-width: 80px; padding: 10px 16px; font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -578,8 +372,8 @@
         <!-- 顶部标题栏 -->
         <div class="header">
             <button class="exit-btn" onclick="exitModule()">← 返回</button>
-            <h1>🩺 扮演医生的一天 Päivä Lääkärinä</h1>
-            <div class="subtitle">模块二·9：800词扩展故事 - 图画书模拟器</div>
+            <h1>🏥 扮演医生的一天 Päivä Lääkärinä</h1>
+            <div class="subtitle">模块二·9：医疗主题综合学习 - 图画书模拟器</div>
         </div>
         
         <!-- 进度指示器 -->
@@ -594,10 +388,9 @@
         <div class="main-content">
             <div class="scene-container">
                 <div class="scene-content" id="sceneContent">
-                    <!-- 场景内容将在这里动态加载 -->
                     <div class="illustration-panel">
                         <div>
-                            <img class="illustration" id="sceneIllustration" src="../assets/image/M1_myday_S1.jpeg" alt="医生扮演场景" />
+                            <img class="illustration" id="sceneIllustration" src="../assets/image/M1_myday_S1.jpeg" alt="儿童房医生扮演场景" />
                             <div class="illustration-title" id="sceneIllustrationTitle">儿童房 Lastenhuone</div>
                         </div>
                     </div>
@@ -618,9 +411,7 @@
                         </div>
                         
                         <div class="story-text" id="storyText">
-                            <p>基础框架测试 - 场景切换正常</p>
-                            <p>工具栏功能基础就绪</p>
-                            <p>导航系统已实现</p>
+                            <!-- 故事内容将在这里动态加载 -->
                         </div>
                     </div>
                 </div>
@@ -645,7 +436,7 @@
         let grammarHighlightEnabled = true;
         let chineseScaffoldVisible = false;
         
-        // 完整故事场景数据（里程碑2）
+        // 故事场景数据
         const storyScenes = [
             {
                 id: 1,
@@ -655,10 +446,10 @@
                 imageAlt: "儿童房医生扮演场景",
                 illustrationTitle: "儿童房 Lastenhuone",
                 content: `
-                    <p>Tänään minä <span class="grammar-verb">leikin</span> <span class="vocab-word grammar-profession">lääkäriä</span>.</p>
-                    <p>Minun <span class="vocab-word">nalle</span> <span class="grammar-olla">on</span> <span class="vocab-word">sairas</span>. Se <span class="grammar-olla">on</span> minun potilas.</p>
-                    <p>Minä <span class="grammar-verb">kysyn</span>: "Mikä sinulla on?"</p>
-                    <p><span class="vocab-word">Nalle</span> <span class="grammar-verb">ei vastaa</span>. Minä <span class="grammar-cognitive">päätän</span> tutkia sen.</p>
+                    <p>Tänään minä <span class="grammar-verb vocab-word">leikin</span> <span class="vocab-word grammar-partitive">lääkäriä</span>.</p>
+                    <p>Minun <span class="vocab-word">nalle</span> <span class="grammar-olla vocab-word">on</span> <span class="vocab-word">sairas</span>. Se <span class="grammar-olla vocab-word">on</span> minun potilas.</p>
+                    <p>Minä <span class="grammar-verb vocab-word">kysyn</span>: "Mikä sinulla <span class="grammar-olla vocab-word">on</span>?"</p>
+                    <p><span class="vocab-word">Nalle</span> ei <span class="grammar-verb vocab-word">vastaa</span>. Minä <span class="grammar-verb vocab-word">päätän</span> tutkia sen.</p>
                 `
             },
             {
@@ -669,10 +460,10 @@
                 imageAlt: "用听诊器检查玩具熊",
                 illustrationTitle: "检查室 Tutkimushuone",
                 content: `
-                    <p>Minä <span class="grammar-verb">kuuntelen</span> nallen <span class="vocab-word">sydäntä</span>.</p>
-                    <p>Minä <span class="grammar-verb">katson</span> sen <span class="vocab-word">korviin</span> ja <span class="vocab-word">suuhun</span>.</p>
-                    <p>Minä <span class="grammar-cognitive">ymmärrän</span> <span class="vocab-word">ongelman</span>. Nallella <span class="grammar-olla">on</span> kuumetta.</p>
-                    <p>Se <span class="grammar-verb">tarvitsee</span> lääkettä ja lepoa.</p>
+                    <p>Minä <span class="grammar-verb vocab-word">kuuntelen</span> nallen <span class="vocab-word grammar-partitive">sydäntä</span>.</p>
+                    <p>Minä <span class="grammar-verb vocab-word">katson</span> sen <span class="vocab-word grammar-dynamic">korviin</span> ja <span class="vocab-word grammar-dynamic">suuhun</span>.</p>
+                    <p>Minä <span class="grammar-verb vocab-word">ymmärrän</span> <span class="vocab-word grammar-accusative">ongelman</span>. <span class="vocab-word grammar-static">Nallella</span> <span class="grammar-existence vocab-word">on</span> <span class="vocab-word grammar-partitive">kuumetta</span>.</p>
+                    <p>Se <span class="grammar-verb vocab-word">tarvitsee</span> <span class="vocab-word grammar-partitive">lääkettä</span> ja <span class="vocab-word grammar-partitive">lepoa</span>.</p>
                 `
             },
             {
@@ -683,10 +474,10 @@
                 imageAlt: "骑三轮车想象成开救护车",
                 illustrationTitle: "路上 Matkalla",
                 content: `
-                    <p>Minä <span class="grammar-verb">ajan</span> <span class="vocab-word">ambulanssilla</span> <span class="grammar-dynamic">apteekkiin</span>.</p>
-                    <p>Minun pyörä <span class="grammar-olla">on</span> nopea <span class="vocab-word">ambulanssi</span>!</p>
-                    <p><span class="grammar-static">Apteekissa</span> <span class="grammar-olla">on</span> <span class="vocab-word grammar-profession">sairaanhoitaja</span>.</p>
-                    <p>Minä <span class="grammar-verb">sanon</span>: "Minä <span class="grammar-verb">tarvitsen</span> lääkettä nallelle."</p>
+                    <p>Minä <span class="grammar-verb vocab-word">ajan</span> <span class="vocab-word grammar-static">ambulanssilla</span> <span class="grammar-dynamic vocab-word">apteekkiin</span>.</p>
+                    <p>Minun pyörä <span class="grammar-olla vocab-word">on</span> nopea <span class="vocab-word">ambulanssi</span>!</p>
+                    <p><span class="grammar-static vocab-word">Apteekissa</span> <span class="grammar-existence vocab-word">on</span> <span class="vocab-word">sairaanhoitaja</span>.</p>
+                    <p>Minä <span class="grammar-verb vocab-word">sanon</span>: "Minä <span class="grammar-verb vocab-word">tarvitsen</span> <span class="vocab-word grammar-partitive">lääkettä</span> nallelle."</p>
                 `
             },
             {
@@ -697,10 +488,10 @@
                 imageAlt: "在家给玩具熊治疗",
                 illustrationTitle: "家里 Kotona",
                 content: `
-                    <p>Minä <span class="grammar-verb">tuon</span> "lääkkeen" kotiin. Se <span class="grammar-olla">on</span> punaista mehua.</p>
-                    <p>Minä <span class="grammar-verb">annan</span> lääkettä nallelle.</p>
-                    <p>Minä <span class="grammar-verb">vaihdan</span> nallelle <span class="vocab-word">puhtaan</span> peiton.</p>
-                    <p>Minä <span class="grammar-verb">siivoan</span> huoneen. Nyt se <span class="grammar-olla">on</span> siisti ja <span class="vocab-word">mukava</span>.</p>
+                    <p>Minä <span class="grammar-verb vocab-word">tuon</span> "<span class="vocab-word grammar-accusative">lääkkeen</span>" kotiin. Se <span class="grammar-olla vocab-word">on</span> punaista <span class="vocab-word grammar-partitive">mehua</span>.</p>
+                    <p>Minä <span class="grammar-verb vocab-word">annan</span> <span class="vocab-word grammar-partitive">lääkettä</span> nallelle.</p>
+                    <p>Minä <span class="grammar-verb vocab-word">vaihdan</span> nallelle <span class="vocab-word grammar-accusative">puhtaan</span> <span class="vocab-word grammar-accusative">peiton</span>.</p>
+                    <p>Minä <span class="grammar-verb vocab-word">siivoan</span> huoneen. Nyt se <span class="grammar-olla vocab-word">on</span> siisti ja <span class="vocab-word">mukava</span>.</p>
                 `
             },
             {
@@ -711,745 +502,704 @@
                 imageAlt: "玩具熊康复，一起跳舞庆祝",
                 illustrationTitle: "康复 Parantuminen",
                 content: `
-                    <p>Seuraavana aamuna, minun <span class="vocab-word">nalle</span> <span class="grammar-olla">on</span> taas <span class="vocab-word">terve</span>!</p>
-                    <p>Se <span class="grammar-verb">ei ole</span> enää <span class="vocab-word">sairas</span>.</p>
-                    <p>Minä <span class="grammar-olla">olen</span> <span class="vocab-word">onnellinen</span>! Minä <span class="grammar-olla">olen</span> hyvä <span class="vocab-word grammar-profession">lääkäri</span>!</p>
-                    <p>Me <span class="grammar-verb">tanssimme</span> ja <span class="grammar-verb">laulamme</span> yhdessä.</p>
-                    <p>Tämä <span class="grammar-olla">oli</span> <span class="vocab-word">hauska</span> peli!</p>
+                    <p>Seuraavana aamuna, minun <span class="vocab-word">nalle</span> <span class="grammar-olla vocab-word">on</span> taas <span class="vocab-word">terve</span>!</p>
+                    <p>Se ei <span class="grammar-olla vocab-word">ole</span> enää <span class="vocab-word">sairas</span>.</p>
+                    <p>Minä <span class="grammar-olla vocab-word">olen</span> <span class="vocab-word">onnellinen</span>! Minä <span class="grammar-olla vocab-word">olen</span> hyvä <span class="vocab-word">lääkäri</span>!</p>
+                    <p>Me <span class="grammar-verb vocab-word">tanssimme</span> ja <span class="grammar-verb vocab-word">laulamme</span> yhdessä.</p>
+                    <p>Tämä <span class="grammar-olla vocab-word">oli</span> <span class="vocab-word">hauska</span> peli!</p>
                 `
             }
         ];
         
-        // 模块二医生主题词汇数据库
-        const vocabDatabase = {
-            // 职业类
-            "lääkäri": {
-                prototype: "lääkäri",
-                chinese: "医生",
-                form: "基本形",
-                type: "职业名词",
+        // 医生主题词汇数据库（支持原型透视）
+        const vocabularyData = {
+            // === 动词变位（带原型透视） ===
+            "leikin": {
+                prototype: "leikkiä",
+                chinese: "玩/扮演",
+                form: "第一人称现在时：minä leikin",
+                type: "动词变位",
                 color: "🟢"
             },
+            "on": {
+                prototype: "olla",
+                chinese: "是/在",
+                form: "第三人称现在时：se on",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "olen": {
+                prototype: "olla",
+                chinese: "是/在",
+                form: "第一人称现在时：minä olen",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "ole": {
+                prototype: "olla",
+                chinese: "是/在",
+                form: "否定现在时：ei ole",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "oli": {
+                prototype: "olla",
+                chinese: "是/在",
+                form: "过去时：se oli",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "kysyn": {
+                prototype: "kysyä",
+                chinese: "问",
+                form: "第一人称现在时：minä kysyn",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "vastaa": {
+                prototype: "vastata",
+                chinese: "回答",
+                form: "第三人称现在时：se vastaa",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "päätän": {
+                prototype: "päättää",
+                chinese: "决定",
+                form: "第一人称现在时：minä päätän",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "kuuntelen": {
+                prototype: "kuunnella",
+                chinese: "听",
+                form: "第一人称现在时：minä kuuntelen",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "katson": {
+                prototype: "katsoa",
+                chinese: "看",
+                form: "第一人称现在时：minä katson",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "ymmärrän": {
+                prototype: "ymmärtää",
+                chinese: "理解",
+                form: "第一人称现在时：minä ymmärrän",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "tarvitsee": {
+                prototype: "tarvita",
+                chinese: "需要",
+                form: "第三人称现在时：se tarvitsee",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "tarvitsen": {
+                prototype: "tarvita",
+                chinese: "需要",
+                form: "第一人称现在时：minä tarvitsen",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "ajan": {
+                prototype: "ajaa",
+                chinese: "开车/驾驶",
+                form: "第一人称现在时：minä ajan",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "sanon": {
+                prototype: "sanoa",
+                chinese: "说",
+                form: "第一人称现在时：minä sanon",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "tuon": {
+                prototype: "tuoda",
+                chinese: "带来",
+                form: "第一人称现在时：minä tuon",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "annan": {
+                prototype: "antaa",
+                chinese: "给",
+                form: "第一人称现在时：minä annan",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "vaihdan": {
+                prototype: "vaihtaa",
+                chinese: "更换/换",
+                form: "第一人称现在时：minä vaihdan",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "siivoan": {
+                prototype: "siivota",
+                chinese: "打扫/清理",
+                form: "第一人称现在时：minä siivoan",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "tanssimme": {
+                prototype: "tanssia",
+                chinese: "跳舞",
+                form: "第一人称复数现在时：me tanssimme",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "laulamme": {
+                prototype: "laulaa",
+                chinese: "唱歌",
+                form: "第一人称复数现在时：me laulamme",
+                type: "动词变位",
+                color: "🟢"
+            },
+            
+            // === 名词格变（带原型透视） ===
             "lääkäriä": {
                 prototype: "lääkäri",
                 chinese: "医生",
                 form: "部分格：扮演医生",
-                type: "职业名词",
-                color: "🟢"
+                type: "名词格变",
+                color: "🟣"
             },
-            "sairaanhoitaja": {
-                prototype: "sairaanhoitaja",
-                chinese: "护士",
+            "lääkäri": {
+                prototype: "lääkäri",
+                chinese: "医生",
                 form: "基本形",
-                type: "职业名词",
-                color: "🟢"
-            },
-            
-            // 核心名词
-            "nalle": {
-                prototype: "nalle",
-                chinese: "玩具熊",
-                form: "基本形",
-                type: "玩具名词",
-                color: "🧸"
-            },
-            "potilas": {
-                prototype: "potilas",
-                chinese: "病人",
-                form: "基本形",
-                type: "医疗名词",
-                color: "🏥"
-            },
-            "sydän": {
-                prototype: "sydän",
-                chinese: "心脏",
-                form: "基本形",
-                type: "身体部位",
-                color: "❤️"
+                type: "名词格变",
+                color: "🟣"
             },
             "sydäntä": {
                 prototype: "sydän",
                 chinese: "心脏",
                 form: "部分格：听心脏",
-                type: "身体部位",
-                color: "❤️"
-            },
-            "korva": {
-                prototype: "korva",
-                chinese: "耳朵",
-                form: "基本形",
-                type: "身体部位",
-                color: "👂"
+                type: "名词格变",
+                color: "🟣"
             },
             "korviin": {
                 prototype: "korva",
                 chinese: "耳朵",
                 form: "入格：到耳朵里",
-                type: "身体部位",
-                color: "👂"
-            },
-            "suu": {
-                prototype: "suu",
-                chinese: "嘴巴",
-                form: "基本形",
-                type: "身体部位",
-                color: "👄"
+                type: "名词格变",
+                color: "🟣"
             },
             "suuhun": {
                 prototype: "suu",
                 chinese: "嘴巴",
                 form: "入格：到嘴巴里",
-                type: "身体部位",
-                color: "👄"
-            },
-            "ongelma": {
-                prototype: "ongelma",
-                chinese: "问题",
-                form: "基本形",
-                type: "抽象概念",
-                color: "🤔"
+                type: "名词格变",
+                color: "🟣"
             },
             "ongelman": {
                 prototype: "ongelma",
                 chinese: "问题",
                 form: "宾格：理解问题",
-                type: "抽象概念",
-                color: "🤔"
+                type: "名词格变",
+                color: "🟣"
             },
-            "ambulanssi": {
-                prototype: "ambulanssi",
-                chinese: "救护车",
-                form: "基本形",
-                type: "交通工具",
-                color: "🚑"
-            },
-            "ambulanssilla": {
-                prototype: "ambulanssi",
-                chinese: "救护车",
-                form: "工具格：开救护车",
-                type: "交通工具",
-                color: "🚑"
-            },
-            "apteekki": {
-                prototype: "apteekki",
-                chinese: "药店",
-                form: "基本形",
-                type: "地点",
-                color: "💊"
-            },
-            "apteekkiin": {
-                prototype: "apteekki",
-                chinese: "药店",
-                form: "入格：去药店",
-                type: "地点",
-                color: "💊"
-            },
-            
-            // 形容词
-            "sairas": {
-                prototype: "sairas",
-                chinese: "生病的",
-                form: "基本形",
-                type: "形容词",
-                color: "🤒"
-            },
-            "terve": {
-                prototype: "terve",
-                chinese: "健康的",
-                form: "基本形",
-                type: "形容词",
-                color: "😊"
-            },
-            "puhdas": {
-                prototype: "puhdas",
-                chinese: "干净的",
-                form: "基本形",
-                type: "形容词",
-                color: "✨"
-            },
-            "puhtaan": {
-                prototype: "puhdas",
-                chinese: "干净的",
-                form: "宾格：干净的（修饰宾语）",
-                type: "形容词",
-                color: "✨"
-            },
-            "mukava": {
-                prototype: "mukava",
-                chinese: "舒适的",
-                form: "基本形",
-                type: "形容词",
-                color: "😌"
-            },
-            "onnellinen": {
-                prototype: "onnellinen",
-                chinese: "幸福的",
-                form: "基本形",
-                type: "情感形容词",
-                color: "😁"
-            },
-            "hauska": {
-                prototype: "hauska",
-                chinese: "有趣的",
-                form: "基本形",
-                type: "形容词",
-                color: "🎉"
-            },
-            
-            // 动词
-            "leikin": {
-                prototype: "leikkiä",
-                chinese: "扮演/玩",
-                form: "第一人称单数现在时",
-                type: "行为动词",
-                color: "🎭"
-            },
-            "kysyn": {
-                prototype: "kysyä",
-                chinese: "问",
-                form: "第一人称单数现在时",
-                type: "交流动词",
-                color: "❓"
-            },
-            "vastaa": {
-                prototype: "vastata",
-                chinese: "回答",
-                form: "第三人称单数现在时",
-                type: "交流动词",
-                color: "💬"
-            },
-            "päätän": {
-                prototype: "päättää",
-                chinese: "决定",
-                form: "第一人称单数现在时",
-                type: "认知动词",
-                color: "🧠"
-            },
-            "kuuntelen": {
-                prototype: "kuunnella",
-                chinese: "听",
-                form: "第一人称单数现在时",
-                type: "感知动词",
-                color: "👂"
-            },
-            "ymmärrän": {
-                prototype: "ymmärtää",
-                chinese: "理解",
-                form: "第一人称单数现在时",
-                type: "认知动词",
-                color: "💡"
-            },
-            "ajan": {
-                prototype: "ajaa",
-                chinese: "开车",
-                form: "第一人称单数现在时",
-                type: "行为动词",
-                color: "🚗"
-            },
-            "tuon": {
-                prototype: "tuoda",
-                chinese: "带来",
-                form: "第一人称单数现在时",
-                type: "行为动词",
-                color: "📦"
-            },
-            "annan": {
-                prototype: "antaa",
-                chinese: "给",
-                form: "第一人称单数现在时",
-                type: "行为动词",
-                color: "🤲"
-            },
-            "vaihdan": {
-                prototype: "vaihtaa",
-                chinese: "更换",
-                form: "第一人称单数现在时",
-                type: "行为动词",
-                color: "🔄"
-            },
-            "siivoan": {
-                prototype: "siivota",
-                chinese: "打扫",
-                form: "第一人称单数现在时",
-                type: "行为动词",
-                color: "🧹"
-            },
-            "tanssimme": {
-                prototype: "tanssia",
-                chinese: "跳舞",
-                form: "第一人称复数现在时",
-                type: "行为动词",
-                color: "💃"
-            },
-            "laulamme": {
-                prototype: "laulaa",
-                chinese: "唱歌",
-                form: "第一人称复数现在时",
-                type: "行为动词",
-                color: "🎵"
-            },
-            
-            // 补充词汇
-            "katson": {
-                prototype: "katsoa",
-                chinese: "看",
-                form: "第一人称单数现在时",
-                type: "感知动词",
-                color: "👁️"
-            },
-            "sanon": {
-                prototype: "sanoa",
-                chinese: "说",
-                form: "第一人称单数现在时",
-                type: "交流动词",
-                color: "💬"
-            },
-            "tarvitsee": {
-                prototype: "tarvita",
-                chinese: "需要",
-                form: "第三人称单数现在时",
-                type: "需求动词",
-                color: "💭"
-            },
-            "ei ole": {
-                prototype: "olla",
-                chinese: "不是",
-                form: "否定式",
-                type: "olla动词",
-                color: "❌"
-            },
-            "oli": {
-                prototype: "olla",
-                chinese: "是（过去时）",
-                form: "过去时",
-                type: "olla动词",
-                color: "⏰"
+            "nallella": {
+                prototype: "nalle",
+                chinese: "玩具熊",
+                form: "状格：在玩具熊身上",
+                type: "名词格变",
+                color: "🟣"
             },
             "kuumetta": {
                 prototype: "kuume",
                 chinese: "发烧",
                 form: "部分格：有发烧",
-                type: "医疗名词",
-                color: "🤒"
+                type: "名词格变",
+                color: "🟣"
             },
-            "Nallella": {
-                prototype: "nalle",
-                chinese: "玩具熊",
-                form: "状格：在玩具熊身上",
-                type: "玩具名词",
-                color: "🧸"
-            }
+            "lääkettä": {
+                prototype: "lääke",
+                chinese: "药",
+                form: "部分格：一些药",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "lepoa": {
+                prototype: "lepo",
+                chinese: "休息",
+                form: "部分格：一些休息",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "ambulanssilla": {
+                prototype: "ambulanssi",
+                chinese: "救护车",
+                form: "工具格：开救护车",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "apteekkiin": {
+                prototype: "apteekki",
+                chinese: "药店",
+                form: "入格：去药店",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "apteekissa": {
+                prototype: "apteekki",
+                chinese: "药店",
+                form: "内格：在药店里",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "lääkkeen": {
+                prototype: "lääke",
+                chinese: "药",
+                form: "宾格：这个药",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "mehua": {
+                prototype: "mehu",
+                chinese: "果汁",
+                form: "部分格：一些果汁",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "puhtaan": {
+                prototype: "puhdas",
+                chinese: "干净的",
+                form: "宾格：干净的（修饰宾语）",
+                type: "形容词格变",
+                color: "🟣"
+            },
+            "peiton": {
+                prototype: "peitto",
+                chinese: "被子",
+                form: "宾格：被子",
+                type: "名词格变",
+                color: "🟣"
+            },
+            
+            // === 基本词汇 ===
+            "nalle": "玩具熊",
+            "sairas": "生病的",
+            "terve": "健康的",
+            "ambulanssi": "救护车",
+            "sairaanhoitaja": "护士",
+            "onnellinen": "幸福的",
+            "hauska": "有趣的",
+            "mukava": "舒适的/愉快的"
         };
         
         // 中文翻译脚手架数据
         const chineseTranslations = {
-            // 场景1翻译
             "Tänään minä leikin lääkäriä.": "今天我扮演医生。",
             "Minun nalle on sairas. Se on minun potilas.": "我的玩具熊生病了。它是我的病人。",
-            "Minä kysyn: \"Mikä sinulla on?\"": "我问：\\\"你怎么了？\\\"",
+            "Minä kysyn: \"Mikä sinulla on?\"": "我问：\"你怎么了？\"",
             "Nalle ei vastaa. Minä päätän tutkia sen.": "玩具熊不回答。我决定给它检查一下。",
-            
-            // 场景2翻译
             "Minä kuuntelen nallen sydäntä.": "我听玩具熊的心脏。",
             "Minä katson sen korviin ja suuhun.": "我看它的耳朵和嘴巴。",
             "Minä ymmärrän ongelman. Nallella on kuumetta.": "我理解了问题。玩具熊发烧了。",
             "Se tarvitsee lääkettä ja lepoa.": "它需要药和休息。",
-            
-            // 场景3翻译
             "Minä ajan ambulanssilla apteekkiin.": "我开着救护车去药店。",
             "Minun pyörä on nopea ambulanssi!": "我的自行车是一辆很快的救护车！",
             "Apteekissa on sairaanhoitaja.": "在药店里，有一位护士。",
-            "Minä sanon: \"Minä tarvitsen lääkettä nallelle.\"": "我说：\\\"我需要给玩具熊的药。\\\"",
-            
-            // 场景4翻译
-            "Minä tuon \"lääkkeen\" kotiin. Se on punaista mehua.": "我把\\\"药\\\"带回家。它是红色的果汁。",
+            "Minä sanon: \"Minä tarvitsen lääkettä nallelle.\"": "我说：\"我需要给玩具熊的药。\"",
+            "Minä tuon \"lääkkeen\" kotiin. Se on punaista mehua.": "我把\"药\"带回家。它是红色的果汁。",
             "Minä annan lääkettä nallelle.": "我给玩具熊药。",
             "Minä vaihdan nallelle puhtaan peiton.": "我给玩具熊换上干净的被子。",
             "Minä siivoan huoneen. Nyt se on siisti ja mukava.": "我打扫房间。现在它很整洁、舒适。",
-            
-            // 场景5翻译
             "Seuraavana aamuna, minun nalle on taas terve!": "第二天早上，我的玩具熊又健康了！",
             "Se ei ole enää sairas.": "它不再生病了。",
             "Minä olen onnellinen! Minä olen hyvä lääkäri!": "我很幸福！我是个好医生！",
             "Me tanssimme ja laulamme yhdessä.": "我们一起跳舞和唱歌。",
             "Tämä oli hauska peli!": "这是一个有趣的游戏！"
-        };
-        
-        /**
-         * 初始化应用
-         */
-        function init() {
-            loadScene(currentScene);
-            updateProgress();
-            updateNavigation();
-            setupWordInteraction();
-            
-            // 监听页面滚动，滚动时隐藏提示框
-            window.addEventListener('scroll', function() {
-                hideWordTooltip();
-            });
-            
-            // 监听窗口尺寸变化，也隐藏提示框
-            window.addEventListener('resize', function() {
-                hideWordTooltip();
-            });
-            
-            console.log('模块二图画书模拟器初始化完成 - 里程碑2');
-        }
-        
-        /**
-         * 加载指定场景
-         */
-        function loadScene(sceneIndex) {
-            if (sceneIndex < 0 || sceneIndex >= storyScenes.length) return;
-            
-            const scene = storyScenes[sceneIndex];
-            
-            // 更新图片
-            const illustrationImg = document.getElementById('sceneIllustration');
-            illustrationImg.src = scene.imagePath;
-            illustrationImg.alt = scene.imageAlt;
-            document.getElementById('sceneIllustrationTitle').textContent = scene.illustrationTitle;
-            
-            // 更新标题
-            document.getElementById('sceneTitle').textContent = scene.title;
-            
-            // 更新故事内容
-            let storyContent = scene.content;
-            
-            // 添加中文脚手架（如果开启）
-            if (chineseScaffoldVisible) {
-                storyContent = addChineseScaffold(storyContent);
-            }
-            
-            document.getElementById('storyText').innerHTML = storyContent;
-            
-            // 重新设置词汇交互
-            setupWordInteraction();
-            
-            // 添加场景切换动画
-            const sceneContent = document.getElementById('sceneContent');
-            sceneContent.style.opacity = '0';
-            setTimeout(() => {
-                sceneContent.style.opacity = '1';
-            }, 200);
-        }
-        
-        /**
-         * 设置词汇交互
-         */
-        function setupWordInteraction() {
-            // 隐藏可能存在的提示框
-            hideWordTooltip();
-            
-            // 为词汇词添加交互
-            const vocabWords = document.querySelectorAll('.vocab-word');
-            vocabWords.forEach(word => {
-                word.addEventListener('mouseenter', function(event) {
-                    showWordTooltip(event.target);
-                });
-                
-                word.addEventListener('mouseleave', function() {
-                    hideWordTooltip();
-                });
-                
-                word.addEventListener('click', function() {
-                    playWordAudio(word.textContent.trim());
-                });
-            });
-            
-            // 为段落添加点击播放功能
-            const paragraphs = document.querySelectorAll('.story-text p');
-            paragraphs.forEach(p => {
-                p.addEventListener('click', function() {
-                    const text = p.textContent.replace(/\s+/g, ' ').trim();
-                    playSentenceAudio(text);
-                });
-            });
-        }
-        
-        /**
-         * 显示词汇提示框
-         */
-        function showWordTooltip(element) {
-            const tooltip = document.getElementById('wordTooltip');
-            const word = element.textContent.trim();
-            
-            // 查找词汇数据库中的信息
-            const vocabInfo = vocabDatabase[word];
-            
-            if (vocabInfo) {
-                tooltip.innerHTML = `
-                    <div class="finnish-word">${vocabInfo.prototype}</div>
-                    <div class="simple-translation">${vocabInfo.chinese}</div>
-                    <div class="word-type">${vocabInfo.form}</div>
-                    <div class="word-type">${vocabInfo.type} ${vocabInfo.color}</div>
-                `;
-            } else {
-                tooltip.innerHTML = `
-                    <div class="finnish-word">${word}</div>
-                    <div class="simple-translation">词汇信息待完善</div>
-                    <div class="word-type">芬兰语词汇</div>
-                `;
-            }
-            
-            // 定位提示框
-            const rect = element.getBoundingClientRect();
-            tooltip.style.left = rect.left + rect.width / 2 + 'px';
-            tooltip.style.top = rect.top - 10 + 'px';
-            
-            tooltip.classList.add('show');
-        }
-        
-        /**
-         * 隐藏词汇提示框
-         */
-        function hideWordTooltip() {
-            const tooltip = document.getElementById('wordTooltip');
-            tooltip.classList.remove('show');
-        }
-        
-        /**
-         * 添加中文脚手架
-         */
-        function addChineseScaffold(content) {
-            // 解析HTML内容，为每个段落添加中文翻译
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = content;
-            
-            const paragraphs = tempDiv.querySelectorAll('p');
-            paragraphs.forEach(p => {
-                const finnishText = p.textContent.trim();
-                const chineseText = chineseTranslations[finnishText];
-                
-                if (chineseText) {
-                    const scaffoldDiv = document.createElement('div');
-                    scaffoldDiv.className = 'chinese-scaffold';
-                    scaffoldDiv.textContent = chineseText;
-                    p.appendChild(scaffoldDiv);
-                }
-            });
-            
-            return tempDiv.innerHTML;
-        }
-        
-        /**
-         * 更新进度显示
-         */
-        function updateProgress() {
-            const progressPercent = ((currentScene + 1) / 5) * 100;
-            document.getElementById('progressFill').style.width = progressPercent + '%';
-            document.getElementById('progressText').textContent = 
-                `第 ${currentScene + 1} 场景 / 共 5 场景`;
-        }
-        
-        /**
-         * 更新导航按钮状态
-         */
-        function updateNavigation() {
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const counter = document.getElementById('sceneCounter');
-            
-            prevBtn.disabled = currentScene === 0;
-            nextBtn.disabled = currentScene === 4;
-            counter.textContent = `${currentScene + 1} / 5`;
-        }
-        
-        /**
-         * 前一个场景
-         */
-        function prevScene() {
-            if (currentScene > 0) {
-                currentScene--;
-                loadScene(currentScene);
-                updateProgress();
-                updateNavigation();
-                hideWordTooltip();
-            }
-        }
-        
-        /**
-         * 下一个场景
-         */
-        function nextScene() {
-            if (currentScene < 4) {
-                currentScene++;
-                loadScene(currentScene);
-                updateProgress();
-                updateNavigation();
-                hideWordTooltip();
-            }
-        }
-        
-        /**
-         * 播放全文音频
-         */
-        function playFullAudio() {
-            const playBtn = document.getElementById('playBtn');
-            
-            if (isPlaying) {
-                speechSynthesis.cancel();
-                isPlaying = false;
-                playBtn.innerHTML = '🔊 朗读全文';
-                return;
-            }
-            
-            // 获取当前场景的芬兰语文本
-            const scene = storyScenes[currentScene];
-            const textContent = scene.content
-                .replace(/<[^>]*>/g, '') // 移除HTML标签
-                .replace(/\s+/g, ' ') // 标准化空格
-                .trim();
-            
-            if (!textContent) return;
-            
-            // 使用Web Speech API播放芬兰语
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(textContent);
-                utterance.lang = 'fi-FI';
-                utterance.rate = 0.7;
-                utterance.pitch = 1.0;
-                utterance.volume = 0.8;
-                
-                utterance.onstart = () => {
-                    isPlaying = true;
-                    playBtn.innerHTML = '⏸️ 停止播放';
-                };
-                
-                utterance.onend = () => {
-                    isPlaying = false;
-                    playBtn.innerHTML = '🔊 朗读全文';
-                };
-                
-                utterance.onerror = () => {
-                    isPlaying = false;
-                    playBtn.innerHTML = '🔊 朗读全文';
-                    console.log('语音播放出错');
-                };
-                
-                speechSynthesis.speak(utterance);
-            } else {
-                alert('您的浏览器不支持语音播放功能');
-            }
-        }
-        
-        /**
-         * 播放单句音频
-         */
-        function playSentenceAudio(text) {
-            if ('speechSynthesis' in window) {
-                speechSynthesis.cancel(); // 停止当前播放
-                
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'fi-FI';
-                utterance.rate = 0.7;
-                utterance.pitch = 1.0;
-                utterance.volume = 0.8;
-                
-                speechSynthesis.speak(utterance);
-            }
-        }
-        
-        /**
-         * 播放单词音频
-         */
-        function playWordAudio(word) {
-            if ('speechSynthesis' in window) {
-                speechSynthesis.cancel();
-                
-                const utterance = new SpeechSynthesisUtterance(word);
-                utterance.lang = 'fi-FI';
-                utterance.rate = 0.6;
-                utterance.pitch = 1.0;
-                utterance.volume = 0.8;
-                
-                speechSynthesis.speak(utterance);
-            }
-        }
-        
-        /**
-         * 切换语法高亮
-         */
-        function toggleGrammarHighlight() {
-            grammarHighlightEnabled = !grammarHighlightEnabled;
-            const grammarBtn = document.getElementById('grammarBtn');
-            grammarBtn.textContent = `🎨 语法高亮: ${grammarHighlightEnabled ? '开' : '关'}`;
-            
-            // 应用语法高亮切换
-            const storyText = document.getElementById('storyText');
-            if (grammarHighlightEnabled) {
-                storyText.classList.remove('no-grammar');
-            } else {
-                storyText.classList.add('no-grammar');
-            }
-        }
-        
-        /**
-         * 切换中文脚手架
-         */
-        function toggleChineseScaffold() {
-            chineseScaffoldVisible = !chineseScaffoldVisible;
-            const scaffoldBtn = document.getElementById('scaffoldBtn');
-            scaffoldBtn.innerHTML = `🇨🇳 中文脚手架: ${chineseScaffoldVisible ? '开' : '关'}`;
-            
-            // 隐藏提示框
-            hideWordTooltip();
-            
-            // 重新加载当前场景以应用变化
-            loadScene(currentScene);
-        }
-        
-        /**
-         * 退出模块
-         */
-        function exitModule() {
-            if (confirm('确定要退出图画书模拟器吗？')) {
-                window.location.href = '生存模块二·世界感知协议800扩展.html';
-            }
-        }
-        
-        /**
-         * 键盘快捷键支持
-         */
-        document.addEventListener('keydown', function(event) {
-            if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
-                return;
-            }
-            
-            switch(event.key) {
-                case 'ArrowLeft':
-                case 'a':
-                case 'A':
-                    event.preventDefault();
-                    prevScene();
-                    break;
-                case 'ArrowRight':
-                case 'd':
-                case 'D':
-                    event.preventDefault();
-                    nextScene();
-                    break;
-                case ' ':
-                case 'p':
-                case 'P':
-                    event.preventDefault();
-                    playFullAudio();
-                    break;
-                case 'g':
-                case 'G':
-                    event.preventDefault();
-                    toggleGrammarHighlight();
-                    break;
-                case 'Escape':
-                    event.preventDefault();
-                    speechSynthesis.cancel();
-                    break;
-            }
-        });
-        
-        // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
-</body>
-</html> 
+                 };
+         
+         /**
+          * 加载指定场景
+          */
+         function loadScene(sceneIndex) {
+             const scene = storyScenes[sceneIndex];
+             
+             // 更新插图
+             const illustration = document.getElementById('sceneIllustration');
+             illustration.src = scene.imagePath;
+             illustration.alt = scene.imageAlt;
+             document.getElementById('sceneIllustrationTitle').textContent = scene.illustrationTitle;
+             
+             // 更新标题
+             document.getElementById('sceneTitle').textContent = scene.title;
+             
+             // 更新故事内容
+             const storyContainer = document.getElementById('storyText');
+             storyContainer.innerHTML = scene.content;
+             
+             // 设置词汇交互
+             setupWordInteraction();
+         }
+         
+         /**
+          * 设置词汇悬停交互
+          */
+         function setupWordInteraction() {
+             const storyText = document.getElementById('storyText');
+             if (!storyText) return;
+             
+             // 为所有词汇和语法标记的元素添加点击事件
+             const interactiveElements = storyText.querySelectorAll('.vocab-word, [class^="grammar-"]');
+             
+             interactiveElements.forEach(element => {
+                 const finnishWord = element.textContent.toLowerCase();
+                 const wordData = vocabularyData[finnishWord];
+                 
+                 // 为有原型透视功能的词汇添加特殊样式
+                 if (wordData && typeof wordData === 'object' && wordData.prototype) {
+                     element.classList.add('has-inflection');
+                 }
+                 
+                 element.addEventListener('click', function(e) {
+                     e.stopPropagation();
+                     showWordTooltip(this);
+                 });
+                 
+                 element.addEventListener('mouseenter', function() {
+                     showWordTooltip(this);
+                 });
+                 
+                 element.addEventListener('mouseleave', function() {
+                     hideWordTooltip();
+                 });
+             });
+             
+             // 点击故事文本的段落播放音频
+             const paragraphs = storyText.querySelectorAll('p');
+             paragraphs.forEach(paragraph => {
+                 paragraph.addEventListener('click', function(event) {
+                     const text = this.textContent.trim();
+                     if (text) {
+                         playSentenceAudio(text);
+                         
+                         // 添加播放视觉反馈
+                         this.style.background = 'rgba(102, 126, 234, 0.1)';
+                         setTimeout(() => {
+                             this.style.background = '';
+                         }, 1000);
+                     }
+                 });
+             });
+         }
+         
+         /**
+          * 显示词汇提示框（支持原型透视）
+          */
+         function showWordTooltip(element) {
+             const finnishWord = element.textContent.toLowerCase();
+             const wordData = vocabularyData[finnishWord];
+             
+             if (!wordData) return;
+             
+             const tooltip = document.getElementById('wordTooltip');
+             
+             // 判断是否为原型透视词汇
+             if (typeof wordData === 'object' && wordData.prototype) {
+                 // 原型透视模式 - 显示详细信息
+                 tooltip.innerHTML = `
+                     <div class="prototype-view">
+                         <div class="prototype-header">
+                             ${wordData.color} <strong>${wordData.prototype}</strong> <span style="font-size: 0.8em; opacity: 0.7;">(原型)</span>
+                         </div>
+                         <div class="chinese-meaning">${wordData.chinese}</div>
+                         <div class="form-info">
+                             <small>${wordData.form}</small>
+                         </div>
+                         <div class="type-badge">
+                             <span style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 10px; font-size: 0.7em;">
+                                 ${wordData.type}
+                             </span>
+                         </div>
+                     </div>
+                 `;
+             } else if (typeof wordData === 'string') {
+                 // 普通模式 - 只显示中文翻译
+                 tooltip.innerHTML = `<div class="simple-translation">${wordData}</div>`;
+             } else {
+                 return; // 无匹配数据
+             }
+             
+             // 先显示来获取实际尺寸
+             tooltip.style.visibility = 'hidden';
+             tooltip.classList.add('show');
+             const tooltipRect = tooltip.getBoundingClientRect();
+             const elementRect = element.getBoundingClientRect();
+             tooltip.style.visibility = 'visible';
+             
+             // 基于单词元素位置计算
+             let left = elementRect.left + (elementRect.width / 2) - (tooltipRect.width / 2);
+             let top = elementRect.top - tooltipRect.height - 10; // 单词上方10px
+             
+             // 防止超出屏幕边界
+             if (left + tooltipRect.width > window.innerWidth - 10) {
+                 left = window.innerWidth - tooltipRect.width - 10;
+             }
+             if (left < 10) {
+                 left = 10;
+             }
+             if (top < 10) {
+                 top = elementRect.bottom + 10; // 改到单词下方
+             }
+             if (top + tooltipRect.height > window.innerHeight - 10) {
+                 top = window.innerHeight - tooltipRect.height - 10;
+             }
+             
+             tooltip.style.left = left + 'px';
+             tooltip.style.top = top + 'px';
+         }
+         
+         /**
+          * 隐藏词汇提示框
+          */
+         function hideWordTooltip() {
+             const tooltip = document.getElementById('wordTooltip');
+             tooltip.classList.remove('show');
+         }
+         
+         /**
+          * 切换语法高亮
+          */
+         function toggleGrammarHighlight() {
+             grammarHighlightEnabled = !grammarHighlightEnabled;
+             const grammarBtn = document.getElementById('grammarBtn');
+             grammarBtn.textContent = `🎨 语法高亮: ${grammarHighlightEnabled ? '开' : '关'}`;
+             
+             const storyText = document.getElementById('storyText');
+             if (grammarHighlightEnabled) {
+                 storyText.classList.remove('no-grammar');
+             } else {
+                 storyText.classList.add('no-grammar');
+             }
+         }
+         
+         /**
+          * 切换中文脚手架
+          */
+         function toggleChineseScaffold() {
+             chineseScaffoldVisible = !chineseScaffoldVisible;
+             const scaffoldBtn = document.getElementById('scaffoldBtn');
+             scaffoldBtn.textContent = `🇨🇳 中文脚手架: ${chineseScaffoldVisible ? '开' : '关'}`;
+             
+             const storyContainer = document.getElementById('storyText');
+             const paragraphs = storyContainer.querySelectorAll('p');
+             
+             paragraphs.forEach(p => {
+                 // 移除现有的中文脚手架
+                 const existingScaffold = p.querySelector('.chinese-scaffold');
+                 if (existingScaffold) {
+                     existingScaffold.remove();
+                 }
+                 
+                 if (chineseScaffoldVisible) {
+                     // 添加中文脚手架
+                     const textContent = p.textContent.replace(/["""]/g, '"');
+                     const chineseTranslation = chineseTranslations[textContent];
+                     
+                     if (chineseTranslation) {
+                         const scaffoldDiv = document.createElement('div');
+                         scaffoldDiv.className = 'chinese-scaffold';
+                         scaffoldDiv.textContent = chineseTranslation;
+                         p.appendChild(scaffoldDiv);
+                     }
+                 }
+             });
+         }
+         
+         /**
+          * 播放全文音频
+          */
+         function playFullAudio() {
+             const playBtn = document.getElementById('playBtn');
+             
+             if (isPlaying) {
+                 speechSynthesis.cancel();
+                 isPlaying = false;
+                 playBtn.innerHTML = '🔊 朗读全文';
+                 return;
+             }
+             
+             // 获取当前场景的芬兰语文本
+             const scene = storyScenes[currentScene];
+             const textContent = scene.content
+                 .replace(/<[^>]*>/g, '') // 移除HTML标签
+                 .replace(/•/g, '') // 移除列表符号
+                 .replace(/\s+/g, ' ') // 标准化空格
+                 .trim();
+             
+             if (!textContent) return;
+             
+             // 使用Web Speech API播放芬兰语
+             if ('speechSynthesis' in window) {
+                 const utterance = new SpeechSynthesisUtterance(textContent);
+                 utterance.lang = 'fi-FI';
+                 utterance.rate = 0.7;
+                 utterance.pitch = 1.0;
+                 utterance.volume = 0.8;
+                 
+                 utterance.onstart = () => {
+                     isPlaying = true;
+                     playBtn.innerHTML = '⏸️ 停止播放';
+                 };
+                 
+                 utterance.onend = () => {
+                     isPlaying = false;
+                     playBtn.innerHTML = '🔊 朗读全文';
+                 };
+                 
+                 utterance.onerror = () => {
+                     isPlaying = false;
+                     playBtn.innerHTML = '🔊 朗读全文';
+                     console.log('语音播放出错');
+                 };
+                 
+                 speechSynthesis.speak(utterance);
+             } else {
+                 alert('您的浏览器不支持语音播放功能');
+             }
+         }
+         
+         /**
+          * 播放单句音频
+          */
+         function playSentenceAudio(text) {
+             if ('speechSynthesis' in window) {
+                 speechSynthesis.cancel(); // 停止当前播放
+                 
+                 const utterance = new SpeechSynthesisUtterance(text);
+                 utterance.lang = 'fi-FI';
+                 utterance.rate = 0.7;
+                 utterance.pitch = 1.0;
+                 utterance.volume = 0.8;
+                 
+                 speechSynthesis.speak(utterance);
+             }
+         }
+         
+         /**
+          * 更新进度指示器
+          */
+         function updateProgress() {
+             const progress = ((currentScene + 1) / 5) * 100;
+             document.getElementById('progressFill').style.width = progress + '%';
+             document.getElementById('progressText').textContent = 
+                 `第 ${currentScene + 1} 场景 / 共 5 场景`;
+         }
+         
+         /**
+          * 更新导航按钮状态
+          */
+         function updateNavigation() {
+             const prevBtn = document.getElementById('prevBtn');
+             const nextBtn = document.getElementById('nextBtn');
+             const counter = document.getElementById('sceneCounter');
+             
+             prevBtn.disabled = currentScene === 0;
+             nextBtn.disabled = currentScene === 4;
+             counter.textContent = `${currentScene + 1} / 5`;
+         }
+         
+         /**
+          * 前一个场景
+          */
+         function prevScene() {
+             if (currentScene > 0) {
+                 currentScene--;
+                 loadScene(currentScene);
+                 updateProgress();
+                 updateNavigation();
+                 hideWordTooltip();
+             }
+         }
+         
+         /**
+          * 下一个场景
+          */
+         function nextScene() {
+             if (currentScene < 4) {
+                 currentScene++;
+                 loadScene(currentScene);
+                 updateProgress();
+                 updateNavigation();
+                 hideWordTooltip();
+             }
+         }
+         
+         /**
+          * 退出模块
+          */
+         function exitModule() {
+             window.history.back();
+         }
+         
+         /**
+          * 初始化应用
+          */
+         function init() {
+             loadScene(currentScene);
+             updateProgress();
+             updateNavigation();
+             
+             // 监听页面滚动，滚动时隐藏提示框
+             window.addEventListener('scroll', function() {
+                 hideWordTooltip();
+             });
+             
+             // 监听窗口尺寸变化，也隐藏提示框
+             window.addEventListener('resize', function() {
+                 hideWordTooltip();
+             });
+             
+             // 添加键盘快捷键支持
+             document.addEventListener('keydown', function(e) {
+                 switch(e.key) {
+                     case 'ArrowLeft':
+                         e.preventDefault();
+                         prevScene();
+                         break;
+                     case 'ArrowRight':
+                         e.preventDefault();
+                         nextScene();
+                         break;
+                     case ' ':
+                         e.preventDefault();
+                         playFullAudio();
+                         break;
+                     case 'g':
+                     case 'G':
+                         e.preventDefault();
+                         toggleGrammarHighlight();
+                         break;
+                     case 'c':
+                     case 'C':
+                         e.preventDefault();
+                         toggleChineseScaffold();
+                         break;
+                     case 'Escape':
+                         if (isPlaying) {
+                             speechSynthesis.cancel();
+                             isPlaying = false;
+                             document.getElementById('playBtn').innerHTML = '🔊 朗读全文';
+                         }
+                         break;
+                 }
+             });
+             
+
+         }
+         
+         // 页面加载完成后初始化
+         document.addEventListener('DOMContentLoaded', init);
+     </script>
+ </body>
+ </html> 
