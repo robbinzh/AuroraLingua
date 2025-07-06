@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏙️ Päivä Kaupungilla - 城市里的一天 | 模块二·11 城市主题图画书模拟器 - AuroraLingua</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1DD1A1 0%, #55A3FF 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .storybook-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        
+        /* 顶部标题栏 */
+        .header {
+            background: linear-gradient(135deg, #1DD1A1, #55A3FF);
+            color: white;
+            padding: 20px 30px;
+            position: relative;
+        }
+        
+        .exit-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .exit-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateX(-2px);
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin: 15px 0 5px 0;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        
+        /* 进度指示器 */
+        .progress-container {
+            background: #f8f9fa;
+            padding: 15px 30px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1DD1A1, #55A3FF);
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* 主要内容区域 */
+        .main-content {
+            min-height: 500px;
+            position: relative;
+        }
+        
+        .scene-content {
+            display: flex;
+            min-height: 500px;
+            transition: opacity 0.3s ease;
+        }
+        
+        .illustration-panel {
+            flex: 0 0 40%;
+            background: linear-gradient(135deg, #e6fffe, #f0f9ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+            border-right: 2px solid #b8e6e1;
+        }
+        
+        .illustration {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(29, 209, 161, 0.15);
+            transition: transform 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .illustration:hover {
+            transform: scale(1.02);
+        }
+        
+        .illustration-title {
+            font-size: 1.1rem;
+            color: #16a085;
+            margin-top: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .text-panel {
+            flex: 0 0 60%;
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: white;
+        }
+        
+        .scene-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 25px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .toolbar-btn {
+            background: linear-gradient(135deg, #1DD1A1, #55A3FF);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        
+        .toolbar-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(29, 209, 161, 0.3);
+        }
+        
+        .story-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 30px;
+        }
+        
+        .story-text p {
+            margin-bottom: 15px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background-color 0.2s ease;
+            position: relative;
+        }
+        
+        .story-text p:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .story-text p::before {
+            content: '🔊';
+            opacity: 0;
+            position: absolute;
+            left: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            transition: opacity 0.2s ease;
+        }
+        
+        .story-text p:hover::before {
+            opacity: 0.6;
+        }
+        
+        /* 变位词汇（有原型透视）的特殊样式 */
+        .has-inflection {
+            border-bottom: 2px dotted #f39c12 !important;
+            font-weight: 500;
+        }
+        
+        .vocab-word:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 3px;
+        }
+        
+        .vocab-word.has-inflection:hover {
+            text-decoration-color: #667eea;
+        }
+        
+        /* 语法高亮样式 */
+        .grammar-olla { background: linear-gradient(135deg, #d1ecf1, #bee5eb); padding: 2px 4px; border-radius: 3px; }
+        .grammar-verb { background: linear-gradient(135deg, #d4edda, #c3e6cb); padding: 2px 4px; border-radius: 3px; }
+        .grammar-static { background: linear-gradient(135deg, #e2e3e5, #d6d8db); padding: 2px 4px; border-radius: 3px; }
+        .grammar-dynamic { background: linear-gradient(135deg, #fff3cd, #ffeaa7); padding: 2px 4px; border-radius: 3px; }
+        .grammar-partitive { background: linear-gradient(135deg, #f8d7da, #f5c6cb); padding: 2px 4px; border-radius: 3px; }
+        .grammar-accusative { background: linear-gradient(135deg, #d1ecf1, #bee5eb); padding: 2px 4px; border-radius: 3px; }
+        .grammar-existence { background: linear-gradient(135deg, #e7e3ff, #d0c9ff); padding: 2px 4px; border-radius: 3px; }
+        .grammar-cognitive { background: linear-gradient(135deg, #ffccf2, #ff99e6); padding: 2px 4px; border-radius: 3px; }
+        .grammar-profession { background: linear-gradient(135deg, #d4edda, #c3e6cb); padding: 2px 4px; border-radius: 3px; }
+        
+        /* 词汇提示框 */
+        .word-tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.95);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            max-width: 280px;
+            text-align: left;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* 原型透视样式 */
+        .prototype-view {
+            line-height: 1.4;
+        }
+        
+        .prototype-header {
+            font-size: 1rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .chinese-meaning {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #4fc3f7;
+            margin-bottom: 6px;
+        }
+        
+        .form-info {
+            margin-bottom: 8px;
+            opacity: 0.9;
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+        
+        .type-badge {
+            text-align: center;
+            margin-top: 6px;
+        }
+        
+        .simple-translation {
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .word-tooltip.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .word-tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-bottom-color: rgba(0,0,0,0.9);
+        }
+        
+        /* 语法高亮关闭状态 */
+        .story-text.no-grammar .grammar-olla,
+        .story-text.no-grammar .grammar-verb,
+        .story-text.no-grammar .grammar-static,
+        .story-text.no-grammar .grammar-dynamic,
+        .story-text.no-grammar .grammar-partitive,
+        .story-text.no-grammar .grammar-accusative,
+        .story-text.no-grammar .grammar-existence,
+        .story-text.no-grammar .grammar-cognitive,
+        .story-text.no-grammar .grammar-profession {
+            color: inherit;
+            background: none;
+            font-weight: normal;
+            padding: 0;
+        }
+        
+        /* 中文脚手架样式 */
+        .chinese-scaffold {
+            color: #888 !important;
+            font-size: 0.9em !important;
+            margin-top: 5px !important;
+            margin-bottom: 10px !important;
+            font-style: italic !important;
+            background: rgba(136, 136, 136, 0.05);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border-left: 3px solid #ccc;
+        }
+        
+        /* 底部导航 */
+        .navigation {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .nav-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .scene-counter {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .header { padding: 15px 20px; }
+            .header h1 { font-size: 1.4rem; }
+            .scene-content { flex-direction: column; }
+            .illustration-panel, .text-panel { flex: none; width: 100%; }
+            .illustration-panel {
+                min-height: 200px;
+                border-right: none;
+                border-bottom: 2px solid #e9ecef;
+            }
+            .text-panel { padding: 20px; }
+            .navigation { padding: 15px 20px; }
+            .nav-btn { min-width: 80px; padding: 10px 16px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="storybook-container">
+        <!-- 顶部标题栏 -->
+        <div class="header">
+            <button class="exit-btn" onclick="exitModule()">← 返回</button>
+            <h1>🏙️ Päivä Kaupungilla - 城市里的一天</h1>
+            <div class="subtitle">模块二·11：城市主题综合学习 - 图画书模拟器</div>
+        </div>
+        
+        <!-- 进度指示器 -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 20%;"></div>
+            </div>
+            <div class="progress-text" id="progressText">第 1 场景 / 共 5 场景</div>
+        </div>
+        
+        <!-- 主要内容区域 -->
+        <div class="main-content">
+            <div class="scene-container">
+                <div class="scene-content" id="sceneContent">
+                    <div class="illustration-panel">
+                        <div>
+                            <img class="illustration" id="sceneIllustration" src="../assets/image/M2_city_S1.png" alt="明亮现代的餐厅，服务员微笑服务" />
+                            <div class="illustration-title" id="sceneIllustrationTitle">餐厅 Ravintola</div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-panel">
+                        <h2 class="scene-title" id="sceneTitle">Lounas Ravintolassa</h2>
+                        
+                        <div class="toolbar">
+                            <button class="toolbar-btn" onclick="playFullAudio()" id="playBtn">
+                                🔊 朗读全文
+                            </button>
+                            <button class="toolbar-btn" onclick="toggleGrammarHighlight()" id="grammarBtn">
+                                🎨 语法高亮: 开
+                            </button>
+                            <button class="toolbar-btn" onclick="toggleChineseScaffold()" id="scaffoldBtn">
+                                🇨🇳 中文脚手架: 关
+                            </button>
+                        </div>
+                        
+                        <div class="story-text" id="storyText">
+                            <!-- 故事内容将在这里动态加载 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部导航 -->
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="prevScene()" disabled>← 上一页</button>
+            <span class="scene-counter" id="sceneCounter">1 / 5</span>
+            <button class="nav-btn" id="nextBtn" onclick="nextScene()">下一页 →</button>
+        </div>
+    </div>
+    
+    <!-- 词汇气泡提示框 -->
+    <div class="word-tooltip" id="wordTooltip"></div>
+    
+    <script>
+        // 全局变量
+        let currentScene = 0;
+        let isPlaying = false;
+        let grammarHighlightEnabled = true;
+        let chineseScaffoldVisible = false;
+        
+        // 故事场景数据
+        const storyScenes = [
+            {
+                id: 1,
+                title: "Lounas Ravintolassa",
+                titleChinese: "在餐厅吃午餐",
+                imagePath: "../assets/image/M2_city_S1.png",
+                imageAlt: "明亮现代的餐厅，服务员微笑服务",
+                illustrationTitle: "餐厅 Ravintola",
+                content: `
+                    <p><span class="grammar-olla vocab-word">On</span> <span class="vocab-word grammar-dynamic">lounaan</span> aika. Minä <span class="grammar-verb vocab-word">menen</span> <span class="vocab-word grammar-dynamic">ravintolaan</span>.</p>
+                    <p><span class="vocab-word grammar-profession">Tarjoilija</span> <span class="grammar-verb vocab-word">tuo</span> minulle ruokalistan.</p>
+                    <p>Minä <span class="grammar-verb vocab-word">tilaan</span> <span class="vocab-word grammar-partitive">lohta</span> ja <span class="vocab-word grammar-partitive">salaattia</span>, jossa <span class="grammar-olla vocab-word">on</span> <span class="vocab-word grammar-partitive">tomaattia</span>.</p>
+                    <p><span class="vocab-word grammar-profession">Kokki</span> keittiössä <span class="grammar-verb vocab-word">valmistaa</span> ruoan nopeasti.</p>
+                `
+            },
+            {
+                id: 2,
+                title: "Maku ja Hinta",
+                titleChinese: "味道和价格",
+                imagePath: "../assets/image/M2_city_S2.png",
+                imageAlt: "精美的三文鱼沙拉和红酒，账单",
+                illustrationTitle: "美食 Ruoka",
+                content: `
+                    <p>Ruoka <span class="grammar-olla vocab-word">on</span> todella hyvää! Minä <span class="grammar-verb vocab-word">pidän</span> siitä paljon.</p>
+                    <p>Minä <span class="grammar-verb vocab-word">juon</span> myös lasin <span class="vocab-word grammar-partitive">viiniä</span>.</p>
+                    <p>Lasku, olkaa hyvä. Ruoka <span class="grammar-olla vocab-word">ei ole</span> <span class="vocab-word grammar-adjective">halpaa</span>, se <span class="grammar-olla vocab-word">on</span> vähän <span class="vocab-word grammar-adjective">kallis</span>.</p>
+                    <p>Minä <span class="grammar-verb vocab-word">maksan</span> kortilla. Sitten minä <span class="grammar-verb vocab-word">jätän</span> vähän tippiä.</p>
+                `
+            },
+            {
+                id: 3,
+                title: "Asioilla Kaupungilla",
+                titleChinese: "在城市里办事",
+                imagePath: "../assets/image/M2_city_S3.png",
+                imageAlt: "银行和邮局的分格漫画",
+                illustrationTitle: "城市 Kaupunki",
+                content: `
+                    <p>Lounaan jälkeen, minä <span class="grammar-verb vocab-word">kävelen</span> <span class="vocab-word grammar-dynamic">pankkiin</span>.</p>
+                    <p>Minun täytyy <span class="grammar-verb vocab-word">vaihtaa</span> rahaa.</p>
+                    <p>Sitten minä <span class="grammar-verb vocab-word">menen</span> <span class="vocab-word grammar-dynamic">postiin</span>.</p>
+                    <p>Minä <span class="grammar-verb vocab-word">lähetän</span> <span class="vocab-word grammar-accusative">kirjeen</span> ja kortin mummille.</p>
+                `
+            },
+            {
+                id: 4,
+                title: "Kahvilahetki",
+                titleChinese: "咖啡馆时刻",
+                imagePath: "../assets/image/M2_city_S4.png",
+                imageAlt: "现代咖啡馆，朋友聊天，咖啡和茶",
+                illustrationTitle: "咖啡馆 Kahvila",
+                content: `
+                    <p><span class="grammar-olla vocab-word">On</span> aika <span class="grammar-verb vocab-word">tavata</span> ystävä!</p>
+                    <p>Me <span class="grammar-verb vocab-word">istumme</span> <span class="vocab-word grammar-static">kahvilassa</span>.</p>
+                    <p>Minä <span class="grammar-verb vocab-word">juon</span> <span class="vocab-word grammar-partitive">kahvia</span>. Hän <span class="grammar-verb vocab-word">juo</span> <span class="vocab-word grammar-partitive">teetä</span>.</p>
+                    <p>Me <span class="grammar-verb vocab-word">keskustelemme</span> ja <span class="grammar-verb vocab-word">nauramme</span>. <span class="grammar-olla vocab-word">On</span> niin <span class="vocab-word grammar-adjective">mukavaa</span>.</p>
+                `
+            },
+            {
+                id: 5,
+                title: "Illan Elokuva",
+                titleChinese: "晚上的电影",
+                imagePath: "../assets/image/M2_city_S5.png",
+                imageAlt: "黑暗的电影院，大银幕电影",
+                illustrationTitle: "电影院 Elokuvateatteri",
+                content: `
+                    <p>Illalla me <span class="grammar-verb vocab-word">menemme</span> <span class="vocab-word grammar-dynamic">elokuvateatteriin</span>.</p>
+                    <p><span class="vocab-word grammar-dynamic">Elokuva</span> <span class="grammar-verb vocab-word">alkaa</span>. Me <span class="grammar-olla vocab-word">olemme</span> hiljaa.</p>
+                    <p>Se <span class="grammar-olla vocab-word">on</span> hyvin <span class="vocab-word grammar-adjective">mielenkiintoinen</span>. Aika <span class="grammar-verb vocab-word">menee</span> nopeasti.</p>
+                    <p>Kun elokuva <span class="grammar-verb vocab-word">loppuu</span>, me <span class="grammar-verb vocab-word">lähdemme</span> kotiin.</p>
+                `
+            }
+        ];
+        
+        // 城市主题词汇数据库（支持原型透视）
+        const vocabularyData = {
+            // === 动词变位（带原型透视） ===
+            "on": {
+                prototype: "olla",
+                chinese: "是/在",
+                form: "第三人称现在时：se on",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "menen": {
+                prototype: "mennä",
+                chinese: "去",
+                form: "第一人称现在时：minä menen",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "tuo": {
+                prototype: "tuoda",
+                chinese: "带来",
+                form: "第三人称现在时：tarjoilija tuo",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "tilaan": {
+                prototype: "tilata",
+                chinese: "点餐",
+                form: "第一人称现在时：minä tilaan",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "valmistaa": {
+                prototype: "valmistaa",
+                chinese: "准备/制作",
+                form: "第三人称现在时：kokki valmistaa",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "pidän": {
+                prototype: "pitää",
+                chinese: "喜欢",
+                form: "第一人称现在时：minä pidän",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "juon": {
+                prototype: "juoda",
+                chinese: "喝",
+                form: "第一人称现在时：minä juon",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "ei ole": {
+                prototype: "olla",
+                chinese: "不是/不在",
+                form: "否定现在时：ei ole",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "maksan": {
+                prototype: "maksaa",
+                chinese: "支付",
+                form: "第一人称现在时：minä maksan",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "jätän": {
+                prototype: "jättää",
+                chinese: "留下",
+                form: "第一人称现在时：minä jätän",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "kävelen": {
+                prototype: "kävellä",
+                chinese: "走",
+                form: "第一人称现在时：minä kävelen",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "vaihtaa": {
+                prototype: "vaihtaa",
+                chinese: "更换/交换",
+                form: "第一不定式：vaihtaa",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "lähetän": {
+                prototype: "lähettää",
+                chinese: "寄送",
+                form: "第一人称现在时：minä lähetän",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "tavata": {
+                prototype: "tavata",
+                chinese: "见面",
+                form: "第一不定式：tavata",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "istumme": {
+                prototype: "istua",
+                chinese: "坐",
+                form: "第一人称复数现在时：me istumme",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "juo": {
+                prototype: "juoda",
+                chinese: "喝",
+                form: "第三人称现在时：hän juo",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "keskustelemme": {
+                prototype: "keskustella",
+                chinese: "讨论",
+                form: "第一人称复数现在时：me keskustelemme",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "nauramme": {
+                prototype: "nauraa",
+                chinese: "笑",
+                form: "第一人称复数现在时：me nauramme",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "menemme": {
+                prototype: "mennä",
+                chinese: "去",
+                form: "第一人称复数现在时：me menemme",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "alkaa": {
+                prototype: "alkaa",
+                chinese: "开始",
+                form: "第三人称现在时：elokuva alkaa",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "olemme": {
+                prototype: "olla",
+                chinese: "是/在",
+                form: "第一人称复数现在时：me olemme",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "menee": {
+                prototype: "mennä",
+                chinese: "去/过去",
+                form: "第三人称现在时：aika menee",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "loppuu": {
+                prototype: "loppua",
+                chinese: "结束",
+                form: "第三人称现在时：elokuva loppuu",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "lähdemme": {
+                prototype: "lähteä",
+                chinese: "离开",
+                form: "第一人称复数现在时：me lähdemme",
+                type: "动词变位",
+                color: "🟢"
+            },
+
+            // === 名词格变（带原型透视） ===
+            "lounaan": {
+                prototype: "lounas",
+                chinese: "午餐",
+                form: "属格：午餐的时间",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "ravintolaan": {
+                prototype: "ravintola",
+                chinese: "餐厅",
+                form: "入格：去餐厅",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "lohta": {
+                prototype: "lohi",
+                chinese: "三文鱼",
+                form: "部分格：一些三文鱼",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "salaattia": {
+                prototype: "salaatti",
+                chinese: "沙拉",
+                form: "部分格：一些沙拉",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "tomaattia": {
+                prototype: "tomaatti",
+                chinese: "番茄",
+                form: "部分格：一些番茄",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "viiniä": {
+                prototype: "viini",
+                chinese: "葡萄酒",
+                form: "部分格：一些葡萄酒",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "halpaa": {
+                prototype: "halpa",
+                chinese: "便宜的",
+                form: "部分格：不便宜",
+                type: "形容词格变",
+                color: "🟣"
+            },
+            "pankkiin": {
+                prototype: "pankki",
+                chinese: "银行",
+                form: "入格：去银行",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "postiin": {
+                prototype: "posti",
+                chinese: "邮局",
+                form: "入格：去邮局",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "kirjeen": {
+                prototype: "kirje",
+                chinese: "信",
+                form: "宾格：一封信",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "kahvilassa": {
+                prototype: "kahvila",
+                chinese: "咖啡馆",
+                form: "内格：在咖啡馆",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "kahvia": {
+                prototype: "kahvi",
+                chinese: "咖啡",
+                form: "部分格：一些咖啡",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "teetä": {
+                prototype: "tee",
+                chinese: "茶",
+                form: "部分格：一些茶",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "mukavaa": {
+                prototype: "mukava",
+                chinese: "愉快的",
+                form: "部分格：很愉快",
+                type: "形容词格变",
+                color: "🟣"
+            },
+            "elokuvateatteriin": {
+                prototype: "elokuvateatteri",
+                chinese: "电影院",
+                form: "入格：去电影院",
+                type: "名词格变",
+                color: "🟣"
+            },
+
+            // === 城市主题基本词汇 ===
+            "aika": "时间",
+            "lounas": "午餐",
+            "ravintola": "餐厅",
+            "tarjoilija": "服务员",
+            "ruokalista": "菜单",
+            "kokki": "厨师",
+            "lohi": "三文鱼",
+            "salaatti": "沙拉",
+            "tomaatti": "番茄",
+            "ruoka": "食物",
+            "viini": "葡萄酒",
+            "lasku": "账单",
+            "halpa": "便宜的",
+            "kallis": "昂贵的",
+            "kortti": "卡",
+            "tippi": "小费",
+            "pankki": "银行",
+            "raha": "钱",
+            "posti": "邮局",
+            "kirje": "信",
+            "kortti": "卡片",
+            "mummi": "奶奶",
+            "ystävä": "朋友",
+            "kahvila": "咖啡馆",
+            "kahvi": "咖啡",
+            "tee": "茶",
+            "mukava": "愉快的",
+            "elokuvateatteri": "电影院",
+            "elokuva": "电影",
+            "mielenkiintoinen": "有趣的",
+            "koti": "家",
+            "hiljaa": "安静的",
+            "nopeasti": "快速地",
+            "illalla": "晚上",
+            "paljon": "很多",
+            "lasin": "玻璃杯",
+            "vähän": "一点",
+            "sitten": "然后",
+            "jälkeen": "之后",
+            "täytyy": "必须",
+            "hyvin": "很/非常",
+            "todella": "真的",
+            "myös": "也",
+            "kun": "当",
+            "kotiin": "回家"
+        };
+        
+        // 中文翻译脚手架数据
+        const chineseTranslations = {
+            // 场景1：餐厅午餐
+            "On lounaan aika. Minä menen ravintolaan.": "现在是午餐时间。我去餐厅。",
+            "Tarjoilija tuo minulle ruokalistan.": "服务员给我带来菜单。",
+            "Minä tilaan lohta ja salaattia, jossa on tomaattia.": "我点了三文鱼和带番茄的沙拉。",
+            "Kokki keittiössä valmistaa ruoan nopeasti.": "厨房里的厨师很快地准备好食物。",
+            
+            // 场景2：味道和价格
+            "Ruoka on todella hyvää! Minä pidän siitä paljon.": "食物真的很好吃！我非常喜欢。",
+            "Minä juon myös lasin viiniä.": "我也喝了一杯葡萄酒。",
+            "Lasku, olkaa hyvä. Ruoka ei ole halpaa, se on vähän kallis.": "买单，谢谢。这顿饭不便宜，有点贵。",
+            "Minä maksan kortilla. Sitten minä jätän vähän tippiä.": "我用卡支付。然后我留下一点小费。",
+            
+            // 场景3：城市办事
+            "Lounaan jälkeen, minä kävelen pankkiin.": "午饭后，我走去银行。",
+            "Minun täytyy vaihtaa rahaa.": "我必须换钱。",
+            "Sitten minä menen postiin.": "然后我去邮局。",
+            "Minä lähetän kirjeen ja kortin mummille.": "我寄一封信和一张卡片给奶奶。",
+            
+            // 场景4：咖啡馆时刻
+            "On aika tavata ystävä!": "是时候见朋友了！",
+            "Me istumme kahvilassa.": "我们坐在咖啡馆里。",
+            "Minä juon kahvia. Hän juo teetä.": "我喝咖啡。他/她喝茶。",
+            "Me keskustelemme ja nauramme. On niin mukavaa.": "我们聊天和笑。真愉快。",
+            
+            // 场景5：晚上电影
+            "Illalla me menemme elokuvateatteriin.": "晚上我们去电影院。",
+            "Elokuva alkaa. Me olemme hiljaa.": "电影开始了。我们保持安静。",
+            "Se on hyvin mielenkiintoinen. Aika menee nopeasti.": "它非常有趣。时间过得很快。",
+            "Kun elokuva loppuu, me lähdemme kotiin.": "当电影结束时，我们离开回家。"
+        };
+         
+         /**
+          * 加载指定场景
+          */
+         function loadScene(sceneIndex) {
+             const scene = storyScenes[sceneIndex];
+             
+             // 更新插图
+             const illustration = document.getElementById('sceneIllustration');
+             illustration.src = scene.imagePath;
+             illustration.alt = scene.imageAlt;
+             document.getElementById('sceneIllustrationTitle').textContent = scene.illustrationTitle;
+             
+             // 更新标题
+             document.getElementById('sceneTitle').textContent = scene.title;
+             
+             // 更新故事内容
+             const storyContainer = document.getElementById('storyText');
+             storyContainer.innerHTML = scene.content;
+             
+             // 设置词汇交互
+             setupWordInteraction();
+         }
+         
+         /**
+          * 设置词汇悬停交互
+          */
+         function setupWordInteraction() {
+             const storyText = document.getElementById('storyText');
+             if (!storyText) return;
+             
+             // 为所有词汇和语法标记的元素添加点击事件
+             const interactiveElements = storyText.querySelectorAll('.vocab-word, [class^="grammar-"]');
+             
+             interactiveElements.forEach(element => {
+                 const finnishWord = element.textContent.toLowerCase();
+                 const wordData = vocabularyData[finnishWord];
+                 
+                 // 为有原型透视功能的词汇添加特殊样式
+                 if (wordData && typeof wordData === 'object' && wordData.prototype) {
+                     element.classList.add('has-inflection');
+                 }
+                 
+                 element.addEventListener('click', function(e) {
+                     e.stopPropagation();
+                     showWordTooltip(this);
+                 });
+                 
+                 element.addEventListener('mouseenter', function() {
+                     showWordTooltip(this);
+                 });
+                 
+                 element.addEventListener('mouseleave', function() {
+                     hideWordTooltip();
+                 });
+             });
+             
+             // 点击故事文本的段落播放音频
+             const paragraphs = storyText.querySelectorAll('p');
+             paragraphs.forEach(paragraph => {
+                 paragraph.addEventListener('click', function(event) {
+                     const text = this.textContent.trim();
+                     if (text) {
+                         playSentenceAudio(text);
+                         
+                         // 添加播放视觉反馈
+                         this.style.background = 'rgba(102, 126, 234, 0.1)';
+                         setTimeout(() => {
+                             this.style.background = '';
+                         }, 1000);
+                     }
+                 });
+             });
+         }
+         
+         /**
+          * 显示词汇提示框（支持原型透视）
+          */
+         function showWordTooltip(element) {
+             const finnishWord = element.textContent.toLowerCase();
+             const wordData = vocabularyData[finnishWord];
+             
+             if (!wordData) return;
+             
+             const tooltip = document.getElementById('wordTooltip');
+             
+             // 判断是否为原型透视词汇
+             if (typeof wordData === 'object' && wordData.prototype) {
+                 // 原型透视模式 - 显示详细信息
+                 tooltip.innerHTML = `
+                     <div class="prototype-view">
+                         <div class="prototype-header">
+                             ${wordData.color} <strong>${wordData.prototype}</strong> <span style="font-size: 0.8em; opacity: 0.7;">(原型)</span>
+                         </div>
+                         <div class="chinese-meaning">${wordData.chinese}</div>
+                         <div class="form-info">
+                             <small>${wordData.form}</small>
+                         </div>
+                         <div class="type-badge">
+                             <span style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 10px; font-size: 0.7em;">
+                                 ${wordData.type}
+                             </span>
+                         </div>
+                     </div>
+                 `;
+             } else if (typeof wordData === 'string') {
+                 // 普通模式 - 只显示中文翻译
+                 tooltip.innerHTML = `<div class="simple-translation">${wordData}</div>`;
+             } else {
+                 return; // 无匹配数据
+             }
+             
+             // 先显示来获取实际尺寸
+             tooltip.style.visibility = 'hidden';
+             tooltip.classList.add('show');
+             const tooltipRect = tooltip.getBoundingClientRect();
+             const elementRect = element.getBoundingClientRect();
+             tooltip.style.visibility = 'visible';
+             
+             // 基于单词元素位置计算
+             let left = elementRect.left + (elementRect.width / 2) - (tooltipRect.width / 2);
+             let top = elementRect.top - tooltipRect.height - 10; // 单词上方10px
+             
+             // 防止超出屏幕边界
+             if (left + tooltipRect.width > window.innerWidth - 10) {
+                 left = window.innerWidth - tooltipRect.width - 10;
+             }
+             if (left < 10) {
+                 left = 10;
+             }
+             if (top < 10) {
+                 top = elementRect.bottom + 10; // 改到单词下方
+             }
+             if (top + tooltipRect.height > window.innerHeight - 10) {
+                 top = window.innerHeight - tooltipRect.height - 10;
+             }
+             
+             tooltip.style.left = left + 'px';
+             tooltip.style.top = top + 'px';
+         }
+         
+         /**
+          * 隐藏词汇提示框
+          */
+         function hideWordTooltip() {
+             const tooltip = document.getElementById('wordTooltip');
+             tooltip.classList.remove('show');
+         }
+         
+         /**
+          * 切换语法高亮
+          */
+         function toggleGrammarHighlight() {
+             grammarHighlightEnabled = !grammarHighlightEnabled;
+             const grammarBtn = document.getElementById('grammarBtn');
+             grammarBtn.textContent = `🎨 语法高亮: ${grammarHighlightEnabled ? '开' : '关'}`;
+             
+             const storyText = document.getElementById('storyText');
+             if (grammarHighlightEnabled) {
+                 storyText.classList.remove('no-grammar');
+             } else {
+                 storyText.classList.add('no-grammar');
+             }
+         }
+         
+         /**
+          * 切换中文脚手架
+          */
+         function toggleChineseScaffold() {
+             chineseScaffoldVisible = !chineseScaffoldVisible;
+             const scaffoldBtn = document.getElementById('scaffoldBtn');
+             scaffoldBtn.textContent = `🇨🇳 中文脚手架: ${chineseScaffoldVisible ? '开' : '关'}`;
+             
+             const storyContainer = document.getElementById('storyText');
+             const paragraphs = storyContainer.querySelectorAll('p');
+             
+             paragraphs.forEach(p => {
+                 // 移除现有的中文脚手架
+                 const existingScaffold = p.querySelector('.chinese-scaffold');
+                 if (existingScaffold) {
+                     existingScaffold.remove();
+                 }
+                 
+                 if (chineseScaffoldVisible) {
+                     // 添加中文脚手架
+                     const textContent = p.textContent.replace(/["""]/g, '"');
+                     const chineseTranslation = chineseTranslations[textContent];
+                     
+                     if (chineseTranslation) {
+                         const scaffoldDiv = document.createElement('div');
+                         scaffoldDiv.className = 'chinese-scaffold';
+                         scaffoldDiv.textContent = chineseTranslation;
+                         p.appendChild(scaffoldDiv);
+                     }
+                 }
+             });
+         }
+         
+         /**
+          * 播放全文音频
+          */
+         function playFullAudio() {
+             const playBtn = document.getElementById('playBtn');
+             
+             if (isPlaying) {
+                 speechSynthesis.cancel();
+                 isPlaying = false;
+                 playBtn.innerHTML = '🔊 朗读全文';
+                 return;
+             }
+             
+             // 获取当前场景的芬兰语文本
+             const scene = storyScenes[currentScene];
+             const textContent = scene.content
+                 .replace(/<[^>]*>/g, '') // 移除HTML标签
+                 .replace(/•/g, '') // 移除列表符号
+                 .replace(/\s+/g, ' ') // 标准化空格
+                 .trim();
+             
+             if (!textContent) return;
+             
+             // 使用Web Speech API播放芬兰语
+             if ('speechSynthesis' in window) {
+                 const utterance = new SpeechSynthesisUtterance(textContent);
+                 utterance.lang = 'fi-FI';
+                 utterance.rate = 0.7;
+                 utterance.pitch = 1.0;
+                 utterance.volume = 0.8;
+                 
+                 utterance.onstart = () => {
+                     isPlaying = true;
+                     playBtn.innerHTML = '⏸️ 停止播放';
+                 };
+                 
+                 utterance.onend = () => {
+                     isPlaying = false;
+                     playBtn.innerHTML = '🔊 朗读全文';
+                 };
+                 
+                 utterance.onerror = () => {
+                     isPlaying = false;
+                     playBtn.innerHTML = '🔊 朗读全文';
+                     console.log('语音播放出错');
+                 };
+                 
+                 speechSynthesis.speak(utterance);
+             } else {
+                 alert('您的浏览器不支持语音播放功能');
+             }
+         }
+         
+         /**
+          * 播放单句音频
+          */
+         function playSentenceAudio(text) {
+             if ('speechSynthesis' in window) {
+                 speechSynthesis.cancel(); // 停止当前播放
+                 
+                 const utterance = new SpeechSynthesisUtterance(text);
+                 utterance.lang = 'fi-FI';
+                 utterance.rate = 0.7;
+                 utterance.pitch = 1.0;
+                 utterance.volume = 0.8;
+                 
+                 speechSynthesis.speak(utterance);
+             }
+         }
+         
+         /**
+          * 更新进度指示器
+          */
+         function updateProgress() {
+             const progress = ((currentScene + 1) / 5) * 100;
+             document.getElementById('progressFill').style.width = progress + '%';
+             document.getElementById('progressText').textContent = 
+                 `第 ${currentScene + 1} 场景 / 共 5 场景`;
+         }
+         
+         /**
+          * 更新导航按钮状态
+          */
+         function updateNavigation() {
+             const prevBtn = document.getElementById('prevBtn');
+             const nextBtn = document.getElementById('nextBtn');
+             const counter = document.getElementById('sceneCounter');
+             
+             prevBtn.disabled = currentScene === 0;
+             nextBtn.disabled = currentScene === 4;
+             counter.textContent = `${currentScene + 1} / 5`;
+         }
+         
+         /**
+          * 前一个场景
+          */
+         function prevScene() {
+             if (currentScene > 0) {
+                 currentScene--;
+                 loadScene(currentScene);
+                 updateProgress();
+                 updateNavigation();
+                 hideWordTooltip();
+             }
+         }
+         
+         /**
+          * 下一个场景
+          */
+         function nextScene() {
+             if (currentScene < 4) {
+                 currentScene++;
+                 loadScene(currentScene);
+                 updateProgress();
+                 updateNavigation();
+                 hideWordTooltip();
+             }
+         }
+         
+         /**
+          * 退出模块
+          */
+         function exitModule() {
+             window.history.back();
+         }
+         
+         /**
+          * 初始化应用
+          */
+         function init() {
+             loadScene(currentScene);
+             updateProgress();
+             updateNavigation();
+             
+             // 监听页面滚动，滚动时隐藏提示框
+             window.addEventListener('scroll', function() {
+                 hideWordTooltip();
+             });
+             
+             // 监听窗口尺寸变化，也隐藏提示框
+             window.addEventListener('resize', function() {
+                 hideWordTooltip();
+             });
+             
+             // 添加键盘快捷键支持
+             document.addEventListener('keydown', function(e) {
+                 switch(e.key) {
+                     case 'ArrowLeft':
+                         e.preventDefault();
+                         prevScene();
+                         break;
+                     case 'ArrowRight':
+                         e.preventDefault();
+                         nextScene();
+                         break;
+                     case ' ':
+                         e.preventDefault();
+                         playFullAudio();
+                         break;
+                     case 'g':
+                     case 'G':
+                         e.preventDefault();
+                         toggleGrammarHighlight();
+                         break;
+                     case 'c':
+                     case 'C':
+                         e.preventDefault();
+                         toggleChineseScaffold();
+                         break;
+                     case 'Escape':
+                         if (isPlaying) {
+                             speechSynthesis.cancel();
+                             isPlaying = false;
+                             document.getElementById('playBtn').innerHTML = '🔊 朗读全文';
+                         }
+                         break;
+                 }
+             });
+             
+
+         }
+         
+         // 页面加载完成后初始化
+         document.addEventListener('DOMContentLoaded', init);
+     </script>
+ </body>
+ </html> 
