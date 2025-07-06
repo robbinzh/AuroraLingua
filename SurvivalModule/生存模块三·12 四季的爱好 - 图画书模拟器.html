@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>扮演医生的一天 - 模块二图画书模拟器</title>
+    <title>🌸 Vuodenaikojen Harrastukset - 四季的爱好 | 模块三·12 四季主题图画书模拟器 - AuroraLingua</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4CAF50 0%, #FF9800 100%);
             min-height: 100vh;
             padding: 20px;
             line-height: 1.6;
@@ -30,7 +30,7 @@
         
         /* 顶部标题栏 */
         .header {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            background: linear-gradient(135deg, #4CAF50, #FF9800);
             color: white;
             padding: 20px 30px;
             position: relative;
@@ -79,7 +79,7 @@
         
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #ff6b6b, #ee5a24);
+            background: linear-gradient(90deg, #4CAF50, #FF9800);
             transition: width 0.5s ease;
         }
         
@@ -104,12 +104,12 @@
         
         .illustration-panel {
             flex: 0 0 40%;
-            background: linear-gradient(135deg, #ffeee6, #ffe6f2);
+            background: linear-gradient(135deg, #e8f5e8, #fff3e0);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 10px;
-            border-right: 2px solid #ffd6e1;
+            padding: 5px;
+            border-right: 2px solid #c8e6c9;
         }
         
         .illustration {
@@ -117,7 +117,7 @@
             height: 400px;
             object-fit: cover;
             border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(217, 70, 70, 0.15);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.15);
             transition: transform 0.3s ease;
             display: block;
             margin: 0 auto;
@@ -129,7 +129,7 @@
         
         .illustration-title {
             font-size: 1.1rem;
-            color: #d63031;
+            color: #388e3c;
             margin-top: 20px;
             font-weight: 600;
             text-align: center;
@@ -160,7 +160,7 @@
         }
         
         .toolbar-btn {
-            background: linear-gradient(135deg, #e17055, #d63031);
+            background: linear-gradient(135deg, #4CAF50, #FF9800);
             color: white;
             border: none;
             padding: 8px 12px;
@@ -172,7 +172,7 @@
         
         .toolbar-btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(225, 112, 85, 0.3);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
         }
         
         .story-text {
@@ -350,7 +350,7 @@
         }
         
         .nav-btn {
-            background: linear-gradient(135deg, #e17055, #d63031);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
             padding: 12px 20px;
@@ -364,7 +364,7 @@
         
         .nav-btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(225, 112, 85, 0.3);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
         }
         
         .nav-btn:disabled {
@@ -402,8 +402,8 @@
         <!-- 顶部标题栏 -->
         <div class="header">
             <button class="exit-btn" onclick="exitModule()">← 返回</button>
-            <h1>🏥 扮演医生的一天 Päivä Lääkärinä</h1>
-            <div class="subtitle">模块二·9：医疗主题综合学习 - 图画书模拟器</div>
+            <h1>🌸 Vuodenaikojen Harrastukset - 四季的爱好</h1>
+            <div class="subtitle">模块三·12：四季主题综合学习 - 图画书模拟器</div>
         </div>
         
         <!-- 进度指示器 -->
@@ -420,13 +420,13 @@
                 <div class="scene-content" id="sceneContent">
                     <div class="illustration-panel">
                         <div>
-                            <img class="illustration" id="sceneIllustration" src="../assets/image/M2_doctor_S1.png" alt="儿童房医生扮演场景" />
-                            <div class="illustration-title" id="sceneIllustrationTitle">儿童房 Lastenhuone</div>
+                            <img class="illustration" id="sceneIllustration" src="../assets/image/M3_seasons_S1.png" alt="春天的公园，主角正在拍摄花朵" />
+                            <div class="illustration-title" id="sceneIllustrationTitle">春天 Kevät</div>
                         </div>
                     </div>
                     
                     <div class="text-panel">
-                        <h2 class="scene-title" id="sceneTitle">Potilas saapuu</h2>
+                        <h2 class="scene-title" id="sceneTitle">Kevät - Uusi Alku</h2>
                         
                         <div class="toolbar">
                             <button class="toolbar-btn" onclick="playFullAudio()" id="playBtn">
@@ -470,87 +470,79 @@
         const storyScenes = [
             {
                 id: 1,
-                title: "Potilas saapuu",
-                titleChinese: "病人来了",
-                imagePath: "../assets/image/M2_doctor_S1.png",
-                imageAlt: "儿童房医生扮演场景",
-                illustrationTitle: "儿童房 Lastenhuone",
+                title: "Kevät - Uusi Alku",
+                titleChinese: "春天：新的开始",
+                imagePath: "../assets/image/M3_seasons_S1.png",
+                imageAlt: "春天的公园，主角正在拍摄花朵",
+                illustrationTitle: "春天 Kevät",
                 content: `
-                    <p>Tänään minä <span class="grammar-verb vocab-word">leikin</span> <span class="vocab-word grammar-partitive">lääkäriä</span>.</p>
-                    <p>Minun <span class="vocab-word">nalle</span> <span class="grammar-olla vocab-word">on</span> <span class="vocab-word">sairas</span>. Se <span class="grammar-olla vocab-word">on</span> minun potilas.</p>
-                    <p>Minä <span class="grammar-verb vocab-word">kysyn</span>: "Mikä sinulla <span class="grammar-olla vocab-word">on</span>?"</p>
-                    <p><span class="vocab-word">Nalle</span> ei <span class="grammar-verb vocab-word">vastaa</span>. Minä <span class="grammar-verb vocab-word">päätän</span> tutkia sen.</p>
+                    <p><span class="grammar-olla vocab-word">On</span> <span class="vocab-word grammar-season">kevät</span>. <span class="vocab-word">Luonto</span> <span class="grammar-verb vocab-word">herää</span> talven jälkeen.</p>
+                    <p>Ilma <span class="grammar-olla vocab-word">on</span> lämmin. Minä <span class="grammar-verb vocab-word">aloitan</span> uuden <span class="vocab-word grammar-hobby">harrastuksen</span>: <span class="vocab-word grammar-hobby">valokuvauksen</span>.</p>
+                    <p>Minä <span class="grammar-verb vocab-word">kuvaan</span> kukkia ja perhosia. Se <span class="grammar-olla vocab-word">on</span> todella <span class="vocab-word grammar-adjective">rentouttavaa</span>.</p>
+                    <p>Minulla <span class="grammar-olla vocab-word">on</span> paljon <span class="vocab-word grammar-time">vapaa-aikaa</span>.</p>
                 `
             },
             {
                 id: 2,
-                title: "Tutkimus ja diagnoosi",
-                titleChinese: "检查与诊断",
-                imagePath: "../assets/image/M2_doctor_S2.png",
-                imageAlt: "用听诊器检查玩具熊",
-                illustrationTitle: "检查室 Tutkimushuone",
+                title: "Kesä - Loma ja Urheilu",
+                titleChinese: "夏天：假期和运动",
+                imagePath: "../assets/image/M3_seasons_S2.png",
+                imageAlt: "夏日海滩，游泳和足球",
+                illustrationTitle: "夏天 Kesä",
                 content: `
-                    <p>Minä <span class="grammar-verb vocab-word">kuuntelen</span> nallen <span class="vocab-word grammar-partitive">sydäntä</span>.</p>
-                    <p>Minä <span class="grammar-verb vocab-word">katson</span> sen <span class="vocab-word grammar-dynamic">korviin</span> ja <span class="vocab-word grammar-dynamic">suuhun</span>.</p>
-                    <p>Minä <span class="grammar-verb vocab-word">ymmärrän</span> <span class="vocab-word grammar-accusative">ongelman</span>. <span class="vocab-word grammar-static">Nallella</span> <span class="grammar-existence vocab-word">on</span> <span class="vocab-word grammar-partitive">kuumetta</span>.</p>
-                    <p>Se <span class="grammar-verb vocab-word">tarvitsee</span> <span class="vocab-word grammar-partitive">lääkettä</span> ja <span class="vocab-word grammar-partitive">lepoa</span>.</p>
+                    <p>Nyt <span class="grammar-olla vocab-word">on</span> <span class="vocab-word grammar-season">kesä</span> ja minulla <span class="grammar-olla vocab-word">on</span> <span class="vocab-word grammar-time">loma</span>!</p>
+                    <p>Sää <span class="grammar-olla vocab-word">on</span> <span class="vocab-word grammar-adjective">kuuma</span>. Minä <span class="grammar-verb vocab-word">menen</span> rannalle ja <span class="grammar-verb vocab-word">uidan</span> meressä.</p>
+                    <p>Uiminen <span class="grammar-olla vocab-word">on</span> <span class="vocab-word grammar-adjective">helppoa</span> ja hauskaa.</p>
+                    <p>Myöhemmin minä <span class="grammar-verb vocab-word">pelaan</span> jalkapalloa. <span class="vocab-word grammar-hobby">Urheilu</span> <span class="grammar-olla vocab-word">on</span> hyväksi <span class="vocab-word">terveydelle</span>.</p>
                 `
             },
             {
                 id: 3,
-                title: "Matka apteekkiin",
-                titleChinese: "去药店的路",
-                imagePath: "../assets/image/M2_doctor_S3.png",
-                imageAlt: "骑三轮车想象成开救护车",
-                illustrationTitle: "路上 Matkalla",
+                title: "Syksy - Opiskelu ja Musiikki",
+                titleChinese: "秋天：学习和音乐",
+                imagePath: "../assets/image/M3_seasons_S3.png",
+                imageAlt: "书房里学习，窗外秋叶",
+                illustrationTitle: "秋天 Syksy",
                 content: `
-                    <p>Minä <span class="grammar-verb vocab-word">ajan</span> <span class="vocab-word grammar-static">ambulanssilla</span> <span class="grammar-dynamic vocab-word">apteekkiin</span>.</p>
-                    <p>Minun pyörä <span class="grammar-olla vocab-word">on</span> nopea <span class="vocab-word">ambulanssi</span>!</p>
-                    <p><span class="grammar-static vocab-word">Apteekissa</span> <span class="grammar-existence vocab-word">on</span> <span class="vocab-word">sairaanhoitaja</span>.</p>
-                    <p>Minä <span class="grammar-verb vocab-word">sanon</span>: "Minä <span class="grammar-verb vocab-word">tarvitsen</span> <span class="vocab-word grammar-partitive">lääkettä</span> nallelle."</p>
+                    <p><span class="vocab-word grammar-season">Syksyllä</span> minä <span class="grammar-verb vocab-word">opiskelen</span> <span class="vocab-word grammar-education">yliopistossa</span>.</p>
+                    <p>Minulla <span class="grammar-olla vocab-word">on</span> monta <span class="vocab-word grammar-education">kurssia</span>. Huomenna <span class="grammar-olla vocab-word">on</span> <span class="vocab-word grammar-education">koe</span>.</p>
+                    <p>Opiskelu <span class="grammar-olla vocab-word">on</span> joskus <span class="vocab-word grammar-adjective">raskasta</span>, mutta minä <span class="grammar-verb vocab-word">opin</span> paljon.</p>
+                    <p>Kun minä <span class="grammar-olla vocab-word">en opiskele</span>, minä <span class="grammar-verb vocab-word">kuuntelen</span> <span class="vocab-word grammar-hobby">musiikkia</span>.</p>
                 `
             },
             {
                 id: 4,
-                title: "Hoito kotona",
-                titleChinese: "在家治疗",
-                imagePath: "../assets/image/M2_doctor_S4.png",
-                imageAlt: "在家给玩具熊治疗",
-                illustrationTitle: "家里 Kotona",
+                title: "Talvi - Juhla ja Käsityöt",
+                titleChinese: "冬天：节日和手工艺",
+                imagePath: "../assets/image/M3_seasons_S4.png",
+                imageAlt: "温馨的冬日室内，手工艺制作",
+                illustrationTitle: "冬天 Talvi",
                 content: `
-                    <p>Minä <span class="grammar-verb vocab-word">tuon</span> "<span class="vocab-word grammar-accusative">lääkkeen</span>" kotiin. Se <span class="grammar-olla vocab-word">on</span> punaista <span class="vocab-word grammar-partitive">mehua</span>.</p>
-                    <p>Minä <span class="grammar-verb vocab-word">annan</span> <span class="vocab-word grammar-partitive">lääkettä</span> nallelle.</p>
-                    <p>Minä <span class="grammar-verb vocab-word">vaihdan</span> nallelle <span class="vocab-word grammar-accusative">puhtaan</span> <span class="vocab-word grammar-accusative">peiton</span>.</p>
-                    <p>Minä <span class="grammar-verb vocab-word">siivoan</span> huoneen. Nyt se <span class="grammar-olla vocab-word">on</span> siisti ja <span class="vocab-word">mukava</span>.</p>
+                    <p><span class="grammar-olla vocab-word">On</span> <span class="vocab-word grammar-season">talvi</span>. Ulkona <span class="grammar-verb vocab-word">sataa</span> <span class="vocab-word">lunta</span>.</p>
+                    <p>Sisällä <span class="grammar-olla vocab-word">on</span> lämmin. Nyt <span class="grammar-olla vocab-word">on</span> <span class="vocab-word grammar-time">viikonloppu</span>.</p>
+                    <p>Minun uusi harrastus <span class="grammar-olla vocab-word">on</span> <span class="vocab-word grammar-hobby">käsityö</span>. Se <span class="grammar-olla vocab-word">on</span> <span class="vocab-word grammar-adjective">vaativaa</span>, mutta palkitsevaa.</p>
+                    <p>Pian <span class="grammar-olla vocab-word">on</span> joulu. Meillä <span class="grammar-olla vocab-word">on</span> <span class="vocab-word">juhla</span> ja meille <span class="grammar-verb vocab-word">tulee</span> <span class="vocab-word">vieraita</span>.</p>
                 `
             },
             {
                 id: 5,
-                title: "Potilas paranee",
-                titleChinese: "病人康复了",
-                imagePath: "../assets/image/M2_doctor_S5.png",
-                imageAlt: "玩具熊康复，一起跳舞庆祝",
-                illustrationTitle: "康复 Parantuminen",
+                title: "Vuosi on Ympyrä",
+                titleChinese: "一年是一个圆",
+                imagePath: "../assets/image/M3_seasons_S5.png",
+                imageAlt: "四季照片拼贴画，中心是主角笑脸",
+                illustrationTitle: "一年 Vuosi",
                 content: `
-                    <p>Seuraavana aamuna, minun <span class="vocab-word">nalle</span> <span class="grammar-olla vocab-word">on</span> taas <span class="vocab-word">terve</span>!</p>
-                    <p>Se ei <span class="grammar-olla vocab-word">ole</span> enää <span class="vocab-word">sairas</span>.</p>
-                    <p>Minä <span class="grammar-olla vocab-word">olen</span> <span class="vocab-word">onnellinen</span>! Minä <span class="grammar-olla vocab-word">olen</span> hyvä <span class="vocab-word">lääkäri</span>!</p>
-                    <p>Me <span class="grammar-verb vocab-word">tanssimme</span> ja <span class="grammar-verb vocab-word">laulamme</span> yhdessä.</p>
-                    <p>Tämä <span class="grammar-olla vocab-word">oli</span> <span class="vocab-word">hauska</span> peli!</p>
+                    <p>Yksi <span class="vocab-word grammar-time">vuosi</span> <span class="grammar-olla vocab-word">on</span> neljä vuodenaikaa.</p>
+                    <p>Jokainen vuodenaika <span class="grammar-olla vocab-word">on</span> <span class="vocab-word grammar-adjective">erilainen</span>, mutta kaikki <span class="grammar-olla vocab-word">ovat</span> kivoja.</p>
+                    <p>Minun <span class="vocab-word grammar-abstract">elämä</span> <span class="grammar-olla vocab-word">on</span> täynnä mielenkiintoisia harrastuksia.</p>
+                    <p>Mitä sinä <span class="grammar-verb vocab-word">haluat tehdä</span> ensi vuonna?</p>
                 `
             }
         ];
         
-        // 医生主题词汇数据库（支持原型透视）
+        // 四季主题词汇数据库（支持原型透视）
         const vocabularyData = {
             // === 动词变位（带原型透视） ===
-            "leikin": {
-                prototype: "leikkiä",
-                chinese: "玩/扮演",
-                form: "第一人称现在时：minä leikin",
-                type: "动词变位",
-                color: "🟢"
-            },
             "on": {
                 prototype: "olla",
                 chinese: "是/在",
@@ -558,45 +550,66 @@
                 type: "动词变位",
                 color: "🟢"
             },
-            "olen": {
-                prototype: "olla",
-                chinese: "是/在",
-                form: "第一人称现在时：minä olen",
+            "herää": {
+                prototype: "herätä",
+                chinese: "苏醒",
+                form: "第三人称现在时：luonto herää",
                 type: "动词变位",
                 color: "🟢"
             },
-            "ole": {
-                prototype: "olla",
-                chinese: "是/在",
-                form: "否定现在时：ei ole",
+            "aloitan": {
+                prototype: "aloittaa",
+                chinese: "开始",
+                form: "第一人称现在时：minä aloitan",
                 type: "动词变位",
                 color: "🟢"
             },
-            "oli": {
-                prototype: "olla",
-                chinese: "是/在",
-                form: "过去时：se oli",
+            "kuvaan": {
+                prototype: "kuvata",
+                chinese: "拍摄",
+                form: "第一人称现在时：minä kuvaan",
                 type: "动词变位",
                 color: "🟢"
             },
-            "kysyn": {
-                prototype: "kysyä",
-                chinese: "问",
-                form: "第一人称现在时：minä kysyn",
+            "menen": {
+                prototype: "mennä",
+                chinese: "去",
+                form: "第一人称现在时：minä menen",
                 type: "动词变位",
                 color: "🟢"
             },
-            "vastaa": {
-                prototype: "vastata",
-                chinese: "回答",
-                form: "第三人称现在时：se vastaa",
+            "uidan": {
+                prototype: "uida",
+                chinese: "游泳",
+                form: "第一人称现在时：minä uidan",
                 type: "动词变位",
                 color: "🟢"
             },
-            "päätän": {
-                prototype: "päättää",
-                chinese: "决定",
-                form: "第一人称现在时：minä päätän",
+            "pelaan": {
+                prototype: "pelata",
+                chinese: "玩/踢",
+                form: "第一人称现在时：minä pelaan",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "opiskelen": {
+                prototype: "opiskella",
+                chinese: "学习",
+                form: "第一人称现在时：minä opiskelen",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "opin": {
+                prototype: "oppia",
+                chinese: "学会",
+                form: "第一人称现在时：minä opin",
+                type: "动词变位",
+                color: "🟢"
+            },
+            "en opiskele": {
+                prototype: "opiskella",
+                chinese: "不学习",
+                form: "否定现在时：en opiskele",
                 type: "动词变位",
                 color: "🟢"
             },
@@ -607,247 +620,237 @@
                 type: "动词变位",
                 color: "🟢"
             },
-            "katson": {
-                prototype: "katsoa",
-                chinese: "看",
-                form: "第一人称现在时：minä katson",
+            "sataa": {
+                prototype: "sataa",
+                chinese: "下(雨/雪)",
+                form: "第三人称现在时：sataa lunta",
                 type: "动词变位",
                 color: "🟢"
             },
-            "ymmärrän": {
-                prototype: "ymmärtää",
-                chinese: "理解",
-                form: "第一人称现在时：minä ymmärrän",
+            "tulee": {
+                prototype: "tulla",
+                chinese: "来",
+                form: "第三人称现在时：vieraita tulee",
                 type: "动词变位",
                 color: "🟢"
             },
-            "tarvitsee": {
-                prototype: "tarvita",
-                chinese: "需要",
-                form: "第三人称现在时：se tarvitsee",
+            "ovat": {
+                prototype: "olla",
+                chinese: "是/在",
+                form: "第三人称复数现在时：ne ovat",
                 type: "动词变位",
                 color: "🟢"
             },
-            "tarvitsen": {
-                prototype: "tarvita",
-                chinese: "需要",
-                form: "第一人称现在时：minä tarvitsen",
+            "haluat tehdä": {
+                prototype: "haluta tehdä",
+                chinese: "想要做",
+                form: "第二人称现在时：sinä haluat tehdä",
                 type: "动词变位",
                 color: "🟢"
             },
-            "ajan": {
-                prototype: "ajaa",
-                chinese: "开车/驾驶",
-                form: "第一人称现在时：minä ajan",
-                type: "动词变位",
-                color: "🟢"
-            },
-            "sanon": {
-                prototype: "sanoa",
-                chinese: "说",
-                form: "第一人称现在时：minä sanon",
-                type: "动词变位",
-                color: "🟢"
-            },
-            "tuon": {
-                prototype: "tuoda",
-                chinese: "带来",
-                form: "第一人称现在时：minä tuon",
-                type: "动词变位",
-                color: "🟢"
-            },
-            "annan": {
-                prototype: "antaa",
-                chinese: "给",
-                form: "第一人称现在时：minä annan",
-                type: "动词变位",
-                color: "🟢"
-            },
-            "vaihdan": {
-                prototype: "vaihtaa",
-                chinese: "更换/换",
-                form: "第一人称现在时：minä vaihdan",
-                type: "动词变位",
-                color: "🟢"
-            },
-            "siivoan": {
-                prototype: "siivota",
-                chinese: "打扫/清理",
-                form: "第一人称现在时：minä siivoan",
-                type: "动词变位",
-                color: "🟢"
-            },
-            "tanssimme": {
-                prototype: "tanssia",
-                chinese: "跳舞",
-                form: "第一人称复数现在时：me tanssimme",
-                type: "动词变位",
-                color: "🟢"
-            },
-            "laulamme": {
-                prototype: "laulaa",
-                chinese: "唱歌",
-                form: "第一人称复数现在时：me laulamme",
-                type: "动词变位",
-                color: "🟢"
-            },
-            
+
             // === 名词格变（带原型透视） ===
-            "lääkäriä": {
-                prototype: "lääkäri",
-                chinese: "医生",
-                form: "部分格：扮演医生",
+            "syksyllä": {
+                prototype: "syksy",
+                chinese: "秋天",
+                form: "地格：在秋天",
                 type: "名词格变",
                 color: "🟣"
             },
-            "lääkäri": {
-                prototype: "lääkäri",
-                chinese: "医生",
-                form: "基本形",
+            "yliopistossa": {
+                prototype: "yliopisto",
+                chinese: "大学",
+                form: "内格：在大学",
                 type: "名词格变",
                 color: "🟣"
             },
-            "sydäntä": {
-                prototype: "sydän",
-                chinese: "心脏",
-                form: "部分格：听心脏",
+            "kurssia": {
+                prototype: "kurssi",
+                chinese: "课程",
+                form: "部分格：一些课程",
                 type: "名词格变",
                 color: "🟣"
             },
-            "korviin": {
-                prototype: "korva",
-                chinese: "耳朵",
-                form: "入格：到耳朵里",
+            "musiikkia": {
+                prototype: "musiikki",
+                chinese: "音乐",
+                form: "部分格：一些音乐",
                 type: "名词格变",
                 color: "🟣"
             },
-            "suuhun": {
-                prototype: "suu",
-                chinese: "嘴巴",
-                form: "入格：到嘴巴里",
-                type: "名词格变",
-                color: "🟣"
-            },
-            "ongelman": {
-                prototype: "ongelma",
-                chinese: "问题",
-                form: "宾格：理解问题",
-                type: "名词格变",
-                color: "🟣"
-            },
-            "nallella": {
-                prototype: "nalle",
-                chinese: "玩具熊",
-                form: "状格：在玩具熊身上",
-                type: "名词格变",
-                color: "🟣"
-            },
-            "kuumetta": {
-                prototype: "kuume",
-                chinese: "发烧",
-                form: "部分格：有发烧",
-                type: "名词格变",
-                color: "🟣"
-            },
-            "lääkettä": {
-                prototype: "lääke",
-                chinese: "药",
-                form: "部分格：一些药",
-                type: "名词格变",
-                color: "🟣"
-            },
-            "lepoa": {
-                prototype: "lepo",
-                chinese: "休息",
-                form: "部分格：一些休息",
-                type: "名词格变",
-                color: "🟣"
-            },
-            "ambulanssilla": {
-                prototype: "ambulanssi",
-                chinese: "救护车",
-                form: "工具格：开救护车",
-                type: "名词格变",
-                color: "🟣"
-            },
-            "apteekkiin": {
-                prototype: "apteekki",
-                chinese: "药店",
-                form: "入格：去药店",
-                type: "名词格变",
-                color: "🟣"
-            },
-            "apteekissa": {
-                prototype: "apteekki",
-                chinese: "药店",
-                form: "内格：在药店里",
-                type: "名词格变",
-                color: "🟣"
-            },
-            "lääkkeen": {
-                prototype: "lääke",
-                chinese: "药",
-                form: "宾格：这个药",
-                type: "名词格变",
-                color: "🟣"
-            },
-            "mehua": {
-                prototype: "mehu",
-                chinese: "果汁",
-                form: "部分格：一些果汁",
-                type: "名词格变",
-                color: "🟣"
-            },
-            "puhtaan": {
-                prototype: "puhdas",
-                chinese: "干净的",
-                form: "宾格：干净的（修饰宾语）",
+            "helppoa": {
+                prototype: "helppo",
+                chinese: "容易的",
+                form: "部分格：很容易",
                 type: "形容词格变",
                 color: "🟣"
             },
-            "peiton": {
-                prototype: "peitto",
-                chinese: "被子",
-                form: "宾格：被子",
+            "raskasta": {
+                prototype: "raskas",
+                chinese: "沉重的",
+                form: "部分格：很沉重",
+                type: "形容词格变",
+                color: "🟣"
+            },
+            "rentouttavaa": {
+                prototype: "rentouttava",
+                chinese: "放松的",
+                form: "部分格：很放松",
+                type: "形容词格变",
+                color: "🟣"
+            },
+            "vaativaa": {
+                prototype: "vaativa",
+                chinese: "要求高的",
+                form: "部分格：很有挑战性",
+                type: "形容词格变",
+                color: "🟣"
+            },
+            "terveydelle": {
+                prototype: "terveys",
+                chinese: "健康",
+                form: "向格：对健康有益",
                 type: "名词格变",
                 color: "🟣"
             },
+            "valokuvauksen": {
+                prototype: "valokuvaus",
+                chinese: "摄影",
+                form: "宾格：摄影这个爱好",
+                type: "名词格变",
+                color: "🟣"
+            },
+            "vapaa-aikaa": {
+                prototype: "vapaa-aika",
+                chinese: "空闲时间",
+                form: "部分格：一些空闲时间",
+                type: "名词格变",
+                color: "🟣"
+            },
+
+            // === 四季主题基本词汇 ===
+            // 季节词汇
+            "kevät": "春天",
+            "kesä": "夏天", 
+            "syksy": "秋天",
+            "talvi": "冬天",
+            "vuodenaika": "季节",
+            "vuosi": "年",
             
-            // === 基本词汇 ===
-            "nalle": "玩具熊",
-            "sairas": "生病的",
-            "terve": "健康的",
-            "ambulanssi": "救护车",
-            "sairaanhoitaja": "护士",
-            "onnellinen": "幸福的",
-            "hauska": "有趣的",
-            "mukava": "舒适的/愉快的"
+            // 天气词汇
+            "ilma": "天气",
+            "sää": "天气",
+            "lämmin": "温暖的",
+            "kuuma": "热的",
+            "kylmä": "冷的",
+            "lumi": "雪",
+            "lunta": "雪(部分格)",
+            "ulkona": "外面",
+            "sisällä": "里面",
+            
+            // 时间词汇
+            "loma": "假期",
+            "viikonloppu": "周末",
+            "huomenna": "明天",
+            "ensi": "下一个",
+            "pian": "很快",
+            "myöhemmin": "稍后",
+            "joskus": "有时",
+            "kun": "当",
+            "jokainen": "每个",
+            
+            // 爱好运动词汇
+            "harrastus": "爱好",
+            "valokuvaus": "摄影",
+            "urheilu": "运动",
+            "musiikki": "音乐",
+            "käsityö": "手工艺",
+            "uiminen": "游泳",
+            "jalkapallo": "足球",
+            "ranta": "海滩",
+            "meri": "海",
+            
+            // 教育词汇
+            "opiskelu": "学习",
+            "yliopisto": "大学",
+            "kurssi": "课程",
+            "koe": "考试",
+            "terveys": "健康",
+            
+            // 社交节日词汇
+            "juhla": "庆典/节日",
+            "joulu": "圣诞节",
+            "vieras": "客人",
+            "vieraita": "客人们",
+            
+            // 形容词
+            "helppo": "容易的",
+            "raskas": "沉重的/累的",
+            "rentouttava": "放松的",
+            "vaativa": "要求高的",
+            "palkitseva": "有回报的",
+            "erilainen": "不同的",
+            "kiva": "好的/棒的",
+            "mielenkiintoinen": "有趣的",
+            "hauska": "有趣的/搞笑的",
+            
+            // 抽象概念
+            "elämä": "生活",
+            "luonto": "自然",
+            "kukkia": "花朵",
+            "perhosia": "蝴蝶",
+            
+            // 其他常用词
+            "paljon": "很多",
+            "todella": "真的",
+            "nyt": "现在",
+            "uusi": "新的",
+            "kaikki": "所有",
+            "neljä": "四",
+            "yksi": "一",
+            "monta": "很多",
+            "täynnä": "充满",
+            "hyväksi": "有益",
+            "vain": "只是",
+            "mutta": "但是",
+            "jälkeen": "之后",
+            "sinä": "你",
+            "mitä": "什么"
         };
         
-        // 中文翻译脚手架数据
+        // === 中文脚手架翻译数据 ===
         const chineseTranslations = {
-            "Tänään minä leikin lääkäriä.": "今天我扮演医生。",
-            "Minun nalle on sairas. Se on minun potilas.": "我的玩具熊生病了。它是我的病人。",
-            "Minä kysyn: \"Mikä sinulla on?\"": "我问：\"你怎么了？\"",
-            "Nalle ei vastaa. Minä päätän tutkia sen.": "玩具熊不回答。我决定给它检查一下。",
-            "Minä kuuntelen nallen sydäntä.": "我听玩具熊的心脏。",
-            "Minä katson sen korviin ja suuhun.": "我看它的耳朵和嘴巴。",
-            "Minä ymmärrän ongelman. Nallella on kuumetta.": "我理解了问题。玩具熊发烧了。",
-            "Se tarvitsee lääkettä ja lepoa.": "它需要药和休息。",
-            "Minä ajan ambulanssilla apteekkiin.": "我开着救护车去药店。",
-            "Minun pyörä on nopea ambulanssi!": "我的自行车是一辆很快的救护车！",
-            "Apteekissa on sairaanhoitaja.": "在药店里，有一位护士。",
-            "Minä sanon: \"Minä tarvitsen lääkettä nallelle.\"": "我说：\"我需要给玩具熊的药。\"",
-            "Minä tuon \"lääkkeen\" kotiin. Se on punaista mehua.": "我把\"药\"带回家。它是红色的果汁。",
-            "Minä annan lääkettä nallelle.": "我给玩具熊药。",
-            "Minä vaihdan nallelle puhtaan peiton.": "我给玩具熊换上干净的被子。",
-            "Minä siivoan huoneen. Nyt se on siisti ja mukava.": "我打扫房间。现在它很整洁、舒适。",
-            "Seuraavana aamuna, minun nalle on taas terve!": "第二天早上，我的玩具熊又健康了！",
-            "Se ei ole enää sairas.": "它不再生病了。",
-            "Minä olen onnellinen! Minä olen hyvä lääkäri!": "我很幸福！我是个好医生！",
-            "Me tanssimme ja laulamme yhdessä.": "我们一起跳舞和唱歌。",
-            "Tämä oli hauska peli!": "这是一个有趣的游戏！"
-                 };
+            1: [ // 春天：新的开始
+                "现在是春天。自然在冬天之后苏醒。",
+                "天气很暖和。我开始一个新的爱好：摄影。",
+                "我拍摄花和蝴蝶。这真的很放松。",
+                "我有很多空闲时间。"
+            ],
+            2: [ // 夏天：假期和运动
+                "现在是夏天，我放假了！",
+                "天气很热。我去海滩，在海里游泳。",
+                "游泳很容易，也很有趣。",
+                "稍后我踢足球。运动有益健康。"
+            ],
+            3: [ // 秋天：学习和音乐
+                "秋天，我在大学学习。",
+                "我有很多课程。明天有考试。",
+                "学习有时很累，但我学到了很多。",
+                "当我不学习时，我听音乐。"
+            ],
+            4: [ // 冬天：节日和手工艺
+                "现在是冬天。外面在下雪。",
+                "室内很暖和。现在是周末。",
+                "我的新爱好是手工艺。它要求很高，但很有回报。",
+                "很快就是圣诞节了。我们有一个庆典，会有客人来。"
+            ],
+            5: [ // 一年是一个圆
+                "一年是四个季节。",
+                "每个季节都是不同的，但都很好。",
+                "我的生活充满了有趣的爱好。",
+                "明年你想做什么？"
+            ]
+        };
          
          /**
           * 加载指定场景
@@ -1024,7 +1027,7 @@
              const storyContainer = document.getElementById('storyText');
              const paragraphs = storyContainer.querySelectorAll('p');
              
-             paragraphs.forEach(p => {
+             paragraphs.forEach((p, index) => {
                  // 移除现有的中文脚手架
                  const existingScaffold = p.querySelector('.chinese-scaffold');
                  if (existingScaffold) {
@@ -1032,14 +1035,13 @@
                  }
                  
                  if (chineseScaffoldVisible) {
-                     // 添加中文脚手架
-                     const textContent = p.textContent.replace(/["""]/g, '"');
-                     const chineseTranslation = chineseTranslations[textContent];
+                     // 使用按场景分组的翻译方式
+                     const translations = chineseTranslations[currentScene];
                      
-                     if (chineseTranslation) {
+                     if (translations && translations[index]) {
                          const scaffoldDiv = document.createElement('div');
                          scaffoldDiv.className = 'chinese-scaffold';
-                         scaffoldDiv.textContent = chineseTranslation;
+                         scaffoldDiv.textContent = translations[index];
                          p.appendChild(scaffoldDiv);
                      }
                  }

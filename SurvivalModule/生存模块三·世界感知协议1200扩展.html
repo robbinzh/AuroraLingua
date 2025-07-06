@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模块三：世界感知协议1200扩展 - 空间认知版</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #4A90E2 0%, #7B68EE 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+        
+        .header .description {
+            font-size: 1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .principle-box {
+            background: linear-gradient(135deg, #6A89CC 0%, #82B1FF 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .principle-box h2 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        
+        .principle-box p {
+            font-size: 1rem;
+            opacity: 0.95;
+            line-height: 1.5;
+        }
+        
+        .pods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .pod-card {
+            background: #f8f9fa;
+            border: 3px solid transparent;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pod-card:hover {
+            transform: translateY(-5px);
+            border-color: #4A90E2;
+            box-shadow: 0 15px 30px rgba(74, 144, 226, 0.2);
+        }
+        
+        .pod-card.completed {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        }
+        
+        .pod-card.completed::after {
+            content: '✅';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .pod-card.completed .pod-number {
+            background: #28a745;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .pod-number {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #dee2e6;
+        }
+        
+        .pod-emoji {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .pod-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .pod-subtitle {
+            font-size: 1rem;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        
+        .scaffold-text {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 10px;
+            font-style: italic;
+            color: #495057;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .word-count {
+            background: linear-gradient(135deg, #4A90E2, #7B68EE);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .progress-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            background: #e9ecef;
+            height: 8px;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #4A90E2, #7B68EE);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4A90E2;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .back-link a {
+            background: linear-gradient(135deg, #4A90E2, #7B68EE);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .back-link a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(74, 144, 226, 0.3);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .pods-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🧭 模块三：世界感知协议1200扩展</h1>
+            <p class="subtitle">空间认知舱系统 - 18舱室空间导航</p>
+            <p class="description">
+                基于模块二800词扩展，升级至1200+完整词汇的高级感知系统。通过18个专业化空间舱室，深度构建芬兰语的"空间定位"、"维度感知"、"导航指令"和"认知地图"体系。每个舱室融合构词法深度分析、空间几何思维和高级语法结构，实现从感知到导航的全维度空间智能。
+            </p>
+        </header>
+        
+        <main class="main-content">
+            <div class="principle-box">
+                <h2>🧭 空间认知构建原则</h2>
+                <p>
+                    进入芬兰语最高阶段的空间智能系统！每个舱室都是空间维度的专业导航器，
+                    帮助您构建完整的芬兰语空间认知地图，实现"想得出-说得对-用得准"的空间语言能力。
+                </p>
+            </div>
+            
+            <div class="progress-section">
+                <h3>🎯 学习进度
+                    <button onclick="resetProgress()" style="margin-left: 15px; background: #dc3545; color: white; padding: 5px 12px; border: none; border-radius: 15px; font-size: 0.8rem; font-weight: 500; cursor: pointer;" title="重置学习进度">🔄</button>
+                </h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="completedPods">0</span>
+                        <span class="stat-label">已完成舱室</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="learnedWords">0</span>
+                        <span class="stat-label">已学词汇</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">1200+</span>
+                        <span class="stat-label">总词汇数</span>
+                    </div>
+                </div>
+            </div>
+            
+            <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">🧭 选择您的空间认知舱</h2>
+            
+            <div class="pods-grid">
+                <!-- 空间舱1：家庭与人物扩展 -->
+                <div class="pod-card" onclick="enterPod('perhe_extended')" data-pod="perhe_extended">
+                    <div class="pod-number">01</div>
+                    <span class="pod-emoji">👨‍👩‍👧‍👦</span>
+                    <h3 class="pod-title">Perhe Laajennettu</h3>
+                    <p class="pod-subtitle">家庭与人物 (扩展)</p>
+                    <div class="scaffold-text">
+                        认识更多的家庭成员和社会角色。掌握亲属关系的精确表达，构建人际空间网络。
+                    </div>
+                    <span class="word-count">8个词汇</span>
+                </div>
+                
+                <!-- 空间舱2：职业与社会 -->
+                <div class="pod-card" onclick="enterPod('ammatit')" data-pod="ammatit">
+                    <div class="pod-number">02</div>
+                    <span class="pod-emoji">👩‍⚕️</span>
+                    <h3 class="pod-title">Ammatit ja Yhteiskunta</h3>
+                    <p class="pod-subtitle">职业与社会</p>
+                    <div class="scaffold-text">
+                        探索职业空间的构词法奥秘。从Johdos派生词到专业术语，构建职场语言导航系统。
+                    </div>
+                    <span class="word-count">15个词汇</span>
+                </div>
+                
+                <!-- 空间舱3：身体部位扩展 -->
+                <div class="pod-card" onclick="enterPod('keho_extended')" data-pod="keho_extended">
+                    <div class="pod-number">03</div>
+                    <span class="pod-emoji">🧍</span>
+                    <h3 class="pod-title">Keho Laajennettu</h3>
+                    <p class="pod-subtitle">身体部位 (扩展)</p>
+                    <div class="scaffold-text">
+                        身体空间的精准定位。掌握Yhdyssana复合词构造，建立人体几何坐标系统。
+                    </div>
+                    <span class="word-count">10个词汇</span>
+                </div>
+                
+                <!-- 空间舱4：食物与饮料扩展 -->
+                <div class="pod-card" onclick="enterPod('ruoka_extended')" data-pod="ruoka_extended">
+                    <div class="pod-number">04</div>
+                    <span class="pod-emoji">🍽️</span>
+                    <h3 class="pod-title">Ruoka ja Juoma Laajennettu</h3>
+                    <p class="pod-subtitle">食物与饮料 (扩展)</p>
+                    <div class="scaffold-text">
+                        饮食空间的深度认知。从时间格到部分格，掌握芬兰美食的语言化学反应。
+                    </div>
+                    <span class="word-count">26个词汇</span>
+                </div>
+                
+                <!-- 空间舱5：家里物品扩展 -->
+                <div class="pod-card" onclick="enterPod('koti_extended')" data-pod="koti_extended">
+                    <div class="pod-number">05</div>
+                    <span class="pod-emoji">🏠</span>
+                    <h3 class="pod-title">Koti Laajennettu</h3>
+                    <p class="pod-subtitle">家里物品 (扩展)</p>
+                    <div class="scaffold-text">
+                        家居空间的智能导航。从内格到去格，构建现代化家居空间语言地图。
+                    </div>
+                    <span class="word-count">10个词汇</span>
+                </div>
+                
+                <!-- 空间舱6：教育与工作 -->
+                <div class="pod-card" onclick="enterPod('työ_koulutus')" data-pod="työ_koulutus">
+                    <div class="pod-number">06</div>
+                    <span class="pod-emoji">🎓</span>
+                    <h3 class="pod-title">Työ ja Koulutus</h3>
+                    <p class="pod-subtitle">教育与工作</p>
+                    <div class="scaffold-text">
+                        学习与职场的空间维度。掌握机构格和时间表达，构建专业发展路径图。
+                    </div>
+                    <span class="word-count">14个词汇</span>
+                </div>
+                
+                <!-- 空间舱7：地点和建筑扩展 -->
+                <div class="pod-card" onclick="enterPod('paikat_extended')" data-pod="paikat_extended">
+                    <div class="pod-number">07</div>
+                    <span class="pod-emoji">🏫</span>
+                    <h3 class="pod-title">Paikat Laajennettu</h3>
+                    <p class="pod-subtitle">地点和建筑 (扩展)</p>
+                    <div class="scaffold-text">
+                        城市空间的精密导航。运用地点格变化，构建完整的都市认知地图系统。
+                    </div>
+                    <span class="word-count">19个词汇</span>
+                </div>
+                
+                <!-- 空间舱8：时间扩展 -->
+                <div class="pod-card" onclick="enterPod('aika_extended')" data-pod="aika_extended">
+                    <div class="pod-number">08</div>
+                    <span class="pod-emoji">⏰</span>
+                    <h3 class="pod-title">Aika Laajennettu</h3>
+                    <p class="pod-subtitle">时间 (扩展)</p>
+                    <div class="scaffold-text">
+                        时间空间的四维感知。从线性时间到循环时间，建立芬兰语时态坐标系。
+                    </div>
+                    <span class="word-count">22个词汇</span>
+                </div>
+                
+                <!-- 空间舱9：爱好与休闲 -->
+                <div class="pod-card" onclick="enterPod('harrastukset')" data-pod="harrastukset">
+                    <div class="pod-number">09</div>
+                    <span class="pod-emoji">🎵</span>
+                    <h3 class="pod-title">Harrastukset</h3>
+                    <p class="pod-subtitle">爱好与休闲</p>
+                    <div class="scaffold-text">
+                        休闲空间的语言构建。掌握动名词变化，创建个人兴趣的表达维度。
+                    </div>
+                    <span class="word-count">9个词汇</span>
+                </div>
+                
+                <!-- 空间舱10：形容词扩展 -->
+                <div class="pod-card" onclick="enterPod('adjektiivit')" data-pod="adjektiivit">
+                    <div class="pod-number">10</div>
+                    <span class="pod-emoji">🎨</span>
+                    <h3 class="pod-title">Adjektiivit Laajennettu</h3>
+                    <p class="pod-subtitle">形容词 (扩展)</p>
+                    <div class="scaffold-text">
+                        描述空间的色彩纬度。掌握形容词变格，为世界添加精确的属性坐标。
+                    </div>
+                    <span class="word-count">30个词汇</span>
+                </div>
+                
+                <!-- 空间舱11：动词扩展-认知 -->
+                <div class="pod-card" onclick="enterPod('verbit_kognitio')" data-pod="verbit_kognitio">
+                    <div class="pod-number">11</div>
+                    <span class="pod-emoji">🧠</span>
+                    <h3 class="pod-title">Verbit - Kognitio</h3>
+                    <p class="pod-subtitle">动词 (扩展 - 认知)</p>
+                    <div class="scaffold-text">
+                        思维空间的动态轨迹。掌握认知动词变位，构建智能行为的语言导航。
+                    </div>
+                    <span class="word-count">9个词汇</span>
+                </div>
+                
+                <!-- 空间舱12：动词扩展-交流 -->
+                <div class="pod-card" onclick="enterPod('verbit_kommunikaatio')" data-pod="verbit_kommunikaatio">
+                    <div class="pod-number">12</div>
+                    <span class="pod-emoji">💬</span>
+                    <h3 class="pod-title">Verbit - Kommunikaatio</h3>
+                    <p class="pod-subtitle">动词 (扩展 - 交流)</p>
+                    <div class="scaffold-text">
+                        交流空间的信息传递。运用沟通动词，建立人际互动的语言桥梁。
+                    </div>
+                    <span class="word-count">7个词汇</span>
+                </div>
+                
+                <!-- 空间舱13：动词扩展-行为 -->
+                <div class="pod-card" onclick="enterPod('verbit_toiminta')" data-pod="verbit_toiminta">
+                    <div class="pod-number">13</div>
+                    <span class="pod-emoji">🏃</span>
+                    <h3 class="pod-title">Verbit - Toiminta</h3>
+                    <p class="pod-subtitle">动词 (扩展 - 行为)</p>
+                    <div class="scaffold-text">
+                        行为空间的运动轨迹。掌握复杂动作表达，创建立体的行为语言地图。
+                    </div>
+                    <span class="word-count">28个词汇</span>
+                </div>
+                
+                <!-- 空间舱14：副词与小品词 -->
+                <div class="pod-card" onclick="enterPod('adverbit_partikkelit')" data-pod="adverbit_partikkelit">
+                    <div class="pod-number">14</div>
+                    <span class="pod-emoji">🔄</span>
+                    <h3 class="pod-title">Adverbit ja Partikkelit</h3>
+                    <p class="pod-subtitle">副词与小品词</p>
+                    <div class="scaffold-text">
+                        空间导航的精密仪器。掌握地点格变化系统，实现三维空间的精确定位。
+                    </div>
+                    <span class="word-count">34个词汇</span>
+                </div>
+                
+                <!-- 空间舱15：连词与后置词 -->
+                <div class="pod-card" onclick="enterPod('konjunktiot_postpositiot')" data-pod="konjunktiot_postpositiot">
+                    <div class="pod-number">15</div>
+                    <span class="pod-emoji">🔗</span>
+                    <h3 class="pod-title">Konjunktiot ja Postpositiot</h3>
+                    <p class="pod-subtitle">连词与后置词</p>
+                    <div class="scaffold-text">
+                        语言空间的连接器。掌握复杂语句结构，构建立体的逻辑思维网络。
+                    </div>
+                    <span class="word-count">16个词汇</span>
+                </div>
+                
+                <!-- 空间舱16：抽象概念 -->
+                <div class="pod-card" onclick="enterPod('abstraktit_kaasitteet')" data-pod="abstraktit_kaasitteet">
+                    <div class="pod-number">16</div>
+                    <span class="pod-emoji">💭</span>
+                    <h3 class="pod-title">Abstraktit Käsitteet</h3>
+                    <p class="pod-subtitle">抽象概念 (高级)</p>
+                    <div class="scaffold-text">
+                        哲学空间的深度探索。运用高级构词法，表达复杂的抽象思维和价值观念。
+                    </div>
+                    <span class="word-count">27个词汇</span>
+                </div>
+                
+                <!-- 空间舱17：空间定位专项 -->
+                <div class="pod-card" onclick="enterPod('paikkasijat_systeemi')" data-pod="paikkasijat_systeemi">
+                    <div class="pod-number">17</div>
+                    <span class="pod-emoji">🧭</span>
+                    <h3 class="pod-title">Paikkasijat Systeemi</h3>
+                    <p class="pod-subtitle">空间定位系统 (专项)</p>
+                    <div class="scaffold-text">
+                        芬兰语空间感知的核心机制。深度掌握15格变化，实现空间语言的终极导航。
+                    </div>
+                    <span class="word-count">45个词汇</span>
+                </div>
+                
+                <!-- 空间舱18：高级语法构造 -->
+                <div class="pod-card" onclick="enterPod('kielioppi_rakenteet')" data-pod="kielioppi_rakenteet">
+                    <div class="pod-number">18</div>
+                    <span class="pod-emoji">⚙️</span>
+                    <h3 class="pod-title">Kielioppi Rakenteet</h3>
+                    <p class="pod-subtitle">高级语法构造 (专家)</p>
+                    <div class="scaffold-text">
+                        语言工程的建筑蓝图。掌握复杂语法变化，构建专业级芬兰语表达系统。
+                    </div>
+                    <span class="word-count">38个词汇</span>
+                </div>
+            </div>
+        </main>
+        
+        <!-- 模块三专项训练区域 -->
+        <section class="advanced-training" style="margin: 40px 0; text-align: center;">
+            <div class="container" style="max-width: 800px; margin: 0 auto; padding: 0 20px;">
+                <h3 style="color: white; margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">🧭 模块三空间训练系统</h3>
+                <p style="color: rgba(255,255,255,0.9); margin-bottom: 25px;">
+                    完成舱室学习后，通过专业化空间训练深化您的空间语言智能
+                </p>
+                
+                <div class="training-cards" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <!-- 模块三·维度一：容器空间 -->
+                    <div class="training-card" style="background: linear-gradient(135deg, #4A90E2, #7B68EE); color: white; border-radius: 20px; padding: 25px; flex: 1; min-width: 280px; max-width: 350px; transition: transform 0.3s ease; cursor: pointer;" 
+                         onclick="window.location.href='生存模块三·1【空间定位器】– 维度一 容器空间 感知在我身边的封闭空间.html'"
+                         onmouseover="this.style.transform='translateY(-5px) scale(1.02)'"
+                         onmouseout="this.style.transform='translateY(0) scale(1)'">
+                        <div class="training-icon" style="font-size: 3rem; margin-bottom: 15px;">📦</div>
+                        <h4 style="margin-bottom: 10px; font-size: 1.3rem;">空间定位器 - 维度一</h4>
+                        <p style="opacity: 0.9; margin-bottom: 20px; font-size: 0.95rem;">
+                            容器空间感知训练<br>
+                            掌握内格、出格、入格三维空间定位系统
+                        </p>
+                        <div style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 12px 25px; border-radius: 25px; font-weight: 600; display: inline-block; transition: all 0.3s ease; backdrop-filter: blur(10px);">
+                            🧭 开始定位
+                        </div>
+                    </div>
+                    
+                    <!-- 模块三·维度五：位置关系 -->
+                    <div class="training-card" style="background: linear-gradient(135deg, #6A89CC, #82B1FF); color: white; border-radius: 20px; padding: 25px; flex: 1; min-width: 280px; max-width: 350px; transition: transform 0.3s ease; cursor: pointer;" 
+                         onclick="window.location.href='生存模块三·5【空间定位器】 – 维度五 感知位置关系.html'"
+                         onmouseover="this.style.transform='translateY(-5px) scale(1.02)'"
+                         onmouseout="this.style.transform='translateY(0) scale(1)'">
+                        <div class="training-icon" style="font-size: 3rem; margin-bottom: 15px;">🔄</div>
+                        <h4 style="margin-bottom: 10px; font-size: 1.3rem;">空间定位器 - 维度五</h4>
+                        <p style="opacity: 0.9; margin-bottom: 20px; font-size: 0.95rem;">
+                            位置关系感知训练<br>
+                            掌握后置词系统，构建精确的空间关系网络
+                        </p>
+                        <div style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 12px 25px; border-radius: 25px; font-weight: 600; display: inline-block; transition: all 0.3s ease; backdrop-filter: blur(10px);">
+                            🗺️ 开始探索
+                        </div>
+                    </div>
+                    
+                    <!-- 模块三·综合挑战 -->
+                    <div class="training-card" style="background: linear-gradient(135deg, #FF6B6B, #4ECDC4); color: white; border-radius: 20px; padding: 25px; flex: 1; min-width: 280px; max-width: 350px; transition: transform 0.3s ease; cursor: pointer;" 
+                         onclick="window.location.href='生存模块三·6-2 模块三综合挑战.html'"
+                         onmouseover="this.style.transform='translateY(-5px) scale(1.02)'"
+                         onmouseout="this.style.transform='translateY(0) scale(1)'">
+                        <div class="training-icon" style="font-size: 3rem; margin-bottom: 15px;">🎯</div>
+                        <h4 style="margin-bottom: 10px; font-size: 1.3rem;">模块三综合挑战</h4>
+                        <p style="opacity: 0.9; margin-bottom: 20px; font-size: 0.95rem;">
+                            空间导航终极测试<br>
+                            5维度融合挑战：赫尔辛基一日游实战
+                        </p>
+                        <div style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 12px 25px; border-radius: 25px; font-weight: 600; display: inline-block; transition: all 0.3s ease; backdrop-filter: blur(10px);">
+                            🏆 接受挑战
+                        </div>
+                    </div>
+                    
+                    <!-- 模块三·室内空间游戏 -->
+                    <div class="training-card" style="background: linear-gradient(135deg, #1DD1A1, #55A3FF); color: white; border-radius: 20px; padding: 25px; flex: 1; min-width: 280px; max-width: 350px; transition: transform 0.3s ease; cursor: pointer;" 
+                         onclick="window.location.href='生存模块三 室内空间游戏.html'"
+                         onmouseover="this.style.transform='translateY(-5px) scale(1.02)'"
+                         onmouseout="this.style.transform='translateY(0) scale(1)'">
+                        <div class="training-icon" style="font-size: 3rem; margin-bottom: 15px;">🏠</div>
+                        <h4 style="margin-bottom: 10px; font-size: 1.3rem;">室内空间游戏</h4>
+                        <p style="opacity: 0.9; margin-bottom: 20px; font-size: 0.95rem;">
+                            互动式空间学习体验<br>
+                            真实3D环境中掌握家居空间导航技能
+                        </p>
+                        <div style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 12px 25px; border-radius: 25px; font-weight: 600; display: inline-block; transition: all 0.3s ease; backdrop-filter: blur(10px);">
+                            🎮 开始游戏
+                        </div>
+                    </div>
+                    
+                    <!-- 模块三·1200词闪卡系统 -->
+                    <div class="training-card" style="background: linear-gradient(135deg, #4CAF50, #FF9800); color: white; border-radius: 20px; padding: 25px; flex: 1; min-width: 280px; max-width: 350px; transition: transform 0.3s ease; cursor: pointer;" 
+                         onclick="window.location.href='生存模块三_1200finish-flashcard.html'"
+                         onmouseover="this.style.transform='translateY(-5px) scale(1.02)'"
+                         onmouseout="this.style.transform='translateY(0) scale(1)'">
+                        <div class="training-icon" style="font-size: 3rem; margin-bottom: 15px;">🃏</div>
+                        <h4 style="margin-bottom: 10px; font-size: 1.3rem;">1200词闪卡系统</h4>
+                        <p style="opacity: 0.9; margin-bottom: 20px; font-size: 0.95rem;">
+                            芬兰语完整词汇库<br>
+                            专业级闪卡训练，强化词汇记忆回路
+                        </p>
+                        <div style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 12px 25px; border-radius: 25px; font-weight: 600; display: inline-block; transition: all 0.3s ease; backdrop-filter: blur(10px);">
+                            🔥 开始训练
+                        </div>
+                    </div>
+                    
+                    <!-- 模块三·回声练习 -->
+                    <div class="training-card" style="background: linear-gradient(135deg, #9B59B6, #E74C3C); color: white; border-radius: 20px; padding: 25px; flex: 1; min-width: 280px; max-width: 350px; transition: transform 0.3s ease; cursor: pointer;" 
+                         onclick="window.location.href='生存模块三 2 回声练习_·认知烧录与实体固化1200扩展.html'"
+                         onmouseover="this.style.transform='translateY(-5px) scale(1.02)'"
+                         onmouseout="this.style.transform='translateY(0) scale(1)'">
+                        <div class="training-icon" style="font-size: 3rem; margin-bottom: 15px;">🧠</div>
+                        <h4 style="margin-bottom: 10px; font-size: 1.3rem;">认知烧录训练</h4>
+                        <p style="opacity: 0.9; margin-bottom: 20px; font-size: 0.95rem;">
+                            回声定位器 + 心像生成器<br>
+                            双阶梯词汇深度固化系统
+                        </p>
+                        <div style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 12px 25px; border-radius: 25px; font-weight: 600; display: inline-block; transition: all 0.3s ease; backdrop-filter: blur(10px);">
+                            🔮 开始训练
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 第二行：图画书模拟器系列 -->
+                <div class="training-cards" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
+                    <!-- 扮演医生的一天 -->
+                    <div class="training-card" style="background: linear-gradient(135deg, #FF6B6B, #EE5A24); color: white; border-radius: 20px; padding: 25px; flex: 1; min-width: 280px; max-width: 350px; transition: transform 0.3s ease; cursor: pointer;" 
+                         onclick="window.location.href='生存模块三·9 扮演医生的一天 - 图画书模拟器.html'"
+                         onmouseover="this.style.transform='translateY(-5px) scale(1.02)'"
+                         onmouseout="this.style.transform='translateY(0) scale(1)'">
+                        <div class="training-icon" style="font-size: 3rem; margin-bottom: 15px;">🏥</div>
+                        <h4 style="margin-bottom: 10px; font-size: 1.3rem;">扮演医生的一天</h4>
+                        <p style="opacity: 0.9; margin-bottom: 20px; font-size: 0.95rem;">
+                            医疗主题图画书模拟器<br>
+                            通过角色扮演深度学习医疗词汇
+                        </p>
+                        <div style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 12px 25px; border-radius: 25px; font-weight: 600; display: inline-block; transition: all 0.3s ease; backdrop-filter: blur(10px);">
+                            👨‍⚕️ 开始体验
+                        </div>
+                    </div>
+                    
+                    <!-- 丢失的戒指 -->
+                    <div class="training-card" style="background: linear-gradient(135deg, #A29BFE, #FD79A8); color: white; border-radius: 20px; padding: 25px; flex: 1; min-width: 280px; max-width: 350px; transition: transform 0.3s ease; cursor: pointer;" 
+                         onclick="window.location.href='生存模块三·10 丢失的戒指 - 图画书模拟器.html'"
+                         onmouseover="this.style.transform='translateY(-5px) scale(1.02)'"
+                         onmouseout="this.style.transform='translateY(0) scale(1)'">
+                        <div class="training-icon" style="font-size: 3rem; margin-bottom: 15px;">🔍</div>
+                        <h4 style="margin-bottom: 10px; font-size: 1.3rem;">丢失的戒指</h4>
+                        <p style="opacity: 0.9; margin-bottom: 20px; font-size: 0.95rem;">
+                            情感主题图画书模拟器<br>
+                            体验寻找过程中的情感表达
+                        </p>
+                        <div style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 12px 25px; border-radius: 25px; font-weight: 600; display: inline-block; transition: all 0.3s ease; backdrop-filter: blur(10px);">
+                            💍 开始探索
+                        </div>
+                    </div>
+                    
+                    <!-- 城市里的一天 -->
+                    <div class="training-card" style="background: linear-gradient(135deg, #00B894, #0984E3); color: white; border-radius: 20px; padding: 25px; flex: 1; min-width: 280px; max-width: 350px; transition: transform 0.3s ease; cursor: pointer;" 
+                         onclick="window.location.href='生存模块三·11 城市里的一天 - 图画书模拟器.html'"
+                         onmouseover="this.style.transform='translateY(-5px) scale(1.02)'"
+                         onmouseout="this.style.transform='translateY(0) scale(1)'">
+                        <div class="training-icon" style="font-size: 3rem; margin-bottom: 15px;">🏙️</div>
+                        <h4 style="margin-bottom: 10px; font-size: 1.3rem;">城市里的一天</h4>
+                        <p style="opacity: 0.9; margin-bottom: 20px; font-size: 0.95rem;">
+                            城市主题图画书模拟器<br>
+                            体验都市生活的芬兰语表达
+                        </p>
+                        <div style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 12px 25px; border-radius: 25px; font-weight: 600; display: inline-block; transition: all 0.3s ease; backdrop-filter: blur(10px);">
+                            🚌 开始旅程
+                        </div>
+                    </div>
+                    
+                    <!-- 四季的爱好 -->
+                    <div class="training-card" style="background: linear-gradient(135deg, #FDCB6E, #E17055); color: white; border-radius: 20px; padding: 25px; flex: 1; min-width: 280px; max-width: 350px; transition: transform 0.3s ease; cursor: pointer;" 
+                         onclick="window.location.href='生存模块三·12 四季的爱好 - 图画书模拟器.html'"
+                         onmouseover="this.style.transform='translateY(-5px) scale(1.02)'"
+                         onmouseout="this.style.transform='translateY(0) scale(1)'">
+                        <div class="training-icon" style="font-size: 3rem; margin-bottom: 15px;">🌸</div>
+                        <h4 style="margin-bottom: 10px; font-size: 1.3rem;">四季的爱好</h4>
+                        <p style="opacity: 0.9; margin-bottom: 20px; font-size: 0.95rem;">
+                            季节主题图画书模拟器<br>
+                            感受四季变化中的兴趣爱好
+                        </p>
+                        <div style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 12px 25px; border-radius: 25px; font-weight: 600; display: inline-block; transition: all 0.3s ease; backdrop-filter: blur(10px);">
+                            🎨 开始体验
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="back-link">
+            <a href="../">← 返回生存模块主页</a>
+        </div>
+    </div>
+    
+    <script>
+        // 本地存储键名
+        const STORAGE_KEY = 'auroraling_module3_1200_progress';
+        
+        // 模块三：18舱室词汇数量配置（基于FinnWord1200）
+        const podWordCounts = {
+            'perhe_extended': 8,
+            'ammatit': 15,
+            'keho_extended': 10,
+            'ruoka_extended': 26,
+            'koti_extended': 10,
+            'työ_koulutus': 14,
+            'paikat_extended': 19,
+            'aika_extended': 22,
+            'harrastukset': 9,
+            'adjektiivit': 30,
+            'verbit_kognitio': 9,
+            'verbit_kommunikaatio': 7,
+            'verbit_toiminta': 28,
+            'adverbit_partikkelit': 34,
+            'konjunktiot_postpositiot': 16,
+            'abstraktit_kaasitteet': 27,
+            'paikkasijat_systeemi': 45,
+            'kielioppi_rakenteet': 38
+        };
+        
+        /**
+         * 获取学习进度
+         */
+        function getProgress() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : {};
+        }
+        
+        /**
+         * 更新进度显示
+         */
+        function updateProgressDisplay() {
+            const progress = getProgress();
+            const completedPods = Object.keys(progress).length;
+            const totalPods = Object.keys(podWordCounts).length;
+            
+            // 计算已学词汇数
+            let learnedWords = 0;
+            Object.keys(progress).forEach(pod => {
+                if (progress[pod].completed) {
+                    learnedWords += podWordCounts[pod];
+                }
+            });
+            
+            // 更新显示
+            document.getElementById('completedPods').textContent = completedPods;
+            document.getElementById('learnedWords').textContent = learnedWords;
+            
+            // 更新进度条
+            const progressPercent = (completedPods / totalPods) * 100;
+            document.getElementById('progressFill').style.width = progressPercent + '%';
+            
+            // 更新卡片状态
+            Object.keys(progress).forEach(podId => {
+                if (progress[podId].completed) {
+                    const card = document.querySelector(`[data-pod="${podId}"]`);
+                    if (card) {
+                        card.classList.add('completed');
+                    }
+                }
+            });
+        }
+        
+        /**
+         * 重置学习进度
+         */
+        function resetProgress() {
+            if (confirm('确定要重置所有学习进度吗？这将清除您在所有舱室的学习记录。')) {
+                // 清除本地存储
+                localStorage.removeItem(STORAGE_KEY);
+                
+                // 移除所有卡片的完成状态
+                document.querySelectorAll('.pod-card').forEach(card => {
+                    card.classList.remove('completed');
+                });
+                
+                // 更新显示
+                updateProgressDisplay();
+                
+                alert('✅ 学习进度已重置！现在可以重新开始学习了。');
+            }
+        }
+        
+        /**
+         * 进入闪卡舱
+         */
+        function enterPod(podId) {
+            // 播放点击音效（可选）
+            playClickSound();
+            
+            // 添加点击动画
+            const card = document.querySelector(`[data-pod="${podId}"]`);
+            card.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                // 跳转到模块三闪卡舱页面
+                window.location.href = `生存模块三·场景化闪卡舱1200扩展.html?pod=${podId}`;
+            }, 200);
+        }
+        
+        /**
+         * 播放点击音效
+         */
+        function playClickSound() {
+            // 使用Web Audio API创建简单的点击音效
+            if (window.AudioContext || window.webkitAudioContext) {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            }
+        }
+        
+        // 页面加载时更新进度显示
+        document.addEventListener('DOMContentLoaded', updateProgressDisplay);
+        
+        // 添加卡片悬停音效
+        document.querySelectorAll('.pod-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html> 
