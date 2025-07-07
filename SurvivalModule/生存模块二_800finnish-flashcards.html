@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>芬兰语高频词闪卡 (专业版)</title>
+    <title>芬兰语A2-B1核心词汇闪卡 (CR-3.0 凤凰版 - 自动发音)</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
 
         :root {
-            --primary-grad-start: #667eea;
-            --primary-grad-end: #764ba2;
-            --secondary-grad-start: #f093fb;
-            --secondary-grad-end: #f5576c;
+            --primary-grad-start: #2193b0;
+            --primary-grad-end: #6dd5ed;
+            --secondary-grad-start: #ff8008;
+            --secondary-grad-end: #ffc837;
             --bg-color: #f4f7f6;
             --card-bg: rgba(255, 255, 255, 0.95);
             --text-light: #ffffff;
             --text-dark: #333;
-            --shadow-light: rgba(102, 126, 234, 0.3);
+            --shadow-light: rgba(33, 147, 176, 0.3);
             --shadow-dark: rgba(0, 0, 0, 0.1);
         }
 
@@ -68,7 +68,7 @@
 
         .category-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 15px;
             margin-top: 20px;
         }
@@ -83,13 +83,13 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+            box-shadow: 0 4px 15px rgba(255, 128, 8, 0.3);
             text-align: center;
         }
 
         .category-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4);
+            box-shadow: 0 6px 20px rgba(255, 128, 8, 0.4);
         }
 
         .category-btn.active {
@@ -139,7 +139,7 @@
         }
 
         .control-btn:hover {
-            background: #5a6fd8;
+            background: #1a8299;
             transform: translateY(-1px);
         }
 
@@ -192,15 +192,14 @@
             transform: rotateY(180deg);
         }
 
-        .card-svg {
-            width: 80px;
-            height: 80px;
+        .card-emoji {
+            font-size: 70px;
             margin-bottom: 20px;
-            fill: currentColor;
+            line-height: 1;
         }
 
         .card-word {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 700;
             margin-bottom: 15px;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -295,7 +294,7 @@
         }
 
         .nav-btn:hover {
-            background: #5a6fd8;
+            background: #1a8299;
             transform: translateY(-2px);
         }
 
@@ -305,7 +304,6 @@
             transform: none;
         }
 
-        /* Navigation Hover Effects */
         nav a:hover {
             background: rgba(255,255,255,0.2) !important;
             transform: translateY(-2px);
@@ -324,7 +322,7 @@
 <body>
 
     <nav style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 15px 0; margin-bottom: 20px;">
-        <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 20px; padding: 0 20px;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 20px; padding: 0 20px; flex-wrap: wrap;">
             <a href="index.html" style="color: white; text-decoration: none; padding: 8px 15px; border-radius: 10px; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
                 <span>🏠</span>
                 <span>生存模块首页</span>
@@ -342,14 +340,15 @@
 
     <div class="container">
         <div class="header">
-            <h1>芬兰语高频词闪卡</h1>
-            <p>点击类别开始复习 · 支持发音与键盘操作</p>
+            <h1>芬兰语A2-B1核心词汇闪卡 (401-800)</h1>
+            <p>点击类别开始学习 · 自动发音 · 支持键盘操作</p>
         </div>
 
         <div class="category-selector" id="categorySelector">
             <h2>选择学习类别</h2>
             <div class="category-grid" id="categoryGrid">
-                </div>
+                <!-- JS 生成 -->
+            </div>
         </div>
 
         <div class="cards-section" id="cardsSection">
@@ -365,9 +364,9 @@
             <div class="card" id="flashCard">
                 <div class="card-inner">
                     <div class="card-front">
-                        <svg class="card-svg" id="cardSvg" viewBox="0 0 100 100"></svg>
+                        <div class="card-emoji" id="cardEmoji"></div>
                         <div class="tts-container">
-                            <button class="tts-icon" id="ttsButton" title="播放发音 (T)">🔊</button>
+                            <button class="tts-icon" id="ttsButton" title="手动播放 (T)">🔊</button>
                             <div class="card-word" id="cardWord"></div>
                         </div>
                         <div class="card-category" id="cardCategory"></div>
@@ -388,388 +387,486 @@
     </div>
 
     <script>
-        // --- DATA: Vocabulary and SVGs ---
+        // --- DATA: A2-B1 Core Vocabulary (CR-3.0 Update) ---
         const rawVocabularyData = [
-            { category: '家庭与人物 (扩展)', finnish: 'serkku', chinese: '堂/表兄弟姐妹', notes: 'Juurisana (基础词)' },
-            { category: '家庭与人物 (扩展)', finnish: 'anoppi', chinese: '岳母/婆婆', notes: 'Juurisana (基础词)' },
-            { category: '家庭与人物 (扩展)', finnish: 'appi', chinese: '岳父/公公', notes: 'Juurisana (基础词)' },
-            { category: '家庭与人物 (扩展)', finnish: 'ihminen', chinese: '人', notes: 'Juurisana (基础词)' },
+            { category: '数字与序数', finnish: 'kolmetoista', chinese: '十三', notes: 'Yhdyssana (复合词): kolme + toista' },
+            { category: '数字与序数', finnish: 'neljätoista', chinese: '十四', notes: 'Yhdyssana (复合词): neljä + toista' },
+            { category: '数字与序数', finnish: 'viisitoista', chinese: '十五', notes: 'Yhdyssana (复合词): viisi + toista' },
+            { category: '数字与序数', finnish: 'kuusitoista', chinese: '十六', notes: 'Yhdyssana (复合词): kuusi + toista' },
+            { category: '数字与序数', finnish: 'seitsemäntoista', chinese: '十七', notes: 'Yhdyssana (复合词): seitsemän + toista' },
+            { category: '数字与序数', finnish: 'kahdeksantoista', chinese: '十八', notes: 'Yhdyssana (复合词): kahdeksan + toista' },
+            { category: '数字与序数', finnish: 'yhdeksäntoista', chinese: '十九', notes: 'Yhdyssana (复合词): yhdeksän + toista' },
+            { category: '数字与序数', finnish: 'kolmekymmentä', chinese: '三十', notes: 'Yhdyssana (复合词): kolme + kymmentä' },
+            { category: '数字与序数', finnish: 'neljäkymmentä', chinese: '四十', notes: 'Yhdyssana (复合词): neljä + kymmentä' },
+            { category: '数字与序数', finnish: 'viisikymmentä', chinese: '五十', notes: 'Yhdyssana (复合词): viisi + kymmentä' },
+            { category: '数字与序数', finnish: 'kuusikymmentä', chinese: '六十', notes: 'Yhdyssana (复合词): kuusi + kymmentä' },
+            { category: '数字与序数', finnish: 'seitsemänkymmentä', chinese: '七十', notes: 'Yhdyssana (复合词): seitsemän + kymmentä' },
+            { category: '数字与序数', finnish: 'kahdeksankymmentä', chinese: '八十', notes: 'Yhdyssana (复合词): kahdeksan + kymmentä' },
+            { category: '数字与序数', finnish: 'yhdeksänkymmentä', chinese: '九十', notes: 'Yhdyssana (复合词): yhdeksän + kymmentä' },
+            { category: '数字与序数', finnish: 'miljoona', chinese: '一百万', notes: 'Juurisana (基础词)' },
+            { category: '数字与序数', finnish: 'numero', chinese: '号码 / 数字', notes: 'Juurisana (基础词)' },
+            { category: '数字与序数', finnish: 'puoli', chinese: '一半', notes: 'Juurisana (基础词)' },
+            { category: '数字与序数', finnish: 'pari', chinese: '一对 / 几个', notes: 'Juurisana (基础词)' },
+            { category: '数字与序数', finnish: 'ensimmäinen', chinese: '第一', notes: 'Johdos (派生词): ensi + -mäinen' },
+            { category: '数字与序数', finnish: 'toinen', chinese: '第二 / 另一个', notes: 'Juurisana (基础词)' },
+            { category: '数字与序数', finnish: 'kolmas', chinese: '第三', notes: 'Juurisana (基础词)' },
+            { category: '数字与序数', finnish: 'neljäs', chinese: '第四', notes: 'Juurisana (基础词)' },
+            { category: '数字与序数', finnish: 'viides', chinese: '第五', notes: 'Juurisana (基础词)' },
+            { category: '数字与序数', finnish: 'kuudes', chinese: '第六', notes: 'Juurisana (基础词)' },
+            { category: '数字与序数', finnish: 'seitsemäs', chinese: '第七', notes: 'Juurisana (基础词)' },
+            { category: '数字与序数', finnish: 'kahdeksas', chinese: '第八', notes: 'Juurisana (基础词)' },
+            { category: '数字与序数', finnish: 'yhdeksäs', chinese: '第九', notes: 'Juurisana (基础词)' },
+            { category: '数字与序数', finnish: 'kymmenes', chinese: '第十', notes: 'Juurisana (基础词)' },
+            { category: '数字与序数', finnish: 'viimeinen', chinese: '最后一个', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'hetki', chinese: '片刻', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'arkipäivä', chinese: '工作日', notes: 'Yhdyssana (复合词): arki (平日) + päivä (天)' },
+            { category: '时间与频率', finnish: 'pyhäpäivä', chinese: '假日/圣日', notes: 'Yhdyssana (复合词): pyhä (神圣的) + päivä (天)' },
+            { category: '时间与频率', finnish: 'kevät', chinese: '春天', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'kesä', chinese: '夏天', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'syksy', chinese: '秋天', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'talvi', chinese: '冬天', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'vuodenaika', chinese: '季节', notes: 'Yhdyssana (复合词): vuoden (年的) + aika (时间)' },
+            { category: '时间与频率', finnish: 'vuorokausi', chinese: '一昼夜(24小时)', notes: 'Yhdyssana (复合词): vuoro (轮流) + kausi (时期)' },
+            { category: '时间与频率', finnish: 'puoliltaöin', chinese: '午夜时分', notes: 'Yhdyssana (复合词): puoli + yö + -ltä' },
+            { category: '时间与频率', finnish: 'aatto', chinese: '前夕', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'nykyään', chinese: '如今', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'aina', chinese: '总是', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'usein', chinese: '经常', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'joskus', chinese: '有时', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'harvoin', chinese: '很少', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'ei koskaan', chinese: '从不', notes: 'Fraasi (短语)' },
+            { category: '时间与频率', finnish: 'yleensä', chinese: '通常', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'heti', chinese: '立刻', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'pian', chinese: '很快', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'sitten', chinese: '然后 / 以前', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'myöhemmin', chinese: '稍后', notes: 'myöhä (晚) 的比较级' },
+            { category: '时间与频率', finnish: 'aikaisin', chinese: '早', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'myöhään', chinese: '晚', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'päivällä', chinese: '在白天', notes: 'päivä 的 adessiivi 格' },
+            { category: '时间与频率', finnish: 'yöllä', chinese: '在夜里', notes: 'yö 的 adessiivi 格' },
+            { category: '时间与频率', finnish: 'joka päivä', chinese: '每天', notes: 'Fraasi (短语)' },
+            { category: '时间与频率', finnish: 'viime viikolla', chinese: '上周', notes: 'Fraasi (短语)' },
+            { category: '时间与频率', finnish: 'ensi vuonna', chinese: '明年', notes: 'Fraasi (短语)' },
+            { category: '时间与频率', finnish: 'vielä', chinese: '还', notes: 'Juurisana (基础词)' },
+            { category: '时间与频率', finnish: 'jo', chinese: '已经', notes: 'Juurisana (基础词)' },
+            { category: '家庭与人物 (扩展)', finnish: 'vanhemmat', chinese: '父母', notes: 'Juurisana (基础词), 复数' },
+            { category: '家庭与人物 (扩展)', finnish: 'isovanhemmat', chinese: '(外)祖父母', notes: 'Yhdyssana (复合词): iso (大) + vanhemmat (父母)' },
+            { category: '家庭与人物 (扩展)', finnish: 'lapsenlapsi', chinese: '(外)孙子/孙女', notes: 'Yhdyssana (复合词): lapsen (孩子的) + lapsi (孩子)' },
+            { category: '家庭与人物 (扩展)', finnish: 'poikaystävä', chinese: '男朋友', notes: 'Yhdyssana (复合词): poika (男孩) + ystävä (朋友)' },
+            { category: '家庭与人物 (扩展)', finnish: 'tyttöystävä', chinese: '女朋友', notes: 'Yhdyssana (复合词): tyttö (女孩) + ystävä (朋友)' },
+            { category: '家庭与人物 (扩展)', finnish: 'puoliso', chinese: '配偶', notes: 'Juurisana (基础词)' },
             { category: '家庭与人物 (扩展)', finnish: 'aikuinen', chinese: '成年人', notes: 'Juurisana (基础词)' },
-            { category: '家庭与人物 (扩展)', finnish: 'nuori', chinese: '年轻人', notes: 'Juurisana (基础词)' },
-            { category: '家庭与人物 (扩展)', finnish: 'vieras', chinese: '客人', notes: 'Juurisana (基础词)' },
-            { category: '家庭与人物 (扩展)', finnish: 'pomo', chinese: '老板', notes: 'Juurisana (基础词), 口语' },
-            { category: '职业与社会', finnish: 'opettaja', chinese: '老师', notes: 'Johdos (派生词): opettaa (教) + -ja (人)' },
-            { category: '职业与社会', finnish: 'opiskelija', chinese: '学生', notes: 'Johdos (派生词): opiskella (学习) + -ja (人)' },
-            { category: '职业与社会', finnish: 'lääkäri', chinese: '医生', notes: 'Juurisana (基础词)' },
-            { category: '职业与社会', finnish: 'sairaanhoitaja', chinese: '护士', notes: 'Yhdyssana (复合词): sairaan (病人的) + hoitaja (照顾者)' },
-            { category: '职业与社会', finnish: 'myyjä', chinese: '销售员', notes: 'Johdos (派生词): myydä (卖) + -ja (人)' },
-            { category: '职业与社会', finnish: 'tarjoilija', chinese: '服务员', notes: 'Johdos (派生词): tarjoilla (服务/上菜) + -ja (人)' },
-            { category: '职业与社会', finnish: 'kokki', chinese: '厨师', notes: 'Juurisana (基础词)' },
-            { category: '职业与社会', finnish: 'poliisi', chinese: '警察', notes: 'Juurisana (基础词)' },
-            { category: '职业与社会', finnish: 'insinööri', chinese: '工程师', notes: 'Juurisana (基础词)' },
-            { category: '职业与社会', finnish: 'sihteeri', chinese: '秘书', notes: 'Juurisana (基础词)' },
-            { category: '职业与社会', finnish: 'kuljettaja', chinese: '司机', notes: 'Johdos (派生词): kuljettaa (运输) + -ja (人)' },
-            { category: '职业与社会', finnish: 'taiteilija', chinese: '艺术家', notes: 'Johdos (派生词): taide (艺术) + -ilija (人)' },
-            { category: '职业与社会', finnish: 'asiakas', chinese: '顾客', notes: 'Juurisana (基础词)' },
-            { category: '职业与社会', finnish: 'työntekijä', chinese: '员工', notes: 'Yhdyssana (复合词): työn (工作的) + tekijä (做的人)' },
-            { category: '身体部位 (扩展)', finnish: 'otsa', chinese: '额头', notes: 'Juurisana (基础词)' },
-            { category: '身体部位 (扩展)', finnish: 'leuka', chinese: '下巴', notes: 'Juurisana (基础词)' },
-            { category: '身体部位 (扩展)', finnish: 'poski', chinese: '脸颊', notes: 'Juurisana (基础词)' },
-            { category: '身体部位 (扩展)', finnish: 'huuli', chinese: '嘴唇', notes: 'Juurisana (基础词)' },
-            { category: '身体部位 (扩展)', finnish: 'ranne', chinese: '手腕', notes: 'Juurisana (基础词)' },
-            { category: '身体部位 (扩展)', finnish: 'kyynärpää', chinese: '肘部', notes: 'Yhdyssana (复合词): kyynär (尺骨) + pää (头/末端)' },
-            { category: '身体部位 (扩展)', finnish: 'rinta', chinese: '胸部', notes: 'Juurisana (基础词)' },
-            { category: '身体部位 (扩展)', finnish: 'iho', chinese: '皮肤', notes: 'Juurisana (基础词)' },
-            { category: '身体部位 (扩展)', finnish: 'sydän', chinese: '心脏', notes: 'Juurisana (基础词)' },
-            { category: '身体部位 (扩展)', finnish: 'aivot', chinese: '大脑', notes: 'Juurisana (基础词), 通常用复数' },
-            { category: '食物和饮料 (扩展)', finnish: 'aamiainen', chinese: '早餐', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'lounas', chinese: '午餐', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'päivällinen', chinese: '晚餐 (正餐)', notes: 'Yhdyssana (复合词): päivä (天) + -llinen (名词后缀)' },
-            { category: '食物和饮料 (扩展)', finnish: 'iltapala', chinese: '晚餐/晚间小吃', notes: 'Yhdyssana (复合词): ilta (晚上) + pala (一块)' },
-            { category: '食物和饮料 (扩展)', finnish: 'kahvi', chinese: '咖啡', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'tee', chinese: '茶', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'olut', chinese: '啤酒', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'viini', chinese: '葡萄酒', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'makkara', chinese: '香肠', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'jauheliha', chinese: '肉末', notes: 'Yhdyssana (复合词): jauhe (粉末) + liha (肉)' },
-            { category: '食物和饮料 (扩展)', finnish: 'lohi', chinese: '三文鱼', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'tomaatti', chinese: '番茄', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'kurkku', chinese: '黄瓜', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'sieni', chinese: '蘑菇', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'kaali', chinese: '卷心菜', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'sitruuna', chinese: '柠檬', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'päärynä', chinese: '梨', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'hillo', chinese: '果酱', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'hunaja', chinese: '蜂蜜', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'jauhot', chinese: '面粉', notes: 'Juurisana (基础词), 通常用复数' },
-            { category: '食物和饮料 (扩展)', finnish: 'pasta', chinese: '意大利面', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'pippuri', chinese: '胡椒', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'öljy', chinese: '油', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'jogurtti', chinese: '酸奶', notes: 'Juurisana (基础词)' },
-            { category: '食物和饮料 (扩展)', finnish: 'kerma', chinese: '奶油', notes: 'Juurisana (基础词)' },
-            { category: '家里物品 (扩展)', finnish: 'matto', chinese: '地毯', notes: 'Juurisana (基础词)' },
-            { category: '家里物品 (扩展)', finnish: 'verho', chinese: '窗帘', notes: 'Juurisana (基础词)' },
-            { category: '家里物品 (扩展)', finnish: 'uuni', chinese: '烤箱', notes: 'Juurisana (基础词)' },
-            { category: '家里物品 (扩展)', finnish: 'liesi', chinese: '炉灶', notes: 'Juurisana (基础词)' },
-            { category: '家里物品 (扩展)', finnish: 'jääkaappi', chinese: '冰箱', notes: 'Yhdyssana (复合词): jää (冰) + kaappi (柜子)' },
-            { category: '家里物品 (扩展)', finnish: 'pakastin', chinese: '冷冻柜', notes: 'Johdos (派生词): pakastaa (冷冻) + -in (工具)' },
-            { category: '家里物品 (扩展)', finnish: 'mikroaaltouuni', chinese: '微波炉', notes: 'Yhdyssana (复合词): mikroaalto (微波) + uuni (烤箱)' },
-            { category: '家里物品 (扩展)', finnish: 'pesukone', chinese: '洗衣机', notes: 'Yhdyssana (复合词): pesu (洗涤) + kone (机器)' },
-            { category: '家里物品 (扩展)', finnish: 'pölynimuri', chinese: '吸尘器', notes: 'Yhdyssana (复合词): pölyn (灰尘的) + imuri (吸入器)' },
-            { category: '家里物品 (扩展)', finnish: 'lämpöpatteri', chinese: '暖气片', notes: 'Yhdyssana (复合词): lämpö (热量) + patteri (散热器)' },
-            { category: '教育与工作', finnish: 'työ', chinese: '工作', notes: 'Juurisana (基础词)' },
-            { category: '教育与工作', finnish: 'työpaikka', chinese: '工作场所', notes: 'Yhdyssana (复合词): työ (工作) + paikka (地方)' },
-            { category: '教育与工作', finnish: 'kokous', chinese: '会议', notes: 'Juurisana (基础词)' },
-            { category: '教育与工作', finnish: 'loma', chinese: '假期', notes: 'Juurisana (基础词)' },
-            { category: '教育与工作', finnish: 'palkka', chinese: '工资', notes: 'Juurisana (基础词)' },
-            { category: '教育与工作', finnish: 'kurssi', chinese: '课程', notes: 'Juurisana (基础词)' },
-            { category: '教育与工作', finnish: 'koe', chinese: '考试', notes: 'Juurisana (基础词)' },
-            { category: '教育与工作', finnish: 'tentti', chinese: '(大学)考试', notes: 'Juurisana (基础词)' },
-            { category: '教育与工作', finnish: 'oppitunti', chinese: '课时', notes: 'Yhdyssana (复合词): oppi (学习) + tunti (小时)' },
-            { category: '教育与工作', finnish: 'välitunti', chinese: '课间休息', notes: 'Yhdyssana (复合词): väli (之间) + tunti (小时)' },
-            { category: '教育与工作', finnish: 'todistus', chinese: '证书/成绩单', notes: 'Juurisana (基础词)' },
-            { category: '教育与工作', finnish: 'yliopisto', chinese: '大学', notes: 'Yhdyssana (复合词): yli (超过) + opisto (学院)' },
-            { category: '教育与工作', finnish: 'ammatti', chinese: '职业', notes: 'Juurisana (基础词)' },
-            { category: '地点和建筑 (扩展)', finnish: 'ravintola', chinese: '餐厅', notes: 'Juurisana (基础词)' },
-            { category: '地点和建筑 (扩展)', finnish: 'kahvila', chinese: '咖啡馆', notes: 'Johdos (派生词): kahvi (咖啡) + -la (地点)' },
+            { category: '家庭与人物 (扩展)', finnish: 'nuori', chinese: '年轻人 / 年轻的', notes: 'Juurisana (基础词)' },
+            { category: '家庭与人物 (扩展)', finnish: 'vieras', chinese: '客人 / 陌生人', notes: 'Juurisana (基础词)' },
+            { category: '家庭与人物 (扩展)', finnish: 'nimi', chinese: '名字', notes: 'Juurisana (基础词)' },
+            { category: '家庭与人物 (扩展)', finnish: 'etunimi', chinese: '名字 (First Name)', notes: 'Yhdyssana (复合词): etu (前面) + nimi (名字)' },
+            { category: '家庭与人物 (扩展)', finnish: 'sukunimi', chinese: '姓氏 (Last Name)', notes: 'Yhdyssana (复合词): suku (家族) + nimi (名字)' },
+            { category: '家庭与人物 (扩展)', finnish: 'osoite', chinese: '地址', notes: 'Juurisana (基础词)' },
+            { category: '家庭与人物 (扩展)', finnish: 'puhelinnumero', chinese: '电话号码', notes: 'Yhdyssana (复合词): puhelin + numero' },
+            { category: '家庭与人物 (扩展)', finnish: 'sähköposti', chinese: '电子邮件', notes: 'Yhdyssana (复合词): sähkö (电) + posti (邮件)' },
+            { category: '家庭与人物 (扩展)', finnish: 'henkilö', chinese: '个人', notes: 'Juurisana (基础词)' },
+            { category: '家庭与人物 (扩展)', finnish: 'kaveri', chinese: '朋友/伙伴(口语)', notes: 'Juurisana (基础词)' },
+            { category: '职业 (扩展)', finnish: 'sairaanhoitaja', chinese: '护士', notes: 'Yhdyssana (复合词): sairaan (病人的) + hoitaja (照顾者)' },
+            { category: '职业 (扩展)', finnish: 'tarjoilija', chinese: '服务员', notes: 'Johdos (派生词): tarjoilla (服务) + -ja (人)' },
+            { category: '职业 (扩展)', finnish: 'kokki', chinese: '厨师', notes: 'Juurisana (基础词)' },
+            { category: '职业 (扩展)', finnish: 'siivooja', chinese: '清洁工', notes: 'Johdos (派生词): siivota (打扫) + -ja (人)' },
+            { category: '职业 (扩展)', finnish: 'poliisi', chinese: '警察', notes: 'Juurisana (基础词)' },
+            { category: '职业 (扩展)', finnish: 'palomies', chinese: '消防员', notes: 'Yhdyssana (复合词): palo (火) + mies (男人)' },
+            { category: '职业 (扩展)', finnish: 'kuljettaja', chinese: '司机', notes: 'Johdos (派生词): kuljettaa (运输) + -ja (人)' },
+            { category: '职业 (扩展)', finnish: 'insinööri', chinese: '工程师', notes: 'Juurisana (基础词)' },
+            { category: '职业 (扩展)', finnish: 'sihteeri', chinese: '秘书', notes: 'Juurisana (基础词)' },
+            { category: '职业 (扩展)', finnish: 'johtaja', chinese: '经理/领导', notes: 'Johdos (派生词): johtaa (领导) + -ja (人)' },
+            { category: '职业 (扩展)', finnish: 'pomo', chinese: '老板 (口语)', notes: 'Juurisana (基础词)' },
+            { category: '职业 (扩展)', finnish: 'asiakas', chinese: '顾客', notes: 'Juurisana (基础词)' },
+            { category: '职业 (扩展)', finnish: 'työntekijä', chinese: '员工', notes: 'Yhdyssana (复合词): työn (工作的) + tekijä (做的人)' },
+            { category: '职业 (扩展)', finnish: 'taiteilija', chinese: '艺术家', notes: 'Johdos (派生词): taide (艺术) + -ilija (人)' },
+            { category: '职业 (扩展)', finnish: 'muusikko', chinese: '音乐家', notes: 'Juurisana (基础词)' },
+            { category: '职业 (扩展)', finnish: 'urheilija', chinese: '运动员', notes: 'Johdos (派生词): urheilu (运动) + -ija (人)' },
+            { category: '食物与饮料 (扩展)', finnish: 'välipala', chinese: '点心/加餐', notes: 'Yhdyssana (复合词): väli (中间) + pala (块)' },
+            { category: '食物与饮料 (扩展)', finnish: 'jälkiruoka', chinese: '甜点', notes: 'Yhdyssana (复合词): jälki (之后) + ruoka (食物)' },
+            { category: '食物与饮料 (扩展)', finnish: 'alkuruoka', chinese: '前菜', notes: 'Yhdyssana (复合词): alku (开始) + ruoka (食物)' },
+            { category: '食物与饮料 (扩展)', finnish: 'pääruoka', chinese: '主菜', notes: 'Yhdyssana (复合词): pää (主要的) + ruoka (食物)' },
+            { category: '食物与饮料 (扩展)', finnish: 'naudanliha', chinese: '牛肉', notes: 'Yhdyssana (复合词): naudan (牛的) + liha (肉)' },
+            { category: '食物与饮料 (扩展)', finnish: 'sianliha', chinese: '猪肉', notes: 'Yhdyssana (复合词): sian (猪的) + liha (肉)' },
+            { category: '食物与饮料 (扩展)', finnish: 'lohi', chinese: '三文鱼', notes: 'Juurisana (基础词)' },
+            { category: '食物与饮料 (扩展)', finnish: 'katkarapu', chinese: '虾', notes: 'Yhdyssana (复合词): katka + rapu (小龙虾)' },
+            { category: '食物与饮料 (扩展)', finnish: 'paprika', chinese: '甜椒', notes: 'Juurisana (基础词)' },
+            { category: '食物与饮料 (扩展)', finnish: 'sieni', chinese: '蘑菇', notes: 'Juurisana (基础词)' },
+            { category: '食物与饮料 (扩展)', finnish: 'sitruuna', chinese: '柠檬', notes: 'Juurisana (基础词)' },
+            { category: '食物与饮料 (扩展)', finnish: 'hillo', chinese: '果酱', notes: 'Juurisana (基础词)' },
+            { category: '食物与饮料 (扩展)', finnish: 'hunaja', chinese: '蜂蜜', notes: 'Juurisana (基础词)' },
+            { category: '食物与饮料 (扩展)', finnish: 'jauhot', chinese: '面粉', notes: 'Juurisana (基础词), 通常用复数' },
+            { category: '食物与饮料 (扩展)', finnish: 'öljy', chinese: '油', notes: 'Juurisana (基础词)' },
+            { category: '食物与饮料 (扩展)', finnish: 'etikka', chinese: '醋', notes: 'Juurisana (基础词)' },
+            { category: '食物与饮料 (扩展)', finnish: 'jogurtti', chinese: '酸奶', notes: 'Juurisana (基础词)' },
+            { category: '食物与饮料 (扩展)', finnish: 'kerma', chinese: '奶油', notes: 'Juurisana (基础词)' },
+            { category: '食物与饮料 (扩展)', finnish: 'piirakka', chinese: '派/馅饼', notes: 'Juurisana (基础词)' },
+            { category: '食物与饮料 (扩展)', finnish: 'pulla', chinese: '(芬兰式)甜面包', notes: 'Juurisana (基础词)' },
+            { category: '食物与饮料 (扩展)', finnish: 'annos', chinese: '一份/一客', notes: 'Juurisana (基础词)' },
+            { category: '家里物品与电器', finnish: 'liesi', chinese: '炉灶', notes: 'Juurisana (基础词)' },
+            { category: '家里物品与电器', finnish: 'pakastin', chinese: '冷冻柜', notes: 'Johdos (派生词): pakastaa (冷冻) + -in (工具)' },
+            { category: '家里物品与电器', finnish: 'mikroaaltouuni', chinese: '微波炉', notes: 'Yhdyssana (复合词): mikroaalto (微波) + uuni (烤箱)' },
+            { category: '家里物品与电器', finnish: 'pesukone', chinese: '洗衣机', notes: 'Yhdyssana (复合词): pesu (洗涤) + kone (机器)' },
+            { category: '家里物品与电器', finnish: 'astianpesukone', chinese: '洗碗机', notes: 'Yhdyssana (复合词): astianpesu (洗碗) + kone' },
+            { category: '家里物品与电器', finnish: 'pölynimuri', chinese: '吸尘器', notes: 'Yhdyssana (复合词): pölyn (灰尘的) + imuri (吸入器)' },
+            { category: '家里物品与电器', finnish: 'lämpöpatteri', chinese: '暖气片', notes: 'Yhdyssana (复合词): lämpö (热) + patteri (散热器)' },
+            { category: '家里物品与电器', finnish: 'parveke', chinese: '阳台', notes: 'Juurisana (基础词)' },
+            { category: '家里物品与电器', finnish: 'autotalli', chinese: '车库', notes: 'Yhdyssana (复合词): auto (车) + talli (棚)' },
+            { category: '家里物品与电器', finnish: 'hissi', chinese: '电梯', notes: 'Juurisana (基础词)' },
+            { category: '家里物品与电器', finnish: 'porras', chinese: '楼梯(级)', notes: 'Juurisana (基础词)' },
+            { category: '家里物品与电器', finnish: 'kellari', chinese: '地下室', notes: 'Juurisana (基础词)' },
+            { category: '家里物品与电器', finnish: 'ullakko', chinese: '阁楼', notes: 'Juurisana (基础词)' },
+            { category: '家里物品与电器', finnish: 'työkalu', chinese: '工具', notes: 'Yhdyssana (复合词): työ (工作) + kalu (器具)' },
+            { category: '衣服与饰品', finnish: 'farkut', chinese: '牛仔裤', notes: 'Juurisana (基础词), 通常用复数' },
+            { category: '衣服与饰品', finnish: 'puku', chinese: '西装/套装', notes: 'Juurisana (基础词)' },
+            { category: '衣服与饰品', finnish: 'uimapuku', chinese: '泳衣', notes: 'Yhdyssana (复合词): uima (游泳) + puku (衣服)' },
+            { category: '衣服与饰品', finnish: 'sadetakki', chinese: '雨衣', notes: 'Yhdyssana (复合词): sade (雨) + takki (外套)' },
+            { category: '衣服与饰品', finnish: 'alusvaatteet', chinese: '内衣', notes: 'Yhdyssana (复合词): alus (下面) + vaatteet (衣服)' },
+            { category: '衣服与饰品', finnish: 'solmio', chinese: '领带', notes: 'Juurisana (基础词)' },
+            { category: '衣服与饰品', finnish: 'vyö', chinese: '腰带', notes: 'Juurisana (基础词)' },
+            { category: '衣服与饰品', finnish: 'sormus', chinese: '戒指', notes: 'Juurisana (基础词)' },
+            { category: '衣服与饰品', finnish: 'koru', chinese: '珠宝/饰品', notes: 'Juurisana (基础词)' },
+            { category: '衣服与饰品', finnish: 'korvakoru', chinese: '耳环', notes: 'Yhdyssana (复合词): korva (耳朵) + koru (饰品)' },
+            { category: '衣服与饰品', finnish: 'kaulakoru', chinese: '项链', notes: 'Yhdyssana (复合词): kaula (脖子) + koru (饰品)' },
+            { category: '衣服与饰品', finnish: 'rannekoru', chinese: '手镯', notes: 'Yhdyssana (复合词): ranne (手腕) + koru (饰品)' },
+            { category: '衣服与饰品', finnish: 'aurinkolasit', chinese: '太阳镜', notes: 'Yhdyssana (复合词): aurinko (太阳) + lasit (眼镜)' },
+            { category: '交通与出行', finnish: 'liikenne', chinese: '交通', notes: 'Juurisana (基础词)' },
+            { category: '交通与出行', finnish: 'ruuhka', chinese: '堵车', notes: 'Juurisana (基础词)' },
+            { category: '交通与出行', finnish: 'onnettomuus', chinese: '事故', notes: 'Johdos (派生词): onneton (不幸的) + -uus (性质)' },
+            { category: '交通与出行', finnish: 'matka', chinese: '旅程 / 距离', notes: 'Juurisana (基础词)' },
+            { category: '交通与出行', finnish: 'matkalippu', chinese: '车/船/机票', notes: 'Yhdyssana (复合词): matka (旅程) + lippu (票)' },
+            { category: '交通与出行', finnish: 'passi', chinese: '护照', notes: 'Juurisana (基础词)' },
+            { category: '交通与出行', finnish: 'viisumi', chinese: '签证', notes: 'Juurisana (基础词)' },
+            { category: '交通与出行', finnish: 'matkalaukku', chinese: '行李箱', notes: 'Yhdyssana (复合词): matka (旅程) + laukku (包)' },
+            { category: '交通与出行', finnish: 'lento', chinese: '航班', notes: 'Juurisana (基础词)' },
+            { category: '交通与出行', finnish: 'matkustaja', chinese: '乘客', notes: 'Johdos (派生词): matkustaa (旅行) + -ja (人)' },
             { category: '地点和建筑 (扩展)', finnish: 'baari', chinese: '酒吧', notes: 'Juurisana (基础词)' },
-            { category: '地点和建筑 (扩展)', finnish: 'hotelli', chinese: '酒店', notes: 'Juurisana (基础词)' },
-            { category: '地点和建筑 (扩展)', finnish: 'pankki', chinese: '银行', notes: 'Juurisana (基础词)' },
-            { category: '地点和建筑 (扩展)', finnish: 'posti', chinese: '邮局', notes: 'Juurisana (基础词)' },
-            { category: '地点和建筑 (扩展)', finnish: 'apteekki', chinese: '药店', notes: 'Juurisana (基础词)' },
-            { category: '地点和建筑 (扩展)', finnish: 'elokuvateatteri', chinese: '电影院', notes: 'Yhdyssana (复合词): elokuva (电影) + teatteri (剧院)' },
+            { category: '地点和建筑 (扩展)', finnish: 'teatteri', chinese: '剧院', notes: 'Juurisana (基础词)' },
             { category: '地点和建筑 (扩展)', finnish: 'museo', chinese: '博物馆', notes: 'Juurisana (基础词)' },
             { category: '地点和建筑 (扩展)', finnish: 'kirkko', chinese: '教堂', notes: 'Juurisana (基础词)' },
             { category: '地点和建筑 (扩展)', finnish: 'tehdas', chinese: '工厂', notes: 'Juurisana (基础词)' },
             { category: '地点和建筑 (扩展)', finnish: 'toimisto', chinese: '办公室', notes: 'Juurisana (基础词)' },
             { category: '地点和建筑 (扩展)', finnish: 'uimahalli', chinese: '游泳馆', notes: 'Yhdyssana (复合词): uima (游泳) + halli (大厅)' },
             { category: '地点和建筑 (扩展)', finnish: 'kuntosali', chinese: '健身房', notes: 'Yhdyssana (复合词): kunto (健康/状态) + sali (大厅)' },
-            { category: '地点和建筑 (扩展)', finnish: 'tori', chinese: '(市集)广场', notes: 'Juurisana (基础词)' },
-            { category: '地点和建筑 (扩展)', finnish: 'pysäkki', chinese: '(公交)车站', notes: 'Juurisana (基础词)' },
-            { category: '地点和建筑 (扩展)', finnish: 'kaupunki', chinese: '城市', notes: 'Juurisana (基础词)' },
+            { category: '地点和建筑 (扩展)', finnish: 'satama', chinese: '港口', notes: 'Juurisana (基础词)' },
             { category: '地点和建筑 (扩展)', finnish: 'kylä', chinese: '村庄', notes: 'Juurisana (基础词)' },
-            { category: '时间 (扩展)', finnish: 'hetki', chinese: '片刻', notes: 'Juurisana (基础词)' },
-            { category: '时间 (扩展)', finnish: 'sekunti', chinese: '秒', notes: 'Juurisana (基础词)' },
-            { category: '时间 (扩展)', finnish: 'viikonloppu', chinese: '周末', notes: 'Yhdyssana (复合词): viikon (周的) + loppu (结束)' },
-            { category: '时间 (扩展)', finnish: 'arkipäivä', chinese: '工作日', notes: 'Yhdyssana (复合词): arki (平日) + päivä (天)' },
-            { category: '时间 (扩展)', finnish: 'aatto', chinese: '前夕', notes: 'Juurisana (基础词)' },
-            { category: '时间 (扩展)', finnish: 'menneisyys', chinese: '过去', notes: 'Johdos (派生词): mennyt (过去的) + -yys (状态)' },
-            { category: '时间 (扩展)', finnish: 'tulevaisuus', chinese: '未来', notes: 'Johdos (派生词): tuleva (未来的) + -isuus (状态)' },
-            { category: '时间 (扩展)', finnish: 'nykyään', chinese: '如今', notes: 'Juurisana (基础词)' },
-            { category: '时间 (扩展)', finnish: 'maanantai', chinese: '星期一', notes: 'Juurisana (基础词)' },
-            { category: '时间 (扩展)', finnish: 'tiistai', chinese: '星期二', notes: 'Juurisana (基础词)' },
-            { category: '时间 (扩展)', finnish: 'keskiviikko', chinese: '星期三', notes: 'Yhdyssana (复合词): keski (中间) + viikko (星期)' },
-            { category: '时间 (扩展)', finnish: 'torstai', chinese: '星期四', notes: 'Juurisana (基础词)' },
-            { category: '时间 (扩展)', finnish: 'perjantai', chinese: '星期五', notes: 'Juurisana (基础词)' },
-            { category: '时间 (扩展)', finnish: 'lauantai', chinese: '星期六', notes: 'Juurisana (基础词)' },
-            { category: '时间 (扩展)', finnish: 'sunnuntai', chinese: '星期日', notes: 'Juurisana (基础词)' },
-            { category: '时间 (扩展)', finnish: 'kevät', chinese: '春天', notes: 'Juurisana (基础词)' },
-            { category: '时间 (扩展)', finnish: 'kesä', chinese: '夏天', notes: 'Juurisana (基础词)' },
-            { category: '时间 (扩展)', finnish: 'syksy', chinese: '秋天', notes: 'Juurisana (基础词)' },
-            { category: '时间 (扩展)', finnish: 'talvi', chinese: '冬天', notes: 'Juurisana (基础词)' },
+            { category: '地点和建筑 (扩展)', finnish: 'pääkaupunki', chinese: '首都', notes: 'Yhdyssana (复合词): pää (主要的) + kaupunki (城市)' },
+            { category: '地点和建筑 (扩展)', finnish: 'risteys', chinese: '十字路口', notes: 'Juurisana (基础词)' },
+            { category: '地点和建筑 (扩展)', finnish: 'rakennus', chinese: '建筑', notes: 'Johdos (派生词): rakentaa (建造) + -us' },
+            { category: '地点和建筑 (扩展)', finnish: 'kerros', chinese: '楼层', notes: 'Juurisana (基础词)' },
+            { category: '地点和建筑 (扩展)', finnish: 'puoti', chinese: '小商店/精品店', notes: 'Juurisana (基础词)' },
+            { category: '地点和建筑 (扩展)', finnish: 'ostoskeskus', chinese: '购物中心', notes: 'Yhdyssana (复合词): ostos (购物) + keskus (中心)' },
+            { category: '地点和建筑 (扩展)', finnish: 'maatila', chinese: '农场', notes: 'Yhdyssana (复合词): maa (土地) + tila (庄园)' },
+            { category: '教育与工作', finnish: 'kurssi', chinese: '课程', notes: 'Juurisana (基础词)' },
+            { category: '教育与工作', finnish: 'oppitunti', chinese: '课时', notes: 'Yhdyssana (复合词): oppi (学习) + tunti (小时)' },
+            { category: '教育与工作', finnish: 'välitunti', chinese: '课间休息', notes: 'Yhdyssana (复合词): väli (中间) + tunti (小时)' },
+            { category: '教育与工作', finnish: 'läksyt', chinese: '家庭作业', notes: 'Juurisana (基础词), 通常用复数' },
+            { category: '教育与工作', finnish: 'koe', chinese: '考试', notes: 'Juurisana (基础词)' },
+            { category: '教育与工作', finnish: 'tentti', chinese: '(大学)考试', notes: 'Juurisana (基础词)' },
+            { category: '教育与工作', finnish: 'arvosana', chinese: '成绩/分数', notes: 'Yhdyssana (复合词): arvo (价值) + sana (词)' },
+            { category: '教育与工作', finnish: 'todistus', chinese: '证书/成绩单', notes: 'Juurisana (基础词)' },
+            { category: '教育与工作', finnish: 'loma', chinese: '假期', notes: 'Juurisana (基础词)' },
+            { category: '教育与工作', finnish: 'kesäloma', chinese: '暑假', notes: 'Yhdyssana (复合词): kesä (夏天) + loma (假期)' },
+            { category: '教育与工作', finnish: 'talviloma', chinese: '寒假', notes: 'Yhdyssana (复合词): talvi (冬天) + loma (假期)' },
+            { category: '教育与工作', finnish: 'työ', chinese: '工作', notes: 'Juurisana (基础词)' },
+            { category: '教育与工作', finnish: 'työpaikka', chinese: '工作场所', notes: 'Yhdyssana (复合词): työ (工作) + paikka (地方)' },
+            { category: '教育与工作', finnish: 'työaika', chinese: '工作时间', notes: 'Yhdyssana (复合词): työ (工作) + aika (时间)' },
+            { category: '教育与工作', finnish: 'kokous', chinese: '会议', notes: 'Juurisana (基础词)' },
+            { category: '教育与工作', finnish: 'palkka', chinese: '工资', notes: 'Juurisana (基础词)' },
+            { category: '教育与工作', finnish: 'ammatti', chinese: '职业', notes: 'Juurisana (基础词)' },
+            { category: '教育与工作', finnish: 'ala', chinese: '领域/行业', notes: 'Juurisana (基础词)' },
             { category: '爱好与休闲', finnish: 'harrastus', chinese: '爱好', notes: 'Juurisana (基础词)' },
             { category: '爱好与休闲', finnish: 'vapaa-aika', chinese: '空闲时间', notes: 'Yhdyssana (复合词): vapaa (自由的) + aika (时间)' },
             { category: '爱好与休闲', finnish: 'urheilu', chinese: '运动', notes: 'Juurisana (基础词)' },
-            { category: '爱好与休闲', finnish: 'musiikki', chinese: '音乐', notes: 'Juurisana (基础词)' },
-            { category: '爱好与休闲', finnish: 'elokuva', chinese: '电影', notes: 'Juurisana (基础词)' },
-            { category: '爱好与休闲', finnish: 'valokuvaus', chinese: '摄影', notes: 'Yhdyssana (复合词): valo (光) + kuvaus (描绘)' },
+            { category: '爱好与休闲', finnish: 'jalkapallo', chinese: '足球', notes: 'Yhdyssana (复合词): jalka (脚) + pallo (球)' },
+            { category: '爱好与休闲', finnish: 'koripallo', chinese: '篮球', notes: 'Yhdyssana (复合词): kori (篮子) + pallo (球)' },
+            { category: '爱好与休闲', finnish: 'jääkiekko', chinese: '冰球', notes: 'Yhdyssana (复合词): jää (冰) + kiekko (圆盘)' },
+            { category: '爱好与休闲', finnish: 'valokuva', chinese: '照片', notes: 'Yhdyssana (复合词): valo (光) + kuva (图片)' },
+            { category: '爱好与休闲', finnish: 'valokuvaus', chinese: '摄影', notes: 'Johdos (派生词): valokuvata (拍照) + -us' },
             { category: '爱好与休闲', finnish: 'käsityö', chinese: '手工艺', notes: 'Yhdyssana (复合词): käsi (手) + työ (工作)' },
-            { category: '爱好与休闲', finnish: 'puutarhanhoito', chinese: '园艺', notes: 'Yhdyssana (复合词): puutarhan (花园的) + hoito (照料)' },
-            { category: '爱好与休闲', finnish: 'matkustaminen', chinese: '旅行', notes: 'Johdos (派生词): matkustaa (旅行) + -minen (动名词)' },
-            { category: '爱好与休闲', finnish: 'lukeminen', chinese: '阅读', notes: 'Johdos (派生词): lukea (阅读) + -minen (动名词)' },
-            { category: '形容词 (扩展)', finnish: 'tärkeä', chinese: '重要的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'helppo', chinese: '容易的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'vaikea', chinese: '困难的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'mielenkiintoinen', chinese: '有趣的', notes: 'Yhdyssana (复合词): mielen (思想的) + kiinto (兴趣) + -inen' },
-            { category: '形容词 (扩展)', finnish: 'tylsä', chinese: '无聊的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'mukava', chinese: '舒适的/友好的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'kiva', chinese: '好的/棒的', notes: 'Juurisana (基础词), 口语' },
-            { category: '形容词 (扩展)', finnish: 'hauska', chinese: '有趣的/好笑的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'vihainen', chinese: '生气的', notes: 'Johdos (派生词): viha (愤怒) + -inen' },
-            { category: '形容词 (扩展)', finnish: 'onnellinen', chinese: '幸福的', notes: 'Johdos (派生词): onni (幸福) + -llinen' },
-            { category: '形容词 (扩展)', finnish: 'avoin', chinese: '开放的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'kiinni', chinese: '关闭的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'valmis', chinese: '准备好的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'vapaa', chinese: '自由的/有空的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'varattu', chinese: '被占用的/已预订', notes: 'varata (预定) 的过去分词' },
-            { category: '形容词 (扩展)', finnish: 'täynnä', chinese: '满的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'tyhjä', chinese: '空的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'kallis', chinese: '昂贵的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'halpa', chinese: '便宜的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'raskas', chinese: '重的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'kevyt', chinese: '轻的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'tumma', chinese: '深色的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'vaalea', chinese: '浅色的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'likainen', chinese: '脏的', notes: 'Johdos (派生词): lika (污垢) + -inen' },
-            { category: '形容词 (扩展)', finnish: 'puhdas', chinese: '干净的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'erilainen', chinese: '不同的', notes: 'Yhdyssana (复合词): eri (不同) + -lainen' },
-            { category: '形容词 (扩展)', finnish: 'samanlainen', chinese: '相同的', notes: 'Yhdyssana (复合词): saman (同样) + -lainen' },
-            { category: '形容词 (扩展)', finnish: 'kuuluisa', chinese: '著名的', notes: 'Juurisana (基础词)' },
-            { category: '形容词 (扩展)', finnish: 'varovainen', chinese: '小心的', notes: 'Johdos (派生词): vara (储备) + -vainen' },
-            { category: '动词 (扩展 - 认知)', finnish: 'ajatella', chinese: '思考', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 认知)', finnish: 'ymmärtää', chinese: '理解', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 认知)', finnish: 'muistaa', chinese: '记得', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 认知)', finnish: 'unohtaa', chinese: '忘记', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 认知)', finnish: 'uskoa', chinese: '相信', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 认知)', finnish: 'luulla', chinese: '以为/觉得', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 认知)', finnish: 'tarkoittaa', chinese: '意思是', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 认知)', finnish: 'päättää', chinese: '决定', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 认知)', finnish: 'oppia', chinese: '学习', notes: 'Juurisana (基础词) (原列表已有，此处为重申重要性)' },
-            { category: '动词 (扩展 - 认知)', finnish: 'opiskella', chinese: '(系统地)学习', notes: 'Johdos (派生词): oppia 的频繁体' },
-            { category: '动词 (扩展 - 交流)', finnish: 'kysyä', chinese: '问', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 交流)', finnish: 'vastata', chinese: '回答', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 交流)', finnish: 'kertoa', chinese: '告诉', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 交流)', finnish: 'keskustella', chinese: '讨论', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 交流)', finnish: 'soittaa', chinese: '打电话 / 弹奏', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 交流)', finnish: 'lähettää', chinese: '发送', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 交流)', finnish: 'selittää', chinese: '解释', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'yrittää', chinese: '尝试', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'jaksaa', chinese: '有精力做', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'alkaa / alkaa tehdä', chinese: '开始 / 开始做', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'lopettaa', chinese: '停止 / 结束', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'jatkaa', chinese: '继续', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'odottaa', chinese: '等待', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'etsiä', chinese: '寻找', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'käyttää', chinese: '使用', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'vaihtaa', chinese: '交换 / 更换', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'korjata', chinese: '修理', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'maksaa', chinese: '支付', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'ostaa', chinese: '买', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'myydä', chinese: '卖', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'vuokrata', chinese: '租', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'matkustaa', chinese: '旅行', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'lentää', chinese: '飞', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'uida', chinese: '游泳', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'ajaa', chinese: '开车', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'noutaa', chinese: '取(东西/人)', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'viedä', chinese: '带走', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'tuoda', chinese: '带来', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'herättää', chinese: '叫醒', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'pukea', chinese: '穿上', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'riisua', chinese: '脱下', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'sataa', chinese: '下(雨/雪)', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'paistaa', chinese: '照耀 / 煎/烤', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'tuulla', chinese: '刮风', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'tarvita', chinese: '需要', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'kuulostaa', chinese: '听起来', notes: 'Johdos (派生词): kuulla (听见) 的派生' },
-            { category: '动词 (扩展 - 行为)', finnish: 'näyttää', chinese: '看起来', notes: 'Juurisana (基础词)' },
-            { category: '动词 (扩展 - 行为)', finnish: 'tuntua', chinese: '感觉起来', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'nyt', chinese: '现在', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'heti', chinese: '立刻', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'pian', chinese: '很快', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'sitten', chinese: '然后 / 以前', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'aina', chinese: '总是', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'usein', chinese: '经常', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'joskus', chinese: '有时', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'harvoin', chinese: '很少', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'ei koskaan', chinese: '从不', notes: '词组' },
-            { category: '副词与小品词', finnish: 'täällä / täältä / tänne', chinese: '在这里 / 从这里 / 到这里', notes: 'paikkasijat (地点格)' },
-            { category: '副词与小品词', finnish: 'siellä / sieltä / sinne', chinese: '在那里 / 从那里 / 到那里', notes: 'paikkasijat (地点格)' },
-            { category: '副词与小品词', finnish: 'tuolla / tuolta / tuonne', chinese: '在那边 / 从那边 / 到那边', notes: 'paikkasijat (地点格)' },
-            { category: '副词与小品词', finnish: 'kotona / kotoa / kotiin', chinese: '在家 / 从家 / 回家', notes: 'paikkasijat (地点格)' },
-            { category: '副词与小品词', finnish: 'ulkona / ulkoa / ulos', chinese: '在外面 / 从外面 / 到外面', notes: 'paikkasijat (地点格)' },
-            { category: '副词与小品词', finnish: 'sisällä / sisältä / sisään', chinese: '在里面 / 从里面 / 到里面', notes: 'paikkasijat (地点格)' },
-            { category: '副词与小品词', finnish: 'ylös', chinese: '向上', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'alas', chinese: '向下', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'hyvin', chinese: '很好地', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'huonosti', chinese: '很差地', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'yhdessä', chinese: '一起', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'yksin', chinese: '单独', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'todella', chinese: '真的', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'erittäin', chinese: '非常', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'liian', chinese: '太', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'vähän', chinese: '一点', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'paljon', chinese: '很多', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'myös', chinese: '也', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'vain', chinese: '仅仅', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'ehkä', chinese: '也许', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'vielä', chinese: '还', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'jo', chinese: '已经', notes: 'Juurisana (基础词)' },
-            { category: '副词与小品词', finnish: 'takaisin', chinese: '回来', notes: 'Juurisana (基础词)' },
-            { category: '其他（连接词/介词等）', finnish: 'että', chinese: 'that (引导从句)', notes: 'Juurisana (基础词)' },
-            { category: '其他（连接词/介词等）', finnish: 'jos', chinese: '如果', notes: 'Juurisana (基础词)' },
-            { category: '其他（连接词/介词等）', finnish: 'kun', chinese: '当...时候', notes: 'Juurisana (基础词)' },
-            { category: '其他（连接词/介词等）', finnish: 'vaikka', chinese: '即使 / 虽然', notes: 'Juurisana (基础词)' },
-            { category: '其他（连接词/介词等）', finnish: 'siksi', chinese: '因此', notes: 'Juurisana (基础词)' },
-            { category: '其他（连接词/介词等）', finnish: 'kanssa', chinese: '和...一起', notes: 'Postpositio (后置词)' },
-            { category: '其他（连接词/介词等）', finnish: 'ilman', chinese: '没有...', notes: 'Pre/Postpositio (前/后置词)' },
-            { category: '其他（连接词/介词等）', finnish: 'jälkeen', chinese: '在...之后', notes: 'Postpositio (后置词)' },
-            { category: '其他（连接词/介词等）', finnish: 'ennen', chinese: '在...之前', notes: 'Prepositio (前置词)' },
-            { category: '其他（连接词/介词等）', finnish: 'vieressä', chinese: '在...旁边', notes: 'Postpositio (后置词)' },
-            { category: '其他（连接词/介词等）', finnish: 'takana', chinese: '在...后面', notes: 'Postpositio (后置词)' },
-            { category: '其他（连接词/介词等）', finnish: 'edessä', chinese: '在...前面', notes: 'Postpositio (后置词)' },
-            { category: '其他（连接词/介词等）', finnish: 'päällä', chinese: '在...上面', notes: 'Postpositio (后置词)' },
-            { category: '其他（连接词/介词等）', finnish: 'alla', chinese: '在...下面', notes: 'Postpositio (后置词)' },
-            { category: '其他（连接词/介词等）', finnish: 'välissä', chinese: '在...中间', notes: 'Postpositio (后置词)' },
-            { category: '其他（连接词/介词等）', finnish: 'kautta', chinese: '通过', notes: 'Postpositio (后置词)' },
-            { category: '其他（连接词/介词等）', finnish: 'takia / vuoksi', chinese: '因为...', notes: 'Postpositio (后置词)' },
+            { category: '爱好与休闲', finnish: 'puutarha', chinese: '花园', notes: 'Juurisana (基础词)' },
+            { category: '爱好与休闲', finnish: 'retki', chinese: '短途旅行/远足', notes: 'Juurisana (基础词)' },
+            { category: '爱好与休闲', finnish: 'juhla', chinese: '节日/派对', notes: 'Juurisana (基础词)' },
+            { category: '爱好与休闲', finnish: 'syntymäpäivä', chinese: '生日', notes: 'Yhdyssana (复合词): syntymä (出生) + päivä (天)' },
+            { category: '爱好与休闲', finnish: 'lahja', chinese: '礼物', notes: 'Juurisana (基础词)' },
+            { category: '爱好与休闲', finnish: 'joulu', chinese: '圣诞节', notes: 'Juurisana (基础词)' },
+            { category: '爱好与休闲', finnish: 'pääsiäinen', chinese: '复活节', notes: 'Juurisana (基础词)' },
+            { category: '爱好与休闲', finnish: 'juhannus', chinese: '仲夏节', notes: 'Juurisana (基础词)' },
+            { category: '爱好与休闲', finnish: 'uutiset', chinese: '新闻', notes: 'Juurisana (基础词), 通常用复数' },
+            { category: '爱好与休闲', finnish: 'lehti', chinese: '报纸/杂志', notes: 'Juurisana (基础词)' },
+            { category: '爱好与休闲', finnish: 'sanomalehti', chinese: '报纸', notes: 'Yhdyssana (复合词): sanoma (消息) + lehti (报纸)' },
+            { category: '爱好与休闲', finnish: 'aikakauslehti', chinese: '杂志', notes: 'Yhdyssana (复合词): aika + kausi + lehti' },
+            { category: '爱好与休闲', finnish: 'mainos', chinese: '广告', notes: 'Juurisana (基础词)' },
+            { category: '购物与金钱', finnish: 'hinta', chinese: '价格', notes: 'Juurisana (基础词)' },
+            { category: '购物与金钱', finnish: 'lasku', chinese: '账单 / 发票', notes: 'Juurisana (基础词)' },
+            { category: '购物与金钱', finnish: 'kuitti', chinese: '收据', notes: 'Juurisana (基础词)' },
+            { category: '购物与金钱', finnish: 'alennus', chinese: '折扣', notes: 'Juurisana (基础词)' },
+            { category: '购物与金钱', finnish: 'tarjous', chinese: '特价 / 优惠', notes: 'Juurisana (基础词)' },
+            { category: '购物与金钱', finnish: 'pankkikortti', chinese: '银行卡', notes: 'Yhdyssana (复合词): pankki (银行) + kortti (卡)' },
+            { category: '购物与金钱', finnish: 'luottokortti', chinese: '信用卡', notes: 'Yhdyssana (复合词): luotto (信用) + kortti (卡)' },
+            { category: '购物与金钱', finnish: 'käteinen', chinese: '现金', notes: 'Juurisana (基础词)' },
+            { category: '购物与金钱', finnish: 'kolikko', chinese: '硬币', notes: 'Juurisana (基础词)' },
+            { category: '购物与金钱', finnish: 'seteli', chinese: '纸币', notes: 'Juurisana (基础词)' },
+            { category: '购物与金钱', finnish: 'euro', chinese: '欧元', notes: 'Juurisana (基础词)' },
+            { category: '购物与金钱', finnish: 'sentti', chinese: '分 (货币)', notes: 'Juurisana (基础词)' },
+            { category: '购物与金钱', finnish: 'pankkiautomaatti', chinese: 'ATM/取款机', notes: 'Yhdyssana (复合词): pankki (银行) + automaatti (自动机)' },
+            { category: '健康与医疗', finnish: 'terveys', chinese: '健康', notes: 'Johdos (派生词): terve (健康的) + -ys (性质)' },
+            { category: '健康与医疗', finnish: 'sairaus', chinese: '疾病', notes: 'Johdos (派生词): sairas (生病的) + -us (性质)' },
+            { category: '健康与医疗', finnish: 'potilas', chinese: '病人', notes: 'Juurisana (基础词)' },
+            { category: '健康与医疗', finnish: 'flunssa', chinese: '感冒', notes: 'Juurisana (基础词)' },
+            { category: '健康与医疗', finnish: 'kuume', chinese: '发烧', notes: 'Juurisana (基础词)' },
+            { category: '健康与医疗', finnish: 'yskä', chinese: '咳嗽', notes: 'Juurisana (基础词)' },
+            { category: '健康与医疗', finnish: 'nuha', chinese: '流鼻涕', notes: 'Juurisana (基础词)' },
+            { category: '健康与医疗', finnish: 'kipu', chinese: '疼痛', notes: 'Juurisana (基础词)' },
+            { category: '健康与医疗', finnish: 'särky', chinese: '(持续的)疼痛', notes: 'Juurisana (基础词)' },
+            { category: '健康与医疗', finnish: 'päänsärky', chinese: '头痛', notes: 'Yhdyssana (复合词): pään (头的) + särky (疼痛)' },
+            { category: '健康与医疗', finnish: 'vatsakipu', chinese: '肚子痛', notes: 'Yhdyssana (复合词): vatsa (肚子) + kipu (疼痛)' },
+            { category: '健康与医疗', finnish: 'lääke', chinese: '药', notes: 'Juurisana (基础词)' },
+            { category: '健康与医疗', finnish: 'resepti', chinese: '处方', notes: 'Juurisana (基础词)' },
+            { category: '健康与医疗', finnish: 'aika', chinese: '(预约)时间', notes: 'Juurisana (基础词)' },
+            { category: '健康与医疗', finnish: 'ambulanssi', chinese: '救护车', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'mielenkiintoinen', chinese: '有趣的', notes: 'Yhdyssana (复合词): mielen (思想的) + kiinto (兴趣) + -inen' },
+            { category: '核心形容词 (扩展)', finnish: 'tylsä', chinese: '无聊的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'mukava', chinese: '舒适的/友好的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'kiva', chinese: '好的/棒的 (口语)', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'hauska', chinese: '有趣的/好笑的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'vihainen', chinese: '生气的', notes: 'Johdos (派生词): viha (愤怒) + -inen' },
+            { category: '核心形容词 (扩展)', finnish: 'onnellinen', chinese: '幸福的', notes: 'Johdos (派生词): onni (幸福) + -llinen' },
+            { category: '核心形容词 (扩展)', finnish: 'nälkäinen', chinese: '饿的', notes: 'Johdos (派生词): nälkä (饥饿) + -inen' },
+            { category: '核心形容词 (扩展)', finnish: 'janoinen', chinese: '渴的', notes: 'Johdos (派生词): jano (口渴) + -inen' },
+            { category: '核心形容词 (扩展)', finnish: 'avoin', chinese: '开放的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'kiinni', chinese: '关闭的 (状态)', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'valmis', chinese: '准备好的 / 完成的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'vapaa', chinese: '自由的/有空的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'varattu', chinese: '被占用的/已预订', notes: 'varata (预订) 的过去分词' },
+            { category: '核心形容词 (扩展)', finnish: 'täynnä', chinese: '满的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'tyhjä', chinese: '空的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'raskas', chinese: '重的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'kevyt', chinese: '轻的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'tumma', chinese: '深色的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'vaalea', chinese: '浅色的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'siisti', chinese: '整洁的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'sotkuinen', chinese: '凌乱的', notes: 'Johdos (派生词): sotku (混乱) + -inen' },
+            { category: '核心形容词 (扩展)', finnish: 'pehmeä', chinese: '软的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'kova', chinese: '硬的 / 大声的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'hiljainen', chinese: '安静的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'meluisa', chinese: '吵闹的', notes: 'Johdos (派生词): melu (噪音) + -isa' },
+            { category: '核心形容词 (扩展)', finnish: 'erilainen', chinese: '不同的', notes: 'Yhdyssana (复合词): eri (不同) + -lainen (像..的)' },
+            { category: '核心形容词 (扩展)', finnish: 'samanlainen', chinese: '相同的', notes: 'Yhdyssana (复合词): saman (相同) + -lainen (像..的)' },
+            { category: '核心形容词 (扩展)', finnish: 'tavallinen', chinese: '普通的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'erityinen', chinese: '特别的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'kuuluisa', chinese: '著名的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'ystävällinen', chinese: '友好的', notes: 'Johdos (派生词): ystävä (朋友) + -llinen' },
+            { category: '核心形容词 (扩展)', finnish: 'epäystävällinen', chinese: '不友好的', notes: 'epä- (否定前缀) + ystävällinen' },
+            { category: '核心形容词 (扩展)', finnish: 'rehellinen', chinese: '诚实的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'varovainen', chinese: '小心的', notes: 'Johdos (派生词): vara (预备) + -vainen' },
+            { category: '核心形容词 (扩展)', finnish: 'vaarallinen', chinese: '危险的', notes: 'Johdos (派生词): vaara (危险) + -llinen' },
+            { category: '核心形容词 (扩展)', finnish: 'turvallinen', chinese: '安全的', notes: 'Johdos (派生词): turva (安全) + -llinen' },
+            { category: '核心形容词 (扩展)', finnish: 'mahdollinen', chinese: '可能的', notes: 'Johdos (派生词): mahto (力量/可能) + -llinen' },
+            { category: '核心形容词 (扩展)', finnish: 'mahdoton', chinese: '不可能的', notes: 'Johdos (派生词): mahto + -ton (无)' },
+            { category: '核心形容词 (扩展)', finnish: 'tuttu', chinese: '熟悉的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'outo', chinese: '奇怪的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'ahkera', chinese: '勤奋的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'laiska', chinese: '懒惰的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'ujo', chinese: '害羞的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'rohkea', chinese: '勇敢的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'leveä', chinese: '宽的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'kapea', chinese: '窄的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'korkea', chinese: '高的', notes: 'Juurisana (基础词)' },
+            { category: '核心形容词 (扩展)', finnish: 'matala', chinese: '低的', notes: 'Juurisana (基础词)' },
             { category: '抽象概念', finnish: 'elämä', chinese: '生活 / 生命', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'rakkaus', chinese: '爱', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'rakkaus', chinese: '爱 (名词)', notes: 'Juurisana (基础词)' },
             { category: '抽象概念', finnish: 'onni', chinese: '幸福 / 运气', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'suru', chinese: '悲伤', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'ilo', chinese: '快乐', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'viha', chinese: '愤怒', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'pelko', chinese: '恐惧', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'toivo', chinese: '希望', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'rauha', chinese: '和平 / 安静', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'sota', chinese: '战争', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'vapaus', chinese: '自由', notes: 'Johdos (派生词): vapaa (自由的) + -us' },
-            { category: '抽象概念', finnish: 'terveys', chinese: '健康', notes: 'Johdos (派生词): terve (健康的) + -ys' },
-            { category: '抽象概念', finnish: 'sairaus', chinese: '疾病', notes: 'Johdos (派生词): sairas (生病的) + -us' },
-            { category: '抽象概念', finnish: 'voima', chinese: '力量', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'heikkous', chinese: '弱点', notes: 'Johdos (派生词): heikko (弱的) + -us' },
-            { category: '抽象概念', finnish: 'kauneus', chinese: '美丽', notes: 'Johdos (派生词): kaunis (美丽的) + -us' },
-            { category: '抽象概念', finnish: 'totuus', chinese: '真相', notes: 'Johdos (派生词): tosi (真的) + -uus' },
-            { category: '抽象概念', finnish: 'valhe', chinese: '谎言', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'suru', chinese: '悲伤 (名词)', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'ilo', chinese: '高兴 (名词)', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'viha', chinese: '愤怒 (名词)', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'pelko', chinese: '恐惧 (名词)', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'toivo', chinese: '希望 (名词)', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'tunne', chinese: '感觉 / 情感', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'ajatus', chinese: '想法 / 思想', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'idea', chinese: '主意', notes: 'Juurisana (基础词)' },
             { category: '抽象概念', finnish: 'ongelma', chinese: '问题', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'ratkaisu', chinese: '解决方案', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'vastaus', chinese: '答案', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'kysymys', chinese: '问题 (疑问)', notes: 'Juurisana (基础词)' },
             { category: '抽象概念', finnish: 'syy', chinese: '原因', notes: 'Juurisana (基础词)' },
             { category: '抽象概念', finnish: 'seuraus', chinese: '结果', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'ero', chinese: '差别 / 分离', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'muutos', chinese: '变化', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'tunne', chinese: '感觉 / 情感', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'ajatus', chinese: '想法', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'idea', chinese: '主意', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'asia', chinese: '事情 / 事物', notes: 'Juurisana (基础词)' },
             { category: '抽象概念', finnish: 'tieto', chinese: '信息 / 知识', notes: 'Juurisana (基础词)' },
             { category: '抽象概念', finnish: 'taito', chinese: '技能', notes: 'Juurisana (基础词)' },
-            { category: '抽象概念', finnish: 'mahdollisuus', chinese: '可能性', notes: 'Johdos (派生词): mahdollinen (可能的) + -uus' }
+            { category: '抽象概念', finnish: 'voima', chinese: '力量', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'rauha', chinese: '和平 / 安宁', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'sota', chinese: '战争', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'ero', chinese: '差别 / 分离', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'totuus', chinese: '真相', notes: 'Johdos (派生词): tosi (真的) + -uus' },
+            { category: '抽象概念', finnish: 'valhe', chinese: '谎言', notes: 'Juurisana (基础词)' },
+            { category: '抽象概念', finnish: 'vapaus', chinese: '自由', notes: 'Johdos (派生词): vapaa (自由的) + -us' },
+            { category: '抽象概念', finnish: 'tulevaisuus', chinese: '未来', notes: 'Yhdyssana (复合词): tuleva (将来的) + -isuus' },
+            { category: '抽象概念', finnish: 'menneisyys', chinese: '过去', notes: 'Yhdyssana (复合词): mennyt (过去的) + -isyys' },
+            { category: '核心动词 (认知与交流)', finnish: 'ajatella', chinese: '思考 (3)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'ymmärtää', chinese: '理解 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'muistaa', chinese: '记得 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'unohtaa', chinese: '忘记 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'uskoa', chinese: '相信 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'luulla', chinese: '以为/觉得 (3)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'tarkoittaa', chinese: '意思是 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'kertoa', chinese: '告诉 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'vastata', chinese: '回答 (4)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'keskustella', chinese: '讨论 (3)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'soittaa', chinese: '打电话 / 弹奏 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'lähettää', chinese: '发送 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'selittää', chinese: '解释 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'näyttää', chinese: '展示 / 看起来... (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'kuvailla', chinese: '描述 (3)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'kääntää', chinese: '翻译 / 转向 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'merkitä', chinese: '标记 / 意味着 (5)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'sopia', chinese: '适合 / 约定 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'luvata', chinese: '承诺 (4)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'ehdottaa', chinese: '建议 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (认知与交流)', finnish: 'suositella', chinese: '推荐 (3)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'alkaa', chinese: '开始 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'lopettaa', chinese: '停止 / 结束 (vt.) (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'loppua', chinese: '(自行)结束 (vi.) (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'jatkaa', chinese: '继续 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'yrittää', chinese: '尝试 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'päättää', chinese: '决定 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'valita', chinese: '选择 (5)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'etsiä', chinese: '寻找 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'käyttää', chinese: '使用 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'vaihtaa', chinese: '交换 / 更换 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'korjata', chinese: '修理 (4)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'rikkoa', chinese: '打破 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'toimia', chinese: '运作 / 起作用 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'tapahtua', chinese: '发生 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'onnistua', chinese: '成功 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'epäonnistua', chinese: '失败 (1)', notes: 'epä- + onnistua' },
+            { category: '核心动词 (行动与过程)', finnish: 'vuokrata', chinese: '租 (4)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'varata', chinese: '预订 (4)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'matkustaa', chinese: '旅行 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'lentää', chinese: '飞 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'uida', chinese: '游泳 (2)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'ajaa', chinese: '开车 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'saapua', chinese: '到达 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'lähteä', chinese: '出发 / 离开 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'palata', chinese: '返回 (4)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'noutaa', chinese: '取(东西/人) (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'viedä', chinese: '带走 (2)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'tuoda', chinese: '带来 (2)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'kantaa', chinese: '搬运 / 携带 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'pukea', chinese: '穿上 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'riisua', chinese: '脱下 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'sataa', chinese: '下(雨/雪) (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'tuulla', chinese: '刮风 (3)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'osallistua', chinese: '参加 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'järjestää', chinese: '组织 / 安排 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'nauttia', chinese: '享受 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'vihata', chinese: '憎恨 (4)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'tavata', chinese: '遇见 (4)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'jäädä', chinese: '留下 / 待 (2)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'nousta', chinese: '升起 / 上(车) (3)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'kasvaa', chinese: '成长 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'muuttaa', chinese: '改变 (vt.) / 搬家 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'muuttua', chinese: '(自行)改变 (vi.) (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'leipoa', chinese: '烘焙 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'keittää', chinese: '煮 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'grillata', chinese: '烧烤 (4)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'lisätä', chinese: '添加 (4)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'sekoittaa', chinese: '混合 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'harjata', chinese: '刷 (4)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (行动与过程)', finnish: 'leikata', chinese: '切/剪 (4)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (情态与感知)', finnish: 'voida', chinese: '可以 (能够) (2)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (情态与感知)', finnish: 'saada', chinese: '可以 (被允许) / 得到 (2)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (情态与感知)', finnish: 'pitää', chinese: '必须 / 喜欢 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (情态与感知)', finnish: 'aikoa', chinese: '打算 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (情态与感知)', finnish: 'ehtiä', chinese: '来得及 (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (情态与感知)', finnish: 'jaksaa', chinese: '有精力做... (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (情态与感知)', finnish: 'viitsiä', chinese: '懒得/不情愿做', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (情态与感知)', finnish: 'maistua', chinese: '尝起来... (1)', notes: 'Johdos (派生词): maistaa (品尝)' },
+            { category: '核心动词 (情态与感知)', finnish: 'kuulostaa', chinese: '听起来... (1)', notes: 'Johdos (派生词): kuulla (听见)' },
+            { category: '核心动词 (情态与感知)', finnish: 'tuntua', chinese: '感觉起来... (1)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (情态与感知)', finnish: 'haista', chinese: '闻起来... (3)', notes: 'Juurisana (基础词)' },
+            { category: '核心动词 (情态与感知)', finnish: 'tuoksua', chinese: '闻起来香 (1)', notes: 'Juurisana (基础词)' },
+            { category: '副词/小品词/后置词', finnish: 'täällä / täältä / tänne', chinese: '在这里 / 从这里 / 到这里', notes: 'Paikkasijat (地点格)' },
+            { category: '副词/小品词/后置词', finnish: 'siellä / sieltä / sinne', chinese: '在那里 / 从那里 / 到那里', notes: 'Paikkasijat (地点格)' },
+            { category: '副词/小品词/后置词', finnish: 'tuolla / tuolta / tuonne', chinese: '在那边 / 从那边 / 到那边', notes: 'Paikkasijat (地点格)' },
+            { category: '副词/小品词/后置词', finnish: 'kotona / kotoa / kotiin', chinese: '在家 / 从家 / 回家', notes: 'Paikkasijat (地点格)' },
+            { category: '副词/小品词/后置词', finnish: 'ulkona / ulkoa / ulos', chinese: '在外面 / 从外面 / 到外面', notes: 'Paikkasijat (地点格)' },
+            { category: '副词/小品词/后置词', finnish: 'sisällä / sisältä / sisään', chinese: '在里面 / 从里面 / 到里面', notes: 'Paikkasijat (地点格)' },
+            { category: '副词/小品词/后置词', finnish: 'ylös', chinese: '向上', notes: 'Juurisana (基础词)' },
+            { category: '副词/小品词/后置词', finnish: 'alas', chinese: '向下', notes: 'Juurisana (基础词)' },
+            { category: '副词/小品词/后置词', finnish: 'hyvin', chinese: '很好地', notes: 'Johdos (派生词): hyvä (好) + -in' },
+            { category: '副词/小品词/后置词', finnish: 'huonosti', chinese: '很差地', notes: 'Johdos (派生词): huono (差) + -sti' },
+            { category: '副词/小品词/后置词', finnish: 'yhdessä', chinese: '一起', notes: 'yksi 的 inessiivi 格' },
+            { category: '副词/小品词/后置词', finnish: 'yksin', chinese: '单独', notes: 'Juurisana (基础词)' },
+            { category: '副词/小品词/后置词', finnish: 'todella', chinese: '真的', notes: 'Juurisana (基础词)' },
+            { category: '副词/小品词/后置词', finnish: 'erittäin', chinese: '非常', notes: 'Juurisana (基础词)' },
+            { category: '副词/小品词/后置词', finnish: 'liian', chinese: '太', notes: 'Juurisana (基础词)' },
+            { category: '副词/小品词/后置词', finnish: 'melko', chinese: '相当', notes: 'Juurisana (基础词)' },
+            { category: '副词/小品词/后置词', finnish: 'aika', chinese: '相当/挺 (adv.)', notes: 'Juurisana (基础词)' },
+            { category: '副词/小品词/后置词', finnish: 'ehkä', chinese: '也许', notes: 'Juurisana (基础词)' },
+            { category: '副词/小品词/后置词', finnish: 'varmaan', chinese: '大概', notes: 'Juurisana (基础词)' },
+            { category: '副词/小品词/后置词', finnish: 'takaisin', chinese: '回来', notes: 'Juurisana (基础词)' },
+            { category: '副词/小品词/后置词', finnish: 'pois', chinese: '离开 / 除去', notes: 'Juurisana (基础词)' },
+            { category: '副词/小品词/后置词', finnish: 'edes', chinese: '甚至', notes: 'Juurisana (基础词)' },
+            { category: '副词/小品词/后置词', finnish: 'jotain', chinese: '某事/某物 (part.)', notes: 'Juurisana (基础词)' },
+            { category: '副词/小品词/后置词', finnish: 'ei mitään', chinese: '什么也没有', notes: 'Fraasi (短语)' },
+            { category: '副词/小品词/后置词', finnish: 'joku', chinese: '某人', notes: 'Juurisana (基础词)' },
+            { category: '副词/小品词/后置词', finnish: 'ei kukaan', chinese: '谁也没有', notes: 'Fraasi (短语)' },
+            { category: '副词/小品词/后置词', finnish: 'kanssa', chinese: '和...一起', notes: 'Postpositio (后置词), 跟属格' },
+            { category: '副词/小品词/后置词', finnish: 'ilman', chinese: '没有...', notes: 'Pre/Postpositio, 跟部分格' },
+            { category: '副词/小品词/后置词', finnish: 'jälkeen', chinese: '在...之后', notes: 'Postpositio (后置词), 跟属格' },
+            { category: '副词/小品词/后置词', finnish: 'ennen', chinese: '在...之前', notes: 'Prepositio (前置词), 跟部分格' },
+            { category: '副词/小品词/后置词', finnish: 'vieressä', chinese: '在...旁边', notes: 'Postpositio (后置词), 跟属格' },
+            { category: '副词/小品词/后置词', finnish: 'takana', chinese: '在...后面', notes: 'Postpositio (后置词), 跟属格' },
+            { category: '副词/小品词/后置词', finnish: 'edessä', chinese: '在...前面', notes: 'Postpositio (后置词), 跟属格' },
+            { category: '副词/小品词/后置词', finnish: 'päällä', chinese: '在...上面', notes: 'Postpositio (后置词), 跟属格' },
+            { category: '副词/小品词/后置词', finnish: 'alla', chinese: '在...下面', notes: 'Postpositio (后置词), 跟属格' },
+            { category: '副词/小品词/后置词', finnish: 'välissä', chinese: '在...中间', notes: 'Postpositio (后置词), 跟属格' },
+            { category: '副词/小品词/后置词', finnish: 'lähellä', chinese: '在...附近', notes: 'Postpositio (后置词), 跟部分格' },
+            { category: '副词/小品词/后置词', finnish: 'kaukana', chinese: '离...远', notes: 'Postpositio (后置词), 跟部分格' },
+            { category: '副词/小品词/后置词', finnish: 'kautta', chinese: '通过', notes: 'Postpositio (后置词), 跟属格' },
+            { category: '副词/小品词/后置词', finnish: 'takia / vuoksi', chinese: '因为...', notes: 'Postpositio (后置词), 跟属格' },
+            { category: '副词/小品词/后置词', finnish: 'mukaan', chinese: '根据 / 一起', notes: 'Postpositio (后置词), 跟属格' },
+            { category: '副词/小品词/后置词', finnish: 'kohti', chinese: '朝着', notes: 'Postpositio (后置词), 跟部分格' },
+            { category: '副词/小品词/后置词', finnish: 'vastapäätä', chinese: '在...对面', notes: 'Pre/Postpositio, 跟部分格' },
+            { category: '副词/小品词/后置词', finnish: 'ympäri', chinese: '围绕', notes: 'Pre/Postpositio, 跟部分格' },
+            { category: '连词', finnish: 'jos', chinese: '如果', notes: 'Juurisana (基础词)' },
+            { category: '连词', finnish: 'kun', chinese: '当...时候', notes: 'Juurisana (基础词)' },
+            { category: '连词', finnish: 'vaikka', chinese: '即使 / 虽然', notes: 'Juurisana (基础词)' },
+            { category: '连词', finnish: 'kuin', chinese: '比 / 如同', notes: 'Juurisana (基础词)' },
+            { category: '连词', finnish: 'siksi', chinese: '因此', notes: 'Juurisana (基础词)' },
+            { category: '连词', finnish: 'kuitenkin', chinese: '然而', notes: 'Juurisana (基础词)' },
+            { category: '连词', finnish: 'eli', chinese: '也就是', notes: 'Juurisana (基础词)' },
+            { category: '连词', finnish: 'sekä... että...', chinese: '既...又...', notes: 'Pari (配对连词)' },
+            { category: '连词', finnish: 'joko... tai...', chinese: '要么...要么...', notes: 'Pari (配对连词)' },
+            { category: '连词', finnish: 'ei... eikä...', chinese: '既不...也不...', notes: 'Pari (配对连词)' },
         ];
 
-        const svgIcons = {
-            '家庭与人物': {
-                'äiti': '<circle cx="50" cy="30" r="12" fill="currentColor"/><path d="M25 60 Q50 45 75 60 L75 80 L25 80 Z" fill="currentColor"/><path d="M40 45 Q50 30 60 45" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="45" cy="28" r="2" fill="white"/><circle cx="55" cy="28" r="2" fill="white"/>',
-                'isä': '<circle cx="50" cy="30" r="12" fill="currentColor"/><path d="M25 60 Q50 45 75 60 L75 80 L25 80 Z" fill="currentColor"/><rect x="45" y="22" width="10" height="6" fill="currentColor"/><circle cx="45" cy="28" r="2" fill="white"/><circle cx="55" cy="28" r="2" fill="white"/>',
-                'vauva': '<circle cx="50" cy="35" r="18" fill="currentColor"/><circle cx="44" cy="30" r="2" fill="white"/><circle cx="56" cy="30" r="2" fill="white"/><path d="M46 40 Q50 45 54 40" stroke="white" stroke-width="2" fill="none"/><path d="M30 55 Q50 65 70 55 L70 75 L30 75 Z" fill="currentColor"/>',
-                'lapsi': '<circle cx="50" cy="35" r="14" fill="currentColor"/><path d="M28 58 Q50 48 72 58 L72 78 L28 78 Z" fill="currentColor"/><circle cx="46" cy="32" r="1.5" fill="white"/><circle cx="54" cy="32" r="1.5" fill="white"/><path d="M47 38 Q50 41 53 38" stroke="white" stroke-width="1.5" fill="none"/>',
-                'poika': '<circle cx="50" cy="32" r="13" fill="currentColor"/><path d="M27 58 Q50 48 73 58 L73 78 L27 78 Z" fill="currentColor"/><rect x="46" y="24" width="8" height="5" fill="currentColor"/><circle cx="46" cy="30" r="1.5" fill="white"/><circle cx="54" cy="30" r="1.5" fill="white"/>',
-                'tyttö': '<circle cx="50" cy="32" r="13" fill="currentColor"/><path d="M27 58 Q50 48 73 58 L73 78 L27 78 Z" fill="currentColor"/><path d="M38 25 Q50 15 62 25" stroke="currentColor" stroke-width="3" fill="none"/><circle cx="46" cy="30" r="1.5" fill="white"/><circle cx="54" cy="30" r="1.5" fill="white"/>',
-                'perhe': '<circle cx="35" cy="25" r="8" fill="currentColor"/><circle cx="50" cy="25" r="8" fill="currentColor"/><circle cx="65" cy="25" r="8" fill="currentColor"/><path d="M20 45 Q35 35 50 45 Q65 35 80 45 L80 65 L20 65 Z" fill="currentColor"/><circle cx="40" cy="50" r="6" fill="currentColor"/><circle cx="60" cy="50" r="6" fill="currentColor"/>',
-                'nainen': '<circle cx="50" cy="30" r="12" fill="currentColor"/><path d="M25 60 Q50 45 75 60 L75 80 L25 80 Z" fill="currentColor"/><path d="M38 22 Q50 12 62 22" stroke="currentColor" stroke-width="3" fill="none"/><circle cx="45" cy="28" r="2" fill="white"/><circle cx="55" cy="28" r="2" fill="white"/>',
-                'mies': '<circle cx="50" cy="30" r="12" fill="currentColor"/><path d="M25 60 Q50 45 75 60 L75 80 L25 80 Z" fill="currentColor"/><rect x="45" y="22" width="10" height="6" fill="currentColor"/><circle cx="45" cy="28" r="2" fill="white"/><circle cx="55" cy="28" r="2" fill="white"/>',
-                'default': '<circle cx="50" cy="35" r="15" fill="currentColor"/><path d="M20 65 Q50 45 80 65 L80 85 L20 85 Z" fill="currentColor"/>'
-            },
-            '身体部位': {
-                'pää': '<circle cx="50" cy="45" r="25" fill="currentColor"/><circle cx="42" cy="38" r="3" fill="white"/><circle cx="58" cy="38" r="3" fill="white"/><path d="M45 50 Q50 55 55 50" stroke="white" stroke-width="2" fill="none"/><path d="M40 30 Q50 20 60 30" stroke="currentColor" stroke-width="3" fill="none"/>',
-                'silmä': '<ellipse cx="50" cy="50" rx="25" ry="18" fill="currentColor"/><ellipse cx="50" cy="50" rx="18" ry="12" fill="white"/><circle cx="50" cy="50" r="8" fill="black"/><circle cx="52" cy="47" r="2" fill="white"/>',
-                'käsi': '<path d="M35 20 Q50 15 65 20 L70 75 L60 75 L55 25 L45 25 L40 75 L30 75 Z" fill="currentColor"/><circle cx="50" cy="18" r="8" fill="currentColor"/><circle cx="35" cy="78" r="6" fill="currentColor"/><circle cx="65" cy="78" r="6" fill="currentColor"/>',
-                'jalka': '<path d="M42 15 L58 15 L62 65 L72 65 L72 75 L52 75 L52 70 L48 70 L48 75 L28 75 L28 65 L38 65 Z" fill="currentColor"/><ellipse cx="50" cy="78" rx="12" ry="5" fill="currentColor"/>',
-                'vatsa / masu': '<ellipse cx="50" cy="50" rx="25" ry="30" fill="currentColor"/><circle cx="50" cy="45" r="3" fill="white"/>',
-                'default': '<path d="M50 20 A20 20 0 0 1 50 60 A10 10 0 0 1 50 20 M50 20 L50 80 M40 80 L60 80 M50 40 L30 50 M50 40 L70 50" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
-            },
-            '动物': {
-                'koira': '<ellipse cx="50" cy="60" rx="25" ry="15" fill="currentColor"/><circle cx="50" cy="35" r="18" fill="currentColor"/><ellipse cx="42" cy="25" rx="4" ry="8" fill="currentColor"/><ellipse cx="58" cy="25" rx="4" ry="8" fill="currentColor"/><circle cx="45" cy="32" r="2" fill="white"/><circle cx="55" cy="32" r="2" fill="white"/><ellipse cx="50" cy="40" rx="3" ry="2" fill="black"/><path d="M35 45 Q50 50 65 45" stroke="white" stroke-width="2" fill="none"/><path d="M75 55 Q80 50 75 45" stroke="currentColor" stroke-width="3" fill="none"/>',
-                'kissa': '<ellipse cx="50" cy="60" rx="20" ry="12" fill="currentColor"/><circle cx="50" cy="40" r="15" fill="currentColor"/><path d="M40 25 L45 15 L50 25 L55 15 L60 25" stroke="currentColor" stroke-width="3" fill="none"/><circle cx="45" cy="38" r="2" fill="green"/><circle cx="55" cy="38" r="2" fill="green"/><ellipse cx="50" cy="42" rx="2" ry="1" fill="pink"/><path d="M47 44 L50 46 L53 44" stroke="currentColor" stroke-width="1" fill="none"/><path d="M75 55 Q85 45 80 65" stroke="currentColor" stroke-width="2" fill="none"/>',
-                'lintu': '<ellipse cx="50" cy="55" rx="20" ry="15" fill="currentColor"/><circle cx="50" cy="35" r="12" fill="currentColor"/><path d="M25 40 Q35 30 45 40" stroke="currentColor" stroke-width="3" fill="none"/><path d="M75 40 Q65 30 55 40" stroke="currentColor" stroke-width="3" fill="none"/><path d="M45 30 L55 25 L50 35 Z" fill="orange"/><circle cx="47" cy="32" r="2" fill="black"/><path d="M45 20 Q50 15 55 20" stroke="currentColor" stroke-width="2" fill="none"/>',
-                'kala': '<ellipse cx="50" cy="50" rx="25" ry="15" fill="currentColor"/><path d="M75 50 L85 40 L85 60 Z" fill="currentColor"/><circle cx="40" cy="45" r="3" fill="black"/><circle cx="42" cy="43" r="1" fill="white"/><path d="M50 35 Q45 30 50 25 Q55 30 50 35" fill="currentColor"/><path d="M25 45 Q20 40 25 50 Q20 60 25 55" stroke="currentColor" stroke-width="2" fill="none"/>',
-                'hevonen': '<ellipse cx="50" cy="65" rx="30" ry="18" fill="currentColor"/><ellipse cx="50" cy="30" rx="15" ry="20" fill="currentColor"/><circle cx="47" cy="25" r="2" fill="black"/><path d="M35 15 Q45 5 55 15" stroke="currentColor" stroke-width="3" fill="none"/><path d="M65 30 Q75 25 70 35" stroke="currentColor" stroke-width="3" fill="none"/><rect x="45" y="80" width="4" height="8" fill="currentColor"/><rect x="55" y="80" width="4" height="8" fill="currentColor"/>',
-                'kana': '<ellipse cx="50" cy="60" rx="20" ry="15" fill="currentColor"/><circle cx="50" cy="40" r="12" fill="currentColor"/><path d="M45 35 L55 30 L50 40 Z" fill="orange"/><circle cx="47" cy="37" r="2" fill="black"/><path d="M40 30 Q35 25 40 35" stroke="red" stroke-width="3" fill="none"/><rect x="48" y="75" width="2" height="8" fill="orange"/><rect x="52" y="75" width="2" height="8" fill="orange"/>',
-                'karhu / nalle': '<ellipse cx="50" cy="65" rx="30" ry="20" fill="currentColor"/><circle cx="50" cy="35" r="18" fill="currentColor"/><circle cx="38" cy="25" r="6" fill="currentColor"/><circle cx="62" cy="25" r="6" fill="currentColor"/><circle cx="45" cy="32" r="2" fill="black"/><circle cx="55" cy="32" r="2" fill="black"/><ellipse cx="50" cy="40" rx="3" ry="2" fill="black"/>',
-                'default': '<ellipse cx="50" cy="60" rx="25" ry="20" fill="currentColor"/><circle cx="50" cy="35" r="15" fill="currentColor"/>'
-            },
-            '食物和饮料': {
-                'ruoka': '<ellipse cx="50" cy="55" rx="20" ry="15" fill="white" stroke="currentColor" stroke-width="2"/><circle cx="40" cy="50" r="4" fill="red"/><circle cx="50" cy="48" r="3" fill="green"/><circle cx="60" cy="52" r="3" fill="orange"/><rect x="45" y="35" width="10" height="3" rx="1" fill="currentColor"/>',
-                'vesi': '<path d="M50 20 Q30 40 35 60 Q40 80 50 85 Q60 80 65 60 Q70 40 50 20" fill="lightblue"/><path d="M45 35 Q50 30 55 35" stroke="white" stroke-width="2" fill="none"/>',
-                'maito': '<rect x="35" y="25" width="30" height="50" rx="5" fill="white" stroke="currentColor" stroke-width="2"/><rect x="35" y="25" width="30" height="35" fill="white"/><circle cx="50" cy="42" r="2" fill="currentColor"/><circle cx="45" cy="50" r="1" fill="currentColor"/><circle cx="55" cy="48" r="1" fill="currentColor"/>',
-                'leipä': '<ellipse cx="50" cy="50" rx="30" ry="20" fill="burlywood"/><ellipse cx="50" cy="45" rx="25" ry="15" fill="wheat"/><circle cx="42" cy="45" r="2" fill="brown"/><circle cx="58" cy="48" r="2" fill="brown"/><circle cx="50" cy="52" r="1.5" fill="brown"/>',
-                'omena': '<circle cx="50" cy="55" r="25" fill="red"/><path d="M50 30 Q55 25 60 30" stroke="green" stroke-width="3" fill="none"/><ellipse cx="52" cy="35" rx="3" ry="8" fill="green"/><path d="M45 45 Q50 40 55 45" stroke="white" stroke-width="2" fill="none" opacity="0.7"/>',
-                'banaani': '<path d="M30 20 Q20 50 25 80 Q30 85 35 80 Q40 50 50 20 Q45 15 40 20 Q35 15 30 20" fill="yellow"/><circle cx="35" cy="25" r="1" fill="brown"/><circle cx="32" cy="35" r="1" fill="brown"/>',
-                'kakku': '<ellipse cx="50" cy="60" rx="25" ry="12" fill="burlywood"/><ellipse cx="50" cy="50" rx="25" ry="12" fill="pink"/><ellipse cx="50" cy="40" rx="25" ry="12" fill="white"/><rect x="48" y="25" width="4" height="8" fill="yellow"/><circle cx="50" cy="22" r="3" fill="orange"/>',
-                'default': '<circle cx="50" cy="50" r="25" fill="currentColor"/>'
-            },
-            '家里物品': {
-                'koti': '<path d="M50 15 L20 40 L30 40 L30 75 L70 75 L70 40 L80 40 Z" fill="currentColor"/><rect x="35" y="50" width="8" height="12" fill="yellow"/><rect x="57" y="50" width="8" height="12" fill="yellow"/><rect x="45" y="62" width="10" height="13" fill="brown"/>',
-                'talo': '<path d="M50 15 L20 40 L80 40 Z" fill="red"/><rect x="25" y="40" width="50" height="35" fill="currentColor"/><rect x="35" y="50" width="8" height="12" fill="yellow"/><rect x="57" y="50" width="8" height="12" fill="yellow"/><rect x="45" y="60" width="10" height="15" fill="brown"/>',
-                'sänky': '<rect x="20" y="45" width="60" height="25" rx="5" fill="currentColor"/><rect x="15" y="40" width="70" height="8" rx="4" fill="currentColor"/><rect x="25" y="70" width="4" height="15" fill="currentColor"/><rect x="71" y="70" width="4" height="15" fill="currentColor"/><rect x="25" y="35" width="50" height="8" rx="2" fill="white"/>',
-                'pöytä': '<ellipse cx="50" cy="42" rx="25" ry="8" fill="currentColor"/><rect x="30" y="45" width="4" height="25" fill="currentColor"/><rect x="66" y="45" width="4" height="25" fill="currentColor"/><ellipse cx="50" cy="70" rx="8" ry="3" fill="currentColor"/>',
-                'tuoli': '<rect x="35" y="35" width="30" height="5" fill="currentColor"/><rect x="35" y="20" width="30" height="15" fill="currentColor"/><rect x="35" y="40" width="4" height="25" fill="currentColor"/><rect x="61" y="40" width="4" height="25" fill="currentColor"/><rect x="35" y="65" width="30" height="3" fill="currentColor"/>',
-                'ovi': '<rect x="35" y="20" width="30" height="50" fill="currentColor" rx="2"/><circle cx="58" cy="45" r="2" fill="white"/><rect x="47" y="20" width="2" height="50" fill="white" opacity="0.3"/>',
-                'ikkuna': '<rect x="30" y="30" width="40" height="40" fill="lightblue" stroke="currentColor" stroke-width="3"/><line x1="50" y1="30" x2="50" y2="70" stroke="currentColor" stroke-width="2"/><line x1="30" y1="50" x2="70" y2="50" stroke="currentColor" stroke-width="2"/><circle cx="40" cy="40" r="2" fill="white" opacity="0.7"/><circle cx="60" cy="60" r="2" fill="white" opacity="0.7"/>',
-                'lamppu': '<circle cx="50" cy="35" r="15" fill="yellow" opacity="0.8"/><rect x="48" y="50" width="4" height="20" fill="currentColor"/><ellipse cx="50" cy="70" rx="8" ry="3" fill="currentColor"/><path d="M35 35 Q50 25 65 35" stroke="yellow" stroke-width="2" fill="none"/>',
-                'kirja': '<rect x="35" y="30" width="25" height="35" fill="currentColor"/><rect x="37" y="32" width="21" height="31" fill="white"/><line x1="40" y1="38" x2="55" y2="38" stroke="currentColor" stroke-width="1"/><line x1="40" y1="42" x2="55" y2="42" stroke="currentColor" stroke-width="1"/><line x1="40" y1="46" x2="55" y2="46" stroke="currentColor" stroke-width="1"/><line x1="40" y1="50" x2="50" y2="50" stroke="currentColor" stroke-width="1"/>',
-                'kello': '<circle cx="50" cy="50" r="25" fill="currentColor"/><circle cx="50" cy="50" r="20" fill="white"/><circle cx="50" cy="50" r="2" fill="black"/><line x1="50" y1="50" x2="50" y2="35" stroke="black" stroke-width="2"/><line x1="50" y1="50" x2="60" y2="50" stroke="black" stroke-width="1.5"/><text x="50" y="35" text-anchor="middle" font-size="8" fill="black">12</text><text x="65" y="53" text-anchor="middle" font-size="8" fill="black">3</text>',
-                'default': '<rect x="30" y="30" width="40" height="40" fill="currentColor"/>'
-            },
-            '交通工具': {
-                'auto': '<rect x="20" y="45" width="60" height="20" rx="10" fill="currentColor"/><circle cx="35" cy="70" r="8" fill="black"/><circle cx="65" cy="70" r="8" fill="black"/><circle cx="35" cy="70" r="5" fill="gray"/><circle cx="65" cy="70" r="5" fill="gray"/><rect x="25" y="35" width="15" height="12" rx="2" fill="lightblue"/><rect x="60" y="35" width="15" height="12" rx="2" fill="lightblue"/><rect x="45" y="38" width="10" height="8" rx="1" fill="lightblue"/>',
-                'bussi': '<rect x="15" y="40" width="70" height="25" rx="5" fill="currentColor"/><circle cx="25" cy="70" r="6" fill="black"/><circle cx="75" cy="70" r="6" fill="black"/><circle cx="25" cy="70" r="4" fill="gray"/><circle cx="75" cy="70" r="4" fill="gray"/><rect x="20" y="30" width="12" height="12" fill="lightblue"/><rect x="35" y="30" width="12" height="12" fill="lightblue"/><rect x="50" y="30" width="12" height="12" fill="lightblue"/><rect x="65" y="30" width="12" height="12" fill="lightblue"/><rect x="18" y="48" width="8" height="8" fill="yellow"/>',
-                'juna': '<rect x="10" y="45" width="80" height="20" rx="5" fill="currentColor"/><circle cx="25" cy="70" r="5" fill="black"/><circle cx="40" cy="70" r="5" fill="black"/><circle cx="60" cy="70" r="5" fill="black"/><circle cx="75" cy="70" r="5" fill="black"/><rect x="15" y="35" width="70" height="12" rx="2" fill="lightblue"/><rect x="12" y="48" width="6" height="8" fill="red"/><path d="M5 52 L12 48 L12 56 Z" fill="red"/>',
-                'laiva': '<ellipse cx="50" cy="60" rx="35" ry="15" fill="currentColor"/><rect x="48" y="25" width="4" height="35" fill="currentColor"/><path d="M30 25 Q50 15 70 25" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="40" cy="45" r="3" fill="lightblue"/><circle cx="60" cy="45" r="3" fill="lightblue"/>',
-                'lentokone': '<ellipse cx="50" cy="50" rx="30" ry="8" fill="currentColor"/><path d="M20 50 Q15 45 20 40 Q25 45 30 50" fill="currentColor"/><path d="M80 50 Q85 45 80 40 Q75 45 70 50" fill="currentColor"/><rect x="48" y="35" width="4" height="15" fill="currentColor"/><path d="M35 35 Q50 25 65 35" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="25" cy="60" r="3" fill="black"/><circle cx="75" cy="60" r="3" fill="black"/>',
-                'polkupyörä / pyörä': '<circle cx="30" cy="65" r="15" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="70" cy="65" r="15" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="30" cy="65" r="3" fill="currentColor"/><circle cx="70" cy="65" r="3" fill="currentColor"/><path d="M30 65 L50 35 L70 65" stroke="currentColor" stroke-width="3" fill="none"/><path d="M45 35 L55 35" stroke="currentColor" stroke-width="3"/><circle cx="50" cy="35" r="2" fill="currentColor"/>',
-                'default': '<rect x="25" y="45" width="50" height="20" rx="10" fill="currentColor"/><circle cx="35" cy="70" r="8" fill="black"/><circle cx="65" cy="70" r="8" fill="black"/>'
-            },
-            '基础颜色与形容词': {
-                'punainen': '<circle cx="50" cy="50" r="30" fill="red"/>',
-                'sininen': '<circle cx="50" cy="50" r="30" fill="blue"/>',
-                'keltainen': '<circle cx="50" cy="50" r="30" fill="yellow"/>',
-                'vihreä': '<circle cx="50" cy="50" r="30" fill="green"/>',
-                'valkoinen': '<circle cx="50" cy="50" r="30" fill="white" stroke="black" stroke-width="2"/>',
-                'musta': '<circle cx="50" cy="50" r="30" fill="black"/>',
-                'default': '<path d="M20 20 L80 20 L80 80 L20 80 Z" fill="red"/><path d="M20 20 L80 80" stroke="blue" stroke-width="5"/><path d="M80 20 L20 80" stroke="yellow" stroke-width="5"/>'
-            },
-            '数字': {
-                'yksi': '<text x="50" y="65" text-anchor="middle" font-size="50" font-weight="bold" fill="currentColor">1</text>',
-                'kaksi': '<text x="50" y="65" text-anchor="middle" font-size="50" font-weight="bold" fill="currentColor">2</text>',
-                'kolme': '<text x="50" y="65" text-anchor="middle" font-size="50" font-weight="bold" fill="currentColor">3</text>',
-                'neljä': '<text x="50" y="65" text-anchor="middle" font-size="50" font-weight="bold" fill="currentColor">4</text>',
-                'viisi': '<text x="50" y="65" text-anchor="middle" font-size="50" font-weight="bold" fill="currentColor">5</text>',
-                'kuusi': '<text x="50" y="65" text-anchor="middle" font-size="50" font-weight="bold" fill="currentColor">6</text>',
-                'kymmenen': '<text x="50" y="65" text-anchor="middle" font-size="45" font-weight="bold" fill="currentColor">10</text>',
-                'default': '<text x="50" y="65" text-anchor="middle" font-size="50" font-weight="bold" fill="currentColor">#</text>'
-            },
-            '基础动词': {
-                'olla': '<circle cx="50" cy="50" r="20" fill="currentColor"/><text x="50" y="57" text-anchor="middle" font-size="16" font-weight="bold" fill="white">BE</text>',
-                'mennä': '<path d="M20 50 L60 50 M50 40 L60 50 L50 60" stroke="currentColor" stroke-width="4" fill="none"/><circle cx="75" cy="50" r="8" fill="currentColor"/><circle cx="75" cy="50" r="4" fill="white"/>',
-                'tulla': '<path d="M80 50 L40 50 M50 40 L40 50 L50 60" stroke="currentColor" stroke-width="4" fill="none"/><circle cx="25" cy="50" r="8" fill="currentColor"/><circle cx="25" cy="50" r="4" fill="white"/>',
-                'syödä': '<circle cx="50" cy="35" r="12" fill="currentColor"/><path d="M42 32 Q50 28 58 32" stroke="white" stroke-width="2" fill="none"/><circle cx="45" cy="30" r="2" fill="white"/><circle cx="55" cy="30" r="2" fill="white"/><ellipse cx="50" cy="60" rx="15" ry="8" fill="white" stroke="currentColor" stroke-width="2"/><circle cx="42" cy="58" r="2" fill="red"/><circle cx="50" cy="62" r="2" fill="green"/><circle cx="58" cy="60" r="2" fill="orange"/><path d="M35 45 Q50 55 65 45" stroke="currentColor" stroke-width="2" fill="none"/>',
-                'juoda': '<circle cx="50" cy="35" r="12" fill="currentColor"/><path d="M42 32 Q50 28 58 32" stroke="white" stroke-width="2" fill="none"/><circle cx="45" cy="30" r="2" fill="white"/><circle cx="55" cy="30" r="2" fill="white"/><rect x="40" y="50" width="20" height="25" rx="3" fill="lightblue" stroke="currentColor" stroke-width="2"/><ellipse cx="50" cy="52" rx="8" ry="3" fill="lightblue"/><path d="M35 45 Q50 55 65 45" stroke="currentColor" stroke-width="2" fill="none"/>',
-                'nukkua': '<ellipse cx="50" cy="60" rx="25" ry="15" fill="currentColor"/><circle cx="50" cy="40" r="12" fill="currentColor"/><path d="M42 37 Q50 33 58 37" stroke="white" stroke-width="2" fill="none"/><circle cx="45" cy="35" r="2" fill="white"/><circle cx="55" cy="35" r="2" fill="white"/><path d="M65 25 Q70 20 75 25" stroke="currentColor" stroke-width="2" fill="none"/><path d="M70 30 Q75 25 80 30" stroke="currentColor" stroke-width="2" fill="none"/><path d="M75 35 Q80 30 85 35" stroke="currentColor" stroke-width="2" fill="none"/>',
-                'katsoa': '<circle cx="50" cy="50" r="20" fill="currentColor"/><circle cx="50" cy="50" r="12" fill="white"/><circle cx="50" cy="50" r="6" fill="black"/><circle cx="52" cy="47" r="2" fill="white"/><path d="M25 45 Q35 40 45 45" stroke="currentColor" stroke-width="2" fill="none"/><path d="M75 45 Q65 40 55 45" stroke="currentColor" stroke-width="2" fill="none"/>',
-                'puhua': '<circle cx="50" cy="40" r="12" fill="currentColor"/><circle cx="45" cy="37" r="2" fill="white"/><circle cx="55" cy="37" r="2" fill="white"/><ellipse cx="50" cy="43" rx="4" ry="2" fill="red"/><ellipse cx="65" cy="30" rx="8" ry="4" fill="white" stroke="currentColor" stroke-width="1"/><text x="65" y="33" text-anchor="middle" font-size="8" fill="currentColor">Hi!</text><ellipse cx="75" cy="20" rx="6" ry="3" fill="white" stroke="currentColor" stroke-width="1"/>',
-                'default': '<path d="M25 75 L45 25 L65 75 M35 55 L55 55" stroke="currentColor" stroke-width="5" fill="none"/>'
-            },
-            'default': '<path d="M50 20 C66.57 20 80 33.43 80 50 C80 66.57 66.57 80 50 80 C33.43 80 20 66.57 20 50 C20 33.43 33.43 20 50 20 Z" fill="none" stroke="currentColor" stroke-width="4"/><path d="M45 45 L55 55 M55 45 L45 55" stroke="currentColor" stroke-width="4"/>'
+
+        // --- DATA: Category Emojis (Replaces SVGs) ---
+        const categoryEmojis = {
+            '数字与序数': '🔢',
+            '时间与频率': '⏳',
+            '家庭与人物 (扩展)': '👨‍👩‍👧‍👦',
+            '职业 (扩展)': '🧑‍💼',
+            '食物与饮料 (扩展)': '🍽️',
+            '家里物品与电器': '🔌',
+            '衣服与饰品': '💎',
+            '交通与出行': '✈️',
+            '地点和建筑 (扩展)': '🏛️',
+            '教育与工作': '🎓',
+            '爱好与休闲': '🎨',
+            '购物与金钱': '🛒',
+            '健康与医疗': '⚕️',
+            '核心形容词 (扩展)': '✨',
+            '抽象概念': '🧠',
+            '核心动词 (认知与交流)': '🗣️',
+            '核心动词 (行动与过程)': '🏃‍♂️',
+            '核心动词 (情态与感知)': '🤔',
+            '副词/小品词/后置词': '🗺️',
+            '连词': '🔗',
+            'default': '🌟'
         };
+
 
         // --- GLOBAL STATE ---
         let vocabularyData = {};
@@ -810,7 +907,8 @@
             Object.keys(vocabularyData).forEach(category => {
                 const button = document.createElement('button');
                 button.className = 'category-btn';
-                button.textContent = `${category} (${vocabularyData[category].length}词)`;
+                const emoji = categoryEmojis[category] || categoryEmojis['default'];
+                button.textContent = `${emoji} ${category} (${vocabularyData[category].length}词)`;
                 button.dataset.category = category;
                 categoryGrid.appendChild(button);
             });
@@ -833,19 +931,13 @@
 
             const card = currentCards[currentIndex];
             
-            if (speechSynthesis.speaking) {
-                speechSynthesis.cancel();
-            }
+            const emoji = categoryEmojis[currentCategory] || categoryEmojis['default'];
+            document.getElementById('cardEmoji').textContent = emoji;
 
-            const categoryIcons = svgIcons[currentCategory] || {};
-            const wordKey = card.fi.split('/')[0].trim();
-            const iconSvg = categoryIcons[card.fi] || categoryIcons[wordKey] || categoryIcons['default'] || svgIcons['default'];
-
-            document.getElementById('cardSvg').innerHTML = iconSvg;
             document.getElementById('cardWord').textContent = card.fi;
             document.getElementById('cardCategory').textContent = currentCategory;
             document.getElementById('cardTranslation').textContent = card.zh;
-            document.getElementById('cardEtymology').textContent = card.etymology;
+            document.getElementById('cardEtymology').textContent = `构词法: ${card.etymology}`;
             
             document.getElementById('progressInfo').textContent = `第 ${currentIndex + 1} / ${currentCards.length} 张`;
             
@@ -853,25 +945,25 @@
             
             document.getElementById('prevBtn').disabled = currentIndex === 0;
             document.getElementById('nextBtn').disabled = currentIndex === currentCards.length - 1;
+            
+            // --- 功能改进：自动发音 ---
+            triggerSpeech(card.fi);
         }
-
-        function speakWord(event) {
-            event.stopPropagation();
-            
-            const word = document.getElementById('cardWord').textContent.split('/')[0].trim();
+        
+        // --- 新增：重构的核心发音函数 ---
+        function triggerSpeech(text) {
             const button = document.getElementById('ttsButton');
-            
-            if (speechSynthesis.speaking) {
-                speechSynthesis.cancel();
-                return;
-            }
+            const wordToSpeak = text.split('/')[0].trim().replace(/[\(\)!]/g, '');
 
             if (!('speechSynthesis' in window)) {
-                alert('您的浏览器不支持语音合成功能。');
+                console.warn('Speech synthesis not supported.');
                 return;
             }
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
 
-            currentSpeech = new SpeechSynthesisUtterance(word);
+            currentSpeech = new SpeechSynthesisUtterance(wordToSpeak);
             currentSpeech.lang = 'fi-FI';
             currentSpeech.rate = 0.9;
 
@@ -884,37 +976,35 @@
                 button.classList.remove('speaking');
                 currentSpeech = null;
             };
-            
-            // --- 主要修改 ---
-            // 修改了onerror处理逻辑
             currentSpeech.onerror = (e) => {
-                // 如果错误是 'interrupted'，说明是用户主动切换卡片或停止播放，这是正常行为，不应弹窗。
-                if (e.error === 'interrupted') {
-                    console.log('语音播放被正常中断。');
-                } else {
-                    // 对于其他真正的错误，才进行提示。
-                    console.error('语音合成错误:', e.error);
-                    alert(`语音播放失败: ${e.error}。\n请检查您的网络连接或浏览器是否支持芬兰语TTS。`);
+                if (e.error !== 'interrupted') {
+                     console.error('语音合成错误:', e.error);
                 }
-                // 统一清理UI状态
                 button.textContent = '🔊';
                 button.classList.remove('speaking');
             };
-            // --- 修改结束 ---
 
             speechSynthesis.speak(currentSpeech);
         }
 
+        // --- 修改：手动播放按钮的事件处理函数 ---
+        function speakWordManually(event) {
+            event.stopPropagation(); // 防止点击按钮时卡片翻转
+            const word = document.getElementById('cardWord').textContent;
+            triggerSpeech(word);
+        }
+
         function addEventListeners() {
             categoryGrid.addEventListener('click', (e) => {
-                if (e.target.classList.contains('category-btn')) {
-                    selectCategory(e.target.dataset.category);
+                const button = e.target.closest('.category-btn');
+                if (button) {
+                    selectCategory(button.dataset.category);
                 }
             });
 
             flashCard.addEventListener('click', () => flashCard.classList.toggle('is-flipped'));
             
-            document.getElementById('ttsButton').addEventListener('click', speakWord);
+            document.getElementById('ttsButton').addEventListener('click', speakWordManually);
 
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
@@ -980,7 +1070,23 @@
             });
         }
         
-        document.addEventListener('DOMContentLoaded', init);
+        // --- 替换SVG为Emoji的逻辑 ---
+        function replaceSvgWithEmoji() {
+             const cardFront = document.querySelector('.card-front');
+             const svg = document.getElementById('cardSvg');
+             if(svg) {
+                const emojiDiv = document.createElement('div');
+                emojiDiv.id = 'cardEmoji';
+                emojiDiv.className = 'card-emoji';
+                cardFront.insertBefore(emojiDiv, svg.nextSibling);
+                svg.remove();
+             }
+        }
+
+        document.addEventListener('DOMContentLoaded', ()=> {
+            replaceSvgWithEmoji();
+            init();
+        });
 
     </script>
 </body>
