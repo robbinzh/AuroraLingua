@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主题分析：2. 自然与环境 (Luonto ja Ympäristö)</title>
+    <style>
+        :root {
+            --primary-color: #2e7d32; /* Forest green */
+            --secondary-color: #2c3e50;
+            --light-gray: #f1f8e9;
+            --border-color: #c8e6c9;
+            --card-bg: #ffffff;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.7;
+            color: #333;
+            background-color: var(--light-gray);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        .nav-box {
+            background-color: #f1f8e9;
+            border: 1px solid var(--border-color);
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+        .nav-box h2 {
+            margin-top: 0;
+            border-bottom: none;
+            font-size: 1.3em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .nav-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .nav-card {
+            display: block;
+            padding: 12px 15px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            text-decoration: none;
+            text-align: center;
+            color: var(--primary-color);
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .nav-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            color: #1b5e20;
+        }
+        .analysis-card {
+            border: 1px solid #a5d6a7;
+            padding: 25px;
+            margin-top: 40px;
+            border-radius: 8px;
+            background-color: #f9fbe7;
+            box-shadow: 0 2px 5px rgba(46, 125, 50, 0.05);
+        }
+        .analysis-card h3 { color: var(--primary-color); font-size: 1.6em; margin-top: 0; border-bottom: 2px solid #a5d6a7; padding-bottom: 10px; }
+        .analysis-card h4 { color: var(--secondary-color); font-size: 1.2em; margin-top: 25px; margin-bottom: 10px; }
+        .analysis-card table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .analysis-card th, .analysis-card td { border: 1px solid var(--border-color); padding: 12px 15px; vertical-align: top; }
+        .analysis-card th { background-color: #e8f5e8; font-weight: 600; }
+        .lyrics-table td { line-height: 1.5; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>主题分析：2. 自然与环境 (Luonto ja Ympäristö)</h1>
+
+    <!-- Quick Navigation -->
+    <div class="nav-box">
+        <h2>快速导航</h2>
+        <div class="nav-card-grid">
+            <a href="#song-11" class="nav-card">11. Hedelmäkori</a>
+            <a href="#song-24" class="nav-card">24. Marjat</a>
+            <a href="#song-26" class="nav-card">26. Hyönteiset</a>
+            <a href="#song-29" class="nav-card">29. Millainen sää</a>
+            <a href="#song-30" class="nav-card">30. Talvilaulu</a>
+            <a href="#song-31" class="nav-card">31. Neljä vuodenaikaa</a>
+            <a href="#song-47" class="nav-card">47. Suomalainen metsä</a>
+            <a href="#song-50" class="nav-card">50. Mitä kissa sanoo</a>
+            <a href="#song-57" class="nav-card">57. Kevät tuli</a>
+            <a href="#song-59" class="nav-card">59. Marjat</a>
+        </div>
+    </div>
+
+    <!-- Analysis Cards Section -->
+    <div id="analysis-cards">
+        
+        <!-- CARD 11 -->
+        <div id="song-11" class="analysis-card">
+            <h3>11. Hedelmäkori (水果篮)</h3>
+            <h4>0. 歌词对照 (Sanat ja käännös)</h4>
+            <table class="lyrics-table"><thead><tr><th style="width:50%;">芬兰语歌词 (Suomi)</th><th style="width:50%;">中文翻译 (Kiina)</th></tr></thead>
+            <tbody>
+                <tr><td>Korissa on hedelmä. Arvaatko mikä?<br>Korissa on omena. Haluatko maistaa?<br>Korissa on omena. Se on hedelmä.</td><td>篮子里有水果。你猜是什么？<br>篮子里有苹果。你想尝尝吗？<br>篮子里有苹果。它是水果。</td></tr>
+                <tr><td>Korissa on appelsiini. Haluatko maistaa?<br>Korissa on appelsiini. Se on hedelmä.</td><td>篮子里有橙子。你想尝尝吗？<br>篮子里有橙子。它是水果。</td></tr>
+                <tr><td>Korissa on banaani/päärynä/ananas/luumu/kiivi/sitruuna.</td><td>篮子里有香蕉/梨/菠萝/李子/猕猴桃/柠檬。</td></tr>
+            </tbody></table>
+            <h4>1. 歌曲主题 (Laulun teema)</h4><p>自然与环境 - 水果认知 (Luonto ja Ympäristö - Hedelmien tunnistaminen)</p>
+            <h4>2. 教学目标 (Opetuksellinen tavoite)</h4><ul><li>学习各种水果的芬兰语名称。</li><li>掌握句型 "Korissa on..." (篮子里有...)。</li><li>学习疑问句 "Arvaatko mikä?" (你猜是什么？) 和 "Haluatko maistaa?" (你想尝尝吗？)。</li><li>理解分类概念：所有这些都是 "hedelmä" (水果)。</li></ul>
+            <h4>3. 重点词汇与语法分析 (Keskeinen sanasto ja kielioppianalyysi)</h4>
+            <table><thead><tr><th>歌词中的词</th><th>词汇原型</th><th>中文翻译</th><th>语言学分析</th></tr></thead>
+            <tbody>
+                <tr><td><b>Korissa</b></td><td>kori</td><td>在篮子里</td><td><b>名词，内格 (Inessiivi, -ssa)。</b>表示"在...里面"。`kori` + `-ssa`。</td></tr>
+                <tr><td><b>hedelmä</b></td><td>hedelmä</td><td>水果</td><td><b>名词，主格。</b>芬兰语中水果的总称。</td></tr>
+                <tr><td><b>Arvaatko</b></td><td>arvata</td><td>你猜吗</td><td><b>动词，第二人称单数疑问形式。</b>`arvaat` + 疑问词尾 `-ko`。</td></tr>
+                <tr><td><b>omena</b></td><td>omena</td><td>苹果</td><td><b>名词，主格。</b>芬兰最常见的水果之一。</td></tr>
+                <tr><td><b>Haluatko</b></td><td>haluta</td><td>你想要吗</td><td><b>动词，第二人称单数疑问形式。</b>`haluat` + `-ko`。</td></tr>
+                <tr><td><b>maistaa</b></td><td>maistaa</td><td>尝味道</td><td><b>动词，不定式。</b>在"haluat maistaa"结构中使用。</td></tr>
+            </tbody></table>
+            <h4>4. 文化与应用 (Kulttuuri ja sovellus)</h4><p>这首歌介绍了芬兰常见的水果。有趣的是，歌曲中提到的许多水果（如橙子、香蕉、菠萝）实际上不在芬兰本土生长，体现了现代芬兰饮食的国际化特征。而苹果、梨等则是芬兰传统的本土水果。</p>
+        </div>
+
+        <!-- CARD 24 -->
+        <div id="song-24" class="analysis-card">
+            <h3>24. Marjat (浆果)</h3>
+            <h4>1. 歌曲主题 (Laulun teema)</h4><p>自然与环境 - 浆果认知 (Luonto ja Ympäristö - Marjojen tunnistaminen)</p>
+            <h4>2. 教学目标 (Opetuksellinen tavoite)</h4><ul><li>学习芬兰本土浆果的名称。</li><li>了解芬兰森林文化中浆果采摘的重要性。</li><li>掌握与浆果相关的动词和形容词。</li></ul>
+            <h4>3. 重点词汇与语法分析 (Keskeinen sanasto ja kielioppianalyysi)</h4>
+            <table><thead><tr><th>词汇</th><th>中文翻译</th><th>文化说明</th></tr></thead>
+            <tbody>
+                <tr><td><b>marjat</b></td><td>浆果（复数）</td><td>芬兰森林的宝贵资源，夏秋季采摘</td></tr>
+                <tr><td><b>mustikka</b></td><td>蓝莓</td><td>芬兰最常见的野生浆果</td></tr>
+                <tr><td><b>puolukka</b></td><td>越橘</td><td>芬兰传统浆果，常用于制作果酱</td></tr>
+                <tr><td><b>mansikka</b></td><td>草莓</td><td>芬兰夏季的标志性水果</td></tr>
+                <tr><td><b>lakka</b></td><td>云莓</td><td>芬兰北部特有的珍贵浆果</td></tr>
+            </tbody></table>
+            <h4>4. 文化与应用 (Kulttuuri ja sovellus)</h4><p>浆果采摘是芬兰夏季的传统活动。根据芬兰的"自然权利"(Jokamiehenoikeus)，每个人都可以在森林中自由采摘野生浆果。这首歌体现了芬兰人与自然密切联系的文化传统。</p>
+        </div>
+
+        <!-- CARD 26 -->
+        <div id="song-26" class="analysis-card">
+            <h3>26. Hyönteiset (昆虫)</h3>
+            <h4>1. 歌曲主题 (Laulun teema)</h4><p>自然与环境 - 昆虫世界 (Luonto ja Ympäristö - Hyönteismaailma)</p>
+            <h4>2. 教学目标 (Opetuksellinen tavoite)</h4><ul><li>学习常见昆虫的芬兰语名称。</li><li>了解昆虫在自然生态中的作用。</li><li>掌握描述昆虫行为的动词。</li></ul>
+            <h4>3. 重点词汇与语法分析 (Keskeinen sanasto ja kielioppianalyysi)</h4>
+            <table><thead><tr><th>词汇</th><th>中文翻译</th><th>特点描述</th></tr></thead>
+            <tbody>
+                <tr><td><b>hyönteiset</b></td><td>昆虫（复数）</td><td>小型节肢动物的总称</td></tr>
+                <tr><td><b>perhonen</b></td><td>蝴蝶</td><td>美丽的飞行昆虫</td></tr>
+                <tr><td><b>mehiläinen</b></td><td>蜜蜂</td><td>采蜜、授粉的有益昆虫</td></tr>
+                <tr><td><b>kärpänen</b></td><td>苍蝇</td><td>常见的飞行昆虫</td></tr>
+                <tr><td><b>muurahainen</b></td><td>蚂蚁</td><td>勤劳的社会性昆虫</td></tr>
+            </tbody></table>
+            <h4>4. 文化与应用 (Kulttuuri ja sovellus)</h4><p>芬兰的短暂夏季昆虫活动频繁。这首歌帮助孩子们认识身边的小生物，培养对自然的观察力和保护意识。</p>
+        </div>
+
+        <!-- CARD 29 -->
+        <div id="song-29" class="analysis-card">
+            <h3>29. Millainen sää on tänään (今天天气怎么样)</h3>
+            <h4>1. 歌曲主题 (Laulun teema)</h4><p>自然与环境 - 天气现象 (Luonto ja Ympäristö - Sääilmiöt)</p>
+            <h4>2. 教学目标 (Opetuksellinen tavoite)</h4><ul><li>学习天气相关词汇。</li><li>掌握疑问句 "Millainen sää on?" (天气怎么样？)。</li><li>学习时间副词 "tänään" (今天)。</li></ul>
+            <h4>3. 重点词汇与语法分析 (Keskeinen sanasto ja kielioppianalyysi)</h4>
+            <table><thead><tr><th>词汇</th><th>中文翻译</th><th>语法说明</th></tr></thead>
+            <tbody>
+                <tr><td><b>Millainen</b></td><td>什么样的</td><td>疑问形容词，询问性质或特征</td></tr>
+                <tr><td><b>sää</b></td><td>天气</td><td>芬兰人日常谈话的重要话题</td></tr>
+                <tr><td><b>tänään</b></td><td>今天</td><td>时间副词</td></tr>
+                <tr><td><b>aurinkoinen</b></td><td>晴朗的</td><td>形容词，来自 aurinko (太阳)</td></tr>
+                <tr><td><b>sateinen</b></td><td>下雨的</td><td>形容词，来自 sade (雨)</td></tr>
+            </tbody></table>
+            <h4>4. 文化与应用 (Kulttuuri ja sovellus)</h4><p>天气是芬兰人日常交流中最常见的话题之一。芬兰的气候变化明显，从长期的冬季到短暂但美好的夏季，天气话题反映了芬兰人对自然环境的密切关注。</p>
+        </div>
+
+        <!-- CARD 30 -->
+        <div id="song-30" class="analysis-card">
+            <h3>30. Talvilaulu (冬天的歌)</h3>
+            <h4>1. 歌曲主题 (Laulun teema)</h4><p>自然与环境 - 冬季特征 (Luonto ja Ympäristö - Talven piirteet)</p>
+            <h4>2. 教学目标 (Opetuksellinen tavoite)</h4><ul><li>学习冬季相关词汇。</li><li>了解芬兰冬季的自然现象。</li><li>掌握季节性活动的表达。</li></ul>
+            <h4>3. 重点词汇与语法分析 (Keskeinen sanasto ja kielioppianalyysi)</h4>
+            <table><thead><tr><th>词汇</th><th>中文翻译</th><th>冬季特色</th></tr></thead>
+            <tbody>
+                <tr><td><b>talvi</b></td><td>冬天</td><td>芬兰最长的季节</td></tr>
+                <tr><td><b>lumi</b></td><td>雪</td><td>芬兰冬季的标志</td></tr>
+                <tr><td><b>jää</b></td><td>冰</td><td>湖面结冰是常见现象</td></tr>
+                <tr><td><b>pakkanen</b></td><td>严寒</td><td>芬兰冬季的特征</td></tr>
+                <tr><td><b>hiihto</b></td><td>滑雪</td><td>芬兰的国民运动</td></tr>
+            </tbody></table>
+            <h4>4. 文化与应用 (Kulttuuri ja sovellus)</h4><p>冬季在芬兰持续约5-6个月。这首歌展现了芬兰人如何积极拥抱漫长的冬季，通过各种户外活动如滑雪、冰钓等来享受冬季生活。</p>
+        </div>
+
+        <!-- CARD 31 -->
+        <div id="song-31" class="analysis-card">
+            <h3>31. Neljä vuodenaikaa (四个季节)</h3>
+            <h4>1. 歌曲主题 (Laulun teema)</h4><p>自然与环境 - 季节循环 (Luonto ja Ympäristö - Vuodenaikojen kierto)</p>
+            <h4>2. 教学目标 (Opetuksellinen tavoite)</h4><ul><li>学习四个季节的芬兰语名称。</li><li>了解每个季节的特点。</li><li>掌握数词 "neljä" (四) 的用法。</li></ul>
+            <h4>3. 重点词汇与语法分析 (Keskeinen sanasto ja kielioppianalyysi)</h4>
+            <table><thead><tr><th>词汇</th><th>中文翻译</th><th>季节特征</th></tr></thead>
+            <tbody>
+                <tr><td><b>kevät</b></td><td>春天</td><td>冰雪融化，自然苏醒</td></tr>
+                <tr><td><b>kesä</b></td><td>夏天</td><td>白夜，温暖，浆果季</td></tr>
+                <tr><td><b>syksy</b></td><td>秋天</td><td>叶子变色，收获季</td></tr>
+                <tr><td><b>talvi</b></td><td>冬天</td><td>雪花，滑雪，漫长夜晚</td></tr>
+            </tbody></table>
+            <h4>4. 文化与应用 (Kulttuuri ja sovellus)</h4><p>芬兰的四季分明，每个季节都有独特的美丽和活动。这首歌帮助孩子们理解自然的循环规律，体会芬兰独特的季节文化。</p>
+        </div>
+
+        <!-- CARD 47 -->
+        <div id="song-47" class="analysis-card">
+            <h3>47. Suomalainen metsä (芬兰森林)</h3>
+            <h4>1. 歌曲主题 (Laulun teema)</h4><p>自然与环境 - 森林生态 (Luonto ja Ympäristö - Metsäekosysteemi)</p>
+            <h4>2. 教学目标 (Opetuksellinen tavoite)</h4><ul><li>了解芬兰森林的重要性。</li><li>学习森林中的动植物名称。</li><li>培养环保意识。</li></ul>
+            <h4>3. 重点词汇与语法分析 (Keskeinen sanasto ja kielioppianalyysi)</h4>
+            <table><thead><tr><th>词汇</th><th>中文翻译</th><th>森林角色</th></tr></thead>
+            <tbody>
+                <tr><td><b>metsä</b></td><td>森林</td><td>芬兰国土的70%被森林覆盖</td></tr>
+                <tr><td><b>mänty</b></td><td>松树</td><td>芬兰最常见的树种</td></tr>
+                <tr><td><b>kuusi</b></td><td>云杉</td><td>重要的林业树种</td></tr>
+                <tr><td><b>koivu</b></td><td>桦树</td><td>芬兰的国树</td></tr>
+                <tr><td><b>hirvi</b></td><td>驼鹿</td><td>芬兰森林中的大型动物</td></tr>
+            </tbody></table>
+            <h4>4. 文化与应用 (Kulttuuri ja sovellus)</h4><p>森林是芬兰文化和经济的核心。芬兰人与森林有着深厚的情感联系，森林提供木材、浆果、蘑菇，也是休闲娱乐的场所。这首歌体现了芬兰人对森林的热爱和尊重。</p>
+        </div>
+
+        <!-- CARD 50 -->
+        <div id="song-50" class="analysis-card">
+            <h3>50. Mitä kissa sanoo (猫怎么叫)</h3>
+            <h4>1. 歌曲主题 (Laulun teema)</h4><p>自然与环境 - 动物声音 (Luonto ja Ympäristö - Eläinten äänet)</p>
+            <h4>2. 教学目标 (Opetuksellinen tavoite)</h4><ul><li>学习动物名称和它们的叫声。</li><li>掌握疑问句 "Mitä X sanoo?" (X怎么叫？)。</li><li>了解动物的拟声词。</li></ul>
+            <h4>3. 重点词汇与语法分析 (Keskeinen sanasto ja kielioppianalyysi)</h4>
+            <table><thead><tr><th>动物</th><th>芬兰语叫声</th><th>中文对应</th></tr></thead>
+            <tbody>
+                <tr><td><b>kissa</b> (猫)</td><td>miau</td><td>喵</td></tr>
+                <tr><td><b>koira</b> (狗)</td><td>hau hau</td><td>汪汪</td></tr>
+                <tr><td><b>lehmä</b> (牛)</td><td>ammuu</td><td>哞</td></tr>
+                <tr><td><b>sika</b> (猪)</td><td>röh röh</td><td>哼哼</td></tr>
+                <tr><td><b>lintu</b> (鸟)</td><td>viserrä</td><td>唧唧</td></tr>
+            </tbody></table>
+            <h4>4. 文化与应用 (Kulttuuri ja sovellus)</h4><p>通过动物声音学习语言是世界各国儿童教育的共同方式。有趣的是，不同语言中对同一动物叫声的拟声词可能不同，这反映了语言的文化特性。</p>
+        </div>
+
+        <!-- CARD 57 -->
+        <div id="song-57" class="analysis-card">
+            <h3>57. Kevät tuli (春天来了)</h3>
+            <h4>1. 歌曲主题 (Laulun teema)</h4><p>自然与环境 - 春季到来 (Luonto ja Ympäristö - Kevään tulo)</p>
+            <h4>2. 教学目标 (Opetuksellinen tavoite)</h4><ul><li>学习春季现象的描述。</li><li>掌握动词 "tulla" (来) 的过去时形式。</li><li>了解芬兰春季的特征。</li></ul>
+            <h4>3. 重点词汇与语法分析 (Keskeinen sanasto ja kielioppianalyysi)</h4>
+            <table><thead><tr><th>词汇</th><th>词汇原型</th><th>语法形式</th><th>中文翻译</th></tr></thead>
+            <tbody>
+                <tr><td><b>tuli</b></td><td>tulla</td><td>过去时第三人称单数</td><td>来了</td></tr>
+                <tr><td><b>kevät</b></td><td>kevät</td><td>主格</td><td>春天</td></tr>
+                <tr><td><b>linnut</b></td><td>lintu</td><td>主格复数</td><td>鸟儿们</td></tr>
+                <tr><td><b>kukkivat</b></td><td>kukkia</td><td>现在时第三人称复数</td><td>开花</td></tr>
+            </tbody></table>
+            <h4>4. 文化与应用 (Kulttuuri ja sovellus)</h4><p>春天在芬兰是期待已久的季节，标志着漫长冬季的结束。候鸟归来、冰雪融化、花朵绽放都是春天到来的标志，这首歌捕捉了芬兰人对春天的喜悦心情。</p>
+        </div>
+
+        <!-- CARD 59 -->
+        <div id="song-59" class="analysis-card">
+            <h3>59. Marjat (浆果 - 第二版)</h3>
+            <h4>1. 歌曲主题 (Laulun teema)</h4><p>自然与环境 - 浆果采摘 (Luonto ja Ympäristö - Marjastaminen)</p>
+            <h4>2. 教学目标 (Opetuksellinen tavoite)</h4><ul><li>复习和加深浆果词汇。</li><li>学习采摘活动的相关动词。</li><li>了解浆果的营养价值和用途。</li></ul>
+            <h4>3. 重点词汇与语法分析 (Keskeinen sanasto ja kielioppianalyysi)</h4>
+            <table><thead><tr><th>活动词汇</th><th>中文翻译</th><th>语法说明</th></tr></thead>
+            <tbody>
+                <tr><td><b>poimia</b></td><td>采摘</td><td>采摘浆果的专用动词</td></tr>
+                <tr><td><b>kerätä</b></td><td>收集</td><td>收集、聚拢的动作</td></tr>
+                <tr><td><b>maistaa</b></td><td>品尝</td><td>尝试味道</td></tr>
+                <tr><td><b>syödä</b></td><td>吃</td><td>基本的饮食动词</td></tr>
+            </tbody></table>
+            <h4>4. 文化与应用 (Kulttuuri ja sovellus)</h4><p>这是第二首关于浆果的歌曲，可能更加注重采摘活动本身。浆果采摘在芬兰不仅是获取食物的方式，也是家庭活动和连接自然的重要途径。</p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html> 

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finnish Number Listening | Suomen Numerot</title>
+    <style>
+        :root {
+            --primary-color: #003580; /* Finnish Flag Blue */
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Settings Panel */
+        .panel {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            align-items: center;
+        }
+
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        select, input[type="range"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        /* Game Card */
+        .game-card {
+            background: var(--card-bg);
+            padding: 40px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .play-btn {
+            background-color: var(--primary-color);
+            color: white;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 4px 10px rgba(0,53,128,0.3);
+        }
+
+        .play-btn:hover {
+            transform: scale(1.05);
+            background-color: #002a66;
+        }
+
+        .play-btn:active {
+            transform: scale(0.95);
+        }
+
+        .play-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .input-area {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #user-input {
+            font-size: 2rem;
+            padding: 10px;
+            width: 80%;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            letter-spacing: 2px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #user-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .btn-check {
+            background-color: #27ae60;
+            color: white;
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-check:hover {
+            background-color: #219150;
+        }
+
+        /* Feedback Styles */
+        .feedback-message {
+            min-height: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .correct {
+            color: var(--success-color);
+            animation: pulse 0.5s;
+        }
+
+        .incorrect {
+            color: var(--error-color);
+            animation: shake 0.5s;
+        }
+
+        .correct-answer-display {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: -20px;
+            visibility: hidden;
+        }
+
+        /* Stats */
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 10px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>🇫🇮 Finnish Listening Challenge</h1>
+
+    <div class="container">
+        <!-- Settings Panel -->
+        <div class="panel">
+            <div class="settings-grid">
+                <div>
+                    <label for="level-select">Level (Taso):</label>
+                    <select id="level-select">
+                        <option value="1">Level 1: Basic (0-100)</option>
+                        <option value="1.5">Level 1.5: Big Numbers (100+)</option>
+                        <option value="2">Level 2: Phone Numbers</option>
+                        <option value="3">Level 3: Prices (Hinnat)</option>
+                        <option value="4">Level 4: ID/Dates (Hetu)</option>
+                        <option value="5">Level 5: Dates & Weeks (Pvm & Vko)</option>
+                        <option value="5.1">Level 5.1: Ordinals (Järjestysluvut)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="speed-range">Speed (Nopeus): <span id="speed-val">1.0</span>x</label>
+                    <input type="range" id="speed-range" min="0.5" max="1.5" step="0.1" value="1.0">
+                </div>
+            </div>
+            <div class="toggle-container">
+                <input type="checkbox" id="autoplay-check">
+                <label for="autoplay-check">Auto-play next (Automaattinen toisto)</label>
+            </div>
+        </div>
+
+        <!-- Game Card -->
+        <div class="game-card" id="game-card">
+            <div class="stats-bar">
+                <span>Streak: <b id="streak-count">0</b></span>
+                <span>Correct: <b id="correct-count">0</b></span>
+            </div>
+
+            <button class="play-btn" id="play-btn" aria-label="Play Audio">
+                🔊
+            </button>
+
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="Type what you hear..." autocomplete="off">
+                <div id="correct-answer" class="correct-answer-display">Ans: <span></span></div>
+                <div id="feedback" class="feedback-message"></div>
+                <button class="btn-check" id="check-btn">Check (Tarkista)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        const state = {
+            currentLevel: 1,
+            currentNumber: '', // The raw number/string to match
+            displayFormat: '', // How it might be formatted visually if revealed
+            speechText: '', // Text to be spoken
+            streak: 0,
+            correctTotal: 0,
+            isProcessing: false,
+            voices: []
+        };
+
+        // DOM Elements
+        const els = {
+            levelSelect: document.getElementById('level-select'),
+            speedRange: document.getElementById('speed-range'),
+            speedVal: document.getElementById('speed-val'),
+            autoplayCheck: document.getElementById('autoplay-check'),
+            playBtn: document.getElementById('play-btn'),
+            userInput: document.getElementById('user-input'),
+            checkBtn: document.getElementById('check-btn'),
+            feedback: document.getElementById('feedback'),
+            streak: document.getElementById('streak-count'),
+            correct: document.getElementById('correct-count'),
+            ansDisplay: document.getElementById('correct-answer'),
+            ansText: document.querySelector('#correct-answer span'),
+            gameCard: document.getElementById('game-card')
+        };
+
+        // 只使用浏览器TTS，不需要音频文件
+
+        // --- Init & Voice Setup ---
+        
+        function initSpeech() {
+            // Chrome needs a user interaction to load voices sometimes, or just wait
+            let voices = window.speechSynthesis.getVoices();
+            if (voices.length > 0) {
+                state.voices = voices;
+            } else {
+                window.speechSynthesis.onvoiceschanged = () => {
+                    state.voices = window.speechSynthesis.getVoices();
+                };
+            }
+        }
+
+        function speak(text) {
+            // Cancel any ongoing speech
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'fi-FI'; // Finnish
+            utterance.rate = parseFloat(els.speedRange.value);
+
+            // Try to find a specific Finnish voice if available
+            const fiVoice = state.voices.find(v => v.lang === 'fi-FI');
+            if (fiVoice) utterance.voice = fiVoice;
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // --- Game Logic ---
+
+        function generateNumber() {
+            const level = parseFloat(els.levelSelect.value); // float for 1.5
+            state.currentLevel = level;
+
+            if (level === 1) {
+                // Level 1: 0 - 100
+                const num = Math.floor(Math.random() * 101);
+                state.currentNumber = num.toString();
+                state.speechText = num.toString();
+                state.displayFormat = num.toString();
+                els.userInput.placeholder = "0 - 100";
+            
+            } else if (level === 1.5) {
+                // Level 1.5: Big Numbers (100 - 10,000)
+                // Expanded to 1,000,000 as requested, but let's mix ranges to be useful
+                const range = Math.random() > 0.5 ? 10000 : 1000000;
+                const num = Math.floor(Math.random() * range) + 100;
+                
+                state.currentNumber = num.toString();
+                state.speechText = num.toString();
+                // Format with spaces for readability: 10 000
+                state.displayFormat = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+                els.userInput.placeholder = "e.g. 1000 or 25000";
+
+            } else if (level === 2) {
+                // Level 2: Phone Numbers (Simple: 040 123 4567)
+                const prefixes = ['040', '050', '044', '045', '041'];
+                const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+                
+                // Rest: 7 digits
+                let rest = '';
+                for(let i=0; i<7; i++) {
+                    rest += Math.floor(Math.random() * 10);
+                }
+                
+                // Format: 0401234567 (raw)
+                state.currentNumber = prefix + rest;
+                
+                // Speech: Read digit by digit
+                state.speechText = state.currentNumber.split('').join(' ');
+                
+                // Display Format: 040 1234567
+                state.displayFormat = `${prefix} ${rest.substring(0,3)} ${rest.substring(3)}`;
+                els.userInput.placeholder = "e.g. 0401234567";
+
+            } else if (level === 3) {
+                // Level 3: Prices (e.g., 4,95)
+                const euro = Math.floor(Math.random() * 50); // 0-49 euros
+                // Common cents: 00, 50, 90, 95, 99, or random
+                const centsOptions = [0, 50, 90, 95, 99, Math.floor(Math.random()*100)];
+                const cent = centsOptions[Math.floor(Math.random() * centsOptions.length)];
+                
+                const centStr = cent < 10 ? '0' + cent : cent;
+                state.currentNumber = `${euro},${centStr}`; // Internal check uses comma
+                state.displayFormat = `${euro},${centStr} €`;
+                
+                // Speech variations
+                // 1. Full: "viisi euroa yhdeksänkymmentäviisi senttiä"
+                // 2. Short: "viisi yhdeksänkymmentäviisi"
+                // 3. Very Short (if cents 00): "viisi euroa"
+                
+                if (cent === 0) {
+                     state.speechText = `${euro} euroa`;
+                } else {
+                    if (Math.random() > 0.5) {
+                        state.speechText = `${euro} euroa ${cent} senttiä`;
+                    } else {
+                        state.speechText = `${euro} ${cent}`;
+                    }
+                }
+                els.userInput.placeholder = "e.g. 4,95";
+
+            } else if (level === 4) {
+                // Level 4: ID/Dates (HETU style: DDMMYY)
+                // Generate valid-ish date
+                const day = Math.floor(Math.random() * 30) + 1; // 1-30
+                const month = Math.floor(Math.random() * 12) + 1; // 1-12
+                const year = Math.floor(Math.random() * 100); // 00-99
+                
+                const dStr = day < 10 ? '0' + day : day;
+                const mStr = month < 10 ? '0' + month : month;
+                const yStr = year < 10 ? '0' + year : year;
+                
+                state.currentNumber = `${dStr}${mStr}${yStr}`;
+                state.displayFormat = `${dStr}${mStr}${yStr}-XXXX`; // Show format
+                
+                // Speech: Read in pairs (typical for IDs)
+                const speakPair = (num) => num < 10 ? `nolla ${num}` : num;
+                state.speechText = `${speakPair(day)} ${speakPair(month)} ${speakPair(year)}`;
+
+                els.userInput.placeholder = "DDMMYY (e.g. 240585)";
+
+            } else if (level === 5) {
+                // Level 5: Dates & Weeks
+                // 30% chance of Week number, 70% chance of Date
+                const isWeek = Math.random() < 0.3;
+
+                if (isWeek) {
+                    // Week 1 - 52
+                    const week = Math.floor(Math.random() * 52) + 1;
+                    state.currentNumber = week.toString();
+                    state.displayFormat = `Viikko ${week}`;
+                    state.speechText = `Viikko ${week}`;
+                    els.userInput.placeholder = "e.g. 35 (Week number)";
+                } else {
+                    // Date: "5. helmikuuta" or "24.1."
+                    const months = [
+                        'tammikuuta', 'helmikuuta', 'maaliskuuta', 'huhtikuuta', 'toukokuuta', 'kesäkuuta',
+                        'heinäkuuta', 'elokuuta', 'syyskuuta', 'lokakuuta', 'marraskuuta', 'joulukuuta'
+                    ];
+                    const monthIndex = Math.floor(Math.random() * 12);
+                    const day = Math.floor(Math.random() * 30) + 1;
+                    
+                    const monthName = months[monthIndex];
+                    
+                    // Input target: "5.2" or "5.2."
+                    state.currentNumber = `${day}.${monthIndex + 1}`;
+                    
+                    // Display: 5. helmikuuta
+                    state.displayFormat = `${day}. ${monthName}`;
+                    
+                    // Speech: "Viides helmikuuta" (TTS handles "5." as ordinal usually)
+                    // Explicitly writing ordinal form for TTS can be safer, but "5." often works.
+                    // Let's try the simple "5. helmikuuta" first.
+                    state.speechText = `${day}. ${monthName}`; 
+                    
+                    els.userInput.placeholder = "D.M (e.g. 5.2)";
+                }
+
+            } else if (level === 5.1) {
+                // Level 5.1: Ordinals (1st - 100th)
+                const num = Math.floor(Math.random() * 100) + 1;
+                
+                // Target: Just the number "5" is fine for input
+                state.currentNumber = num.toString();
+                
+                // Display: "5."
+                state.displayFormat = `${num}.`;
+                
+                // Speech: "5." (TTS reads as viides)
+                state.speechText = `${num}.`;
+                
+                els.userInput.placeholder = "e.g. 17 (for 17.)";
+            }
+        }
+
+        function startRound() {
+            // Reset UI for new round
+            els.userInput.value = '';
+            els.userInput.disabled = false;
+            els.userInput.focus();
+            els.feedback.textContent = '';
+            els.feedback.className = 'feedback-message';
+            els.ansDisplay.style.visibility = 'hidden';
+            els.checkBtn.textContent = "Check (Tarkista)";
+            els.gameCard.style.backgroundColor = 'var(--card-bg)';
+            state.isProcessing = false;
+
+            // Generate and Speak
+            generateNumber();
+            speak(state.speechText);
+        }
+
+        function checkAnswer() {
+            if (state.isProcessing) {
+                // If we are in "Next" mode (button says Next)
+                startRound();
+                return;
+            }
+
+            let input = els.userInput.value.trim();
+            let target = state.currentNumber.toString();
+
+            // Normalization
+            if (state.currentLevel === 3) {
+                // For prices, allow dot or comma: 4.95 -> 4,95
+                input = input.replace('.', ',');
+            } else if (state.currentLevel === 5) {
+                // Dates: "5.2." should match "5.2"
+                // Remove trailing dot if exists
+                if (input.endsWith('.')) {
+                    input = input.slice(0, -1);
+                }
+            }
+            
+            // Remove all spaces for comparison (e.g. 10 000 -> 10000, 040 123 -> 040123)
+            input = input.replace(/\s+/g, '');
+            target = target.replace(/\s+/g, '');
+
+            if (input === target) {
+                // Correct
+                handleSuccess();
+            } else {
+                // Incorrect
+                handleFail();
+            }
+        }
+
+        function handleSuccess() {
+            state.isProcessing = true; // Block input until next round
+            state.streak++;
+            state.correctTotal++;
+            updateStats();
+            
+            els.feedback.textContent = "Oikein! (Correct)";
+            els.feedback.classList.add('correct');
+            els.gameCard.style.backgroundColor = '#e8f8f5'; // Light green bg
+
+            els.checkBtn.textContent = "Next (Seuraava)";
+
+            // Auto-play logic
+            if (els.autoplayCheck.checked) {
+                setTimeout(startRound, 1500);
+            } else {
+                els.checkBtn.focus(); // Focus button so Enter works
+            }
+        }
+
+        function handleFail() {
+            state.streak = 0;
+            updateStats();
+
+            els.feedback.textContent = "Väärin (Wrong). Try again!";
+            els.feedback.classList.add('incorrect');
+
+            // Reveal answer logic? Or just let them retry.
+            // Let's reveal if they fail for learning.
+            state.isProcessing = true;
+            els.ansText.textContent = state.displayFormat;
+            els.ansDisplay.style.visibility = 'visible';
+
+            els.checkBtn.textContent = "Next (Seuraava)";
+            els.userInput.disabled = true; // Stop them from editing after fail to force look at answer
+            
+            if (els.autoplayCheck.checked) {
+                setTimeout(startRound, 3000); // Longer pause to see answer
+            } else {
+                els.checkBtn.focus();
+            }
+        }
+
+        function updateStats() {
+            els.streak.textContent = state.streak;
+            els.correct.textContent = state.correctTotal;
+        }
+
+        // --- Event Listeners ---
+
+        els.playBtn.addEventListener('click', () => {
+            if(!state.speechText) return;
+            speak(state.speechText);
+            els.userInput.focus();
+        });
+
+        els.checkBtn.addEventListener('click', checkAnswer);
+
+        els.userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        els.levelSelect.addEventListener('change', () => {
+            state.streak = 0;
+            updateStats();
+            startRound();
+        });
+
+        els.speedRange.addEventListener('input', (e) => {
+            els.speedVal.textContent = e.target.value;
+        });
+
+        // Initialize
+        initSpeech();
+        // Start first round on load? Or wait for user?
+        // Browsers block audio context until interaction usually.
+        // Let's wait for a click or start automatically but know it might fail silent.
+        // Better: Show a "Start" overlay or just let them click Play/Check.
+        // We will generate the first number but NOT speak it until they click Play or focus.
+        generateNumber();
+        // Hint text
+        els.feedback.textContent = "Press Play to hear the number!";
+
+    </script>
+</body>
+</html>

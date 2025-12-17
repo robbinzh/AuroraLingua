@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主题分析：1. 日常生活与活动 (Arki ja Toiminta)</title>
+    <style>
+        :root {
+            --primary-blue: #0077c8;
+            --secondary-blue: #e3f2fd;
+            --accent-orange: #ff9800;
+            --success-green: #4caf50;
+            --text-dark: #2c3e50;
+            --text-light: #666;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --shadow-soft: 0 8px 25px rgba(0, 119, 200, 0.1);
+            --shadow-hover: 0 12px 35px rgba(0, 119, 200, 0.15);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, var(--bg-light) 0%, #e8f4fd 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #1976d2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+            opacity: 0.3;
+        }
+
+        .header h1 {
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-breadcrumb {
+            background: var(--secondary-blue);
+            padding: 15px 30px;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .nav-breadcrumb a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .nav-breadcrumb a:hover {
+            color: #1976d2;
+        }
+
+        .nav-breadcrumb span {
+            color: var(--text-light);
+            margin: 0 10px;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--white);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 119, 200, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .nav-box {
+            background: linear-gradient(135deg, var(--secondary-blue) 0%, #f3f8ff 100%);
+            border: 1px solid #e1e8ed;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin-bottom: 40px;
+            box-shadow: 0 4px 8px rgba(0, 119, 200, 0.05);
+        }
+
+        .nav-box h2 {
+            margin-top: 0;
+            border-bottom: none;
+            font-size: 1.3em;
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .nav-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .nav-card {
+            display: block;
+            padding: 15px 18px;
+            background: var(--white);
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            color: var(--primary-blue);
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--accent-orange));
+            transform: scaleX(0);
+            transition: var(--transition);
+        }
+
+        .nav-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+            color: #1976d2;
+            border-color: var(--primary-blue);
+        }
+
+        .nav-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .analysis-card {
+            border: 1px solid #e1e8ed;
+            padding: 30px;
+            margin-bottom: 40px;
+            border-radius: var(--border-radius);
+            background: var(--white);
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .analysis-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--accent-orange));
+        }
+
+        .analysis-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .analysis-card h3 {
+            color: var(--primary-blue);
+            font-size: 1.8em;
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--secondary-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .analysis-card h3::before {
+            content: '🎵';
+            font-size: 0.8em;
+        }
+
+        .analysis-card h4 {
+            color: var(--text-dark);
+            font-size: 1.3em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background: linear-gradient(135deg, var(--secondary-blue) 0%, #f8fafc 100%);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .analysis-card table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .analysis-card th, .analysis-card td {
+            border: 1px solid #e1e8ed;
+            padding: 15px 18px;
+            vertical-align: top;
+        }
+
+        .analysis-card th {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #1976d2 100%);
+            color: white;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .analysis-card tbody tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .analysis-card tbody tr:hover {
+            background-color: var(--secondary-blue);
+            transition: var(--transition);
+        }
+
+        .lyrics-table td {
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .analysis-card ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .analysis-card li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .analysis-card p {
+            line-height: 1.7;
+            margin-top: 10px;
+            color: var(--text-dark);
+        }
+
+        .stats-bar {
+            background: linear-gradient(135deg, var(--secondary-blue) 0%, #f3f8ff 100%);
+            padding: 25px;
+            margin: 30px 0 40px 0;
+            border-radius: var(--border-radius);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            box-shadow: 0 4px 8px rgba(0, 119, 200, 0.05);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            opacity: 0;
+            visibility: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: #1976d2;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+                margin: -20px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+
+            .nav-breadcrumb {
+                padding: 15px 20px;
+            }
+            
+            .nav-card-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 12px;
+            }
+            
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+                padding: 20px;
+            }
+            
+            .analysis-card {
+                padding: 20px;
+            }
+            
+            .analysis-card h3 {
+                font-size: 1.5em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-bar {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-number {
+                font-size: 1.8rem;
+            }
+
+            .nav-card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 滚动动画 */
+        .analysis-card {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: var(--transition);
+        }
+
+        .analysis-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🎯 主题分析：日常生活与活动</h1>
+        <p>Arki ja Toiminta · 深度语言学习与文化探索</p>
+    </div>
+
+    <!-- 面包屑导航 -->
+    <div class="nav-breadcrumb">
+        <a href="song.html">🏠 主题分类总览</a>
+        <span>›</span>
+        <span>主题 1：日常生活与活动</span>
+    </div>
+
+    <div class="content">
+        <!-- 搜索功能 -->
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="搜索歌曲名称、关键词或语法点..." id="searchInput">
+            <span class="search-icon">🔍</span>
+        </div>
+
+        <!-- 统计信息 -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-number">17</span>
+                <span class="stat-label">主题歌曲</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">120+</span>
+                <span class="stat-label">重点词汇</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">8</span>
+                <span class="stat-label">语法点</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">文化融合</span>
+            </div>
+        </div>
+
+    <!-- Quick Navigation -->
+    <div class="nav-box">
+            <h2>📋 快速导航</h2>
+        <div class="nav-card-grid">
+            <a href="#song-01" class="nav-card">01. Liikutaan</a>
+            <a href="#song-02" class="nav-card">02. Rakennetaan Sampoa</a>
+            <a href="#song-07" class="nav-card">07. Liikunta on kivaa</a>
+            <a href="#song-08" class="nav-card">08. Lähdetään yhdessä</a>
+            <a href="#song-28" class="nav-card">28. Pestään puhtaaksi</a>
+            <a href="#song-33" class="nav-card">33. Rentoutuslaulu</a>
+            <a href="#song-34" class="nav-card">34. Tehdään ruokaa</a>
+            <a href="#song-35" class="nav-card">35. Mennään ulos</a>
+            <a href="#song-36" class="nav-card">36. Vessalaulu</a>
+            <a href="#song-38" class="nav-card">38. Siivotaan</a>
+            <a href="#song-41" class="nav-card">41. Askartelulaulu</a>
+            <a href="#song-46" class="nav-card">46. Ruokailu alkaa</a>
+            <a href="#song-48" class="nav-card">48. Minä osaan aamutoimet</a>
+            <a href="#song-51" class="nav-card">51. Nallen talo</a>
+            <a href="#song-52" class="nav-card">52. Puetaan</a>
+            <a href="#song-56" class="nav-card">56. Taidan olla kipeä</a>
+            <a href="#song-58" class="nav-card">58. Nallen kesäloma</a>
+        </div>
+    </div>
+
+    <!-- Analysis Cards Section -->
+    <div id="analysis-cards">
+        
+        <!-- CARD 01 -->
+        <div id="song-01" class="analysis-card">
+            <h3>01. Liikutaan (我们来活动)</h3>
+                <h4>📝 歌词对照 (Sanat ja käännös)</h4>
+            <table class="lyrics-table"><thead><tr><th style="width:50%;">芬兰语歌词 (Suomi)</th><th style="width:50%;">中文翻译 (Kiina)</th></tr></thead>
+            <tbody>
+                <tr><td>Kävellään, kävellään eteenpäin.<br>Ja suunta vaihtuu, kävellään, kävellään taaksepäin.</td><td>我们走路，我们向前走。<br>然后方向改变，我们走路，我们向后走。</td></tr>
+                <tr><td>Ryömitään, ryömitään eteenpäin.<br>Ja suunta vaihtuu, ryömitään, ryömitään taaksepäin.</td><td>我们爬行，我们向前爬。<br>然后方向改变，我们爬行，我们向后爬。</td></tr>
+                <tr><td>Kontataan, kontataan eteenpäin.<br>Ja suunta vaihtuu, kontataan, kontataan taaksepäin.</td><td>我们匍匐，我们向前匍匐。<br>然后方向改变，我们匍匐，我们向后匍匐。</td></tr>
+                <tr><td>Hypitään, hypitään eteenpäin.<br>Ja suunta vaihtuu, hypitään, hypitään taaksepäin.</td><td>我们跳跃，我们向前跳。<br>然后方向改变，我们跳跃，我们向后跳。</td></tr>
+                <tr><td>Tanssitaan, tanssitaan, tanssitaan.</td><td>我们跳舞，我们跳舞，我们跳舞。</td></tr>
+            </tbody></table>
+                <h4>🎯 歌曲主题 (Laulun teema)</h4><p>日常生活与活动 (Arki ja Toiminta)</p>
+                <h4>🎓 教学目标 (Opetuksellinen tavoite)</h4><ul><li>学习各种表示移动方式的动词 (kävellä, ryömiä, jne.)。</li><li>掌握芬兰语被动语态现在时 (passiivin preesens) 的用法。</li><li>理解并使用方向副词 `eteenpäin` (向前) 和 `taaksepäin` (向后)。</li></ul>
+                <h4>📚 重点词汇与语法分析 (Keskeinen sanasto ja kielioppianalyysi)</h4>
+            <table><thead><tr><th>歌词中的词</th><th>词汇原型</th><th>中文翻译</th><th>语言学分析</th></tr></thead>
+            <tbody>
+                    <tr><td><b>Liikutaan</b></td><td>liikkua</td><td>(我们)移动</td><td><b>动词，被动语态现在时。</b>表示一个集体的、不特指某个人的动作，常翻译为"我们来...吧"。</td></tr>
+                <tr><td><b>Kävellään</b></td><td>kävellä</td><td>(我们)走路</td><td><b>动词，被动语态现在时。</b>词干 `kävele-` + `-tään`。</td></tr>
+                <tr><td><b>eteenpäin / taaksepäin</b></td><td>eteenpäin / taaksepäin</td><td>向前 / 向后</td><td><b>方向副词。</b></td></tr>
+                <tr><td><b>suunta vaihtuu</b></td><td>suunta, vaihtua</td><td>方向改变了</td><td><b>名词+动词。</b>`suunta` (方向) + `vaihtuu` (动词`vaihtua`的第三人称单数形式)。</td></tr>
+            </tbody></table>
+                <h4>🌍 文化与应用 (Kulttuuri ja sovellus)</h4><p>典型的芬兰儿童室内活动歌曲，强调在运动和游戏中学习语言（"learning by doing"）。家长和老师可以带领孩子一边唱一边做动作，加深记忆。</p>
+        </div>
+
+        <!-- CARD 02 -->
+        <div id="song-02" class="analysis-card">
+            <h3>02. Rakennetaan Sampoa (建造桑波)</h3>
+                <h4>📝 歌词对照 (Sanat ja käännös)</h4>
+            <table class="lyrics-table"><thead><tr><th>芬兰语歌词 (Suomi)</th><th>中文翻译 (Kiina)</th></tr></thead>
+            <tbody>
+                <tr><td>Rakennetaan Sampoa, ihmekonetta.<br>Naulataan vasaralla. O-hei!</td><td>我们来建造桑波，一个神奇的机器。<br>用锤子钉钉子。哦嘿！</td></tr>
+                <tr><td>Mitataan mitalla. O-hei!</td><td>用尺子测量。哦嘿！</td></tr>
+                <tr><td>Ruuvataan meisselillä. O-hei!</td><td>用螺丝刀拧。哦嘿！</td></tr>
+                <tr><td>Liimataan liimalla. O-hei!</td><td>用胶水粘。哦嘿！</td></tr>
+                <tr><td>Porataan poralla. O-hei!</td><td>用钻头钻。哦嘿！</td></tr>
+                <tr><td>Sidotaan narulla. O-hei!</td><td>用绳子绑。哦嘿！</td></tr>
+                <tr><td>Sahataan sahalla. O-hei!</td><td>用锯子锯。哦嘿！</td></tr>
+            </tbody></table>
+                <h4>🎯 歌曲主题 (Laulun teema)</h4><p>日常生活与活动 (Arki ja Toiminta)</p>
+                <h4>🎓 教学目标 (Opetuksellinen tavoite)</h4><ul><li>学习与"建造"和"工具"相关的动词和名词。</li><li>掌握用**接格 (adessiivi, -lla/-llä)** 来表示"使用某种工具"。</li><li>继续巩固被动语态的用法。</li></ul>
+                <h4>📚 重点词汇与语法分析 (Keskeinen sanasto ja kielioppianalyysi)</h4>
+            <table><thead><tr><th>歌词中的词</th><th>词汇原型</th><th>中文翻译</th><th>语言学分析</th></tr></thead>
+            <tbody>
+                <tr><td><b>Rakennetaan</b></td><td>rakentaa</td><td>(我们)建造</td><td><b>动词，被动语态现在时。</b></td></tr>
+                <tr><td><b>Sampoa</b></td><td>Sampo</td><td>桑波</td><td><b>专有名词，部分格 (Partitiivi)。</b>`rakentaa` 的宾语常为部分格。</td></tr>
+                <tr><td><b>ihmekonetta</b></td><td>ihmekone</td><td>神奇的机器</td><td><b>名词，部分格 (Partitiivi)。</b>`ihme`(奇迹) + `kone`(机器) 的复合词。</td></tr>
+                    <tr><td><b>vasaralla</b></td><td>vasara</td><td>用锤子</td><td><b>名词，接格 (Adessiivi, -lla)。</b>表示"用...工具"。`vasara` + `-lla`。</td></tr>
+                <tr><td><b>mitalla</b></td><td>mitta</td><td>用尺子</td><td><b>名词，接格 (Adessiivi, -lla)。</b>`mitta` + `-lla`。</td></tr>
+                <tr><td><b>meisselillä</b></td><td>meisseli</td><td>用螺丝刀</td><td><b>名词，接格 (Adessiivi, -llä)。</b>`meisseli` + `-llä`。元音和谐。</td></tr>
+            </tbody></table>
+                <h4>🌍 文化与应用 (Kulttuuri ja sovellus)</h4><p>这首歌引用了芬兰民族史诗《卡勒瓦拉》(Kalevala) 中的核心宝物"桑波"(Sampo)。桑波是一个能制造财富和幸福的神奇磨盘。通过这首儿歌，孩子们不仅学习了工具词汇，还接触到了芬兰神话的基石，充满了文化想象力。</p>
+        </div>
+        
+            <!-- 更多歌曲卡片会在这里继续... -->
+            
+        </div>
+    </div>
+</div>
+
+<!-- 返回顶部按钮 -->
+<button class="back-to-top" id="backToTop">↑</button>
+
+<script>
+    // 搜索功能
+    const searchInput = document.getElementById('searchInput');
+    const analysisCards = document.querySelectorAll('.analysis-card');
+
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        analysisCards.forEach(card => {
+            const content = card.textContent.toLowerCase();
+            
+            if (content.includes(searchTerm)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+
+    // 滚动动画
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.analysis-card').forEach(card => {
+        observer.observe(card);
+    });
+
+    // 返回顶部功能
+    const backToTop = document.getElementById('backToTop');
+
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+
+    backToTop.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    // 平滑滚动到锚点
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

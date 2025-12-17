@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kielinuppu 儿歌分类 - AuroraLingua</title>
+    <style>
+        :root {
+            --primary-blue: #0077c8;
+            --secondary-blue: #e3f2fd;
+            --accent-orange: #ff9800;
+            --success-green: #4caf50;
+            --text-dark: #2c3e50;
+            --text-light: #666;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --shadow-soft: 0 8px 25px rgba(0, 119, 200, 0.1);
+            --shadow-hover: 0 12px 35px rgba(0, 119, 200, 0.15);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, var(--bg-light) 0%, #e8f4fd 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #1976d2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+            opacity: 0.3;
+        }
+
+        .header h1 {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--white);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 119, 200, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .stats-bar {
+            background: linear-gradient(135deg, var(--secondary-blue) 0%, #f3f8ff 100%);
+            padding: 25px;
+            margin: 0 0 40px 0;
+            border-radius: var(--border-radius);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            box-shadow: 0 4px 8px rgba(0, 119, 200, 0.05);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .quick-nav {
+            background: linear-gradient(135deg, var(--secondary-blue) 0%, #f3f8ff 100%);
+            border: 1px solid #e1e8ed;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin-bottom: 40px;
+            box-shadow: 0 4px 8px rgba(0, 119, 200, 0.05);
+        }
+
+        .quick-nav h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            text-align: center;
+            color: var(--text-dark);
+        }
+
+        .theme-analysis-link {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #1976d2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin: 10px auto;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-analysis-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .theme-analysis-link:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+            color: white;
+        }
+
+        .theme-analysis-link:hover::before {
+            left: 100%;
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .theme-card {
+            background: var(--white);
+            border: 1px solid #e1e8ed;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--accent-orange));
+        }
+
+        .theme-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .theme-title {
+            font-size: 1.4em;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-count {
+            background: var(--accent-orange);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .theme-description {
+            color: var(--text-light);
+            font-size: 0.95em;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .song-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .song-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9em;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .song-item:hover {
+            color: var(--primary-blue);
+            padding-left: 10px;
+        }
+
+        .song-item::before {
+            content: '🎵';
+            font-size: 0.8em;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow-soft);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .sidebar.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar h3 {
+            font-size: 1em;
+            margin-bottom: 15px;
+            color: var(--primary-blue);
+        }
+
+        .sidebar-link {
+            display: block;
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 8px 0;
+            font-size: 0.9em;
+            border-bottom: 1px solid #f0f0f0;
+            transition: var(--transition);
+        }
+
+        .sidebar-link:hover {
+            color: var(--primary-blue);
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            opacity: 0;
+            visibility: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: #1976d2;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+                margin: -20px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .theme-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+                padding: 20px;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-bar {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-number {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* 动画效果 */
+        .theme-card {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: var(--transition);
+        }
+
+        .theme-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+    <div class="header">
+        <h1>🎵 Kielinuppu 儿歌分类总览</h1>
+        <p>59首精选芬兰儿歌 · 5大主题分类 · 深度语言学习</p>
+    </div>
+
+    <div class="content">
+        <!-- 搜索功能 -->
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="搜索歌曲名称、主题或关键词..." id="searchInput">
+            <span class="search-icon">🔍</span>
+        </div>
+
+        <!-- 统计信息 -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-number">59</span>
+                <span class="stat-label">精选儿歌</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">5</span>
+                <span class="stat-label">主题分类</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">300+</span>
+                <span class="stat-label">词汇量</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">芬兰文化</span>
+            </div>
+        </div>
+
+        <!-- 快速链接 -->
+        <div class="quick-nav">
+            <h2>🚀 深度主题分析</h2>
+            <div style="text-align: center;">
+                <a href="Arki ja Toiminta.html" class="theme-analysis-link">
+                    📖 主题1：日常生活与活动 - 深度分析
+                </a>
+                <p style="margin-top: 15px; color: var(--text-light); font-size: 0.9em;">
+                    点击查看详细的歌词对照、语法分析和文化背景
+                </p>
+            </div>
+        </div>
+
+        <!-- 主题分类 -->
+        <div class="theme-grid" id="themeGrid">
+            
+            <!-- 主题 1 -->
+            <div class="theme-card" data-theme="arki">
+                <div class="theme-title">
+                    1. 日常生活与活动
+                    <span class="theme-count">17首</span>
+                </div>
+                <div class="theme-description">
+                    包含日常活动、家务、运动、出行等生活场景歌曲
+                </div>
+                <ul class="song-list">
+                    <li class="song-item" data-song="song-01">01. Liikutaan (我们来活动)</li>
+                    <li class="song-item" data-song="song-02">02. Rakennetaan Sampoa (建造桑波)</li>
+                    <li class="song-item" data-song="song-07">07. Liikunta on kivaa (运动真有趣)</li>
+                    <li class="song-item" data-song="song-08">08. Lähdetään yhdessä (我们一起出发)</li>
+                    <li class="song-item" data-song="song-28">28. Pestään puhtaaksi (洗干净)</li>
+                    <li class="song-item" data-song="song-33">33. Rentoutuslaulu (放松歌)</li>
+                    <li class="song-item" data-song="song-34">34. Tehdään ruokaa (做饭)</li>
+                    <li class="song-item" data-song="song-35">35. Mennään ulos (我们出去吧)</li>
+                    <li class="song-item" data-song="song-36">36. Vessalaulu (厕所歌)</li>
+                    <li class="song-item" data-song="song-38">38. Siivotaan (打扫)</li>
+                    <li class="song-item" data-song="song-41">41. Askartelulaulu (手工歌)</li>
+                    <li class="song-item" data-song="song-46">46. Ruokailu alkaa (开始吃饭)</li>
+                    <li class="song-item" data-song="song-48">48. Minä osaan aamutoimet (我会做早晨例行事务)</li>
+                    <li class="song-item" data-song="song-51">51. Nallen talo (泰迪熊的家)</li>
+                    <li class="song-item" data-song="song-52">52. Puetaan (穿衣服)</li>
+                    <li class="song-item" data-song="song-56">56. Taidan olla kipeä (我好像生病了)</li>
+                    <li class="song-item" data-song="song-58">58. Nallen kesäloma (泰迪熊的暑假)</li>
+                </ul>
+            </div>
+
+            <!-- 主题 2 -->
+            <div class="theme-card" data-theme="luonto">
+                <div class="theme-title">
+                    2. 自然与环境
+                    <span class="theme-count">10首</span>
+                </div>
+                <div class="theme-description">
+                    涵盖植物、动物、天气、季节等自然主题歌曲
+                </div>
+                <ul class="song-list">
+                    <li class="song-item">10. Marjassa (采浆果)</li>
+                    <li class="song-item">11. Mehiläinen (蜜蜂)</li>
+                    <li class="song-item">14. Sieni, sieni (蘑菇，蘑菇)</li>
+                    <li class="song-item">15. Talvi, kevät, kesä, syksy (冬春夏秋)</li>
+                    <li class="song-item">16. Sää muuttuu (天气变化)</li>
+                    <li class="song-item">22. Metsässä (在森林里)</li>
+                    <li class="song-item">42. Hedelmät (水果)</li>
+                    <li class="song-item">43. Eläimet (动物)</li>
+                    <li class="song-item">44. Kukat (花朵)</li>
+                    <li class="song-item">59. Pikkulintu (小鸟)</li>
+                </ul>
+            </div>
+
+            <!-- 主题 3 -->
+            <div class="theme-card" data-theme="oppiminen">
+                <div class="theme-title">
+                    3. 基础概念学习
+                    <span class="theme-count">17首</span>
+                </div>
+                <div class="theme-description">
+                    包含数字、颜色、形状、身体部位等基础学习内容
+                </div>
+                <ul class="song-list">
+                    <li class="song-item">03. Värilaulu (颜色歌)</li>
+                    <li class="song-item">04. Numerolaulu (数字歌)</li>
+                    <li class="song-item">05. Ruumiinosat (身体部位)</li>
+                    <li class="song-item">06. Viikolla on päiviä (一周有很多天)</li>
+                    <li class="song-item">09. Viikonpäivät (星期几)</li>
+                    <li class="song-item">12. Suuntalaulu (方向歌)</li>
+                    <li class="song-item">13. Kellonaika (时间)</li>
+                    <li class="song-item">17. Kuukaudet (月份)</li>
+                    <li class="song-item">18. Isoa, pientä (大的，小的)</li>
+                    <li class="song-item">20. Kuiskaten, huutaen (悄悄地，大声地)</li>
+                    <li class="song-item">23. Muodot (形状)</li>
+                    <li class="song-item">29. Aakkoset (字母表)</li>
+                    <li class="song-item">30. Luvut sadaan (数到一百)</li>
+                    <li class="song-item">31. Ääntiöt (元音)</li>
+                    <li class="song-item">45. Raha (钱)</li>
+                    <li class="song-item">53. Vasara naulat (锤子和钉子)</li>
+                    <li class="song-item">54. Vaihtoehdot (选择)</li>
+                </ul>
+            </div>
+
+            <!-- 主题 4 -->
+            <div class="theme-card" data-theme="sosiaaliset">
+                <div class="theme-title">
+                    4. 社交技能与情感
+                    <span class="theme-count">8首</span>
+                </div>
+                <div class="theme-description">
+                    培养社交能力、情感表达和人际交往的歌曲
+                </div>
+                <ul class="song-list">
+                    <li class="song-item">19. Kuunnellaan toista (倾听他人)</li>
+                    <li class="song-item">21. Olen kiva kaveri (我是好朋友)</li>
+                    <li class="song-item">24. Mukava yhdessä (一起很开心)</li>
+                    <li class="song-item">25. Jaetaan ja vuorotellaan (分享和轮流)</li>
+                    <li class="song-item">26. Rauhoittuminen (冷静下来)</li>
+                    <li class="song-item">27. Kiitos ja anteeksi (谢谢和对不起)</li>
+                    <li class="song-item">32. Tunteet (情感)</li>
+                    <li class="song-item">47. Perhe (家庭)</li>
+                </ul>
+            </div>
+
+            <!-- 主题 5 -->
+            <div class="theme-card" data-theme="yhteiskunta">
+                <div class="theme-title">
+                    5. 社会与认知
+                    <span class="theme-count">6首</span>
+                </div>
+                <div class="theme-description">
+                    涉及交通、职业、社会规则等认知概念的歌曲
+                </div>
+                <ul class="song-list">
+                    <li class="song-item">37. Liikennevalot (交通灯)</li>
+                    <li class="song-item">39. Kulkuneuvot (交通工具)</li>
+                    <li class="song-item">40. Ammattien nimet (职业名称)</li>
+                    <li class="song-item">49. Julkinen liikenne (公共交通)</li>
+                    <li class="song-item">55. Tekniikka (技术)</li>
+                    <li class="song-item">57. Kaupat (商店)</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- 快速导航侧边栏 -->
+<div class="sidebar" id="sidebar">
+    <h3>快速导航</h3>
+    <a href="#" class="sidebar-link" data-theme="arki">日常生活</a>
+    <a href="#" class="sidebar-link" data-theme="luonto">自然环境</a>
+    <a href="#" class="sidebar-link" data-theme="oppiminen">基础学习</a>
+    <a href="#" class="sidebar-link" data-theme="sosiaaliset">社交情感</a>
+    <a href="#" class="sidebar-link" data-theme="yhteiskunta">社会认知</a>
+</div>
+
+<!-- 返回顶部按钮 -->
+<button class="back-to-top" id="backToTop">↑</button>
+
+<script>
+    // 搜索功能
+    const searchInput = document.getElementById('searchInput');
+    const themeCards = document.querySelectorAll('.theme-card');
+
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        themeCards.forEach(card => {
+            const content = card.textContent.toLowerCase();
+            
+            if (content.includes(searchTerm)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+
+    // 滚动动画
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.theme-card').forEach(card => {
+        observer.observe(card);
+    });
+
+    // 侧边栏显示控制
+    const sidebar = document.getElementById('sidebar');
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            sidebar.classList.add('visible');
+        } else {
+            sidebar.classList.remove('visible');
+        }
+    });
+
+    // 侧边栏点击滚动到对应主题
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const theme = this.getAttribute('data-theme');
+            const targetCard = document.querySelector(`[data-theme="${theme}"]`);
+            if (targetCard) {
+                targetCard.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        });
+    });
+
+    // 返回顶部功能
+    const backToTop = document.getElementById('backToTop');
+
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+
+    backToTop.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    // 歌曲项目点击高亮效果
+    document.querySelectorAll('.song-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const songId = this.getAttribute('data-song');
+            
+            // 如果是主题1的歌曲，跳转到详细分析页面
+            if (songId && this.closest('[data-theme="arki"]')) {
+                window.location.href = `Arki ja Toiminta.html#${songId}`;
+                return;
+            }
+            
+            // 移除其他项目的高亮
+            document.querySelectorAll('.song-item.highlighted').forEach(highlighted => {
+                highlighted.classList.remove('highlighted');
+            });
+            
+            // 添加当前项目的高亮
+            this.classList.add('highlighted');
+            
+            // 2秒后移除高亮
+            setTimeout(() => {
+                this.classList.remove('highlighted');
+            }, 2000);
+        });
+    });
+</script>
+
+<style>
+.song-item.highlighted {
+    background: var(--secondary-blue);
+    color: var(--primary-blue);
+    font-weight: 600;
+    padding-left: 15px;
+    border-radius: 6px;
+    transform: scale(1.02);
+}
+</style>
+
+</body>
+</html>

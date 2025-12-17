@@ -904,7 +904,7 @@
         function triggerSpeech(text) {
             const button = document.getElementById('ttsButton');
             const wordToSpeak = text.split('/')[0].trim().replace(/[\(\)!]/g, '');
-
+            
             if (!('speechSynthesis' in window)) {
                 console.warn('Speech synthesis not supported.');
                 return;
@@ -929,7 +929,7 @@
             };
             currentSpeech.onerror = (e) => {
                 if (e.error !== 'interrupted') {
-                     console.error('语音合成错误:', e.error);
+                    console.error('语音合成错误:', e.error);
                 }
                 button.textContent = '🔊';
                 button.classList.remove('speaking');
