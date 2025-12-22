@@ -224,6 +224,7 @@
                         <option value="4">Level 4: ID/Dates (Hetu)</option>
                         <option value="5">Level 5: Dates & Weeks (Pvm & Vko)</option>
                         <option value="5.1">Level 5.1: Ordinals (Järjestysluvut)</option>
+                        <option value="6">Level 6: Time (Kellonaika)</option>
                     </select>
                 </div>
                 <div>
@@ -452,17 +453,72 @@
             } else if (level === 5.1) {
                 // Level 5.1: Ordinals (1st - 100th)
                 const num = Math.floor(Math.random() * 100) + 1;
-                
+
                 // Target: Just the number "5" is fine for input
                 state.currentNumber = num.toString();
-                
+
                 // Display: "5."
                 state.displayFormat = `${num}.`;
-                
+
                 // Speech: "5." (TTS reads as viides)
                 state.speechText = `${num}.`;
-                
+
                 els.userInput.placeholder = "e.g. 17 (for 17.)";
+
+            } else if (level === 6) {
+                // Level 6: Time (Kellonaika)
+                // 芬兰语时间表达规则：
+                // 整点：kello kaksi (2:00)
+                // 过点：kello kaksi yli kymmenen (2:10)
+                // 半点：puoli kolme (2:30，字面意思"半个3点")
+                // 一刻：vartti yli kaksi (2:15), vartti vaille kolme (2:45)
+                // 差点：kello kolme vaille viisi (2:55，"差5分到3点")
+
+                const hour = Math.floor(Math.random() * 24); // 0-23
+                const minute = Math.floor(Math.random() * 12) * 5; // 0, 5, 10, ..., 55 (5分钟间隔)
+
+                // 用于显示的时间（24小时制）
+                const hourStr = hour < 10 ? '0' + hour : hour;
+                const minStr = minute < 10 ? '0' + minute : minute;
+
+                // 用户输入目标（24小时制格式）
+                state.currentNumber = `${hourStr}:${minStr}`;
+                state.displayFormat = `${hourStr}:${minStr}`;
+
+                // 生成芬兰语语音文本
+                let speechText = '';
+
+                if (minute === 0) {
+                    // 整点：kello + 数字
+                    speechText = `kello ${hour}`;
+
+                } else if (minute === 15) {
+                    // 一刻过：vartti yli + 小时
+                    speechText = `vartti yli ${hour}`;
+
+                } else if (minute === 30) {
+                    // 半点：puoli + (下一个小时)
+                    const nextHour = (hour + 1) % 24;
+                    speechText = `puoli ${nextHour}`;
+
+                } else if (minute === 45) {
+                    // 差一刻：vartti vaille + (下一个小时)
+                    const nextHour = (hour + 1) % 24;
+                    speechText = `vartti vaille ${nextHour}`;
+
+                } else if (minute <= 20) {
+                    // 过点（1-20分，除了15）：kello + 小时 + yli + 分钟
+                    speechText = `kello ${hour} yli ${minute}`;
+
+                } else {
+                    // 差点（25-55分，除了30和45）：kello + (下一个小时) + vaille + (60-分钟)
+                    const nextHour = (hour + 1) % 24;
+                    const minToGo = 60 - minute;
+                    speechText = `kello ${nextHour} vaille ${minToGo}`;
+                }
+
+                state.speechText = speechText;
+                els.userInput.placeholder = "24h format (e.g. 14:30)";
             }
         }
 
