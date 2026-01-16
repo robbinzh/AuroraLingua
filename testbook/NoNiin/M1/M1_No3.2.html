@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>芬兰语精读 - 3.2 Kaisan perheen keittiössä</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap');
+
+        :root {
+            /* 厨房主题配色：融入一些温暖的色调 */
+            --primary-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            --text-gradient: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            --card-back-gradient: linear-gradient(135deg, #2d3436, #636e72);
+            --bg-color: #fdfbf7;
+            --text-color: #2d3748;
+        }
+
+        body {
+            font-family: 'Noto Sans', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            color: var(--text-color);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* 返回按钮 */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(118, 75, 162, 0.4);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a202c;
+            margin-bottom: 10px;
+            font-weight: 800;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 40px;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+        /* 卡片网格 */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1400px;
+            margin-bottom: 60px;
+        }
+
+        /* 卡片基础结构 */
+        .card {
+            background-color: transparent;
+            width: 100%;
+            height: 420px;
+            perspective: 1500px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1);
+            transform-style: preserve-3d;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-radius: 20px;
+        }
+        
+        .card:hover .card-inner {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* 卡片正反面通用 */
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        /* 卡片正面 */
+        .card-front {
+            background-color: #ffffff;
+            color: var(--text-color);
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .card-category {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+        
+        /* 分类样式 */
+        .cat-title { background-color: #e2e8f0; color: #2d3748; }
+        .cat-text { background-color: #e6fffa; color: #2c7a7b; }
+        .cat-recipe { background-color: #fffaf0; color: #dd6b20; border: 1px solid #fbd38d; }
+
+        .card-number {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #cbd5e0;
+        }
+
+        .fi-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin: 20px 0;
+            color: #2d3748;
+        }
+
+        /* 卡片背面 */
+        .card-back {
+            background: var(--card-back-gradient);
+            color: white;
+            transform: rotateY(180deg);
+            text-align: left;
+            overflow-y: auto;
+            padding-right: 18px;
+        }
+
+        .card-back::-webkit-scrollbar { width: 6px; }
+        .card-back::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); }
+        .card-back::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
+
+        .card-back h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #fab1a0; /* 暖色调标题 */
+            margin: 15px 0 5px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 4px;
+        }
+        .card-back h3:first-child { margin-top: 0; }
+
+        .chunk-box {
+            background: rgba(0,0,0,0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'Noto Sans Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            border-left: 3px solid #fab1a0;
+        }
+
+        .grammar-text, .zh-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .grammar-text strong { color: #ffeaa7; }
+        .grammar-text em { color: #81ecec; font-style: normal; text-decoration: underline; }
+
+        /* TTS 按钮 */
+        .tts-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(253, 160, 133, 0.4);
+        }
+
+        .tts-btn-small {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            color: white;
+            border: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 6px rgba(253, 160, 133, 0.3);
+        }
+
+        .tts-btn-small:hover { transform: scale(1.15); }
+        .tts-btn-small:active { transform: scale(0.9); }
+
+        .tts-btn:hover { transform: scale(1.1); }
+        .tts-btn:active { transform: scale(0.95); }
+        .tts-btn.playing { animation: pulse 1.5s infinite; background: linear-gradient(135deg, #ff9ff3 0%, #feca57 100%); }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(254, 202, 87, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(254, 202, 87, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(254, 202, 87, 0); }
+        }
+
+        .flip-hint {
+            margin-top: auto;
+            font-size: 0.8rem;
+            color: #a0aec0;
+            font-weight: 500;
+        }
+
+        /* 总结表格区域 */
+        .summary-section {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+
+        .summary-section h2 {
+            text-align: left;
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            color: #e17055;
+        }
+
+        .vocab-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        
+        .vocab-table th, .vocab-table td {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid #edf2f7;
+        }
+        
+        .vocab-table th {
+            background-color: #fff7ed;
+            color: #d35400;
+            font-weight: 700;
+        }
+        
+        .vocab-table tr:hover { background-color: #f8f9fa; }
+
+        @media (max-width: 600px) {
+            .card-container { grid-template-columns: 1fr; }
+            h1 { font-size: 1.5rem; }
+            .card { height: 480px; } /* 移动端增加高度 */
+            .summary-section { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" onclick="history.back()">
+        <span>←</span> 返回
+    </button>
+
+    <h1>3.2 Kaisan perheen keittiössä</h1>
+    <p class="subtitle">在Kaisa家的厨房里<br>学习重点：物质名词、食谱计量、形容词一致性</p>
+
+    <div class="card-container" id="cardContainer">
+        <!-- 卡片将通过 JS 动态生成 -->
+    </div>
+
+    <!-- 词汇总结区域 -->
+    <div class="summary-section">
+        <h2>长难单词语法分解 (Sanasto ja Kielioppi)</h2>
+        
+        <table class="vocab-table">
+            <thead>
+                <tr><th>单词</th><th>中文</th><th>构词法 / 原型与语法分析</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>paistamiseen</strong> <button class="tts-btn-small" onclick="speak(this, 'paistamiseen')" title="听发音">🔊</button></td>
+                    <td>用于煎/炒</td>
+                    <td><strong>原型: paistaminen</strong> (动名词)。<br>来自 paistaa (煎)。入格: nen → se + en → seen。</td>
+                </tr>
+                <tr>
+                    <td><strong>vihanneksia</strong> <button class="tts-btn-small" onclick="speak(this, 'vihanneksia')" title="听发音">🔊</button></td>
+                    <td>蔬菜(复数部分格)</td>
+                    <td><strong>原型: vihannes</strong>。<br>词根 vihannekse-。复数 i + 部分格 a。</td>
+                </tr>
+                <tr>
+                    <td><strong>jauhelihaa</strong> <button class="tts-btn-small" onclick="speak(this, 'jauhelihaa')" title="听发音">🔊</button></td>
+                    <td>肉末</td>
+                    <td><strong>原型: jauheliha</strong>。<br>jauhe (粉) + liha (肉)。物质名词部分格。</td>
+                </tr>
+                <tr>
+                    <td><strong>tuoretta</strong> <button class="tts-btn-small" onclick="speak(this, 'tuoretta')" title="听发音">🔊</button></td>
+                    <td>新鲜的</td>
+                    <td><strong>原型: tuore</strong>。<br>-e 结尾形容词，部分格加 -tta。修饰部分格名词。</td>
+                </tr>
+                <tr>
+                    <td><strong>kotimaista</strong> <button class="tts-btn-small" onclick="speak(this, 'kotimaista')" title="听发音">🔊</button></td>
+                    <td>国产的</td>
+                    <td><strong>原型: kotimainen</strong>。<br>-nen 结尾，部分格去掉 nen 加 sta。</td>
+                </tr>
+                <tr>
+                    <td><strong>retiisiä</strong> <button class="tts-btn-small" onclick="speak(this, 'retiisiä')" title="听发音">🔊</button></td>
+                    <td>小红萝卜</td>
+                    <td><strong>原型: retiisi</strong>。<br>外来词以 i 结尾，部分格加 ä。</td>
+                </tr>
+                <tr>
+                    <td><strong>kukkakaalia</strong> <button class="tts-btn-small" onclick="speak(this, 'kukkakaalia')" title="听发音">🔊</button></td>
+                    <td>花菜</td>
+                    <td><strong>原型: kukkakaali</strong>。<br>kukka (花) + kaali (卷心菜)。</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // 核心数据：包含 Markdown 中的所有句子和分析
+        const lessonData = [
+            // --- Title ---
+            {
+                fi: "Kaisan perheen keittiössä",
+                zh: "在Kaisa家的厨房里。",
+                category: "title",
+                chunks: "Kaisan perheen (Kaisa家庭的) / keittiössä (厨房里)",
+                grammar: "<strong>双重属格</strong>: Kaisan 修饰 perheen，perheen 修饰 keittiössä。<br><strong>keittiössä</strong>: 内格 (Inessiivi)，静态位置。"
+            },
+            // --- Paragraph 1 ---
+            {
+                fi: "Kello on kymmenen yli kymmenen.",
+                zh: "现在是十点十分。",
+                category: "text",
+                chunks: "Kello on / kymmenen yli kymmenen (十点过十分)",
+                grammar: "<strong>时间表达</strong>: [分钟] <em>yli</em> (超过) [小时]。"
+            },
+            {
+                fi: "Kaisa ja Sofia ovat keittiössä.",
+                zh: "Kaisa和Sofia在厨房里。",
+                category: "text",
+                chunks: "Kaisa ja Sofia / ovat (在) / keittiössä (厨房里)",
+                grammar: "<strong>ovat</strong>: 原形 olla (第三人称复数)。<br><strong>keittiö-ssä</strong>: 内格。"
+            },
+            {
+                fi: "Sofia syö leipää ja juo maitoa.",
+                zh: "Sofia正在吃面包喝牛奶。",
+                category: "text",
+                chunks: "Sofia syö (吃) / leipää (面包) / ja juo (喝) / maitoa (牛奶)",
+                grammar: "<strong>核心语法</strong>: 面包(leipä)和牛奶(maito)是物质名词，且作为持续动作的对象，必须用<strong>部分格</strong> (Partitiivi)。"
+            },
+            {
+                fi: "Sandrine tulee tänään kylään.",
+                zh: "Sandrine今天来做客。",
+                category: "text",
+                chunks: "Sandrine tulee / tänään / kylään (做客)",
+                grammar: "<strong>tulla kylään</strong>: 固定搭配'来做客'。<br>字面义'进村' (kylä + -än)。"
+            },
+            {
+                fi: "Kaisa tekee ruokaa.",
+                zh: "Kaisa正在做饭。",
+                category: "text",
+                chunks: "Kaisa tekee (做) / ruokaa (食物/饭)",
+                grammar: "<strong>ruokaa</strong>: 部分格。'做饭'是持续活动。<br><strong>tekee</strong>: 原形 <em>tehdä</em> (hd → k)。"
+            },
+            {
+                fi: "Keittiön pöydällä on liha-makaronilaatikon resepti.",
+                zh: "厨房桌子上有一份肉末通心粉的食谱。",
+                category: "text",
+                chunks: "Keittiön pöydällä on / liha-makaronilaatikon (肉末通心粉的) / resepti",
+                grammar: "<strong>pöydällä</strong>: 接格 (Adessiivi)，'在桌子上'。<br><strong>liha-makaronilaatikko</strong>: 复合词，laatikko 指烤箱菜。"
+            },
+            {
+                fi: "Kaisa tekee liha-makaronilaatikkoa.",
+                zh: "Kaisa正在做肉末通心粉。",
+                category: "text",
+                chunks: "Kaisa tekee / liha-makaronilaatikkoa",
+                grammar: "<strong>部分格</strong>: 因为正在制作中，未完成，所以用部分格 (-a)。"
+            },
+            {
+                fi: "Hellalla on kattilassa vettä.",
+                zh: "炉灶上的锅里有水。",
+                category: "text",
+                chunks: "Hellalla (炉灶上) / on / kattilassa (锅里) / vettä (水)",
+                grammar: "<strong>vettä</strong>: 原形 <em>vesi</em>。作为存在句主语的物质名词，必须用部分格。"
+            },
+            {
+                fi: "Kaisa keittää makaronit vedessä.",
+                zh: "Kaisa在水里煮通心粉。",
+                category: "text",
+                chunks: "Kaisa keittää / makaronit / vedessä (在水里)",
+                grammar: "<strong>makaronit</strong>: 复数宾格。指要把'全部准备好的'通心粉煮熟 (有界限的动作)。<br><strong>vedessä</strong>: 内格 (vesi)。"
+            },
+            {
+                fi: "Kaisa tekee myös jälkiruokaa, hedelmäsalaattia.",
+                zh: "Kaisa也在做甜点，水果沙拉。",
+                category: "text",
+                chunks: "myös jälkiruokaa (也做甜点), / hedelmäsalaattia (水果沙拉)",
+                grammar: "两个词均为<strong>部分格</strong>，作为 <em>tekee</em> (tehdä) 的宾语。"
+            },
+            
+            // --- Recipe Section ---
+            {
+                fi: "400 g makaronia",
+                zh: "400克通心粉",
+                category: "recipe",
+                chunks: "400 (neljäsataa) / grammaa / makaronia",
+                grammar: "<strong>grammaa</strong>: 度量衡单位用部分格。<br><strong>makaronia</strong>: 物质名词部分格。"
+            },
+            {
+                fi: "500 g jauhelihaa",
+                zh: "500克肉末",
+                category: "recipe",
+                chunks: "500 (viisisataa) / grammaa / jauhelihaa",
+                grammar: "<strong>jauhelihaa</strong>: 原形 <em>jauheliha</em> 的部分格。"
+            },
+            {
+                fi: "1 sipuli",
+                zh: "1个洋葱",
+                category: "recipe",
+                chunks: "yksi / sipuli",
+                grammar: "<strong>规则</strong>: 数词是 1，名词用<strong>主格单数</strong>。"
+            },
+            {
+                fi: "vähän suolaa, vähän pippuria",
+                zh: "少许盐，少许胡椒",
+                category: "recipe",
+                chunks: "vähän (一点) / suolaa, / pippuria",
+                grammar: "<strong>vähän</strong>: 不定数量词，要求后面跟部分格。"
+            },
+            {
+                fi: "3 kananmunaa",
+                zh: "3个鸡蛋",
+                category: "recipe",
+                chunks: "3 (kolme) / kananmunaa",
+                grammar: "<strong>规则</strong>: 数词大于 1，名词用<strong>部分格单数</strong>。<br>kananmuna + a。"
+            },
+            {
+                fi: "7 dl maitoa",
+                zh: "7分升牛奶",
+                category: "recipe",
+                chunks: "7 (seitsemän) / dl (desilitraa) / maitoa",
+                grammar: "<strong>dl</strong>: desilitraa (部分格)。"
+            },
+            {
+                fi: "Lihan paistamiseen: vähän voita ja paljon öljyä",
+                zh: "用于煎肉：少许黄油和大量油",
+                category: "recipe",
+                chunks: "Lihan paistamiseen (用于煎肉): / vähän voita / ja paljon öljyä",
+                grammar: "<strong>paistamiseen</strong>: 动名词入格 (用于...)。<br><strong>paljon + 部分格</strong>: paljon öljyä (很多油)。"
+            },
+
+            // --- Paragraph 2 ---
+            {
+                fi: "Lisäksi Kaisa keittää vihanneksia.",
+                zh: "此外，Kaisa还在煮蔬菜。",
+                category: "text",
+                chunks: "Lisäksi / Kaisa keittää / vihanneksia",
+                grammar: "<strong>vihanneksia</strong>: 原形 <em>vihannes</em>。<br>复数部分格 (-ksia)。"
+            },
+            {
+                fi: "Keittiön pöydällä on 4 porkkanaa, iso pala kukkakaalia ja pala parsakaalia.",
+                zh: "桌上有4根胡萝卜，一大块花菜和一块西兰花。",
+                category: "text",
+                chunks: "4 porkkanaa, / iso pala kukkakaalia / ja pala parsakaalia",
+                grammar: "<strong>4 porkkanaa</strong>: 数词+部分格。<br><strong>pala + 部分格</strong>: pala kukkakaalia (块状量词)。"
+            },
+            {
+                fi: "Kaisa tekee myös salaattia.",
+                zh: "Kaisa也做沙拉。",
+                category: "text",
+                chunks: "tekee myös / salaattia",
+                grammar: "<strong>salaattia</strong>: 原形 <em>salaatti</em> 的部分格。"
+            },
+            {
+                fi: "Tiskipöydällä on 1 tuore ruukkusalaatti, 3 tuoretta tomaattia, pala kotimaista kurkkua...",
+                zh: "洗碗台上有1颗生菜、3个新鲜番茄、一段国产黄瓜...",
+                category: "text",
+                chunks: "1 tuore ruukkusalaatti, / 3 tuoretta tomaattia, / pala kotimaista kurkkua...",
+                grammar: "<strong>重点：形容词一致性</strong><br>1. <strong>1 tuore ruukkusalaatti</strong>: 1+主格。<br>2. <strong>3 tuoretta tomaattia</strong>: 3+部分格，形容词 <em>tuore</em> 也要变部分格 <em>tuoretta</em>。<br>3. <strong>kotimaista kurkkua</strong>: 量词 pala 后接部分格，形容词同变。"
+            },
+            {
+                fi: "...pari punaista paprikaa ja 6 retiisiä.",
+                zh: "...几个红甜椒和6个小红萝卜。",
+                category: "text",
+                chunks: "pari punaista paprikaa / ja 6 retiisiä",
+                grammar: "<strong>pari (一对/几个)</strong>: 后接部分格。<br>punainen → <strong>punaista</strong>。<br>paprika → <strong>paprikaa</strong>。<br>retiisi → <strong>retiisiä</strong>。"
+            }
+        ];
+
+        // 渲染卡片
+        const container = document.getElementById('cardContainer');
+
+        lessonData.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            // 确定类别标签样式
+            let catClass = 'cat-text';
+            let catText = 'Teksti';
+            let numberDisplay = index; // 默认序号
+
+            if (item.category === 'title') {
+                catClass = 'cat-title';
+                catText = 'Otsikko';
+                numberDisplay = '★';
+            } else if (item.category === 'recipe') {
+                catClass = 'cat-recipe';
+                catText = 'Resepti';
+            }
+
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">
+                        <span class="card-number">${numberDisplay}</span>
+                        <span class="card-category ${catClass}">${catText}</span>
+                        <div class="fi-text" style="${item.fi.length > 50 ? 'font-size: 1.2rem' : ''}">${item.fi}</div>
+                        <button class="tts-btn" onclick="speak(this, '${item.fi.replace(/'/g, "\\'")}')" title="听发音">🔊</button>
+                        <div class="flip-hint">点击查看解析</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>语言组块 (Chunks)</h3>
+                        <div class="chunk-box">${item.chunks}</div>
+                        
+                        <h3>语法分析 (Kielioppi)</h3>
+                        <div class="grammar-text">${item.grammar}</div>
+                        
+                        <h3>中文翻译 (Käännös)</h3>
+                        <div class="zh-text">${item.zh}</div>
+                    </div>
+                </div>
+            `;
+
+            // 点击卡片翻转逻辑（排除按钮点击）
+            card.addEventListener('click', (e) => {
+                if (!e.target.closest('.tts-btn')) {
+                    card.classList.toggle('is-flipped');
+                }
+            });
+
+            container.appendChild(card);
+        });
+
+        // TTS 语音功能
+        let currentBtn = null;
+
+        function speak(btn, text) {
+            if (window.speechSynthesis.speaking) {
+                return;
+            }
+
+            currentBtn = btn;
+
+            // 处理食谱中的数字朗读优化
+            let textToSpeak = text;
+            // 简单的替换优化，让TTS读出单位全称
+            textToSpeak = textToSpeak.replace(/(\d+)\s?g\b/g, '$1 grammaa');
+            textToSpeak = textToSpeak.replace(/(\d+)\s?dl\b/g, '$1 desilitraa');
+
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance.lang = 'fi-FI'; // 芬兰语
+            utterance.rate = 0.85;
+
+            btn.classList.add('playing');
+            btn.textContent = '🔇';
+
+            utterance.onend = () => {
+                if (btn === currentBtn) {
+                    btn.classList.remove('playing');
+                    btn.textContent = '🔊';
+                }
+            };
+
+            utterance.onerror = (e) => {
+                console.error('TTS Error:', e);
+                if (btn === currentBtn) {
+                    btn.classList.remove('playing');
+                    btn.textContent = '🔊';
+                }
+                const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=fi`;
+                new Audio(url).play();
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+    </script>
+</body>
+</html>

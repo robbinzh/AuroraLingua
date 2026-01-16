@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>芬兰语精读 - 第三课 (Sandrinen perheen luona)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap');
+
+        :root {
+            /* 保持原有配色风格，略微调整主色调以区分课程 */
+            --primary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --card-back-gradient: linear-gradient(135deg, #2c3e50, #3498db);
+            --accent-color: #00f2fe;
+            --text-color: #2d3748;
+            --bg-color: #f0f2f5;
+        }
+
+        body {
+            font-family: 'Noto Sans', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            color: var(--text-color);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* 返回按钮 */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a202c;
+            margin-bottom: 10px;
+            font-weight: 800;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 40px;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+        /* 卡片网格 */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1400px;
+            margin-bottom: 60px;
+        }
+
+        /* 卡片基础结构 */
+        .card {
+            background-color: transparent;
+            width: 100%;
+            height: 400px; /* 略微增加高度以适应复杂的语法解释 */
+            perspective: 1500px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1);
+            transform-style: preserve-3d;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-radius: 20px;
+        }
+        
+        .card:hover .card-inner {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* 卡片正反面通用 */
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        /* 卡片正面 */
+        .card-front {
+            background-color: #ffffff;
+            color: var(--text-color);
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .card-category {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+        
+        /* 针对本课的分类样式 */
+        .cat-title { background-color: #fed7d7; color: #9b2c2c; }
+        .cat-text { background-color: #e2e8f0; color: #4a5568; }
+
+        .card-number {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #cbd5e0;
+        }
+
+        .fi-text {
+            font-size: 1.5rem; /* 稍微调小一点以防句子过长 */
+            font-weight: 700;
+            line-height: 1.4;
+            margin: 20px 0;
+            color: #2d3748;
+        }
+
+        /* 卡片背面 */
+        .card-back {
+            background: var(--card-back-gradient);
+            color: white;
+            transform: rotateY(180deg);
+            text-align: left;
+            overflow-y: auto;
+            padding-right: 18px;
+        }
+
+        .card-back::-webkit-scrollbar { width: 6px; }
+        .card-back::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); }
+        .card-back::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
+
+        .card-back h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.7);
+            margin: 15px 0 5px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 4px;
+        }
+        .card-back h3:first-child { margin-top: 0; }
+
+        .chunk-box {
+            background: rgba(0,0,0,0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'Noto Sans Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            border-left: 3px solid #63b3ed;
+        }
+
+        .grammar-text, .zh-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .grammar-text strong { color: #fbd38d; }
+        .grammar-text em { color: #90cdf4; font-style: normal; text-decoration: underline; }
+
+        /* TTS 按钮 */
+        .tts-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(79, 172, 254, 0.4);
+        }
+
+        .tts-btn-small {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 6px rgba(79, 172, 254, 0.3);
+        }
+
+        .tts-btn-small:hover { transform: scale(1.15); }
+        .tts-btn-small:active { transform: scale(0.9); }
+
+        .tts-btn:hover { transform: scale(1.1); }
+        .tts-btn:active { transform: scale(0.95); }
+        .tts-btn.playing { animation: pulse 1.5s infinite; background: linear-gradient(135deg, #f687b3 0%, #ed64a6 100%); }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(237, 100, 166, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(237, 100, 166, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(237, 100, 166, 0); }
+        }
+
+        .flip-hint {
+            margin-top: auto;
+            font-size: 0.8rem;
+            color: #a0aec0;
+            font-weight: 500;
+        }
+
+        /* 总结表格区域 */
+        .summary-section {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+
+        .summary-section h2 {
+            text-align: left;
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .vocab-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        
+        .vocab-table th, .vocab-table td {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid #edf2f7;
+        }
+        
+        .vocab-table th {
+            background-color: #f7fafc;
+            color: #4a5568;
+            font-weight: 700;
+        }
+        
+        .vocab-table tr:hover { background-color: #f8f9fa; }
+
+        @media (max-width: 600px) {
+            .card-container { grid-template-columns: 1fr; }
+            h1 { font-size: 1.5rem; }
+            .card { height: 450px; } /* 移动端增加高度以显示更多内容 */
+            .summary-section { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" onclick="history.back()">
+        <span>←</span> 返回
+    </button>
+
+    <h1>第三课：Oma maa mansikka</h1>
+    <p class="subtitle">Sandrinen perheen luona (在Sandrine家)<br>涵盖时间表达、位置格变化与购物部分格</p>
+
+    <div class="card-container" id="cardContainer">
+        <!-- 卡片将通过 JS 动态生成 -->
+    </div>
+
+    <!-- 词汇总结区域 -->
+    <div class="summary-section">
+        <h2>重点语法词汇表 (Sanasto ja Kielioppi)</h2>
+        
+        <table class="vocab-table">
+            <thead>
+                <tr><th>单词</th><th>中文</th><th>构词法 / 原型与语法分析</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>töihin</strong> <button class="tts-btn-small" onclick="speak(this, 'töihin')" title="听发音">🔊</button></td>
+                    <td>去上班/进入工作</td>
+                    <td><strong>原型: työ</strong>。复数入格。变化: yö → öi + -hin。</td>
+                </tr>
+                <tr>
+                    <td><strong>kukkakimpun</strong> <button class="tts-btn-small" onclick="speak(this, 'kukkakimpun')" title="听发音">🔊</button></td>
+                    <td>花束 (宾语)</td>
+                    <td><strong>原型: kukkakimppu</strong>。单数属格/宾格。pp → mp (强弱级)。</td>
+                </tr>
+                <tr>
+                    <td><strong>syntymäpäivä</strong> <button class="tts-btn-small" onclick="speak(this, 'syntymäpäivä')" title="听发音">🔊</button></td>
+                    <td>生日</td>
+                    <td><strong>原型: syntymäpäivä</strong>。复合词: syntymä (出生) + päivä (日子)。</td>
+                </tr>
+                <tr>
+                    <td><strong>ostamassa</strong> <button class="tts-btn-small" onclick="speak(this, 'ostamassa')" title="听发音">🔊</button></td>
+                    <td>正在买/去买</td>
+                    <td><strong>原型: ostaa</strong>。第三不定式内格 (-ma + -ssa)。常跟在 käydä 后。</td>
+                </tr>
+                <tr>
+                    <td><strong>tuliainen</strong> <button class="tts-btn-small" onclick="speak(this, 'tuliainen')" title="听发音">🔊</button></td>
+                    <td>伴手礼</td>
+                    <td><strong>原型: tuliainen</strong>。源自 tulla (来)。词尾 -inen。</td>
+                </tr>
+                <tr>
+                    <td><strong>Kaisasta</strong> <button class="tts-btn-small" onclick="speak(this, 'Kaisasta')" title="听发音">🔊</button></td>
+                    <td>Kaisa觉得...</td>
+                    <td><strong>原型: Kaisa</strong>。出格 (-sta)。用法: "Kaisasta on..." (在Kaisa看来...)。</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // 核心数据：包含 Markdown 中的所有句子和分析
+        const lessonData = [
+            // --- Title ---
+            {
+                fi: "Sandrinen perheen luona",
+                zh: "在Sandrine家 / 在Sandrine的家人那里。",
+                category: "title",
+                chunks: "Sandrinen (Sandrine的) / perheen (家庭的) / luona (那里/住处)",
+                grammar: "<strong>luona</strong>: 后置词 (Postpositio)，意为'在……那里'。要求前面的词为属格。<br><strong>Sandrinen</strong>: 专有名词属格。<br><strong>perheen</strong>: 名词 perhe 的属格。"
+            },
+            // --- Paragraph 1 ---
+            {
+                fi: "Kello on puoli yhdeksän.",
+                zh: "现在是八点半。",
+                category: "text",
+                chunks: "Kello on (钟点是) / puoli yhdeksän (八点半)",
+                grammar: "<strong>时间表达</strong>: 芬兰语的'半'是'通往下一个小时的一半'。Puoli + 下一个小时的数字。<br><strong>on</strong>: 原形 olla (是)。"
+            },
+            {
+                fi: "Sandrine, Akuri ja lapset ovat kotona.",
+                zh: "Sandrine、Akuri和孩子们都在家。",
+                category: "text",
+                chunks: "Sandrine, Akuri ja lapset / ovat (在) / kotona (家里)",
+                grammar: "<strong>lapset</strong>: 名词 lapsi (孩子) 的复数主格 (si → set)。<br><strong>kotona</strong>: 名词 koti 的埃西格/状态格 (Essiivi)，表示'在家'这一静止状态。"
+            },
+            {
+                fi: "Akuri menee kohta töihin, mutta ensin hän vie Lucienin kouluun.",
+                zh: "Akuri很快要去上班，但首先他要送Lucien去学校。",
+                category: "text",
+                chunks: "Akuri menee kohta töihin (去上班), / mutta ensin hän vie / Lucienin / kouluun (去学校)",
+                grammar: "<strong>töihin</strong>: työ 的复数入格，'去上班'。<br><strong>Lucienin</strong>: 特定宾语，加 -n。<br><strong>kouluun</strong>: koulu 的入格，表示方向'去学校里'。"
+            },
+            // --- Paragraph 2 ---
+            {
+                fi: "Sandrine ja Leslie jäävät kotiin.",
+                zh: "Sandrine和Leslie留在家里。",
+                category: "text",
+                chunks: "Sandrine ja Leslie / jäävät (留) / kotiin (在家里)",
+                grammar: "<strong>kotiin</strong>: 动词 <em>jäädä</em> (留下) 要求接地点状语的<strong>入格</strong> (Illatiivi)，因为'留下'暗示了过程的结果。<br>对比：kotona (静止), kotiin (去/留)。"
+            },
+            {
+                fi: "He syövät vielä aamupalaa.",
+                zh: "他们还在吃早餐。",
+                category: "text",
+                chunks: "He syövät (他们吃) / vielä (还在) / aamupalaa (早餐)",
+                grammar: "<strong>aamupalaa</strong>: 名词 aamupala 的<strong>部分格</strong> (Partitiivi)。<br>原因：进食是持续过程，且食物是物质名词。"
+            },
+            {
+                fi: "He menevät päivällä Kaisan luokse kylään, mutta he käyvät ensin kaupassa ostamassa ruokaa.",
+                zh: "他们白天要去Kaisa家做客，但他们先要去商店买点吃的。",
+                category: "text",
+                chunks: "He menevät päivällä Kaisan luokse kylään, / mutta he käyvät ensin kaupassa / ostamassa ruokaa.",
+                grammar: "<strong>päivällä</strong>: 接格 (Adessiivi)，时间状语。<br><strong>Kaisan luokse</strong>: '去Kaisa那里' (方向)。<br><strong>ostamassa</strong>: 第三不定式内格，跟在 käydä (去/逛) 后面，表示'去某地做某事'。"
+            },
+            // --- Paragraph 3 ---
+            {
+                fi: "Sandrine ostaa leipää, voita, makkaraa, maitoa ja teetä.",
+                zh: "Sandrine买了面包、黄油、香肠、牛奶和茶。",
+                category: "text",
+                chunks: "Sandrine ostaa / leipää, voita, makkaraa, maitoa ja teetä",
+                grammar: "<strong>重点</strong>: 所有宾语均为物质名词，必须使用<strong>部分格</strong>。<br>leipää (leipä), voita (voi), makkaraa (makkara), maitoa (maito), teetä (tee)。"
+            },
+            {
+                fi: "Lisäksi hän ostaa kukkakimpun ja pienen lahjan.",
+                zh: "此外，她还买了一束花和一个小礼物。",
+                category: "text",
+                chunks: "Lisäksi / hän ostaa / kukkakimpun / ja pienen lahjan",
+                grammar: "<strong>宾语格对比</strong>: 这里的花束和礼物是具体的、可数的单数对象。<br>使用<strong>属格形式的宾格</strong> (加 -n)。<br><strong>pienen lahjan</strong>: 形容词与名词性数格一致。"
+            },
+            {
+                fi: "Hän vie lahjan Sofialle, koska Sofialla oli viikonloppuna syntymäpäivä.",
+                zh: "她把礼物送给Sofia，因为Sofia周末过了生日。",
+                category: "text",
+                chunks: "Hän vie lahjan Sofialle (给Sofia), / koska Sofialla oli (Sofia有) / syntymäpäivä",
+                grammar: "<strong>Sofialle</strong>: 向格 (Allatiivi)，'给某人'。<br><strong>Sofialla oli</strong>: 所有格结构过去时。<br><strong>viikonloppuna</strong>: 埃西格，时间点'在周末'。"
+            },
+            {
+                fi: "Sandrine vie kukat Kaisalle.",
+                zh: "Sandrine把花送给Kaisa。",
+                category: "text",
+                chunks: "Sandrine vie / kukat (花) / Kaisalle (给Kaisa)",
+                grammar: "<strong>kukat</strong>: 复数宾格 (同主格)。<br><strong>Kaisalle</strong>: 向格，表示接收者。"
+            },
+            {
+                fi: "Kaisasta on varmaan kivaa saada pieni tuliainen.",
+                zh: "Kaisa收到小伴手礼肯定会很开心。",
+                category: "text",
+                chunks: "Kaisasta on (Kaisa觉得) / varmaan kivaa (肯定很开心) / saada pieni tuliainen",
+                grammar: "<strong>Kaisasta on...</strong>: 出格 (-sta) 表示'在某人看来'。<br><strong>kivaa</strong>: 形容词部分格，表示抽象感觉。<br><strong>tuliainen</strong>: 伴手礼。"
+            }
+        ];
+
+        // 渲染卡片
+        const container = document.getElementById('cardContainer');
+
+        lessonData.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            // 确定类别标签样式
+            const catClass = item.category === 'title' ? 'cat-title' : 'cat-text';
+            const catText = item.category === 'title' ? 'Otsikko' : 'Teksti';
+            
+            // 序号逻辑：标题不标号，正文从1开始
+            const numberDisplay = item.category === 'title' ? '★' : (index); 
+
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">
+                        <span class="card-number">${numberDisplay}</span>
+                        <span class="card-category ${catClass}">${catText}</span>
+                        <div class="fi-text">${item.fi}</div>
+                        <button class="tts-btn" onclick="speak(this, '${item.fi.replace(/'/g, "\\'")}')" title="听发音">🔊</button>
+                        <div class="flip-hint">点击查看解析</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>语言组块 (Chunks)</h3>
+                        <div class="chunk-box">${item.chunks}</div>
+                        
+                        <h3>语法分析 (Kielioppi)</h3>
+                        <div class="grammar-text">${item.grammar}</div>
+                        
+                        <h3>中文翻译 (Käännös)</h3>
+                        <div class="zh-text">${item.zh}</div>
+                    </div>
+                </div>
+            `;
+
+            // 点击卡片翻转逻辑（排除按钮点击）
+            card.addEventListener('click', (e) => {
+                if (!e.target.closest('.tts-btn')) {
+                    card.classList.toggle('is-flipped');
+                }
+            });
+
+            container.appendChild(card);
+        });
+
+        // TTS 语音功能
+        let currentBtn = null;
+
+        function speak(btn, text) {
+            if (window.speechSynthesis.speaking) {
+                return;
+            }
+
+            currentBtn = btn;
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'fi-FI'; // 芬兰语
+            utterance.rate = 0.85;
+
+            btn.classList.add('playing');
+            btn.textContent = '🔇';
+
+            utterance.onend = () => {
+                if (btn === currentBtn) {
+                    btn.classList.remove('playing');
+                    btn.textContent = '🔊';
+                }
+            };
+
+            utterance.onerror = (e) => {
+                console.error('TTS Error:', e);
+                if (btn === currentBtn) {
+                    btn.classList.remove('playing');
+                    btn.textContent = '🔊';
+                }
+                // 简单的降级方案
+                const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=fi`;
+                new Audio(url).play();
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+    </script>
+</body>
+</html>

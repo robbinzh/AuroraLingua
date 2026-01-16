@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>芬兰语精读 - 第四课 (Kaisan luona)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap');
+
+        :root {
+            /* 保持风格一致，微调配色以区分课程 (温暖的橙红色调，对应家庭聚会) */
+            --primary-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            --card-back-gradient: linear-gradient(135deg, #434343 0%, #000000 100%); /* 深色背景突出文字 */
+            --accent-color: #fda085;
+            --text-color: #2d3748;
+            --bg-color: #fff1eb;
+        }
+
+        body {
+            font-family: 'Noto Sans', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            color: var(--text-color);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* 返回按钮 */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #8fd3f4 0%, #84fab0 100%); /* 清新的绿色返回键 */
+            color: #1a202c;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a202c;
+            margin-bottom: 10px;
+            font-weight: 800;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 40px;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+        /* 卡片网格 */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1400px;
+            margin-bottom: 60px;
+        }
+
+        /* 卡片基础结构 */
+        .card {
+            background-color: transparent;
+            width: 100%;
+            height: 420px; /* 适配较长的语法解释 */
+            perspective: 1500px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1);
+            transform-style: preserve-3d;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-radius: 20px;
+        }
+        
+        .card:hover .card-inner {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* 卡片正反面通用 */
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        /* 卡片正面 */
+        .card-front {
+            background-color: #ffffff;
+            color: var(--text-color);
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .card-category {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+        
+        /* 针对本课的分类样式 */
+        .cat-title { background-color: #fed7d7; color: #9b2c2c; } /* 标题 */
+        .cat-narration { background-color: #bee3f8; color: #2c5282; } /* 旁白 */
+        .cat-dialogue { background-color: #c6f6d5; color: #276749; } /* 对话 */
+
+        .card-number {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #cbd5e0;
+        }
+
+        .fi-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin: 20px 0;
+            color: #2d3748;
+        }
+
+        .speaker-tag {
+            font-size: 0.9rem;
+            color: #718096;
+            font-weight: 600;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        /* 卡片背面 */
+        .card-back {
+            background: var(--card-back-gradient);
+            color: #e2e8f0;
+            transform: rotateY(180deg);
+            text-align: left;
+            overflow-y: auto;
+            padding-right: 18px;
+        }
+
+        .card-back::-webkit-scrollbar { width: 6px; }
+        .card-back::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); }
+        .card-back::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
+
+        .card-back h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #fda085; /* 使用主题色点缀 */
+            margin: 15px 0 5px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 4px;
+        }
+        .card-back h3:first-child { margin-top: 0; }
+
+        .chunk-box {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'Noto Sans Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            border-left: 3px solid #fda085;
+        }
+
+        .grammar-text, .zh-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .grammar-text strong { color: #81e6d9; } /* 强调色变更为青色以在深底上清晰 */
+        .grammar-text em { color: #feb2b2; font-style: normal; text-decoration: underline; }
+
+        /* TTS 按钮 */
+        .tts-btn {
+            background: var(--primary-gradient);
+            color: #fff;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(253, 160, 133, 0.4);
+        }
+
+        .tts-btn-small {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            color: #fff;
+            border: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            vertical-align: middle;
+            box-shadow: 0 2px 6px rgba(253, 160, 133, 0.3);
+        }
+
+        .tts-btn-small:hover { transform: scale(1.15); }
+        .tts-btn-small:active { transform: scale(0.9); }
+
+        .tts-btn:hover { transform: scale(1.1); }
+        .tts-btn:active { transform: scale(0.95); }
+        .tts-btn.playing { animation: pulse 1.5s infinite; background: #fff; color: #fda085; }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(253, 160, 133, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(253, 160, 133, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(253, 160, 133, 0); }
+        }
+
+        .flip-hint {
+            margin-top: auto;
+            font-size: 0.8rem;
+            color: #a0aec0;
+            font-weight: 500;
+        }
+
+        /* 总结表格区域 */
+        .summary-section {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+
+        .summary-section h2 {
+            text-align: left;
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            color: #d05b2d;
+        }
+
+        .vocab-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        
+        .vocab-table th, .vocab-table td {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid #edf2f7;
+        }
+        
+        .vocab-table th {
+            background-color: #fff5f0;
+            color: #c05621;
+            font-weight: 700;
+        }
+        
+        .vocab-table tr:hover { background-color: #fffaf0; }
+
+        @media (max-width: 600px) {
+            .card-container { grid-template-columns: 1fr; }
+            h1 { font-size: 1.5rem; }
+            .card { height: 460px; } /* 移动端高度适配 */
+            .summary-section { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" onclick="history.back()">
+        <span>←</span> 返回
+    </button>
+
+    <h1>第四课：Kaisan luona</h1>
+    <p class="subtitle">包含入格(Illatiivi)、部分格(Partitiivi)与高级 KPT 变换<br>重点：动词类型4与5、条件式</p>
+
+    <div class="card-container" id="cardContainer">
+        <!-- 卡片将通过 JS 动态生成 -->
+    </div>
+
+    <!-- 词汇总结区域 -->
+    <div class="summary-section">
+        <h2>长难芬兰语单词语法分解表 (Sanasto ja Kielioppi)</h2>
+        
+        <table class="vocab-table">
+            <thead>
+                <tr><th>单词</th><th>中文</th><th>构词法与变形解释 (Morphology & KPT)</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>soi</strong> <button class="tts-btn-small" onclick="speak(this, 'soi')" title="听发音">🔊</button></td>
+                    <td>响</td>
+                    <td><strong>原形: soida (VT2)</strong>。去掉 da → soi。无 KPT。</td>
+                </tr>
+                <tr>
+                    <td><strong>avaa</strong> <button class="tts-btn-small" onclick="speak(this, 'avaa')" title="听发音">🔊</button></td>
+                    <td>打开</td>
+                    <td><strong>原形: avata (VT4)</strong>。去掉 ta + a → avaa。注意原形里的 t 消失了。</td>
+                </tr>
+                <tr>
+                    <td><strong>oven</strong> <button class="tts-btn-small" onclick="speak(this, 'oven')" title="听发音">🔊</button></td>
+                    <td>门 (宾语)</td>
+                    <td><strong>原形: ovi</strong>。词干变化: i → e (ove-) + 宾格 -n。</td>
+                </tr>
+                <tr>
+                    <td><strong>tuliainen</strong> <button class="tts-btn-small" onclick="speak(this, 'tuliainen')" title="听发音">🔊</button></td>
+                    <td>伴手礼</td>
+                    <td><strong>-nen 名词</strong>: 主格形式。记住词干是 tuliaise-。</td>
+                </tr>
+                <tr>
+                    <td><strong>onnea</strong> <button class="tts-btn-small" onclick="speak(this, 'onnea')" title="听发音">🔊</button></td>
+                    <td>运气/快乐</td>
+                    <td><strong>原形: onni</strong>。部分格: i → e (onne-) + 部分格 -a。</td>
+                </tr>
+                <tr>
+                    <td><strong>tarvinnut</strong> <button class="tts-btn-small" onclick="speak(this, 'tarvinnut')" title="听发音">🔊</button></td>
+                    <td>需要 (分词)</td>
+                    <td><strong>原形: tarvita (VT5)</strong>。词干 tarvitse- → 过去分词后缀 -nnut。</td>
+                </tr>
+                <tr>
+                    <td><strong>kengät</strong> <button class="tts-btn-small" onclick="speak(this, 'kengät')" title="听发音">🔊</button></td>
+                    <td>鞋子 (复数)</td>
+                    <td><strong>原形: kenkä</strong>。KPT (nk > ng): 复数 -t 导致闭音节，触发弱阶 ng。</td>
+                </tr>
+                <tr>
+                    <td><strong>eteiseen</strong> <button class="tts-btn-small" onclick="speak(this, 'eteiseen')" title="听发音">🔊</button></td>
+                    <td>进门厅</td>
+                    <td><strong>原形: eteinen</strong>。入格: -nen 词干变为 -se + 入格 -en → eteiseen。</td>
+                </tr>
+                <tr>
+                    <td><strong>takin</strong> <button class="tts-btn-small" onclick="speak(this, 'takin')" title="听发音">🔊</button></td>
+                    <td>外套 (宾语)</td>
+                    <td><strong>原形: takki</strong>。KPT (kk > k): 宾格 -n 导致闭音节，触发弱阶 k。</td>
+                </tr>
+                <tr>
+                    <td><strong>naulakkoon</strong> <button class="tts-btn-small" onclick="speak(this, 'naulakkoon')" title="听发音">🔊</button></td>
+                    <td>进衣架</td>
+                    <td><strong>入格例外!</strong> 入格 (Illatiivi) 不发生 KPT 变化，<strong>保留强阶 kk</strong>。</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // 核心数据：包含 Markdown 中的所有句子和分析
+        const lessonData = [
+            // --- Title ---
+            {
+                speaker: "",
+                fi: "Kaisan luona",
+                zh: "在 Kaisa 家",
+                category: "title",
+                chunks: "Kaisan (Kaisa的) / luona (那里/住处)",
+                grammar: "<strong>luona</strong>: 后置词，表示<strong>静态</strong>的位置。要求前面的词用属格 (-n)。<br>对比：luokse (去...那里，动态)。"
+            },
+            // --- Intro ---
+            {
+                speaker: "",
+                fi: "Kello 12.15 ovikello soi.",
+                zh: "12点15分，门铃响了。",
+                category: "narration",
+                chunks: "Kello 12.15 / ovikello (门铃) / soi (响)",
+                grammar: "<strong>ovikello</strong>: 复合词 ovi + kello。<br><strong>soi</strong>: 动词类型 2 (soida)，去掉 -da 得到词干。"
+            },
+            {
+                speaker: "",
+                fi: "Kaisa avaa oven.",
+                zh: "Kaisa 打开了门。",
+                category: "narration",
+                chunks: "Kaisa / avaa (打开) / oven (门)",
+                grammar: "<strong>avaa</strong>: 动词类型 4 (avata)。KPT现象: 原形里的 <em>t</em> 在变形时消失 (avata -> avaa)。<br><strong>oven</strong>: ovi 的宾格。词干变化 i -> e (ove-n)。"
+            },
+            // --- Dialogue ---
+            {
+                speaker: "Sandrine",
+                fi: "Moi! Tässä me nyt olemme.",
+                zh: "嗨！我们到啦。",
+                category: "dialogue",
+                chunks: "Moi! / Tässä (这里) / me nyt olemme (我们现在是/到了)",
+                grammar: "<strong>Tässä</strong>: tämä (这个) 的内格。表示'在这里'。"
+            },
+            {
+                speaker: "Kaisa",
+                fi: "Moikka! Kiva juttu. Tervetuloa!",
+                zh: "嗨！真好。欢迎欢迎！",
+                category: "dialogue",
+                chunks: "Moikka! / Kiva juttu. / Tervetuloa!",
+                grammar: "<strong>juttu</strong>: 事情。这里保持强阶 tt。<br><strong>Tervetuloa</strong>: 固定表达。terve + tulo + -a (部分格)。"
+            },
+            {
+                speaker: "Sandrine",
+                fi: "Tässä on sinulle pieni tuliainen, ole hyvä.",
+                zh: "这是给你的小礼物，请收下。",
+                category: "dialogue",
+                chunks: "Tässä on / sinulle (给你) / pieni tuliainen, / ole hyvä (请/be good)",
+                grammar: "<strong>sinulle</strong>: 向格 (Allatiivi, -lle)。<br><strong>tuliainen</strong>: -nen 结尾的名词。<br><strong>ole hyvä</strong>: 递东西时的礼貌用语。"
+            },
+            {
+                speaker: "Sandrine",
+                fi: "Ja Sofialle pieni synttärilahja. Paljon onnea!",
+                zh: "还有给 Sofia 的小生日礼物。生日快乐！",
+                category: "dialogue",
+                chunks: "Ja Sofialle / pieni synttärilahja. / Paljon onnea!",
+                grammar: "<strong>Paljon</strong>: 不定量词，要求后面必须跟<strong>部分格</strong>。<br><strong>onnea</strong>: onni (运气) 的部分格 (i -> e + a)。"
+            },
+            {
+                speaker: "Kaisa",
+                fi: "Voi kiitos, mutta ei sun olisi tarvinnut tuoda mitään!",
+                zh: "噢谢谢，但你真的没必要带任何东西来的！",
+                category: "dialogue",
+                chunks: "mutta ei sun (但是不你的) / olisi tarvinnut (本需要) / tuoda mitään!",
+                grammar: "<strong>B1/B2 难点</strong>: <br><strong>olisi tarvinnut</strong>: 否定完成条件式。表示'本来不需要，但你做了'。<br><strong>ei sun</strong>: 口语 sinun，作主语。<br><strong>mitään</strong>: 否定句中宾语用部分格。"
+            },
+            {
+                speaker: "Kaisa",
+                fi: "Tämä on tosi kaunis kukkakimppu, kiitti.",
+                zh: "这花束真漂亮，谢了。",
+                category: "dialogue",
+                chunks: "Tämä on / tosi kaunis kukkakimppu, / kiitti.",
+                grammar: "<strong>kukkakimppu</strong>: 复合词。kimppu (pp) 是强阶，主格不变化。<br><strong>kiitti</strong>: 口语 kiitos。"
+            },
+            {
+                speaker: "Kaisa",
+                fi: "Sä voit jättää kengät eteiseen ja laittaa takin naulakkoon.",
+                zh: "你可以把鞋子留在玄关，把外套挂在衣架上。",
+                category: "dialogue",
+                chunks: "jättää kengät (鞋) / eteiseen (进门厅) / ja laittaa takin (外套) / naulakkoon (进衣架)",
+                grammar: "<strong>KPT 重点对比</strong>:<br>1. <strong>kengät</strong> (nk->ng): 复数 -t 导致闭音节 -> 弱阶。<br>2. <strong>takin</strong> (kk->k): 宾格 -n 导致闭音节 -> 弱阶。<br>3. <strong>naulakkoon</strong> (kk): 入格 (Illatiivi) 是例外，<strong>保持强阶！</strong>"
+            }
+        ];
+
+        // 渲染卡片
+        const container = document.getElementById('cardContainer');
+
+        lessonData.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            // 确定类别标签样式
+            let catClass = 'cat-text';
+            let catText = 'Teksti';
+            
+            if (item.category === 'title') { catClass = 'cat-title'; catText = 'Otsikko'; }
+            else if (item.category === 'narration') { catClass = 'cat-narration'; catText = 'Kertoja'; }
+            else if (item.category === 'dialogue') { catClass = 'cat-dialogue'; catText = 'Dialogi'; }
+            
+            // 序号逻辑：标题不标号
+            const numberDisplay = item.category === 'title' ? '★' : index; 
+            
+            // 说话人标签
+            const speakerHtml = item.speaker ? `<div class="speaker-tag">${item.speaker}:</div>` : '';
+
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">
+                        <span class="card-number">${numberDisplay}</span>
+                        <span class="card-category ${catClass}">${catText}</span>
+                        ${speakerHtml}
+                        <div class="fi-text">${item.fi}</div>
+                        <button class="tts-btn" onclick="speak(this, '${item.fi.replace(/'/g, "\\'")}')" title="听发音">🔊</button>
+                        <div class="flip-hint">点击查看解析</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>语言组块 (Chunks)</h3>
+                        <div class="chunk-box">${item.chunks}</div>
+                        
+                        <h3>语法分析 (Kielioppi)</h3>
+                        <div class="grammar-text">${item.grammar}</div>
+                        
+                        <h3>中文翻译 (Käännös)</h3>
+                        <div class="zh-text">${item.zh}</div>
+                    </div>
+                </div>
+            `;
+
+            // 点击卡片翻转逻辑（排除按钮点击）
+            card.addEventListener('click', (e) => {
+                if (!e.target.closest('.tts-btn')) {
+                    card.classList.toggle('is-flipped');
+                }
+            });
+
+            container.appendChild(card);
+        });
+
+        // TTS 语音功能
+        let currentBtn = null;
+
+        function speak(btn, text) {
+            if (window.speechSynthesis.speaking) {
+                return;
+            }
+
+            currentBtn = btn;
+
+            // 处理特殊发音调整 (如数字)
+            let speechText = text;
+            if (text.includes("12.15")) {
+                speechText = text.replace("12.15", "kaksitoista viisitoista");
+            }
+
+            const utterance = new SpeechSynthesisUtterance(speechText);
+            utterance.lang = 'fi-FI'; // 芬兰语
+            utterance.rate = 0.85; // 适合教学的语速
+
+            btn.classList.add('playing');
+            btn.textContent = '🔇';
+
+            utterance.onend = () => {
+                if (btn === currentBtn) {
+                    btn.classList.remove('playing');
+                    btn.textContent = '🔊';
+                }
+            };
+
+            utterance.onerror = (e) => {
+                console.error('TTS Error:', e);
+                if (btn === currentBtn) {
+                    btn.classList.remove('playing');
+                    btn.textContent = '🔊';
+                }
+                // 降级方案
+                const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=fi`;
+                new Audio(url).play();
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>芬兰语精读 - 第四课 (Kaisan luona - jatkuu)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap');
+
+        :root {
+            /* 暖色调风格，配合“家”的主题 */
+            --primary-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            --card-back-gradient: linear-gradient(135deg, #434343 0%, #000000 100%); /* 深色背景突出文字 */
+            --accent-color: #fda085;
+            --text-color: #2d3748;
+            --bg-color: #fff1eb;
+        }
+
+        body {
+            font-family: 'Noto Sans', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            color: var(--text-color);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* 返回按钮 */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            color: #d35400;
+            border: 2px solid #fda085;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(253, 160, 133, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            background: #fda085;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #d35400;
+            margin-bottom: 10px;
+            font-weight: 800;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #e67e22;
+            margin-bottom: 40px;
+            max-width: 600px;
+            line-height: 1.6;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        /* 卡片网格 */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1400px;
+            margin-bottom: 60px;
+        }
+
+        /* 卡片基础结构 */
+        .card {
+            background-color: transparent;
+            width: 100%;
+            height: 450px; /* 高度足够容纳详细语法 */
+            perspective: 1500px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1);
+            transform-style: preserve-3d;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-radius: 20px;
+        }
+        
+        .card:hover .card-inner {
+            box-shadow: 0 15px 35px rgba(253, 160, 133, 0.2);
+        }
+
+        .card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* 卡片正反面通用 */
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        /* 卡片正面 */
+        .card-front {
+            background-color: #ffffff;
+            color: var(--text-color);
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(253, 160, 133, 0.1);
+        }
+
+        .card-category {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        /* 不同场景的标签颜色 */
+        .cat-keittiö { background: #fff3cd; color: #856404; }
+        .cat-olohuone { background: #d1ecf1; color: #0c5460; }
+        .cat-makuuhuone { background: #f8d7da; color: #721c24; }
+        .cat-sandrine { background: #d4edda; color: #155724; }
+        .cat-title { background: #e2e3e5; color: #383d41; }
+
+        .card-number {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #e2e8f0;
+        }
+
+        .fi-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1.45;
+            margin: 20px 0;
+            color: #2d3748;
+        }
+
+        /* 卡片背面 */
+        .card-back {
+            background: var(--card-back-gradient);
+            color: #f0f0f0;
+            transform: rotateY(180deg);
+            text-align: left;
+            overflow-y: auto;
+            padding-right: 18px;
+        }
+
+        .card-back::-webkit-scrollbar { width: 6px; }
+        .card-back::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); }
+        .card-back::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
+
+        .card-back h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #fda085;
+            margin: 15px 0 5px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            padding-bottom: 4px;
+        }
+        .card-back h3:first-child { margin-top: 0; }
+
+        .chunk-box {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'Noto Sans Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            border-left: 3px solid #fda085;
+        }
+
+        .grammar-text, .zh-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .grammar-text strong { color: #f6e05e; } /* 强调色 */
+        .grammar-text em { color: #90cdf4; font-style: normal; text-decoration: underline; }
+
+        /* TTS 按钮 */
+        .tts-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(253, 160, 133, 0.5);
+        }
+
+        .tts-btn-small {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+        }
+
+        .tts-btn:hover, .tts-btn-small:hover { transform: scale(1.1); }
+        .tts-btn.playing { animation: pulse 1.5s infinite; filter: brightness(1.1); }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(253, 160, 133, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(253, 160, 133, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(253, 160, 133, 0); }
+        }
+
+        .flip-hint {
+            margin-top: auto;
+            font-size: 0.8rem;
+            color: #a0aec0;
+            font-weight: 500;
+        }
+
+        /* 总结表格区域 */
+        .summary-section {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+
+        .summary-section h2 {
+            text-align: left;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            color: #d35400;
+        }
+
+        .vocab-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+        
+        .vocab-table th, .vocab-table td {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .vocab-table th {
+            background-color: #fff8e1;
+            color: #d35400;
+            font-weight: 700;
+        }
+        
+        .vocab-table tr:hover { background-color: #fffdf5; }
+
+        @media (max-width: 600px) {
+            .card-container { grid-template-columns: 1fr; }
+            h1 { font-size: 1.5rem; }
+            .card { height: 480px; } /* 移动端增加高度 */
+            .summary-section { padding: 20px; overflow-x: auto; }
+            .vocab-table { min-width: 600px; } /* 允许横向滚动 */
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" onclick="history.back()">
+        <span>←</span> 返回
+    </button>
+
+    <h1>第四课：Kaisan luona (jatkuu)</h1>
+    <p class="subtitle">房屋参观场景精读<br>涵盖位置格、"Minulla on" 结构及形容词用法</p>
+
+    <div class="card-container" id="cardContainer">
+        <!-- 卡片将通过 JS 动态生成 -->
+    </div>
+
+    <!-- 词汇总结区域 -->
+    <div class="summary-section">
+        <h2>重点词汇与语法深度拆解 (Sanasto ja Kielioppi)</h2>
+        <p style="margin-bottom: 20px; color: #666;">特别提示：注意 <span style="background:#ffebee; padding:2px 5px; border-radius:4px; color:#c0392b;">否定句 + 部分格</span> 以及 <span style="background:#e8f8f5; padding:2px 5px; border-radius:4px; color:#16a085;">特殊词干变化</span>。</p>
+        
+        <table class="vocab-table">
+            <thead>
+                <tr><th>单词 (文中形式)</th><th>原型</th><th>语法/变形原因</th><th>构词法分解</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>näytän</strong> <button class="tts-btn-small" onclick="speak(this, 'näytän')">🔊</button></td>
+                    <td>näyttää (VT1)</td>
+                    <td><strong>KPT (tt : t)</strong>。-n 封闭音节导致强变弱。</td>
+                    <td>näytä- + -n</td>
+                </tr>
+                <tr>
+                    <td><strong>eteisen</strong> <button class="tts-btn-small" onclick="speak(this, 'eteisen')">🔊</button></td>
+                    <td>eteinen</td>
+                    <td><strong>-nen 结尾词</strong>。词干为 -se。</td>
+                    <td>eteise- + -n</td>
+                </tr>
+                <tr>
+                    <td><strong>tuolia</strong> <button class="tts-btn-small" onclick="speak(this, 'tuolia')">🔊</button></td>
+                    <td>tuoli</td>
+                    <td><strong>部分格</strong>。数字 (6) 后必须用部分格。</td>
+                    <td>tuoli- + -a</td>
+                </tr>
+                <tr>
+                    <td><strong>katsoa</strong> <button class="tts-btn-small" onclick="speak(this, 'katsoa')">🔊</button></td>
+                    <td>katsoa (VT1)</td>
+                    <td><strong>动词原形</strong>。句型 On kiva + 原形。</td>
+                    <td>katso- + -a</td>
+                </tr>
+                <tr>
+                    <td><strong>työhuonetta</strong> <button class="tts-btn-small" onclick="speak(this, 'työhuonetta')">🔊</button></td>
+                    <td>työhuone</td>
+                    <td><strong>部分格</strong>。否定句 Ei ole。-e 词加 -tta。</td>
+                    <td>työhuone- + -tta</td>
+                </tr>
+                <tr>
+                    <td><strong>perheelle</strong> <button class="tts-btn-small" onclick="speak(this, 'perheelle')">🔊</button></td>
+                    <td>perhe</td>
+                    <td><strong>向格</strong>。-e 结尾词，词干延长为 ee。</td>
+                    <td>perhee- + -lle</td>
+                </tr>
+                <tr>
+                    <td><strong>saada</strong> <button class="tts-btn-small" onclick="speak(this, 'saada')">🔊</button></td>
+                    <td>saada (VT2)</td>
+                    <td><strong>动词原形</strong>。pitää 必须接原形。</td>
+                    <td>saa- + -da</td>
+                </tr>
+                <tr>
+                    <td><strong>kerroksessa</strong> <button class="tts-btn-small" onclick="speak(this, 'kerroksessa')">🔊</button></td>
+                    <td>kerros</td>
+                    <td><strong>-s 结尾词</strong>。词干变为 -kse。</td>
+                    <td>kerrokse- + -ssa</td>
+                </tr>
+                <tr>
+                    <td><strong>vanhempien</strong> <button class="tts-btn-small" onclick="speak(this, 'vanhempien')">🔊</button></td>
+                    <td>vanhemmat</td>
+                    <td><strong>复数属格</strong>。mm → mp (KPT 逆向)。</td>
+                    <td>vanhempi- + -en</td>
+                </tr>
+                <tr>
+                    <td><strong>ikkunaa</strong> <button class="tts-btn-small" onclick="speak(this, 'ikkunaa')">🔊</button></td>
+                    <td>ikkuna</td>
+                    <td><strong>部分格</strong>。否定句 Ei ole。</td>
+                    <td>ikkuna- + -a</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // 核心数据：包含21个句子的详细分析
+        const lessonData = [
+            // --- Title ---
+            {
+                fi: "Kaisan luona (jatkuu)",
+                zh: "在 Kaisa 家（续）",
+                category: "title",
+                chunks: "Kaisan luona (在Kaisa家) / jatkuu (继续)",
+                grammar: "<strong>luona</strong>: 后置词，意为“在……那里”，要求前面的词用属格。<br><strong>jatkuu</strong>: 动词 <em>jatkua</em> (继续)。"
+            },
+            // --- Keittiö ---
+            {
+                fi: "No niin. Tule, mä näytän meidän asuntoa.",
+                zh: "好了。来，我带你看一下我们的公寓。",
+                category: "keittiö",
+                chunks: "No niin. / Tule, / mä näytän / meidän asuntoa.",
+                grammar: "<strong>Tule</strong>: 祈使句 (VT3 tulla → tule)。<br><strong>näytän</strong>: VT1 <em>näyttää</em>，发生 <strong>KPT 变化 (tt → t)</strong>，因为第一人称词尾 -n 封闭了音节。<br><strong>asuntoa</strong>: 部分格，因为“展示”是一个持续过程。"
+            },
+            {
+                fi: "Tässä eteisen vieressä on keittiö.",
+                zh: "这儿玄关旁边就是厨房。",
+                category: "keittiö",
+                chunks: "Tässä / eteisen vieressä / on / keittiö.",
+                grammar: "<strong>eteisen</strong>: 名词 <em>eteinen</em> (-nen 结尾) 的属格，词干为 eteise-。<br><strong>vieressä</strong>: 后置词，要求前面用属格。"
+            },
+            {
+                fi: "Onpa se iso ja valoisa!",
+                zh: "哇，它真大，而且真亮堂！",
+                category: "keittiö",
+                chunks: "Onpa / se / iso ja valoisa!",
+                grammar: "<strong>Onpa</strong>: 动词 on + 语气词 -pa，表示感叹“哇，真是...”。<br><strong>valoisa</strong>: 形容词，明亮的。"
+            },
+            {
+                fi: "Joo. Keittiössä on ruokapöytä ja 6 tuolia.",
+                zh: "嗯。厨房里有餐桌和六把椅子。",
+                category: "keittiö",
+                chunks: "Keittiössä on / ruokapöytä / ja 6 tuolia.",
+                grammar: "<strong>Keittiössä</strong>: 内格 (Inessiivi)，在厨房里。<br><strong>6 tuolia</strong>: 数词(除1外)后必须接名词的<strong>部分格单数</strong> (tuoli → tuolia)。"
+            },
+            // --- Olohuone ---
+            {
+                fi: "Olohuone on kans aika iso.",
+                zh: "客厅也挺大的。",
+                category: "olohuone",
+                chunks: "Olohuone on / kans (也) / aika iso.",
+                grammar: "<strong>kans</strong>: 口语词，等于书面语的 <em>myös</em> 或 <em>kanssa</em>。<br><strong>aika</strong>: 副词，相当/挺。"
+            },
+            {
+                fi: "No niin on! Onpa teillä kaunis olohuone, ja tosi kiva sohva.",
+                zh: "确实是！你们家客厅真漂亮，这沙发也真不错。",
+                category: "olohuone",
+                chunks: "No niin on! / Onpa teillä / kaunis olohuone, / ja tosi kiva sohva.",
+                grammar: "<strong>teillä on</strong>: 你们有 (Minulla on 结构的变体)。<br><strong>Onpa</strong>: 感叹语气。"
+            },
+            {
+                fi: "Joo. Sohvalla on kiva katsoa televisiota.",
+                zh: "是啊。坐在沙发上看电视很舒服。",
+                category: "olohuone",
+                chunks: "Sohvalla on / kiva katsoa / televisiota.",
+                grammar: "<strong>Sohvalla</strong>: 接格 (Adessiivi)，在沙发上。<br><strong>katsoa</strong>: 动词原形，因为句型是 <em>On kiva</em> + 做某事。<br><strong>televisiota</strong>: 部分格，因为“看”是持续性动作。"
+            },
+            {
+                fi: "Olohuoneessa on myös Victorin kirjoituspöytä, koska Victorilla ei ole työhuonetta.",
+                zh: "客厅里还有 Victor 的书桌，因为 Victor 没有自己的书房。",
+                category: "olohuone",
+                chunks: "koska / Victorilla ei ole / työhuonetta.",
+                grammar: "<strong>Victorilla ei ole</strong>: 否定拥有句。<br><strong>työhuonetta</strong>: 宾语必须用<strong>部分格</strong>，因为是否定句。注意 -e 结尾词变 -tta。"
+            },
+            // --- Makuuhuone ---
+            {
+                fi: "Täällä on meidän makuuhuone.",
+                zh: "这是我们的卧室。",
+                category: "makuuhuone",
+                chunks: "Täällä on / meidän makuuhuone.",
+                grammar: "简单的主系表结构。<br><strong>Täällä</strong>: 这里 (相对较大的区域)。"
+            },
+            {
+                fi: "Ai, teidän makuuhuoneessa on myös Sofian sänky ja lelulaatikko.",
+                zh: "噢，你们卧室里还有 Sofia 的床和玩具箱啊。",
+                category: "makuuhuone",
+                chunks: "teidän makuuhuoneessa on / Sofian sänky / ja lelulaatikko.",
+                grammar: "<strong>lelulaatikko</strong>: 复合词 (玩具+箱子)。这里是主格，所以 <em>laatikko</em> 保持强阶 (kk)，没有变 k。"
+            },
+            {
+                fi: "Joo, Sofialla ei ole omaa huonetta. Meillä on vaan kaksio.",
+                zh: "是啊，Sofia 没有自己的房间。我们只有一套两居室。",
+                category: "makuuhuone",
+                chunks: "Sofialla ei ole / omaa huonetta. / Meillä on vaan kaksio.",
+                grammar: "<strong>omaa huonetta</strong>: 否定句导致形容词和名词都变成部分格。<br><strong>kaksio</strong>: 两居室公寓。"
+            },
+            {
+                fi: "Teillä on ihana asunto. Tällainen rivitaloasunto on hyvä, koska tässä on piha.",
+                zh: "你们的公寓很棒。这种联排公寓很好，因为它有个院子。",
+                category: "makuuhuone",
+                chunks: "Tällainen rivitaloasunto / on hyvä / koska tässä on piha.",
+                grammar: "<strong>rivitalo</strong>: 联排别墅/排屋。<br><strong>piha</strong>: 院子。"
+            },
+            {
+                fi: "Lapset voivat leikkiä omalla pihalla.",
+                zh: "孩子们可以在自家院子里玩。",
+                category: "makuuhuone",
+                chunks: "Lapset voivat / leikkiä / omalla pihalla.",
+                grammar: "<strong>voivat</strong>: 动词 <em>voida</em> (VT2)。<br><strong>leikkiä</strong>: VT1，强阶 kk。<br><strong>omalla pihalla</strong>: 接格，表示“在院子里”。"
+            },
+            {
+                fi: "Niin on, mutta tää kaksio on meidän perheelle vähän pieni.",
+                zh: "确实，但这套两居室对我们家来说有点小。",
+                category: "makuuhuone",
+                chunks: "tää kaksio on / meidän perheelle / vähän pieni.",
+                grammar: "<strong>tää</strong>: 口语 <em>tämä</em>。<br><strong>perheelle</strong>: 向格 (Allatiivi)，“对我们家来说”。注意 -e 结尾词的变化 (perhee-)。"
+            },
+            {
+                fi: "Meidän pitää saada uusi, isompi asunto.",
+                zh: "我们得换个新的、更大的房子。",
+                category: "makuuhuone",
+                chunks: "Meidän pitää saada / uusi, isompi asunto.",
+                grammar: "<strong>Meidän pitää</strong>: 必须结构 (Gen + pitää + 动词原形)。<br><strong>isompi</strong>: 形容词 <em>iso</em> 的比较级。"
+            },
+            {
+                fi: "Sitten Sofialla on oma huone. Millainen asunto teillä on?",
+                zh: "那样 Sofia 就能有自己的房间了。你们住什么样的公寓？",
+                category: "makuuhuone",
+                chunks: "Sitten / Sofialla on / oma huone. / Millainen asunto...?",
+                grammar: "<strong>Millainen</strong>: 疑问词“什么样的”，用于询问性质。"
+            },
+            // --- Sandrinen koti ---
+            {
+                fi: "Me asumme kerrostalossa, 3. kerroksessa.",
+                zh: "我们住在公寓楼里，在三楼。",
+                category: "sandrine",
+                chunks: "Me asumme / kerrostalossa, / 3. kerroksessa.",
+                grammar: "<strong>kerroksessa</strong>: 名词 <em>kerros</em> (-s 结尾) 的内格。词干变为 <strong>kerrokse-</strong>，再加 -ssa。"
+            },
+            {
+                fi: "Meillä on iso asunto, neljä huonetta ja keittiö.",
+                zh: "我们的公寓很大，四室一厅。",
+                category: "sandrine",
+                chunks: "neljä huonetta / ja keittiö.",
+                grammar: "<strong>neljä huonetta</strong>: 数词 4 + 部分格。"
+            },
+            {
+                fi: "Meillä on keittiö, olohuone, vanhempien makuuhuone ja kaksi lastenhuonetta.",
+                zh: "我们有厨房、客厅、主卧（父母房）和两个儿童房。",
+                category: "sandrine",
+                chunks: "vanhempien makuuhuone / ja kaksi lastenhuonetta.",
+                grammar: "<strong>vanhempien</strong>: <em>vanhemmat</em> (父母) 的复数属格。<br><strong>lastenhuonetta</strong>: 复合词 (lasten + huonetta)。"
+            },
+            {
+                fi: "Mutta meillä ei ole saunaa. Onko teillä sauna?",
+                zh: "但是我们没有桑拿。你们有桑拿吗？",
+                category: "sandrine",
+                chunks: "Mutta / meillä ei ole / saunaa.",
+                grammar: "<strong>saunaa</strong>: 部分格，由否定句 <em>ei ole</em> 触发。"
+            },
+            {
+                fi: "Joo, meillä on pieni sauna. Se on aika pimeä, koska saunassa ei ole ikkunaa.",
+                zh: "有，我们有个小桑拿。不过挺暗的，因为桑拿房里没有窗户。",
+                category: "sandrine",
+                chunks: "Se on aika pimeä, / koska saunassa / ei ole ikkunaa.",
+                grammar: "<strong>ikkunaa</strong>: <em>ikkuna</em> 的部分格 (否定句)。注意这里保持了 <strong>kk</strong> (强阶)，部分格通常保留强阶。"
+            }
+        ];
+
+        // 渲染卡片
+        const container = document.getElementById('cardContainer');
+
+        lessonData.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            // 确定类别标签样式
+            let catClass = 'cat-title';
+            let catText = 'Intro';
+            if (item.category === 'keittiö') { catClass = 'cat-keittiö'; catText = 'Keittiö'; }
+            else if (item.category === 'olohuone') { catClass = 'cat-olohuone'; catText = 'Olohuone'; }
+            else if (item.category === 'makuuhuone') { catClass = 'cat-makuuhuone'; catText = 'Makuuhuone'; }
+            else if (item.category === 'sandrine') { catClass = 'cat-sandrine'; catText = 'Sandrinen koti'; }
+            else if (item.category === 'title') { catText = 'Otsikko'; }
+
+            // 序号：标题显示星星，其他显示数字
+            const numberDisplay = item.category === 'title' ? '★' : index; 
+
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">
+                        <span class="card-number">${numberDisplay}</span>
+                        <span class="card-category ${catClass}">${catText}</span>
+                        <div class="fi-text">${item.fi}</div>
+                        <button class="tts-btn" onclick="speak(this, '${item.fi.replace(/'/g, "\\'")}')" title="听发音">🔊</button>
+                        <div class="flip-hint">点击查看解析</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>语言组块 (Chunks)</h3>
+                        <div class="chunk-box">${item.chunks}</div>
+                        
+                        <h3>语法分析 (Kielioppi)</h3>
+                        <div class="grammar-text">${item.grammar}</div>
+                        
+                        <h3>中文翻译 (Käännös)</h3>
+                        <div class="zh-text">${item.zh}</div>
+                    </div>
+                </div>
+            `;
+
+            // 点击卡片翻转逻辑（排除按钮点击）
+            card.addEventListener('click', (e) => {
+                if (!e.target.closest('.tts-btn')) {
+                    card.classList.toggle('is-flipped');
+                }
+            });
+
+            container.appendChild(card);
+        });
+
+        // TTS 语音功能
+        let currentBtn = null;
+
+        function speak(btn, text) {
+            if (window.speechSynthesis.speaking) {
+                return;
+            }
+
+            currentBtn = btn;
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'fi-FI'; // 芬兰语
+            utterance.rate = 0.85;
+
+            btn.classList.add('playing');
+            btn.textContent = '🔇';
+
+            utterance.onend = () => {
+                if (btn === currentBtn) {
+                    btn.classList.remove('playing');
+                    btn.textContent = '🔊';
+                }
+            };
+
+            utterance.onerror = (e) => {
+                console.error('TTS Error:', e);
+                if (btn === currentBtn) {
+                    btn.classList.remove('playing');
+                    btn.textContent = '🔊';
+                }
+                // 降级方案
+                const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=fi`;
+                new Audio(url).play();
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+    </script>
+</body>
+</html>
