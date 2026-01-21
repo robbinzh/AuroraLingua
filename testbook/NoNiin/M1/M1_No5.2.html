@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精读文本-5.2 - Kaisan kuvia</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap');
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            --card-back-gradient: linear-gradient(135deg, #434343 0%, #000000 100%);
+            --accent-color: #ff6b6b;
+            --text-color: #2d3748;
+            --bg-color: #fff5f5;
+        }
+
+        body {
+            font-family: 'Noto Sans', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            color: var(--text-color);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a202c;
+            margin-bottom: 10px;
+            font-weight: 800;
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 40px;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .section-title {
+            width: 100%;
+            max-width: 1400px;
+            margin: 30px 0 20px 0;
+            padding: 15px 20px;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1400px;
+        }
+
+        .card {
+            background-color: transparent;
+            width: 100%;
+            height: 420px;
+            perspective: 1500px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1);
+            transform-style: preserve-3d;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-radius: 20px;
+        }
+
+        .card:hover .card-inner {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .card-front {
+            background-color: #ffffff;
+            color: var(--text-color);
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .card-category {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .category-victor { background-color: #ff9a9e; color: white; }
+        .category-sofia { background-color: #fecfef; color: var(--text-color); }
+        .category-kappale { background-color: #a8edea; color: var(--text-color); }
+        .category-isoaiti { background-color: #d8a8ed; color: white; }
+
+        .tts-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+            margin-top: 15px;
+        }
+
+        .tts-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .tts-btn:active {
+            transform: scale(0.95);
+        }
+
+        .tts-btn.playing {
+            animation: pulse 1.5s infinite;
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(245, 87, 108, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(245, 87, 108, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 87, 108, 0); }
+        }
+
+        .card-number {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            width: 28px;
+            height: 28px;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .card-front-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        .fi-sentence {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-color);
+            line-height: 1.5;
+            margin: 0;
+            text-align: center;
+        }
+
+        .card-back {
+            background: var(--card-back-gradient);
+            color: #ffffff;
+            transform: rotateY(180deg);
+            text-align: left;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .grammar-title {
+            color: #ff9a9e;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .grammar-section {
+            margin-bottom: 15px;
+        }
+
+        .grammar-section h4 {
+            color: #fecfef;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .grammar-section p {
+            margin: 6px 0;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .grammar-section strong {
+            color: #ff9a9e;
+        }
+
+        .zh-translation {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(255, 154, 158, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid #ff9a9e;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+
+        .vocabulary-section {
+            margin-top: 60px;
+            width: 100%;
+            max-width: 1400px;
+        }
+
+        .vocabulary-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .vocabulary-table {
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+        }
+
+        .vocabulary-table table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .vocabulary-table th {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .vocabulary-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .vocabulary-table tr:hover {
+            background-color: #fff5f5;
+        }
+
+        .summary-section {
+            margin-top: 60px;
+            width: 100%;
+            max-width: 1400px;
+        }
+
+        .summary-box {
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .summary-box h3 {
+            color: #1a202c;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .summary-box p, .summary-box li {
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        .summary-box strong {
+            color: var(--accent-color);
+        }
+
+        .summary-box ul {
+            margin-left: 20px;
+        }
+
+        .flip-hint {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            font-size: 0.7rem;
+            color: #a0aec0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .card-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .fi-sentence {
+                font-size: 1.2rem;
+            }
+
+            .tts-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="./index.html" class="back-button">← 返回课程列表</a>
+
+    <h1>精读文本-5.2</h1>
+    <p class="subtitle">24. Kaisan kuvia. Lue tekstit ja alleviivaa kaikki aikasanat. (阅读文本并划出所有时间词)</p>
+
+    <!-- Teksti 1 (Victor) -->
+    <div class="section-title">Teksti 1: Victor</div>
+    <div class="card-container">
+        <!-- Victor 句子1-6 -->
+        <div class="card" data-category="victor"><div class="card-inner"><div class="card-front"><span class="card-category category-victor">Victor</span><div class="card-front-content"><p class="fi-sentence">Tässä kuvassa on Victor viime kesänä.</p><button class="tts-btn" onclick="speak(this, 'Tässä kuvassa on Victor viime kesänä.')" title="听发音">🔊</button></div><div class="card-number">1</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子1</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Tässä kuvassa on / Victor / viime kesänä.</p><p>• <strong>语法分析:</strong> 存在句。时间状语 <strong>viime kesänä</strong> (去年夏天)。viime: 上一个。kesänä: kesä (夏天) 的爱斯格 (Essiivi, -nä)。</p><p>• <strong>整句翻译:</strong> 这是 Victor 去年夏天的照片。</p></div><div class="zh-translation">这句话在描述照片的时间背景。viime kesänä 是芬兰语中常用的时间表达方式。</div></div></div></div>
+
+        <div class="card" data-category="victor"><div class="card-inner"><div class="card-front"><span class="card-category category-victor">Victor</span><div class="card-front-content"><p class="fi-sentence">Victorilla on pitkä musta kihara tukka ja ruskeat silmät.</p><button class="tts-btn" onclick="speak(this, 'Victorilla on pitkä musta kihara tukka ja ruskeat silmät.')" title="听发音">🔊</button></div><div class="card-number">2</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子2</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Victorilla on / pitkä musta kihara tukka / ja ruskeat silmät.</p><p>• <strong>语法分析:</strong> 形容词堆叠: pitkä + musta + kihara + tukka (单数)。复数配合: ruskeat + silmät (复数)。</p><p>• <strong>整句翻译:</strong> Victor 有一头黑色的长卷发和褐色的眼睛。</p></div></div></div></div>
+
+        <div class="card" data-category="victor"><div class="card-inner"><div class="card-front"><span class="card-category category-victor">Victor</span><div class="card-front-content"><p class="fi-sentence">Victorilla on päällä vaaleanpunainen t-paita ja siniset farkut.</p><button class="tts-btn" onclick="speak(this, 'Victorilla on päällä vaaleanpunainen t-paita ja siniset farkut.')" title="听发音">🔊</button></div><div class="card-number">3</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子3</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Victorilla on päällä / vaaleanpunainen t-paita / ja siniset farkut.</p><p>• <strong>语法分析 (核心搭配):</strong> 穿衣表达: Jollakulla on päällä + [vaate]。päällä: 副词, 意为"在上面/身上"。复数: farkut (复) → siniset (复)。</p><p>• <strong>整句翻译:</strong> Victor 穿着粉色T恤和蓝色牛仔裤。</p></div></div></div></div>
+
+        <div class="card" data-category="victor"><div class="card-inner"><div class="card-front"><span class="card-category category-victor">Victor</span><div class="card-front-content"><p class="fi-sentence">Victor hymyilee.</p><button class="tts-btn" onclick="speak(this, 'Victor hymyilee.')" title="听发音">🔊</button></div><div class="card-number">4</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子4</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Victor hymyilee.</p><p>• <strong>语法分析:</strong> hymyilee: 动词 hymyillä 的第三人称单数。</p><p>• <strong>整句翻译:</strong> Victor 在微笑。</p></div></div></div></div>
+
+        <div class="card" data-category="victor"><div class="card-inner"><div class="card-front"><span class="card-category category-victor">Victor</span><div class="card-front-content"><p class="fi-sentence">Hän on iloinen.</p><button class="tts-btn" onclick="speak(this, 'Hän on iloinen.')" title="听发音">🔊</button></div><div class="card-number">5</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子5</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Hän on iloinen.</p><p>• <strong>整句翻译:</strong> 他很开心。</p></div></div></div></div>
+
+        <div class="card" data-category="victor"><div class="card-inner"><div class="card-front"><span class="card-category category-victor">Victor</span><div class="card-front-content"><p class="fi-sentence">Victorilla on vadelmia ja mustikoita heinänkorsissa.</p><button class="tts-btn" onclick="speak(this, 'Victorilla on vadelmia ja mustikoita heinänkorsissa.')" title="听发音">🔊</button></div><div class="card-number">6</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子6</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Victorilla on / vadelmia ja mustikoita / heinänkorsissa.</p><p>• <strong>语法分析:</strong> 部分格 (Partitiivi): vadelmia (原形 vadelma) 和 mustikoita (原形 mustikka)。因为是"一些"浆果, 数量不定, 所以用复数部分格。词汇: heinänkorsissa = heinä (干草) + n (属格) + korsi (茎/秆) + ssa (内格)。</p><p>• <strong>文化背景:</strong> 芬兰夏天的一个传统习俗是把采摘的野莓穿在长长的草茎上带回家。</p><p>• <strong>整句翻译:</strong> Victor 的草茎上串着树莓和蓝莓。</p></div></div></div></div>
+    </div>
+
+    <!-- Teksti 2 (Sofia) -->
+    <div class="section-title">Teksti 2: Sofia</div>
+    <div class="card-container">
+        <div class="card" data-category="sofia"><div class="card-inner"><div class="card-front"><span class="card-category category-sofia">Sofia</span><div class="card-front-content"><p class="fi-sentence">Tässä on Sofia viime kesänä.</p><button class="tts-btn" onclick="speak(this, 'Tässä on Sofia viime kesänä.')" title="听发音">🔊</button></div><div class="card-number">7</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子7</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Tässä on Sofia / viime kesänä.</p><p>• <strong>语法分析:</strong> 时间状语: 再次出现 <strong>viime kesänä</strong>。</p><p>• <strong>整句翻译:</strong> 这是 Sofia 去年夏天的照片。</p></div></div></div></div>
+
+        <div class="card" data-category="sofia"><div class="card-inner"><div class="card-front"><span class="card-category category-sofia">Sofia</span><div class="card-front-content"><p class="fi-sentence">Hänellä on hattu päässä.</p><button class="tts-btn" onclick="speak(this, 'Hänellä on hattu päässä.')" title="听发音">🔊</button></div><div class="card-number">8</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子8</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Hänellä on / hattu / päässä.</p><p>• <strong>语法分析 (穿戴习惯):</strong> <strong>Päässä</strong>: 注意！衣服穿在"身上"用 päällä，但帽子、眼镜戴在"头上"用 <strong>päässä</strong> (内格，在头里/上)。</p><p>• <strong>整句翻译:</strong> 她戴着帽子。</p></div></div></div></div>
+
+        <div class="card" data-category="sofia"><div class="card-inner"><div class="card-front"><span class="card-category category-sofia">Sofia</span><div class="card-front-content"><p class="fi-sentence">On lämmin kesäpäivä.</p><button class="tts-btn" onclick="speak(this, 'On lämmin kesäpäivä.')" title="听发音">🔊</button></div><div class="card-number">9</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子9</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> On / lämmin kesäpäivä.</p><p>• <strong>语法分析:</strong> 时间词: kesäpäivä (夏天的一天)。天气表达: On + 形容词。这里省略了主语，直接描述环境。</p><p>• <strong>整句翻译:</strong> 这是一个温暖的夏日。</p></div></div></div></div>
+
+        <div class="card" data-category="sofia"><div class="card-inner"><div class="card-front"><span class="card-category category-sofia">Sofia</span><div class="card-front-content"><p class="fi-sentence">Sofialla on päällä musta paita ja punaiset shortsit.</p><button class="tts-btn" onclick="speak(this, 'Sofialla on päällä musta paita ja punaiset shortsit.')" title="听发音">🔊</button></div><div class="card-number">10</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子10</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Sofialla on päällä / musta paita / ja punaiset shortsit.</p><p>• <strong>语法分析:</strong> 穿衣: on päällä。复数: punaiset shortsit (形容词配合名词复数)。</p><p>• <strong>整句翻译:</strong> Sofia 穿着黑衬衫和红短裤。</p></div></div></div></div>
+
+        <div class="card" data-category="sofia"><div class="card-inner"><div class="card-front"><span class="card-category category-sofia">Sofia</span><div class="card-front-content"><p class="fi-sentence">Sofialla on punaiset sandaalit jalassa.</p><button class="tts-btn" onclick="speak(this, 'Sofialla on punaiset sandaalit jalassa.')" title="听发音">🔊</button></div><div class="card-number">11</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子11</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Sofialla on / punaiset sandaalit / jalassa.</p><p>• <strong>语法分析 (穿戴习惯):</strong> <strong>Jalassa</strong>: 鞋子、袜子穿在"脚上"，芬兰语用 <strong>jalassa</strong> (jalka + ssa，在脚里/上)。</p><p>• <strong>整句翻译:</strong> Sofia 穿着红色的凉鞋。</p></div></div></div></div>
+
+        <div class="card" data-category="sofia"><div class="card-inner"><div class="card-front"><span class="card-category category-sofia">Sofia</span><div class="card-front-content"><p class="fi-sentence">Hänellä on kassi kädessä.</p><button class="tts-btn" onclick="speak(this, 'Hänellä on kassi kädessä.')" title="听发音">🔊</button></div><div class="card-number">12</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子12</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Hänellä on kassi / kädessä.</p><p>• <strong>语法分析:</strong> <strong>Kädessä</strong>: 提在"手里"。(käsi → kädessä)。</p><p>• <strong>整句翻译:</strong> 她手里提着一个袋子。</p></div></div></div></div>
+
+        <div class="card" data-category="sofia"><div class="card-inner"><div class="card-front"><span class="card-category category-sofia">Sofia</span><div class="card-front-content"><p class="fi-sentence">Kassissa on kukkia.</p><button class="tts-btn" onclick="speak(this, 'Kassissa on kukkia.')" title="听发音">🔊</button></div><div class="card-number">13</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子13</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Kassissa on / kukkia.</p><p>• <strong>语法分析:</strong> <strong>Kukkia</strong>: 复数部分格，表示"一些花"。</p><p>• <strong>整句翻译:</strong> 袋子里有花。</p></div></div></div></div>
+    </div>
+
+    <!-- 词汇表 1: Teksti 1 & 2 -->
+    <div class="vocabulary-section">
+        <h2 class="vocabulary-title">重点词汇形态拆解表 (Teksti 1 & 2)</h2>
+        <div class="vocabulary-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>单词 (Sana)</th>
+                        <th>原形</th>
+                        <th>中文</th>
+                        <th>构词/语法分析</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Viime kesänä</strong> <button class="tts-btn" onclick="speak(this, 'Viime kesänä')" title="听发音">🔊</button></td>
+                        <td>viime kesä <button class="tts-btn" onclick="speak(this, 'viime kesä')" title="听发音">🔊</button></td>
+                        <td>去年夏天</td>
+                        <td><code>kesä</code> + <code>-nä</code> (爱斯格 Essiivi，表示时间)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Päällä</strong> <button class="tts-btn" onclick="speak(this, 'Päällä')" title="听发音">🔊</button></td>
+                        <td>päällä <button class="tts-btn" onclick="speak(this, 'päällä')" title="听发音">🔊</button></td>
+                        <td>穿着/在上面</td>
+                        <td>身体位置副词</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Päässä</strong> <button class="tts-btn" onclick="speak(this, 'Päässä')" title="听发音">🔊</button></td>
+                        <td>pää <button class="tts-btn" onclick="speak(this, 'pää')" title="听发音">🔊</button></td>
+                        <td>戴着(帽)/在头上</td>
+                        <td><code>pää</code> (头) + <code>ssä</code> (内格)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Jalassa</strong> <button class="tts-btn" onclick="speak(this, 'Jalassa')" title="听发音">🔊</button></td>
+                        <td>jalka <button class="tts-btn" onclick="speak(this, 'jalka')" title="听发音">🔊</button></td>
+                        <td>穿着(鞋)/在脚上</td>
+                        <td><code>jalka</code> (脚) + <code>ssa</code> (内格)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kädessä</strong> <button class="tts-btn" onclick="speak(this, 'Kädessä')" title="听发音">🔊</button></td>
+                        <td>käsi <button class="tts-btn" onclick="speak(this, 'käsi')" title="听发音">🔊</button></td>
+                        <td>拿着/在手里</td>
+                        <td><code>käsi</code> (手) -> <code>käde</code> + <code>ssä</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Heinänkorsi</strong> <button class="tts-btn" onclick="speak(this, 'Heinänkorsi')" title="听发音">🔊</button></td>
+                        <td>heinänkorsi <button class="tts-btn" onclick="speak(this, 'heinänkorsi')" title="听发音">🔊</button></td>
+                        <td>草茎</td>
+                        <td><code>heinä</code> (干草) + <code>n</code> (属格) + <code>korsi</code> (茎)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vadelmia</strong> <button class="tts-btn" onclick="speak(this, 'Vadelmia')" title="听发音">🔊</button></td>
+                        <td>vadelma <button class="tts-btn" onclick="speak(this, 'vadelma')" title="听发音">🔊</button></td>
+                        <td>树莓 (复数部分格)</td>
+                        <td><code>vadelma</code> + <code>i</code> (复) + <code>a</code> (部分)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mustikoita</strong> <button class="tts-btn" onclick="speak(this, 'Mustikoita')" title="听发音">🔊</button></td>
+                        <td>mustikka <button class="tts-btn" onclick="speak(this, 'mustikka')" title="听发音">🔊</button></td>
+                        <td>蓝莓 (复数部分格)</td>
+                        <td><code>mustikka</code> -> <code>mustiko</code> + <code>i</code> + <code>ta</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Kappaleet -->
+    <div class="section-title">Kappaleet 1-3</div>
+    <div class="card-container">
+        <div class="card" data-category="kappale"><div class="card-inner"><div class="card-front"><span class="card-category category-kappale">第1段</span><div class="card-front-content"><p class="fi-sentence">Tässä kuvassa on Sofia-vauva ja Kaisan vanhemmat melkein kaksi vuotta sitten.</p><button class="tts-btn" onclick="speak(this, 'Tässä kuvassa on Sofia-vauva ja Kaisan vanhemmat melkein kaksi vuotta sitten.')" title="听发音">🔊</button></div><div class="card-number">1</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子1</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Tässä kuvassa on / Sofia-vauva / ja Kaisan vanhemmat / melkein kaksi vuotta sitten。</p><p>• <strong>语法分析:</strong> 时间状语: <strong>melkein kaksi vuotta sitten</strong>。melkein: 几乎/差不多。sitten: ...以前 (Ago)。注意: sitten 前面的时间量词，如果带有数字（除了1），名词要用部分格。kaksi + vuotta (vuosi的部分格)。复合词: Sofia-vauva。当名字和普通名词组合时，中间用连字符 - 。</p><p>• <strong>整句翻译:</strong> 这张照片里是索菲亚宝宝和Kaisa的父母，大概是两年前拍的。</p></div></div></div></div>
+
+        <div class="card" data-category="kappale"><div class="card-inner"><div class="card-front"><span class="card-category category-kappale">第1段</span><div class="card-front-content"><p class="fi-sentence">Kaisan vanhemmat hymyilevät.</p><button class="tts-btn" onclick="speak(this, 'Kaisan vanhemmat hymyilevät.')" title="听发音">🔊</button></div><div class="card-number">2</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子2</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Kaisan vanhemmat / hymyilevät。</p><p>• <strong>语法分析:</strong> 主谓一致: 主语 vanhemmat (父母) 是复数，所以动词 hymyillä (微笑) 也要用第三人称复数形式 <strong>-vät</strong>。</p><p>• <strong>整句翻译:</strong> Kaisa的父母正在微笑。</p></div></div></div></div>
+
+        <div class="card" data-category="kappale"><div class="card-inner"><div class="card-front"><span class="card-category category-kappale">第1段</span><div class="card-front-content"><p class="fi-sentence">Heillä on söpö lapsenlapsi.</p><button class="tts-btn" onclick="speak(this, 'Heillä on söpö lapsenlapsi.')" title="听发音">🔊</button></div><div class="card-number">3</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子3</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Heillä on / söpö lapsenlapsi。</p><p>• <strong>语法分析:</strong> 拥有句: Heillä (他们有)。词汇: lapsenlapsi (孙子/孙女)。字面意: lapsen (孩子的) + lapsi (孩子)。</p><p>• <strong>整句翻译:</strong> 他们有一个可爱的孙女。</p></div></div></div></div>
+
+        <div class="card" data-category="kappale"><div class="card-inner"><div class="card-front"><span class="card-category category-kappale">第1段</span><div class="card-front-content"><p class="fi-sentence">Sofialla on vaaleanpunainen body päällä.</p><button class="tts-btn" onclick="speak(this, 'Sofialla on vaaleanpunainen body päällä.')" title="听发音">🔊</button></div><div class="card-number">4</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子4</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Sofialla on / vaaleanpunainen body / päällä。</p><p>• <strong>语法分析:</strong> 穿戴: on ... päällä (身上穿着)。</p><p>• <strong>整句翻译:</strong> Sofia身上穿着粉红色的连体衣。</p></div></div></div></div>
+
+        <div class="card" data-category="kappale"><div class="card-inner"><div class="card-front"><span class="card-category category-kappale">第2段</span><div class="card-front-content"><p class="fi-sentence">Kaisan isällä on viikset ja harmaa tukka.</p><button class="tts-btn" onclick="speak(this, 'Kaisan isällä on viikset ja harmaa tukka.')" title="听发音">🔊</button></div><div class="card-number">5</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子5</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Kaisan isällä on / viikset / ja harmaa tukka。</p><p>• <strong>语法分析:</strong> 复习: viikset (胡子) 是复数；tukka (头发) 是单数。</p><p>• <strong>整句翻译:</strong> Kaisa的父亲留着胡子，有着灰白的头发。</p></div></div></div></div>
+
+        <div class="card" data-category="kappale"><div class="card-inner"><div class="card-front"><span class="card-category category-kappale">第2段</span><div class="card-front-content"><p class="fi-sentence">Hänellä on aurinkolasit päässä.</p><button class="tts-btn" onclick="speak(this, 'Hänellä on aurinkolasit päässä.')" title="听发音">🔊</button></div><div class="card-number">6</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子6</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Hänellä on / aurinkolasit / päässä。</p><p>• <strong>语法分析 (核心考点):</strong> <strong>päässä vs päällä</strong>: 眼镜 (lasit) 和 帽子 (hattu) 是戴在<strong>头上</strong>的，所以必须用 <strong>päässä</strong> (Inessiivi/内格)。千万不能说 *aurinkolasit päällä* (那是眼镜压在身子上)。</p><p>• <strong>整句翻译:</strong> 他戴着太阳镜。</p></div></div></div></div>
+
+        <div class="card" data-category="kappale"><div class="card-inner"><div class="card-front"><span class="card-category category-kappale">第2段</span><div class="card-front-content"><p class="fi-sentence">Hän on aika vanha ja vähän tukeva.</p><button class="tts-btn" onclick="speak(this, 'Hän on aika vanha ja vähän tukeva.')" title="听发音">🔊</button></div><div class="card-number">7</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子7</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Hän on / aika vanha / ja vähän tukeva。</p><p>• <strong>语法分析:</strong> 程度副词: aika: 相当，颇为 (quite)。vähän: 一点儿 (a little)。词义辨析: <strong>tukeva</strong> (魁梧/壮实)。这里用了我们刚学的委婉语，而不是 lihava (胖)。</p><p>• <strong>整句翻译:</strong> 他年纪挺大了，身材有点魁梧/发福。</p></div></div></div></div>
+
+        <div class="card" data-category="kappale"><div class="card-inner"><div class="card-front"><span class="card-category category-kappale">第2段</span><div class="card-front-content"><p class="fi-sentence">Hänellä on valkoinen kauluspaita ja vaaleat housut.</p><button class="tts-btn" onclick="speak(this, 'Hänellä on valkoinen kauluspaita ja vaaleat housut.')" title="听发音">🔊</button></div><div class="card-number">8</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子8</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Hänellä on / valkoinen kauluspaita / ja vaaleat housut。</p><p>• <strong>语法分析:</strong> 省略了 päällä，因为在描述穿戴的连续句中，可以省略。一致性: vaalea<strong>t</strong> housu<strong>t</strong> (复数配合)。</p><p>• <strong>整句翻译:</strong> 他穿着白衬衫和浅色裤子。</p></div></div></div></div>
+
+        <div class="card" data-category="kappale"><div class="card-inner"><div class="card-front"><span class="card-category category-kappale">第3段</span><div class="card-front-content"><p class="fi-sentence">Kaisan äidillä on vihreät silmät, punaiset huulet ja vaalea tukka.</p><button class="tts-btn" onclick="speak(this, 'Kaisan äidillä on vihreät silmät, punaiset huulet ja vaalea tukka.')" title="听发音">🔊</button></div><div class="card-number">9</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子9</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Kaisan äidillä on / vihreät silmät, / punaiset huulet / ja vaalea tukka。</p><p>• <strong>语法分析:</strong> 这里完美展示了<strong>单复数大阅兵</strong>: vihreä<strong>t</strong> silmä<strong>t</strong> (复), punaise<strong>t</strong> huule<strong>t</strong> (复), vaalea tukka (单)。</p><p>• <strong>整句翻译:</strong> Kaisa的母亲有绿色的眼睛、红红的嘴唇和金色的头发。</p></div></div></div></div>
+
+        <div class="card" data-category="kappale"><div class="card-inner"><div class="card-front"><span class="card-category category-kappale">第3段</span><div class="card-front-content"><p class="fi-sentence">Tukka on kiinni.</p><button class="tts-btn" onclick="speak(this, 'Tukka on kiinni.')" title="听发音">🔊</button></div><div class="card-number">10</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子10</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Tukka on / kiinni。</p><p>• <strong>语法分析:</strong> <strong>kiinni</strong>: 扎起来/盘起来。</p><p>• <strong>整句翻译:</strong> 头发是扎起来的。</p></div></div></div></div>
+
+        <div class="card" data-category="kappale"><div class="card-inner"><div class="card-front"><span class="card-category category-kappale">第3段</span><div class="card-front-content"><p class="fi-sentence">Hänellä on sininen mekko.</p><button class="tts-btn" onclick="speak(this, 'Hänellä on sininen mekko.')" title="听发音">🔊</button></div><div class="card-number">11</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子11</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Hänellä on / sininen mekko。</p><p>• <strong>语法分析:</strong> 拥有句，表示穿着。</p><p>• <strong>整句翻译:</strong> 她穿着蓝色连衣裙。</p></div></div></div></div>
+
+        <div class="card" data-category="kappale"><div class="card-inner"><div class="card-front"><span class="card-category category-kappale">第3段</span><div class="card-front-content"><p class="fi-sentence">Mekossa on valkoisia ja punaisia sydämiä.</p><button class="tts-btn" onclick="speak(this, 'Mekossa on valkoisia ja punaisia sydämiä.')" title="听发音">🔊</button></div><div class="card-number">12</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子12</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Mekossa on / valkoisia ja punaisia sydämiä。</p><p>• <strong>语法分析 (重难点 Partitiivi):</strong> <strong>Mekossa on</strong>: 在裙子里有... (存在句)。<strong>复数部分格</strong>: valkosi<strong>a</strong> ja punaisi<strong>a</strong> sydämi<strong>ä</strong>。因为是在描述裙子图案上的"一些"心，数量复数且不确定，所以必须用部分格。</p><p>• <strong>整句翻译:</strong> 裙子上有红色和白色的心形图案。</p></div></div></div></div>
+
+        <div class="card" data-category="kappale"><div class="card-inner"><div class="card-front"><span class="card-category category-kappale">第3段</span><div class="card-front-content"><p class="fi-sentence">Kaisan äidillä on kaulakoru, korvakorut ja sormus.</p><button class="tts-btn" onclick="speak(this, 'Kaisan äidillä on kaulakoru, korvakorut ja sormus.')" title="听发音">🔊</button></div><div class="card-number">13</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子13</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Kaisan äidillä on / kaulakoru, / korvakorut / ja sormus。</p><p>• <strong>语法分析:</strong> 列举饰品: 注意 korvakorut 是复数，其他是单数。</p><p>• <strong>整句翻译:</strong> Kaisa的母亲戴着项链、耳环和戒指。</p></div></div></div></div>
+    </div>
+
+    <!-- 词汇表 2: Kappaleet 1-3 -->
+    <div class="vocabulary-section">
+        <h2 class="vocabulary-title">重点词汇形态拆解表 (Kappaleet 1-3)</h2>
+        <div class="vocabulary-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>单词 (Sana)</th>
+                        <th>原形</th>
+                        <th>中文</th>
+                        <th>语法点</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Lapsenlapsi</strong> <button class="tts-btn" onclick="speak(this, 'Lapsenlapsi')" title="听发音">🔊</button></td>
+                        <td>lapsenlapsi <button class="tts-btn" onclick="speak(this, 'lapsenlapsi')" title="听发音">🔊</button></td>
+                        <td>孙辈</td>
+                        <td><code>lapsen</code> (孩子的) + <code>lapsi</code> (孩子)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hymyilevät</strong> <button class="tts-btn" onclick="speak(this, 'Hymyilevät')" title="听发音">🔊</button></td>
+                        <td>hymyillä <button class="tts-btn" onclick="speak(this, 'hymyillä')" title="听发音">🔊</button></td>
+                        <td>(他们)微笑</td>
+                        <td>第三人称复数变位</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Melkein</strong> <button class="tts-btn" onclick="speak(this, 'Melkein')" title="听发音">🔊</button></td>
+                        <td>melkein <button class="tts-btn" onclick="speak(this, 'melkein')" title="听发音">🔊</button></td>
+                        <td>几乎/差不多</td>
+                        <td>副词</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sydämiä</strong> <button class="tts-btn" onclick="speak(this, 'Sydämiä')" title="听发音">🔊</button></td>
+                        <td>sydän <button class="tts-btn" onclick="speak(this, 'sydän')" title="听发音">🔊</button></td>
+                        <td>心 (复数部分格)</td>
+                        <td>存在句宾语，表示“有一些心形图案”</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Päässä</strong> <button class="tts-btn" onclick="speak(this, 'Päässä')" title="听发音">🔊</button></td>
+                        <td>pää <button class="tts-btn" onclick="speak(this, 'pää')" title="听发音">🔊</button></td>
+                        <td>戴在头上</td>
+                        <td>专指帽子、眼镜、发饰</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mekossa</strong> <button class="tts-btn" onclick="speak(this, 'Mekossa')" title="听发音">🔊</button></td>
+                        <td>mekko <button class="tts-btn" onclick="speak(this, 'mekko')" title="听发音">🔊</button></td>
+                        <td>在连衣裙上(里)</td>
+                        <td>内格 <code>-ssa</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Kuva 2: Isoäiti -->
+    <div class="section-title">Kuva 2: Kaisan isoäiti</div>
+    <div class="card-container">
+        <div class="card" data-category="isoaiti"><div class="card-inner"><div class="card-front"><span class="card-category category-isoaiti">Isoäiti</span><div class="card-front-content"><p class="fi-sentence">Tässä kuvassa on Kaisan isoäiti, Sofian isoisoäiti.</p><button class="tts-btn" onclick="speak(this, 'Tässä kuvassa on Kaisan isoäiti, Sofian isoisoäiti.')" title="听发音">🔊</button></div><div class="card-number">1</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子1</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Tässä kuvassa on / Kaisan isoäiti, / Sofian isoisoäiti。</p><p>• <strong>语法分析:</strong> 复合词: Isoäiti: 祖母/外祖母 (大妈妈)。Isoisoäiti: 曾祖母 (大大妈妈)。属格: Kaisa → Kaisan; Sofia → Sofian。</p><p>• <strong>整句翻译:</strong> 这张照片里有Kaisa的祖母，Sofia的曾祖母。</p></div></div></div></div>
+
+        <div class="card" data-category="isoaiti"><div class="card-inner"><div class="card-front"><span class="card-category category-isoaiti">Isoäiti</span><div class="card-front-content"><p class="fi-sentence">Hän on tosi vanha ja laiha.</p><button class="tts-btn" onclick="speak(this, 'Hän on tosi vanha ja laiha.')" title="听发音">🔊</button></div><div class="card-number">2</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子2</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Hän on / tosi vanha / ja laiha。</p><p>• <strong>语法分析:</strong> <strong>Tosi</strong>: 副词，口语中常用作"非常/真的"，代替书面语的 hyvin。<strong>Laiha (瘦的)</strong>: 反义词复习: 还记得上一张图里的保安大叔吗？他是 <strong>tukeva</strong> (壮硕的)。而这位老奶奶是 <strong>laiha</strong> (干瘦的/消瘦的)。</p><p>• <strong>整句翻译:</strong> 她非常老，也很瘦。</p></div></div></div></div>
+
+        <div class="card" data-category="isoaiti"><div class="card-inner"><div class="card-front"><span class="card-category category-isoaiti">Isoäiti</span><div class="card-front-content"><p class="fi-sentence">Hän täyttää vuoden päästä 90 vuotta.</p><button class="tts-btn" onclick="speak(this, 'Hän täyttää vuoden päästä 90 vuotta.')" title="听发音">🔊</button></div><div class="card-number">3</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子3</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Hän täyttää / vuoden päästä / 90 vuotta。</p><p>• <strong>语法分析 (重点!):</strong> 动词 täyttää: 字面意思是"填满/填充"，用于年龄时表示"满...岁"。将来时间: <strong>vuoden päästä</strong>。这是我们之前学的结构: 时间词属格 + päästä。vuosi (年) → vuoden + päästä = 一年后。部分格: 90 vuotta。数字后名词用部分格。</p><p>• <strong>整句翻译:</strong> 她再过一年就满90岁了。</p></div></div></div></div>
+
+        <div class="card" data-category="isoaiti"><div class="card-inner"><div class="card-front"><span class="card-category category-isoaiti">Isoäiti</span><div class="card-front-content"><p class="fi-sentence">Hän on leski.</p><button class="tts-btn" onclick="speak(this, 'Hän on leski.')" title="听发音">🔊</button></div><div class="card-number">4</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子4</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Hän on / leski。</p><p>• <strong>语法分析:</strong> 词汇: leski (丧偶者/寡妇/鳏夫)。</p><p>• <strong>整句翻译:</strong> 她是寡妇。</p></div></div></div></div>
+
+        <div class="card" data-category="isoaiti"><div class="card-inner"><div class="card-front"><span class="card-category category-isoaiti">Isoäiti</span><div class="card-front-content"><p class="fi-sentence">Hänen miehensä on kuollut monta vuotta sitten.</p><button class="tts-btn" onclick="speak(this, 'Hänen miehensä on kuollut monta vuotta sitten.')" title="听发音">🔊</button></div><div class="card-number">5</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子5</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Hänen miehensä / on kuollut / monta vuotta sitten。</p><p>• <strong>语法分析 (高级时态):</strong> 所有格: Hänen miehe<strong>nsä</strong> (代词+后缀，双重标记)。<strong>现在完成时 (Perfekti)</strong>: <strong>on kuollut</strong>。结构: olla (on) + NUT-分词 (kuollut)。含义: 表示动作已经完成，且影响持续到现在（他去世了，现在的状态是去世的）。kuolla (死) → kuollut (死了的)。时间状语: monta vuotta sitten。monta (许多，部分格) + vuotta (年，部分格) + sitten (以前)。</p><p>• <strong>整句翻译:</strong> 她的丈夫很多年前就去世了。</p></div></div></div></div>
+
+        <div class="card" data-category="isoaiti"><div class="card-inner"><div class="card-front"><span class="card-category category-isoaiti">Isoäiti</span><div class="card-front-content"><p class="fi-sentence">Hänellä on valkoinen tukka ja siniset silmät.</p><button class="tts-btn" onclick="speak(this, 'Hänellä on valkoinen tukka ja siniset silmät.')" title="听发音">🔊</button></div><div class="card-number">6</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子6</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Hänellä on / valkoinen tukka / ja siniset silmät。</p><p>• <strong>语法分析:</strong> 复习: tukka (单数), silmät (复数)。</p><p>• <strong>整句翻译:</strong> 她有着白色的头发和蓝色的眼睛。</p></div></div></div></div>
+
+        <div class="card" data-category="isoaiti"><div class="card-inner"><div class="card-front"><span class="card-category category-isoaiti">Isoäiti</span><div class="card-front-content"><p class="fi-sentence">Hänellä on musta villatakki päällä.</p><button class="tts-btn" onclick="speak(this, 'Hänellä on musta villatakki päällä.')" title="听发音">🔊</button></div><div class="card-number">7</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子7</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Hänellä on / musta villatakki / päällä。</p><p>• <strong>语法分析:</strong> Villatakki: 羊毛衫。</p><p>• <strong>整句翻译:</strong> 她穿着黑色的羊毛开衫。</p></div></div></div></div>
+
+        <div class="card" data-category="isoaiti"><div class="card-inner"><div class="card-front"><span class="card-category category-isoaiti">Isoäiti</span><div class="card-front-content"><p class="fi-sentence">Hän pitää Sofia-vauvaa sylissään ja katsoo vauvaa.</p><button class="tts-btn" onclick="speak(this, 'Hän pitää Sofia-vauvaa sylissään ja katsoo vauvaa.')" title="听发音">🔊</button></div><div class="card-number">8</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子8</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Hän pitää / Sofia-vauvaa / sylissään / ja katsoo vauvaa。</p><p>• <strong>语法分析 (核心难点!):</strong> <strong>Pitää + Partitiivi</strong>: 动词 pitää 在这里表示"握着/抱着/保持"，宾语用部分格 (vauvaa)。<strong>Sylissään (在她的怀里)</strong>: 原形: syli (怀抱/膝盖上的空间)。内格: sylissä (在怀里)。所有格后缀: sylissä + nsä (她的) = <strong>sylissään</strong>。Katsoa + Partitiivi: "看"这个动作是持续的，所以宾语 vauva 必须变成部分格 vauvaa。</p><p>• <strong>整句翻译:</strong> 她抱着Sofia宝宝在怀里，并且看着宝宝。</p></div></div></div></div>
+
+        <div class="card" data-category="isoaiti"><div class="card-inner"><div class="card-front"><span class="card-category category-isoaiti">Isoäiti</span><div class="card-front-content"><p class="fi-sentence">Hän hymyilee, hän on onnellinen.</p><button class="tts-btn" onclick="speak(this, 'Hän hymyilee, hän on onnellinen.')" title="听发音">🔊</button></div><div class="card-number">9</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子9</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Hän hymyilee, / hän on onnellinen。</p><p>• <strong>词汇:</strong> Onnellinen: 幸福的/快乐的。</p><p>• <strong>整句翻译:</strong> 她微笑着，她很幸福。</p></div></div></div></div>
+
+        <div class="card" data-category="isoaiti"><div class="card-inner"><div class="card-front"><span class="card-category category-isoaiti">Isoäiti</span><div class="card-front-content"><p class="fi-sentence">Vauva on suloinen.</p><button class="tts-btn" onclick="speak(this, 'Vauva on suloinen.')" title="听发音">🔊</button></div><div class="card-number">10</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子10</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Vauva on suloinen。</p><p>• <strong>词汇:</strong> Suloinen: 甜美的/可爱的 (Sweet/Cute)。</p><p>• <strong>整句翻译:</strong> 宝宝很可爱。</p></div></div></div></div>
+
+        <div class="card" data-category="isoaiti"><div class="card-inner"><div class="card-front"><span class="card-category category-isoaiti">Isoäiti</span><div class="card-front-content"><p class="fi-sentence">Hänellä on ihana lapsenlapsenlapsi.</p><button class="tts-btn" onclick="speak(this, 'Hänellä on ihana lapsenlapsenlapsi.')" title="听发音">🔊</button></div><div class="card-number">11</div><div class="flip-hint">点击查看语法分析 →</div></div><div class="card-back"><h3 class="grammar-title">语法分析 - 句子11</h3><div class="grammar-section"><p>• <strong>语言组块拆分:</strong> Hänellä on / ihana / lapsenlapsenlapsi。</p><p>• <strong>语法分析:</strong> <strong>超级复合词</strong>: lapsen-lapsen-lapsi。孩子的-孩子的-孩子 = 曾孙/曾孙女。芬兰语的构词逻辑真的很像搭积木！</p><p>• <strong>整句翻译:</strong> 她有一个可爱的曾孙女。</p></div></div></div></div>
+    </div>
+
+    <!-- 词汇表 3: Isoäiti -->
+    <div class="vocabulary-section">
+        <h2 class="vocabulary-title">重点词汇形态拆解表 (Isoäiti)</h2>
+        <div class="vocabulary-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>单词 (Sana)</th>
+                        <th>原形</th>
+                        <th>中文</th>
+                        <th>语法与构词分析</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Isoisoäiti</strong> <button class="tts-btn" onclick="speak(this, 'Isoisoäiti')" title="听发音">🔊</button></td>
+                        <td>isoisoäiti <button class="tts-btn" onclick="speak(this, 'isoisoäiti')" title="听发音">🔊</button></td>
+                        <td>曾祖母</td>
+                        <td><code>iso</code> (大) 重复两次 + <code>äiti</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lapsenlapsenlapsi</strong> <button class="tts-btn" onclick="speak(this, 'Lapsenlapsenlapsi')" title="听发音">🔊</button></td>
+                        <td>... <button class="tts-btn" onclick="speak(this, 'lapsenlapsenlapsi')" title="听发音">🔊</button></td>
+                        <td>曾孙(女)</td>
+                        <td><code>lapsi</code> 的属格重复两次 + <code>lapsi</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Laiha</strong> <button class="tts-btn" onclick="speak(this, 'Laiha')" title="听发音">🔊</button></td>
+                        <td>laiha <button class="tts-btn" onclick="speak(this, 'laiha')" title="听发音">🔊</button></td>
+                        <td>瘦的</td>
+                        <td>反义词是 <code>lihava</code> (胖) 或 <code>tukeva</code> (壮)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Täyttää</strong> <button class="tts-btn" onclick="speak(this, 'Täyttää')" title="听发音">🔊</button></td>
+                        <td>täyttää <button class="tts-btn" onclick="speak(this, 'täyttää')" title="听发音">🔊</button></td>
+                        <td>满(岁)/填满</td>
+                        <td><code>Hän täyttää X vuotta</code> = 她满X岁</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vuoden päästä</strong> <button class="tts-btn" onclick="speak(this, 'Vuoden päästä')" title="听发音">🔊</button></td>
+                        <td>... <button class="tts-btn" onclick="speak(this, 'vuoden päästä')" title="听发音">🔊</button></td>
+                        <td>一年后</td>
+                        <td>将来时间结构</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Leski</strong> <button class="tts-btn" onclick="speak(this, 'Leski')" title="听发音">🔊</button></td>
+                        <td>leski <button class="tts-btn" onclick="speak(this, 'leski')" title="听发音">🔊</button></td>
+                        <td>寡妇/鳏夫</td>
+                        <td>指丧偶的人</td>
+                    </tr>
+                    <tr>
+                        <td><strong>On kuollut</strong> <button class="tts-btn" onclick="speak(this, 'On kuollut')" title="听发音">🔊</button></td>
+                        <td>kuolla <button class="tts-btn" onclick="speak(this, 'kuolla')" title="听发音">🔊</button></td>
+                        <td>已经去世</td>
+                        <td><strong>现在完成时</strong>。<code>olla</code> + nut-分词</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sylissään</strong> <button class="tts-btn" onclick="speak(this, 'Sylissään')" title="听发音">🔊</button></td>
+                        <td>syli <button class="tts-btn" onclick="speak(this, 'syli')" title="听发音">🔊</button></td>
+                        <td>在她怀里</td>
+                        <td><code>syli</code> (怀) -&gt; <code>sylissä</code> (内格) -&gt; <code>sylissä</code> + <code>nsä</code> (缩略为 <code>än</code>)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Suloinen</strong> <button class="tts-btn" onclick="speak(this, 'Suloinen')" title="听发音">🔊</button></td>
+                        <td>suloinen <button class="tts-btn" onclick="speak(this, 'suloinen')" title="听发音">🔊</button></td>
+                        <td>甜美的/可爱的</td>
+                        <td>比 <code>söpö</code> 更侧重于令人心动的甜美感</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Summary Section -->
+    <div class="summary-section">
+        <div class="summary-box">
+            <h3>段落总结 (Yhteenveto) - Text 1 & 2</h3>
+            <p><strong>这两个段落是极佳的人物描写 (Henkilökuvaus) 范例。</strong></p>
+            <p>它们教会了我们芬兰语中独特的"穿戴"逻辑：</p>
+            <ul>
+                <li><strong>衣服</strong> (衬衫/裤子) → <strong>Päällä</strong> (身上)</li>
+                <li><strong>帽子/眼镜</strong> → <strong>Päässä</strong> (头上)</li>
+                <li><strong>鞋袜</strong> → <strong>Jalassa</strong> (脚上)</li>
+                <li><strong>提东西</strong> → <strong>Kädessä</strong> (手上)</li>
+            </ul>
+            <p style="margin-top: 20px;"><strong>题目答案 (Aikasanat - 时间词):</strong> 你应该在文中划出：</p>
+            <ul>
+                <li><strong>Viime kesänä</strong> (去年夏天) - 出现了两次。</li>
+                <li><strong>Kesäpäivä</strong> (夏日)。</li>
+            </ul>
+        </div>
+
+        <div class="summary-box">
+            <h3>段落总结 (Yhteenveto) - Kappaleet 1-3</h3>
+            <p><strong>这篇文章是A1-A2阶段描述人物的满分范文。</strong></p>
+            <p>它不仅描述了长相，还极其细致地描述了衣着和饰品。最重要的是，它正确区分了：</p>
+            <ul>
+                <li><strong>形容词的单复数</strong> (tukka vs silmät)</li>
+                <li><strong>穿戴的介词</strong> (päällä vs päässä)</li>
+                <li><strong>部分格的使用</strong> (裙子上的图案)</li>
+            </ul>
+        </div>
+
+        <div class="summary-box">
+            <h3>段落总结 (Yhteenveto) - Kuva 2 (Isoäiti)</h3>
+            <p><strong>这段文字温馨地描绘了"四世同堂"的画面（曾祖母抱曾孙）。</strong></p>
+            <p>它在语法上的跨度很大，从基础的形容词描述，跨越到了<strong>完成时态 (on kuollut)</strong> 和 <strong>带有所有格后缀的方位词 (sylissään)</strong>。这标志着你的阅读水平正在向 A2 迈进。</p>
+        </div>
+    </div>
+
+    <script>
+        // TTS Function
+        function speak(btn, text) {
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            }
+
+            btn.classList.add('playing');
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'fi-FI';
+            utterance.rate = 0.8;
+            utterance.pitch = 1.0;
+
+            const voices = window.speechSynthesis.getVoices();
+            const finnishVoice = voices.find(voice => voice.lang.includes('fi'));
+            if (finnishVoice) {
+                utterance.voice = finnishVoice;
+            }
+
+            utterance.onend = () => {
+                btn.classList.remove('playing');
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Card flip functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+
+            cards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('tts-btn') || e.target.closest('.tts-btn')) {
+                        return;
+                    }
+                    this.classList.toggle('is-flipped');
+                });
+            });
+
+            window.speechSynthesis.onvoiceschanged = function() {};
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>可再生认知重塑模拟舱</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #101010;
+            --text-color: #dcdcdc;
+            --primary-color: #f07178; /* A striking, slightly surreal color */
+            --module2-color: #82aaff; /* Cool blue for possession */
+            --module3-color: #c3e88d; /* Vibrant green for space */
+            --surface-color: #1a1a1a;
+            --border-color: #333;
+            --header-glow: rgba(240, 113, 120, 0.4);
+        }
+
+        body {
+            font-family: 'Fira Code', monospace;
+            line-height: 2;
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 30px 40px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .header-block {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .header-block h1 {
+            color: var(--primary-color);
+            font-size: 2em;
+            margin: 0;
+            text-shadow: 0 0 10px var(--header-glow);
+        }
+        .header-block h2 {
+            color: var(--text-color);
+            font-size: 1.1em;
+            margin: 10px 0 0;
+            font-weight: 400;
+        }
+        .header-block h3 {
+            color: var(--module3-color);
+            font-size: 1em;
+            margin: 5px 0 0;
+        }
+        .header-block .icon { margin-right: 10px; font-style: normal; }
+
+        .day-section {
+            margin-bottom: 50px;
+        }
+        .day-header {
+            padding: 10px;
+            background-color: rgba(130, 170, 255, 0.1);
+            border-left: 4px solid var(--module2-color);
+            margin-bottom: 20px;
+        }
+        .day-header h4 { margin: 0; font-size: 1.2em; color: var(--text-color); }
+        .day-header p { margin: 5px 0 0; font-size: 0.9em; color: #aaa; }
+        .day-header .icon { margin-right: 10px; }
+        
+        .sentence-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+
+        .sentence-list li {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            padding: 8px;
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            opacity: 0;
+            transform: translateX(-20px);
+            border-bottom: 1px dashed #2a2a2a;
+        }
+        .sentence-list li:last-child { border-bottom: none; }
+
+        .tts-button {
+            background: none; border: none; cursor: pointer; font-size: 1em; margin-left: 15px; padding: 0;
+            display: inline-block; vertical-align: middle; color: var(--primary-color); opacity: 0.6; transition: all 0.2s;
+        }
+        .tts-button:hover { opacity: 1; transform: scale(1.2); }
+
+        .module2-core { color: var(--module2-color); }
+        .module3-core { color: var(--module3-color); }
+        .arrow { color: #666; }
+
+        .cognition-anchor {
+            padding: 20px; background-color: rgba(240, 113, 120, 0.05); border: 1px solid var(--primary-color);
+            border-radius: 4px; text-align: center; font-size: 1.2em; font-weight: bold;
+            color: var(--primary-color); letter-spacing: 1px; line-height: 1.6;
+        }
+        .cognition-anchor .icon { display: block; font-size: 1.5em; margin-bottom: 10px; }
+        
+        #regen-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 40px;
+            font-family: 'Fira Code', monospace;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--bg-color);
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 2px;
+        }
+
+        #regen-button:hover {
+            background-color: #fff;
+            box-shadow: 0 0 15px var(--primary-color);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container" id="main-container">
+        <div class="header-block">
+            <h1>🔥【语言出血系统·三维混合模块激活】🔥</h1>
+            <h2><span class="icon">🧠</span>模块二 × 模块三：名词短语 + 空间语言 = 混合认知宇宙</h2>
+            <h3><span class="icon">🎯</span>不是“更复杂的句子”，是语言在空间中坍缩的量子态</h3>
+        </div>
+
+        <!-- DAY 1 -->
+        <div class="day-section">
+            <div class="day-header">
+                <h4><span class="icon">📆</span>第一天出血语块</h4>
+                <p><span class="icon">📍</span>场景：在家中崩溃与重组</p>
+                <p><span class="icon">🧠</span>注入结构：minulla on + olen ...ssa / ...lla / ...välissä</p>
+            </div>
+            <ul class="sentence-list" id="day1-list"></ul>
+            <div class="cognition-anchor"><span class="icon">🧠</span>这不是“句子”，这是“你的语言宇宙如何坍缩”。</div>
+        </div>
+
+        <!-- DAY 2 -->
+        <div class="day-section">
+            <div class="day-header">
+                <h4><span class="icon">📆</span>第二天出血语块</h4>
+                <p><span class="icon">📍</span>场景：街头生存与空间拥有</p>
+                <p><span class="icon">🧠</span>注入结构：minulla on + menen / tulen / olen + 方向格</p>
+            </div>
+            <ul class="sentence-list" id="day2-list"></ul>
+            <div class="cognition-anchor"><span class="icon">🧠</span>这不是“语言表达”，这是“物品在空间中的语言坍缩”。</div>
+        </div>
+
+        <!-- DAY 3 -->
+        <div class="day-section">
+            <div class="day-header">
+                <h4><span class="icon">📆</span>第三天出血语块</h4>
+                <p><span class="icon">📍</span>场景：城市中的语言渗透与量子移动</p>
+                <p><span class="icon">🧠</span>注入结构：minulla on + menen / tulen + vieressä / keskellä / yli / läpi</p>
+            </div>
+            <ul class="sentence-list" id="day3-list"></ul>
+            <div class="cognition-anchor"><span class="icon">🧠</span>这不是“表达”，这是“语言如何在空间中渗透”。</div>
+        </div>
+        
+        <button id="regen-button" onclick="regenerateAll()">[ UUDELLEENKALIBROI ]</button>
+    </div>
+
+<script>
+    // --- Word Banks ---
+    const possessions = ['kirja', 'muki', 'kissa', 'kännykkä', 'lippu', 'reppu', 'avain', 'tee', 'laukku', 'leipä', 'vesipullo'];
+    const locations = ['talo', 'pöytä', 'huone', 'tasku', 'seinä', 'katu', 'asema', 'kauppa', 'lattia', 'tuoli', 'puisto'];
+    const relations = ['vieressä', 'päällä', 'alla', 'keskellä', 'takana', 'edessä', 'ääressä'];
+    const movements = ['läpi', 'yli', 'sisään', 'ulos'];
+    const directions = ['pohjoispuolella', 'itäosassa', 'vasemmalle', 'oikealle', 'eteenpäin'];
+
+    // --- Grammar Engine ---
+    // A simplified grammar engine for A1 level.
+    function getGenitive(word) {
+        // Very simplified rule, not covering all cases like consonant gradation.
+        if (['a', 'ä', 'o', 'ö', 'u', 'y'].includes(word.slice(-1))) {
+            return word + 'n';
+        }
+        if (word.slice(-1) === 'i') {
+            return word.slice(0, -1) + 'en';
+        }
+        if (word.slice(-1) === 'e') {
+            return word.slice(0, -1) + 'en';
+        }
+        return word + 'n'; // Default fallback
+    }
+    
+    function getInessive(word) { // -ssa/-ssä
+        const harmony = (word.match(/[aou]/g)) ? 'ssa' : 'ssä';
+        if (['a', 'ä', 'o', 'ö', 'u', 'y'].includes(word.slice(-1))) return word + harmony;
+        if (word.slice(-1) === 'i') return word.slice(0, -1) + 'e' + harmony;
+        if (word.slice(-1) === 'e') return word + harmony;
+        return word + 'i' + harmony;
+    }
+
+    function getAdessive(word) { // -lla/-llä
+        const harmony = (word.match(/[aou]/g)) ? 'lla' : 'llä';
+        return word + harmony;
+    }
+
+    // --- Sentence Templates ---
+    const templatesDay1 = [
+        () => {
+            const p = getRandom(possessions);
+            const l = getRandom(locations);
+            return `<span class="module2-core">Minulla on ${p}</span> <span class="module3-core">${getInessive(l)}</span>.`;
+        },
+        () => {
+            const p = getRandom(possessions);
+            const l = getRandom(locations);
+            return `<span class="module2-core">Minulla on ${p}</span> <span class="module3-core">${getAdessive(l)}</span>.`;
+        },
+        () => {
+            const l1 = getRandom(locations);
+            const l2 = getRandom(locations);
+            return `Olen <span class="module3-core">${getGenitive(l1)} ja ${getGenitive(l2)} välissä</span>.`;
+        },
+        () => {
+             const p = getRandom(possessions);
+             const l = getRandom(locations);
+             const r = getRandom(relations);
+             return `<span class="module2-core">Minun ${p} on</span> <span class="module3-core">${getGenitive(l)} ${r}</span>.`;
+        }
+    ];
+    
+    const templatesDay2 = [
+        () => {
+            const p = getRandom(possessions);
+            const l = getRandom(locations);
+            return `<span class="module2-core">Minulla on ${p}</span> ja menen <span class="module3-core">${getGenitive(l)} sisään</span>.`;
+        },
+        () => {
+            const l = getRandom(locations);
+            const d = getRandom(directions);
+            return `Olen <span class="module3-core">${getGenitive(l)} ${d}</span>.`;
+        },
+        () => {
+            const p = getRandom(possessions);
+            const l = getRandom(locations);
+            return `Menen <span class="module3-core">${getGenitive(l)} taakse</span> ja <span class="module2-core">minulla on ${p}</span>.`;
+        }
+    ];
+
+    const templatesDay3 = [
+         () => {
+            const p = getRandom(possessions);
+            const l = getRandom(locations);
+            const m = getRandom(movements);
+            return `<span class="module2-core">Minulla on ${p}</span> ja menen <span class="module3-core">${getGenitive(l)} ${m}</span>.`;
+        },
+        () => {
+            const l = getRandom(locations);
+            const r = getRandom(relations);
+            return `Kuljen <span class="module3-core">${getGenitive(l)} ${r}</span> ja <span class="module2-core">minulla on kiire</span>.`; // kiire = hurry (new common word)
+        },
+        () => {
+            const p = getRandom(possessions);
+            return `Menen <span class="module3-core">sinun vierellesi</span> ja <span class="module2-core">minulla on ${p}</span>.`;
+        }
+    ];
+
+    // --- Helper and Main Logic ---
+    function getRandom(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function generateSentence(templates) {
+        const template = getRandom(templates);
+        return template();
+    }
+    
+    const finnishLang = 'fi-FI';
+    let isSpeaking = false;
+
+    function speakText(text) {
+        if (!('speechSynthesis' in window)) return;
+        if (isSpeaking) { window.speechSynthesis.cancel(); }
+        isSpeaking = true;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = finnishLang;
+        utterance.rate = 0.95;
+        const voices = window.speechSynthesis.getVoices();
+        let selectedVoice = voices.find(voice => voice.lang.toLowerCase() === 'fi-fi') || voices.find(voice => voice.lang.toLowerCase().startsWith('fi'));
+        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.onend = () => { isSpeaking = false; };
+        utterance.onerror = () => { isSpeaking = false; };
+        window.speechSynthesis.speak(utterance);
+    }
+    
+    function populateAndAnimateList(containerId, templates, count) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+            const li = document.createElement('li');
+            li.innerHTML = generateSentence(templates);
+            
+            const button = document.createElement('button');
+            button.className = 'tts-button';
+            button.innerHTML = '🔊';
+            button.title = '播放';
+            button.onclick = (event) => {
+                event.stopPropagation();
+                const clone = li.cloneNode(true);
+                clone.querySelectorAll('.tts-button').forEach(btn => btn.remove());
+                speakText(clone.textContent.trim());
+            };
+            li.appendChild(button);
+            
+            container.appendChild(li);
+            
+            setTimeout(() => {
+                li.style.opacity = '1';
+                li.style.transform = 'translateX(0)';
+            }, i * 120);
+        }
+    }
+    
+    function regenerateAll() {
+        const lists = ['day1-list', 'day2-list', 'day3-list'];
+        const templates = [templatesDay1, templatesDay2, templatesDay3];
+        
+        lists.forEach(listId => {
+            const listItems = document.getElementById(listId).querySelectorAll('li');
+            listItems.forEach((li, index) => {
+                setTimeout(() => {
+                    li.style.opacity = '0';
+                    li.style.transform = 'translateX(20px)';
+                }, index * 30);
+            });
+        });
+
+        setTimeout(() => {
+            populateAndAnimateList('day1-list', templatesDay1, 10);
+            populateAndAnimateList('day2-list', templatesDay2, 10);
+            populateAndAnimateList('day3-list', templatesDay3, 10);
+        }, lists.length * 10 * 30 + 200);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initial population
+        regenerateAll();
+    });
+
+</script>
+</body>
+</html>
