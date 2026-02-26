@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精读文本-7.2 - Sandrine menee tiskille (Sandrine 去柜台点单)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap');
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-back-bg: #1a202c;
+            --accent-color: #8be9fd;
+            --highlight-color: #ff79c6;
+            --text-color: #2d3748;
+            --bg-color: #f0f4f8;
+        }
+
+        body {
+            font-family: 'Noto Sans', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-color);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        h1 { text-align: center; color: #1a202c; margin: 20px 0 5px 0; font-weight: 800; font-size: 2rem; }
+        .subtitle { text-align: center; color: #718096; margin-bottom: 30px; max-width: 760px; font-size: 0.95rem; line-height: 1.5; }
+
+        .supplement-section,
+        .vocab-section {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .supplement-section { margin-top: 10px; }
+        .vocab-section { margin-top: 30px; margin-bottom: 50px; }
+        .supplement-section h2,
+        .supplement-section h3,
+        .vocab-section h2 { margin-top: 0; color: #1f2937; }
+        .supplement-section p { line-height: 1.75; margin: 8px 0; }
+        .supplement-section ol { margin: 6px 0 10px 22px; line-height: 1.7; }
+        .supplement-section ul { margin: 6px 0 10px 18px; line-height: 1.7; }
+        .supplement-section li { margin: 4px 0; }
+        .supplement-section code,
+        .vocab-section code { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 1px 6px; }
+
+        .word-tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.95);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            max-width: 280px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: opacity 0.2s ease;
+        }
+        .word-tooltip.show { opacity: 1; visibility: visible; }
+        .tooltip-proto { color: #8be9fd; font-weight: 800; font-size: 1.1em; display: block; border-bottom: 1px solid #444; margin-bottom: 5px; }
+        .tooltip-meaning { color: #f8f8f2; font-weight: 600; display: block; }
+        .tooltip-form { color: #ff79c6; font-size: 0.8rem; display: block; margin-top: 3px; }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1200px;
+            padding-bottom: 50px;
+        }
+
+        .card {
+            height: 620px;
+            cursor: pointer;
+            position: relative;
+            perspective: 1500px;
+        }
+
+        .card.is-flipped { z-index: 10; }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            transform-origin: center;
+        }
+
+        .card:hover .card-inner { transform: scale(0.98); }
+        .card.is-flipped .card-inner { transform: rotateY(180deg) scale(0.98); }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .card-front {
+            background: white;
+            padding: 30px;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .fi-sentence {
+            font-size: 1.22rem;
+            font-weight: 700;
+            color: #1e293b;
+            text-align: center;
+            line-height: 1.65;
+        }
+
+        .v-word {
+            text-decoration: underline dotted #cbd5e1;
+            cursor: help;
+            font-weight: 600;
+        }
+        .v-word:hover { background: #f1f5f9; text-decoration-style: solid; }
+
+        .card-back {
+            background: var(--card-back-bg);
+            color: #f8f8f2;
+            transform: rotateY(180deg);
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .back-title { font-size: 0.8rem; font-weight: 800; color: #718096; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .analysis-block { margin-bottom: 15px; border-bottom: 1px solid #2d3748; padding-bottom: 12px; }
+        .analysis-block:last-child { border-bottom: none; }
+        .chunk-item { border-left: 3px solid #48bb78; padding-left: 10px; margin-bottom: 8px; }
+        .chunk-fi { font-weight: 700; display: block; font-size: 1rem; }
+        .chunk-zh { font-size: 0.85rem; color: #a0aec0; display: block; }
+        .gram-item { font-size: 0.9rem; line-height: 1.55; margin-bottom: 6px; }
+        .gram-item strong { color: var(--accent-color); }
+        .gram-item.level-2 { padding-left: 10px; }
+        .gram-item.level-3 { padding-left: 20px; }
+        .gram-item.level-4 { padding-left: 30px; }
+        .back-translation { font-size: 1.05rem; font-weight: 600; border-left: 4px solid #ed64a6; padding-left: 12px; margin-top: 10px; }
+
+        .tts-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            margin-top: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: transform 0.2s;
+        }
+        .tts-btn:hover { transform: scale(1.1); }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; color: #64748b; font-size: 0.8rem; border-bottom: 2px solid #f1f5f9; }
+        td { padding: 15px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        .sana-fi { font-weight: 700; color: #334155; }
+
+        .controls {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        #voice-select { border-radius: 20px; padding: 5px 15px; border: 1px solid #ddd; }
+
+        @media (max-width: 480px) {
+            .card { height: 680px; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <select id="voice-select"></select>
+    </div>
+
+    <h1>📖 Sandrine menee tiskille (Sandrine 去柜台点单)</h1>
+    <p class="subtitle">点击卡片翻转查看语法拆解。悬停或点击单词查看原型、中文与词法形式；点击单词可朗读单词，点击按钮可朗读整句。</p>
+
+    <div class="card-container">
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 1</div>
+            <div class="fi-sentence"><span class="v-word">Tarjoilija</span> <span class="v-word">tulee</span> <span class="v-word">keittiöstä</span> <span class="v-word">kassalle</span> <span class="v-word">ja</span> <span class="v-word">tervehtii</span> <span class="v-word">Sandrinea</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Tarjoilija tulee keittiöstä kassalle ja tervehtii Sandrinea.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Tarjoilija tulee / keittiöstä kassalle / ja tervehtii Sandrinea.</span><span class="chunk-zh">服务员来 / 从厨房到收银台 / 并且问候 Sandrine。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-1"><strong>方位格三部曲：</strong></div>
+                <div class="gram-item level-2">&bull; <strong><code>keittiöstä</code>：</strong>出格 <code>-sta</code>，表示“从厨房里出来”。</div>
+                <div class="gram-item level-2">&bull; <strong><code>kassalle</code>：</strong>向格 <code>-lle</code>，表示“走向收银台”（柜台多按开放平面处理）。</div>
+                <div class="gram-item level-1"><strong>动词支配 (Reaktio)：</strong></div>
+                <div class="gram-item level-2">&bull; <strong><code>tervehtiä</code></strong>（问候）后接部分格，所以用 <code>Sandrinea</code>。</div>
+            </div>
+            <div class="back-translation"><strong>服务员从厨房来到收银台，向 Sandrine 打招呼。</strong></div>        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 2</div>
+            <div class="fi-sentence"><span class="v-word">Moi</span>, <span class="v-word">mitäs</span> <span class="v-word">sulle</span>?</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Moi, mitäs sulle?")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Moi, / mitäs sulle?</span><span class="chunk-zh">嗨，/ 给你来点什么？</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-2">&bull; <strong><code>mitäs</code></strong> = <code>mitä</code> + <code>s</code>，口语语气词，让问句更随意亲切（类似“要点啥？”）。</div>
+                <div class="gram-item level-2">&bull; <strong><code>sulle</code></strong> = <code>sinulle</code>（向格），直译接近“什么给你/属于你？”</div>
+            </div>
+            <div class="back-translation"><strong>嗨，你要点什么？</strong></div>        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 3</div>
+            <div class="fi-sentence"><span class="v-word">Moi</span>. <span class="v-word">Yksi</span> <span class="v-word">tavallinen</span> <span class="v-word">kahvi</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Moi. Yksi tavallinen kahvi.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Moi. / Yksi tavallinen kahvi.</span><span class="chunk-zh">嗨。/ 一杯普通咖啡。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-2">&bull; <strong>点单省略句：</strong>不说动词时，名词短语通常保持原型（Nominatiivi）。</div>
+                <div class="gram-item level-2">&bull; <code>yksi tavallinen kahvi</code> 直接表示下单内容，语用上非常自然。</div>
+            </div>
+            <div class="back-translation"><strong>嗨。一杯普通咖啡。</strong></div>        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 4</div>
+            <div class="fi-sentence"><span class="v-word">Otatko</span> <span class="v-word">pelkän</span> <span class="v-word">kahvin</span>?</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Otatko pelkän kahvin?")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Otatko / pelkän kahvin?</span><span class="chunk-zh">你拿/要 / 光咖啡吗？</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-1"><strong>宾语规则 (Objekti) 重点：</strong></div>
+                <div class="gram-item level-2">&bull; 动词 <code>ottaa</code>（拿/要）在这里表示“买一个具体对象”。</div>
+                <div class="gram-item level-2">&bull; 肯定句 + 完整动作时，单数宾语常用属格/宾格 <code>-n</code>。</div>
+                <div class="gram-item level-2">&bull; 词形：<code>pelkkä -&gt; pelkän</code>，<code>kahvi -&gt; kahvin</code>。</div>
+            </div>
+            <div class="back-translation"><strong>就要光咖啡吗？（意为：不加别的点心了吗？）</strong></div>        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 5</div>
+            <div class="fi-sentence"><span class="v-word">En</span>. <span class="v-word">Haluaisin</span> <span class="v-word">myös</span> <span class="v-word">jonkun</span> <span class="v-word">pullan</span>... <span class="v-word">Mitä</span> <span class="v-word">sinä</span> <span class="v-word">suosittelet</span>?</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("En. Haluaisin myös jonkun pullan... Mitä sinä suosittelet?")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">En. / Haluaisin myös / jonkun pullan... / Mitä sinä suosittelet?</span><span class="chunk-zh">不。/ 我也想要 / 某个甜面包... / 你推荐什么？</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-1"><strong>礼貌用语 (Konditionaali)：</strong></div>
+                <div class="gram-item level-2">&bull; <strong><code>haluaisin</code></strong>：<code>haluta</code> + <code>-isi-</code>，语气更委婉。</div>
+                <div class="gram-item level-1"><strong>宾语规则：</strong></div>
+                <div class="gram-item level-2">&bull; <code>jonkun pullan</code> 为单数完整宾语，用 <code>-n</code> 形态。</div>
+                <div class="gram-item level-2">&bull; <code>jonkun</code> 来自不定代词 <code>joku</code> 的属格/宾格。</div>
+                <div class="gram-item level-1"><strong>动词支配：</strong></div>
+                <div class="gram-item level-2">&bull; <code>suositella</code>（推荐）后接部分格：<code>mitä</code>。</div>
+            </div>
+            <div class="back-translation"><strong>不是。我也想来个甜面包……你推荐什么？</strong></div>        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 6</div>
+            <div class="fi-sentence"><span class="v-word">Meillä</span> <span class="v-word">olisi</span> <span class="v-word">kahvi</span> <span class="v-word">ja</span> <span class="v-word">korvapuusti</span> <span class="v-word">tarjouksessa</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Meillä olisi kahvi ja korvapuusti tarjouksessa.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Meillä olisi / kahvi ja korvapuusti / tarjouksessa.</span><span class="chunk-zh">我们这里会有 / 咖啡和肉桂卷 / 在特价中。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-2">&bull; <strong><code>meillä olisi</code></strong>：服务业高频条件式表达，比 <code>meillä on</code> 更客气。</div>
+                <div class="gram-item level-2">&bull; <strong><code>tarjouksessa</code></strong>：内格，固定搭配 <code>olla tarjouksessa</code>（在特价中）。</div>
+                <div class="gram-item level-2">&bull; <strong><code>korvapuusti</code></strong>：芬兰常见肉桂卷词汇（文化词）。</div>
+            </div>
+            <div class="back-translation"><strong>我们这儿咖啡和肉桂卷正在搞活动。</strong></div>        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 7</div>
+            <div class="fi-sentence"><span class="v-word">Hienoa</span>. <span class="v-word">Minä</span> <span class="v-word">tykkään</span> <span class="v-word">korvapuustista</span>. <span class="v-word">Otan</span> <span class="v-word">pienen</span> <span class="v-word">kahvin</span> <span class="v-word">ja</span> <span class="v-word">korvapuustin</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Hienoa. Minä tykkään korvapuustista. Otan pienen kahvin ja korvapuustin.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Hienoa. / Minä tykkään korvapuustista.</span><span class="chunk-zh">太好了。/ 我喜欢肉桂卷。</span></div>
+                <div class="chunk-item"><span class="chunk-fi">Otan / pienen kahvin / ja korvapuustin.</span><span class="chunk-zh">我要 / 小杯咖啡 / 和一个肉桂卷。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-1"><strong>动词支配 (Reaktio)：</strong></div>
+                <div class="gram-item level-2">&bull; <strong><code>tykätä + mistä</code></strong>：必须用出格 <code>-sta</code>，所以是 <code>korvapuustista</code>。</div>
+                <div class="gram-item level-1"><strong>宾语规则复习：</strong></div>
+                <div class="gram-item level-2">&bull; <code>otan</code> 表示肯定、完整购买动作，宾语用全格形态。</div>
+                <div class="gram-item level-2">&bull; <code>pieni kahvi -&gt; pienen kahvin</code>，<code>korvapuusti -&gt; korvapuustin</code>。</div>
+            </div>
+            <div class="back-translation"><strong>太好了。我喜欢肉桂卷。我要一个小杯咖啡和一个肉桂卷。</strong></div>        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 8</div>
+            <div class="fi-sentence"><span class="v-word">Voisinko</span> <span class="v-word">saada</span> <span class="v-word">myös</span> <span class="v-word">lasin</span> <span class="v-word">vettä</span>?</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Voisinko saada myös lasin vettä?")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Voisinko saada / myös / lasin vettä?</span><span class="chunk-zh">我能不能得到 / 也 / 一杯水？</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-1"><strong>超级礼貌提问：</strong></div>
+                <div class="gram-item level-2">&bull; <code>voida -&gt; voisinko</code>：<code>-isi-</code>（条件）+ <code>-n</code>（我）+ <code>-ko</code>（疑问）。</div>
+                <div class="gram-item level-1"><strong>数量结构：</strong></div>
+                <div class="gram-item level-2">&bull; <code>lasin</code>（杯子，单数全格）+ <code>vettä</code>（水，物质名词部分格）。</div>
+            </div>
+            <div class="back-translation"><strong>能不能也给我一杯水？</strong></div>        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 9</div>
+            <div class="fi-sentence"><span class="v-word">Totta</span> <span class="v-word">kai</span>. <span class="v-word">Näin</span>, <span class="v-word">ole</span> <span class="v-word">hyvä</span>. <span class="v-word">Se</span> <span class="v-word">olis</span> <span class="v-word">kolme</span> <span class="v-word">euroo</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Totta kai. Näin, ole hyvä. Se olis kolme euroo.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Totta kai. / Näin, ole hyvä. / Se olis kolme euroo.</span><span class="chunk-zh">当然。/ 给您，请。/ 一共三欧。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-2">&bull; <strong><code>olis</code></strong> 是口语 <code>olisi</code>，报价时常用条件式，语气更柔和。</div>
+                <div class="gram-item level-2">&bull; <strong><code>euroo</code></strong> 是口语 <code>euroa</code>，数字 <code>3</code> 后接部分格。</div>
+            </div>
+            <div class="back-translation"><strong>当然可以。给您。一共是三欧元。</strong></div>        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 10</div>
+            <div class="fi-sentence"><span class="v-word">Pieni</span> <span class="v-word">hetki</span>... <span class="v-word">Tässä</span>, <span class="v-word">ole</span> <span class="v-word">hyvä</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Pieni hetki... Tässä, ole hyvä.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Pieni hetki... / Tässä, ole hyvä.</span><span class="chunk-zh">稍等一下…… / 给您，请。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-2">&bull; <strong><code>pieni hetki</code></strong>：服务场景高频表达，“稍等片刻”。</div>
+                <div class="gram-item level-2">&bull; <strong><code>Tässä, ole hyvä</code></strong>：递交物品的固定礼貌表达。</div>
+            </div>
+            <div class="back-translation"><strong>稍等……给您钱。</strong></div>        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 11</div>
+            <div class="fi-sentence"><span class="v-word">Kiitti</span>. <span class="v-word">Tarviitko</span> <span class="v-word">kuitin</span>?</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kiitti. Tarviitko kuitin?")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Kiitti. / Tarviitko kuitin?</span><span class="chunk-zh">谢了。/ 你需要小票吗？</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-2">&bull; <strong><code>Kiitti</code></strong> = <code>kiitos</code>（口语）。</div>
+                <div class="gram-item level-2">&bull; <strong><code>Tarviitko</code></strong> = <code>tarvitsetko</code>（口语压缩；Type 5 相关词形变化）。</div>
+                <div class="gram-item level-2">&bull; <strong><code>kuitin</code></strong>：肯定疑问句中的完整宾语，用 <code>-n</code>。</div>
+            </div>
+            <div class="back-translation"><strong>谢了。需要小票吗？</strong></div>        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 12</div>
+            <div class="fi-sentence"><span class="v-word">En</span> <span class="v-word">tarvitse</span> <span class="v-word">kuittia</span>. <span class="v-word">Kiitos</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("En tarvitse kuittia. Kiitos.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">En tarvitse / kuittia. / Kiitos.</span><span class="chunk-zh">我不需要 / 小票。/ 谢谢。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-1"><strong>宾语规则（否定句）终极重点：</strong></div>
+                <div class="gram-item level-2">&bull; 上一句：<code>Tarviitko kuitin?</code>（肯定疑问，<code>kuitin</code>）。</div>
+                <div class="gram-item level-2">&bull; 本句：<code>En tarvitse kuittia.</code>（否定句，宾语强制改部分格 <code>kuittia</code>）。</div>
+                <div class="gram-item level-2">&bull; 规则：只要出现 <code>ei/en</code> 否定，宾语立即转 Partitiivi。</div>
+            </div>
+            <div class="back-translation"><strong>不用小票了。谢谢。</strong></div>        </div></div></div>
+    </div>
+
+        <div class="supplement-section">
+        <h2>2.1 总结该段在全文中的意义和作用</h2>
+        <p>这段对话是教科书级的“宾语格 (Objekti)”教学案例。它通过一个连贯的购买过程，完整展示了宾语的三种形态：</p>
+        <ol>
+            <li><strong>原型 (Nominatiivi)：</strong>点单短语（<code>Yksi tavallinen kahvi</code>）。</li>
+            <li><strong>属格/宾格 (Genetiivi -n)：</strong>肯定句中买特定对象（<code>Otan pienen kahvin</code>、<code>Otatko kuitin?</code>）。</li>
+            <li><strong>部分格 (Partitiivi -a)：</strong>否定句（<code>En tarvitse kuittia</code>）或物质名词（<code>Lasin vettä</code>）。</li>
+        </ol>
+
+        <h3>语法点补充 1：宾语规则最小判断法</h3>
+        <ul>
+            <li>先看是否是否定句：若有 <code>ei/en</code>，宾语优先部分格。</li>
+            <li>若为肯定句，再看是否“完整、确定、达成结果”：常用全格（单数多为 <code>-n</code>）。</li>
+            <li>数量结构或物质名词（如水、咖啡）常落在部分格。</li>
+        </ul>
+
+        <h3>语法点补充 2：条件式在服务语境中的作用</h3>
+        <ul>
+            <li><code>Haluaisin</code>、<code>Voisinko</code>、<code>olisi/olis</code> 都是“降低语气强度”的策略。</li>
+            <li>在点单、报价、请求中，这类表达比直陈式更自然礼貌。</li>
+        </ul>
+    </div>
+        <div class="vocab-section">
+        <h2 style="text-align:center">2.2 重点词汇语法分解表</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>单词 (Sana)</th>
+                    <th>原型 (Perusmuoto)</th>
+                    <th>意思</th>
+                    <th>词干 (Vartalo)</th>
+                    <th>语法点 (Kielioppi)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td class="sana-fi"><strong>Haluaisin</strong></td><td>Haluta</td><td>我想要(礼貌)</td><td>Haluaisi-</td><td><strong>条件式</strong>: <code>Halua + isi + n</code>。表示委婉请求。</td></tr>
+                <tr><td class="sana-fi"><strong>Suosittelet</strong></td><td>Suositella</td><td>你推荐</td><td>Suosittele-</td><td><strong>Type 3</strong>: <code>ll -&gt; l</code>（无KPT变化，但属于 <code>tella</code> 组）。</td></tr>
+                <tr><td class="sana-fi"><strong>Tarjouksessa</strong></td><td>Tarjous</td><td>在特价</td><td>Tarjoukse-</td><td><strong>-us/-os 名词</strong>: 词干变成 <code>-kse</code>，再接 <code>-ssa</code>。</td></tr>
+                <tr><td class="sana-fi"><strong>Tykätä</strong></td><td>Tykätä</td><td>喜欢</td><td>Tykkää-</td><td><strong>Reaktio</strong>: 必须接出格 <code>-sta</code>。常见说明：<code>k -&gt; kk</code>。</td></tr>
+                <tr><td class="sana-fi"><strong>Pienen</strong></td><td>Pieni</td><td>小的</td><td>Piene-</td><td><strong>-ni 名词/形容词</strong>: 词干变成 <code>-ne</code>。这里是属格 <code>-n</code>。</td></tr>
+                <tr><td class="sana-fi"><strong>Kahvin</strong></td><td>Kahvi</td><td>咖啡</td><td>Kahvi-</td><td><strong>宾格</strong>: <code>Kahvi + n</code>。因为是肯定句宾语。</td></tr>
+                <tr><td class="sana-fi"><strong>Voisinko</strong></td><td>Voida</td><td>我能...吗</td><td>Voisi-</td><td><strong>条件式疑问</strong>: <code>Voida + isi + n + ko</code>。</td></tr>
+                <tr><td class="sana-fi"><strong>Tarviitko</strong></td><td>Tarvita</td><td>你需要吗</td><td>Tarvitse-</td><td><strong>口语压缩</strong>: <code>Tarvitsetko -&gt; Tarviitko</code>（Type 5）。</td></tr>
+                <tr><td class="sana-fi"><strong>Kuitin</strong></td><td>Kuitti</td><td>收据/小票</td><td>Kuiti-</td><td><strong>KPT</strong>: <code>tt -&gt; t</code>。肯定句宾语用 <code>-n</code>。</td></tr>
+                <tr><td class="sana-fi"><strong>Kuittia</strong></td><td>Kuitti</td><td>收据/小票</td><td>Kuitti-</td><td><strong>Partitiivi</strong>: 否定句宾语强制部分格 <code>-a</code>；且部分格常用强词干 <code>tt</code>。</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="word-tooltip" id="wordTooltip"></div>
+
+    <script>
+        const vocabularyData = {
+            "tarjoilija": { "prototype": "tarjoilija", "chinese": "服务员", "form": "主格" },
+            "tulee": { "prototype": "tulla", "chinese": "来", "form": "3单" },
+            "keittiöstä": { "prototype": "keittiö", "chinese": "从厨房", "form": "出格" },
+            "kassalle": { "prototype": "kassa", "chinese": "到收银台", "form": "向格" },
+            "ja": { "prototype": "ja", "chinese": "和/并且", "form": "连词" },
+            "tervehtii": { "prototype": "tervehtiä", "chinese": "问候", "form": "3单" },
+            "sandrinea": { "prototype": "Sandrine", "chinese": "Sandrine（宾语）", "form": "部分格" },
+            "moi": { "prototype": "moi", "chinese": "嗨", "form": "问候语" },
+            "mitäs": { "prototype": "mitä + s", "chinese": "要点啥（口语）", "form": "疑问口语" },
+            "sulle": { "prototype": "sinulle", "chinese": "给你/你这边", "form": "口语向格" },
+            "yksi": { "prototype": "yksi", "chinese": "一个/一杯", "form": "数词" },
+            "tavallinen": { "prototype": "tavallinen", "chinese": "普通的", "form": "形容词主格" },
+            "kahvi": { "prototype": "kahvi", "chinese": "咖啡", "form": "主格" },
+            "otatko": { "prototype": "ottaa", "chinese": "你要吗", "form": "2单疑问" },
+            "pelkän": { "prototype": "pelkkä", "chinese": "仅仅/只", "form": "属格" },
+            "kahvin": { "prototype": "kahvi", "chinese": "咖啡（完整宾语）", "form": "单数全格" },
+            "en": { "prototype": "ei", "chinese": "不", "form": "否定动词1单" },
+            "haluaisin": { "prototype": "haluta", "chinese": "我想要（礼貌）", "form": "1单条件式" },
+            "myös": { "prototype": "myös", "chinese": "也", "form": "副词" },
+            "jonkun": { "prototype": "joku", "chinese": "某一个", "form": "属格/宾格" },
+            "pullan": { "prototype": "pulla", "chinese": "面包（宾语）", "form": "单数全格" },
+            "mitä": { "prototype": "mikä", "chinese": "什么", "form": "部分格/疑问词" },
+            "sinä": { "prototype": "sinä", "chinese": "你", "form": "主格" },
+            "suosittelet": { "prototype": "suositella", "chinese": "你推荐", "form": "2单" },
+            "meillä": { "prototype": "me", "chinese": "我们这里", "form": "接格" },
+            "olisi": { "prototype": "olla", "chinese": "会有（礼貌）", "form": "3单条件式" },
+            "korvapuusti": { "prototype": "korvapuusti", "chinese": "肉桂卷", "form": "主格" },
+            "tarjouksessa": { "prototype": "tarjous", "chinese": "在特价中", "form": "内格" },
+            "hienoa": { "prototype": "hieno", "chinese": "太好了", "form": "部分格/感叹" },
+            "minä": { "prototype": "minä", "chinese": "我", "form": "主格" },
+            "tykkään": { "prototype": "tykätä", "chinese": "我喜欢", "form": "1单" },
+            "korvapuustista": { "prototype": "korvapuusti", "chinese": "喜欢肉桂卷（从格）", "form": "出格" },
+            "otan": { "prototype": "ottaa", "chinese": "我要/我拿", "form": "1单" },
+            "pienen": { "prototype": "pieni", "chinese": "小的", "form": "属格" },
+            "korvapuustin": { "prototype": "korvapuusti", "chinese": "肉桂卷（宾语）", "form": "单数全格" },
+            "voisinko": { "prototype": "voida", "chinese": "我能否…", "form": "1单条件疑问" },
+            "saada": { "prototype": "saada", "chinese": "得到/拿到", "form": "1不定式" },
+            "lasin": { "prototype": "lasi", "chinese": "一杯（的）", "form": "单数全格" },
+            "vettä": { "prototype": "vesi", "chinese": "水", "form": "部分格" },
+            "totta": { "prototype": "tosi", "chinese": "当然/确实", "form": "部分格固定表达" },
+            "kai": { "prototype": "kai", "chinese": "当然/大概", "form": "语气副词" },
+            "näin": { "prototype": "näin", "chinese": "这样/给（你）", "form": "副词" },
+            "ole": { "prototype": "olla", "chinese": "请（您）", "form": "祈使式" },
+            "hyvä": { "prototype": "hyvä", "chinese": "好/请", "form": "形容词主格" },
+            "se": { "prototype": "se", "chinese": "那/它", "form": "主格" },
+            "olis": { "prototype": "olisi", "chinese": "会是（口语）", "form": "口语条件式" },
+            "kolme": { "prototype": "kolme", "chinese": "三", "form": "数词" },
+            "euroo": { "prototype": "euroa", "chinese": "欧元（口语）", "form": "部分格口语" },
+            "pieni": { "prototype": "pieni", "chinese": "小/短暂", "form": "主格" },
+            "hetki": { "prototype": "hetki", "chinese": "片刻", "form": "主格" },
+            "tässä": { "prototype": "tässä", "chinese": "在这里/给你", "form": "内格/固定表达" },
+            "kiitti": { "prototype": "kiitos", "chinese": "谢谢（口语）", "form": "口语" },
+            "tarviitko": { "prototype": "tarvitsetko", "chinese": "你需要吗（口语）", "form": "2单疑问" },
+            "kuitin": { "prototype": "kuitti", "chinese": "小票（完整宾语）", "form": "单数全格" },
+            "tarvitse": { "prototype": "tarvita", "chinese": "需要", "form": "1单否定词干" },
+            "kuittia": { "prototype": "kuitti", "chinese": "小票（否定句宾语）", "form": "部分格" },
+            "kiitos": { "prototype": "kiitos", "chinese": "谢谢", "form": "感叹词" }
+        };
+
+        function flipCard(card) {
+            card.classList.toggle('is-flipped');
+        }
+
+        const tooltip = document.getElementById('wordTooltip');
+
+        function normalizeWord(text) {
+            return text.toLowerCase().replace(/[.,!?":;()]/g, '').trim();
+        }
+
+        function showTooltip(el) {
+            const word = normalizeWord(el.textContent);
+            const data = vocabularyData[word] || { prototype: el.textContent.trim(), chinese: '（未收录）', form: '词形' };
+            tooltip.innerHTML = '<span class="tooltip-proto">' + data.prototype + '</span><span class="tooltip-meaning">' + data.chinese + '</span><span class="tooltip-form">' + data.form + '</span>';
+            tooltip.classList.add('show');
+            const rect = el.getBoundingClientRect();
+            tooltip.style.left = (rect.left + window.scrollX + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+            tooltip.style.top = (rect.top + window.scrollY - tooltip.offsetHeight - 10) + 'px';
+        }
+
+        const synth = window.speechSynthesis;
+        const voiceSelect = document.getElementById('voice-select');
+        let voices = [];
+
+        function populateVoiceList() {
+            voices = synth.getVoices().sort((a, b) => a.name.localeCompare(b.name));
+            voiceSelect.innerHTML = voices
+                .map((v, i) => {
+                    const selected = v.lang.startsWith('fi') ? 'selected' : '';
+                    return '<option value="' + i + '" ' + selected + '>' + v.name + '</option>';
+                })
+                .join('');
+        }
+
+        function speak(text) {
+            if (synth.speaking) synth.cancel();
+            const utter = new SpeechSynthesisUtterance(text);
+            if (voices.length > 0 && voiceSelect.value !== '') utter.voice = voices[voiceSelect.value];
+            utter.lang = 'fi-FI';
+            utter.rate = 0.8;
+            synth.speak(utter);
+        }
+
+        populateVoiceList();
+        if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoiceList;
+
+        document.querySelectorAll('.v-word').forEach(el => {
+            el.addEventListener('mouseenter', (e) => {
+                e.stopPropagation();
+                showTooltip(el);
+            });
+            el.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showTooltip(el);
+                speak(el.textContent);
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.v-word')) tooltip.classList.remove('show');
+        });
+    </script>
+
+</body>
+</html>
+
+
+
+
+
