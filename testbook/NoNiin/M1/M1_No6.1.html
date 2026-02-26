@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精读文本-6.1 - 修复版</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap');
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-back-bg: #1a202c;
+            --accent-color: #8be9fd;
+            --highlight-color: #ff79c6;
+            --text-color: #2d3748;
+            --bg-color: #f0f4f8;
+        }
+
+        body {
+            font-family: 'Noto Sans', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-color);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        h1 { text-align: center; color: #1a202c; margin: 20px 0 5px 0; font-weight: 800; font-size: 2rem; }
+        .subtitle { text-align: center; color: #718096; margin-bottom: 30px; max-width: 700px; font-size: 0.95rem; line-height: 1.5; }
+
+        /* Prototype Tooltip */
+        .word-tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.95);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            max-width: 280px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: opacity 0.2s ease;
+        }
+        .word-tooltip.show { opacity: 1; visibility: visible; }
+        .tooltip-proto { color: #8be9fd; font-weight: 800; font-size: 1.1em; display: block; border-bottom: 1px solid #444; margin-bottom: 5px; }
+        .tooltip-meaning { color: #f8f8f2; font-weight: 600; display: block; }
+
+        /* Card Container */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1200px;
+            perspective: 2000px; /* Perspective moved here for better control */
+            padding-bottom: 50px;
+        }
+
+        .card { 
+            height: 480px; 
+            cursor: pointer;
+            position: relative;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Front Styling */
+        .card-front {
+            background: white;
+            padding: 30px;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .fi-sentence {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1e293b;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .v-word {
+            text-decoration: underline dotted #cbd5e1;
+            cursor: help;
+            font-weight: 600;
+        }
+        .v-word:hover { background: #f1f5f9; text-decoration-style: solid; }
+
+        /* Back Styling */
+        .card-back {
+            background: var(--card-back-bg);
+            color: #f8f8f2;
+            transform: rotateY(180deg);
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        /* Analysis Sections */
+        .back-title { font-size: 0.8rem; font-weight: 800; color: #718096; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        
+        .analysis-block { margin-bottom: 15px; border-bottom: 1px solid #2d3748; padding-bottom: 12px; }
+        .analysis-block:last-child { border-bottom: none; }
+
+        .chunk-item { border-left: 3px solid #48bb78; padding-left: 10px; margin-bottom: 8px; }
+        .chunk-fi { font-weight: 700; display: block; font-size: 1rem; }
+        .chunk-zh { font-size: 0.85rem; color: #a0aec0; }
+
+        .gram-item { font-size: 0.9rem; line-height: 1.5; margin-bottom: 6px; }
+        .gram-item strong { color: var(--accent-color); }
+        .gram-highlight { color: var(--highlight-color); font-weight: 700; }
+
+        .back-translation { font-size: 1.1rem; font-weight: 600; border-left: 4px solid #ed64a6; padding-left: 12px; margin-top: 10px; }
+
+        /* TTS Button */
+        .tts-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            margin-top: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: transform 0.2s;
+        }
+        .tts-btn:hover { transform: scale(1.1); }
+
+        /* Bottom Table */
+        .vocab-section { width: 100%; max-width: 1200px; margin-top: 50px; background: white; border-radius: 20px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; color: #64748b; font-size: 0.8rem; border-bottom: 2px solid #f1f5f9; }
+        td { padding: 15px 12px; border-bottom: 1px solid #f1f5f9; }
+        .sana-fi { font-weight: 700; color: #334155; }
+
+        .controls { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); width: 100%; padding: 10px; display: flex; justify-content: center; }
+        #voice-select { border-radius: 20px; padding: 5px 15px; border: 1px solid #ddd; }
+
+        @media (max-width: 480px) {
+            .card { height: 520px; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <select id="voice-select"></select>
+    </div>
+
+    <h1>📖 Chrisin ja Iinan aamu</h1>
+    <p class="subtitle">点击卡片翻转查看语法深度拆解。悬停单词查看原型。</p>
+
+    <div class="card-container">
+        
+        <!-- 句 1 -->
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 1</div>
+            <div class="fi-sentence"><span class="v-word">Kello</span> <span class="v-word">on</span> 6.50.</div>
+            <button class="tts-btn" onclick="event.stopPropagation(); speak('Kello on kuusi viisikymmentä.')">🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Kello on</span><span class="chunk-zh">时间是</span></div>
+                <div class="chunk-item"><span class="chunk-fi">6.50 (kuusi viisikymmentä)</span><span class="chunk-zh">6点50分</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item"><strong>变位:</strong> <span class="gram-highlight">on</span> (olla 的 3单)。</div>
+                <div class="gram-item"><strong>要点:</strong> 表达时间的标准句型。</div>
+            </div>
+            <div class="back-translation">现在是6点50分。</div>
+        </div></div></div>
+
+        <!-- 句 2 -->
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 2</div>
+            <div class="fi-sentence">Chris ja Iina <span class="v-word">nukkuvat</span>, mutta <span class="v-word">heidän</span> söpö <span class="v-word">Wilpertti-koiransa</span> <span class="v-word">ei</span> <span class="v-word">nuku</span>.</div>
+            <button class="tts-btn" onclick="event.stopPropagation(); speak('Chris ja Iina nukkuvat, mutta heidän söpö Wilpertti-koiransa ei nuku.')">🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Chris ja Iina nukkuvat</span><span class="chunk-zh">正在睡觉</span></div>
+                <div class="chunk-item"><span class="chunk-fi">mutta heidän söpö Wilpertti-koiransa</span><span class="chunk-zh">但是他们可爱的狗</span></div>
+                <div class="chunk-item"><span class="chunk-fi">ei nuku</span><span class="chunk-zh">没在睡</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 语法重点</span>
+                <div class="gram-item"><strong>所有格呼应:</strong> heidän (他们的) 需配合后缀 <strong>-nsa</strong>。</div>
+                <div class="gram-item"><strong>KPT强弱:</strong> <span class="gram-highlight">nukkuvat</span> (强级kk) vs <span class="gram-highlight">ei nuku</span> (否定弱级k)。</div>
+            </div>
+            <div class="back-translation">Chris和Iina正在睡觉，但是他们可爱的狗狗Wilpertti没在睡。</div>
+        </div></div></div>
+
+        <!-- 句 3 -->
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 3</div>
+            <div class="fi-sentence">Wilpertti <span class="v-word">nousee</span> ja <span class="v-word">nuolee</span> Chrisin <span class="v-word">korvaa</span>.</div>
+            <button class="tts-btn" onclick="event.stopPropagation(); speak('Wilpertti nousee ja nuolee Chrisin korvaa.')">🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Wilpertti nousee ja nuolee</span><span class="chunk-zh">起身并且舔</span></div>
+                <div class="chunk-item"><span class="chunk-fi">Chrisin korvaa</span><span class="chunk-zh">Chris的耳朵</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位细节</span>
+                <div class="gram-item"><strong>nousee:</strong> nousta (3型) 3单。</div>
+                <div class="gram-item"><strong>nuolee:</strong> nuolla (3型) 3单。</div>
+                <div class="gram-item"><strong>部分格:</strong> <span class="gram-highlight">korvaa</span>。持续动作使用部分格。</div>
+            </div>
+            <div class="back-translation">Wilpertti起身，舔着Chris的耳朵。</div>
+        </div></div></div>
+
+        <!-- 句 4 -->
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 4</div>
+            <div class="fi-sentence"><span class="v-word">Onneksi</span> koira <span class="v-word">ei</span> <span class="v-word">pure</span> <span class="v-word">eikä</span> <span class="v-word">hauku</span>.</div>
+            <button class="tts-btn" onclick="event.stopPropagation(); speak('Onneksi koira ei pure eikä hauku.')">🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语法要点</span>
+                <div class="gram-item"><strong>否定并列:</strong> <span class="gram-highlight">ei... eikä...</span> (既不...也不...)。</div>
+                <div class="gram-item"><strong>KPT:</strong> haukkua -> <span class="gram-highlight">hauku</span> (否定弱级k)。</div>
+            </div>
+            <div class="back-translation">幸好这只狗既不咬人也不乱叫。</div>
+        </div></div></div>
+
+        <!-- 句 6 -->
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 6</div>
+            <div class="fi-sentence">Koira <span class="v-word">yrittää</span> <span class="v-word">sanoa</span>: "<span class="v-word">Lähdetään</span> <span class="v-word">ulos</span>!"</div>
+            <button class="tts-btn" onclick="event.stopPropagation(); speak('Koira yrittää sanoa: Lähdetään ulos!')">🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 变位与要点</span>
+                <div class="gram-item"><strong>yrittää:</strong> 1型, tt -> t 弱级。</div>
+                <div class="gram-item"><strong>Lähdetään:</strong> 被动式用作第一人称复数建议 (咱们走吧)。</div>
+            </div>
+            <div class="back-translation">狗狗试图在说：“咱们出去吧！”</div>
+        </div></div></div>
+
+        <!-- 句 8 -->
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 8</div>
+            <div class="fi-sentence">Hän <span class="v-word">käy</span> ensin <span class="v-word">vessassa</span>.</div>
+            <button class="tts-btn" onclick="event.stopPropagation(); speak('Hän käy ensin vessassa.')">🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 支配关系 (Rektio)</span>
+                <div class="gram-item"><strong>käydä + Inessiivi:</strong> <span class="gram-highlight">vessassa</span>。表示“去某处办事并离开”。</div>
+            </div>
+            <div class="back-translation">他先去了趟洗手间。</div>
+        </div></div></div>
+
+        <!-- 句 10 -->
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 10</div>
+            <div class="fi-sentence">Sen jälkeen hän <span class="v-word">laittaa</span> vaatteet <span class="v-word">päälle</span> ja <span class="v-word">vie</span> koiran <span class="v-word">lenkille</span>.</div>
+            <button class="tts-btn" onclick="event.stopPropagation(); speak('Sen jälkeen hän laittaa vaatteet päälle ja vie koiran lenkille.')">🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语法要点</span>
+                <div class="gram-item"><strong>穿衣:</strong> laittaa... <span class="gram-highlight">päälle</span>。</div>
+                <div class="gram-item"><strong>方向:</strong> <span class="gram-highlight">lenkille</span> (Allatiivi 向格)。带狗狗去“遛弯这个方向”。</div>
+            </div>
+            <div class="back-translation">之后他穿上衣服，带狗狗去遛弯。</div>
+        </div></div></div>
+
+    </div>
+
+    <!-- 底部表格 -->
+    <div class="vocab-section">
+        <h2 style="text-align:center">重点词汇形态拆解</h2>
+        <table>
+            <thead><tr><th>单词</th><th>翻译</th><th>语法规则</th></tr></thead>
+            <tbody>
+                <tr><td class="sana-fi">Wilpertti-koiransa</td><td>他们的狗</td><td>koira + -nsa (后缀)</td></tr>
+                <tr><td class="sana-fi">nukkuvat</td><td>(他们)睡觉</td><td>nukkua (1型复3强级)</td></tr>
+                <tr><td class="sana-fi">lenkille</td><td>去遛弯</td><td>lenkki -> lenki- + -lle</td></tr>
+                <tr><td class="sana-fi">hampaat</td><td>牙齿(复)</td><td>hammas -> hampaa- + t</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="word-tooltip" id="wordTooltip"></div>
+
+<script>
+    const vocabularyData = {
+        "kello": { prototype: "kello", chinese: "时间", form: "主格" },
+        "on": { prototype: "olla", chinese: "是/在", form: "3单 现在时" },
+        "nukkuvat": { prototype: "nukkua", chinese: "睡觉", form: "3复 强级" },
+        "mutta": { prototype: "mutta", chinese: "但是", form: "连词" },
+        "heidän": { prototype: "he", chinese: "他们的", form: "属格" },
+        "söpö": { prototype: "söpö", chinese: "可爱", form: "主格" },
+        "wilpertti-koiransa": { prototype: "wilpertti-koira", chinese: "他们的狗", form: "主格+后缀" },
+        "ei": { prototype: "ei", chinese: "不", form: "否定动词" },
+        "nuku": { prototype: "nukkua", chinese: "睡觉", form: "否定弱级" },
+        "nousee": { prototype: "nousta", chinese: "起身", form: "3单" },
+        "nuolee": { prototype: "nuolla", chinese: "舔", form: "3单" },
+        "korvaa": { prototype: "korva", chinese: "耳朵", form: "部分格" },
+        "onneksi": { prototype: "onneksi", chinese: "幸好", form: "副词" },
+        "pure": { prototype: "purra", chinese: "咬", form: "否定词根" },
+        "eikä": { prototype: "ei", chinese: "也不", form: "并列否定" },
+        "hauku": { prototype: "haukkua", chinese: "叫", form: "否定弱级" },
+        "yrittää": { prototype: "yrittää", chinese: "尝试", form: "3单弱级" },
+        "sanoa": { prototype: "sanoa", chinese: "说", form: "原形" },
+        "lähdetään": { prototype: "lähteä", chinese: "走吧", form: "被动式" },
+        "ulos": { prototype: "ulos", chinese: "外面", form: "副词" },
+        "käy": { prototype: "käydä", chinese: "去", form: "3单" },
+        "vessassa": { prototype: "vessa", chinese: "厕所", form: "内格" },
+        "laittaa": { prototype: "laittaa", chinese: "穿/放", form: "3单" },
+        "päälle": { prototype: "päällä", chinese: "穿着", form: "副词" },
+        "lenkille": { prototype: "lenkki", chinese: "遛弯", form: "向格" }
+    };
+
+    function flipCard(card) {
+        card.classList.toggle('is-flipped');
+    }
+
+    const tooltip = document.getElementById('wordTooltip');
+    document.querySelectorAll('.v-word').forEach(el => {
+        el.addEventListener('mouseenter', (e) => {
+            const word = el.textContent.toLowerCase().replace(/[.,!?":]/g, '').trim();
+            const data = vocabularyData[word];
+            if (!data) return;
+            tooltip.innerHTML = `<span class="tooltip-proto">${data.prototype}</span><span class="tooltip-meaning">${data.chinese}</span><span class="tooltip-form">${data.form}</span>`;
+            tooltip.classList.add('show');
+            const rect = el.getBoundingClientRect();
+            tooltip.style.left = (rect.left + window.scrollX + rect.width/2 - tooltip.offsetWidth/2) + 'px';
+            tooltip.style.top = (rect.top + window.scrollY - tooltip.offsetHeight - 10) + 'px';
+        });
+        el.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+    });
+
+    const synth = window.speechSynthesis;
+    const voiceSelect = document.getElementById('voice-select');
+    let voices = [];
+    function populateVoiceList() {
+        voices = synth.getVoices().sort((a, b) => a.name.localeCompare(b.name));
+        voiceSelect.innerHTML = voices.map((v, i) => `<option value="${i}" ${v.lang.startsWith('fi')?'selected':''}>${v.name}</option>`).join('');
+    }
+    populateVoiceList();
+    if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoiceList;
+
+    function speak(text) {
+        if (synth.speaking) synth.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        if (voices.length > 0) utter.voice = voices[voiceSelect.value];
+        utter.lang = 'fi-FI';
+        utter.rate = 0.8;
+        synth.speak(utter);
+    }
+</script>
+
+</body>
+</html>

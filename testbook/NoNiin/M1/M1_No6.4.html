@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精读文本-6.4 - Ilta kotona (家中的夜晚)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap');
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-back-bg: #1a202c;
+            --accent-color: #8be9fd;
+            --highlight-color: #ff79c6;
+            --text-color: #2d3748;
+            --bg-color: #f0f4f8;
+        }
+
+        body {
+            font-family: 'Noto Sans', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-color);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        h1 { text-align: center; color: #1a202c; margin: 20px 0 5px 0; font-weight: 800; font-size: 2rem; }
+        .subtitle { text-align: center; color: #718096; margin-bottom: 30px; max-width: 760px; font-size: 0.95rem; line-height: 1.5; }
+
+        .word-tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.95);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            max-width: 280px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: opacity 0.2s ease;
+        }
+        .word-tooltip.show { opacity: 1; visibility: visible; }
+        .tooltip-proto { color: #8be9fd; font-weight: 800; font-size: 1.1em; display: block; border-bottom: 1px solid #444; margin-bottom: 5px; }
+        .tooltip-meaning { color: #f8f8f2; font-weight: 600; display: block; }
+        .tooltip-form { color: #ff79c6; font-size: 0.8rem; display: block; margin-top: 3px; }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1200px;
+            padding-bottom: 50px;
+        }
+
+        .card {
+            height: 560px;
+            cursor: pointer;
+            position: relative;
+            perspective: 1500px;
+        }
+
+        .card.is-flipped { z-index: 10; }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            transform-origin: center;
+        }
+
+        .card:hover .card-inner { transform: scale(0.98); }
+        .card.is-flipped .card-inner { transform: rotateY(180deg) scale(0.98); }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .card-front {
+            background: white;
+            padding: 30px;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .fi-sentence {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #1e293b;
+            text-align: center;
+            line-height: 1.65;
+        }
+
+        .v-word {
+            text-decoration: underline dotted #cbd5e1;
+            cursor: help;
+            font-weight: 600;
+        }
+        .v-word:hover { background: #f1f5f9; text-decoration-style: solid; }
+
+        .card-back {
+            background: var(--card-back-bg);
+            color: #f8f8f2;
+            transform: rotateY(180deg);
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .back-title { font-size: 0.8rem; font-weight: 800; color: #718096; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .analysis-block { margin-bottom: 15px; border-bottom: 1px solid #2d3748; padding-bottom: 12px; }
+        .analysis-block:last-child { border-bottom: none; }
+        .chunk-item { border-left: 3px solid #48bb78; padding-left: 10px; margin-bottom: 8px; }
+        .chunk-fi { font-weight: 700; display: block; font-size: 1rem; }
+        .chunk-zh { font-size: 0.85rem; color: #a0aec0; }
+        .gram-item { font-size: 0.9rem; line-height: 1.55; margin-bottom: 6px; }
+        .gram-item strong { color: var(--accent-color); }
+        .gram-item.level-2 { padding-left: 10px; }
+        .gram-item.level-3 { padding-left: 20px; }
+        .gram-item.level-4 { padding-left: 30px; }
+        .back-translation { font-size: 1.05rem; font-weight: 600; border-left: 4px solid #ed64a6; padding-left: 12px; margin-top: 10px; }
+
+        .tts-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            margin-top: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: transform 0.2s;
+        }
+        .tts-btn:hover { transform: scale(1.1); }
+
+        .supplement-section,
+        .vocab-section {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .supplement-section { margin-top: 10px; }
+        .vocab-section { margin-top: 30px; margin-bottom: 50px; }
+        .supplement-section h2,
+        .vocab-section h2 { margin-top: 0; color: #1f2937; }
+        .supplement-section p { line-height: 1.75; margin: 8px 0; }
+        .supplement-section ol { margin: 6px 0 10px 22px; line-height: 1.7; }
+        .supplement-section ul { margin: 6px 0 10px 18px; line-height: 1.7; }
+        .supplement-section li { margin: 4px 0; }
+        .supplement-section code { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 1px 6px; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; color: #64748b; font-size: 0.8rem; border-bottom: 2px solid #f1f5f9; }
+        td { padding: 15px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        .sana-fi { font-weight: 700; color: #334155; }
+
+        .controls {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        #voice-select { border-radius: 20px; padding: 5px 15px; border: 1px solid #ddd; }
+
+        @media (max-width: 480px) {
+            .card { height: 620px; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <select id="voice-select"></select>
+    </div>
+
+    <h1>📖 Ilta kotona (家中的夜晚)</h1>
+    <p class="subtitle">点击卡片翻转查看语法深度拆解。悬停或点击单词查看原型、中文与词法形式；点击单词可朗读单词，点击按钮可朗读整句。</p>
+
+    <div class="card-container">
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 1</div>
+            <div class="fi-sentence"><span class="v-word">Illalla</span> <span class="v-word">Chris</span> <span class="v-word">tekee</span> <span class="v-word">kotitehtävät</span> <span class="v-word">ja</span> <span class="v-word">Iina</span> <span class="v-word">avaa</span> <span class="v-word">TV:n</span>.</div>
+            <button class="tts-btn" onclick="event.stopPropagation(); speak('Illalla Chris tekee kotitehtävät ja Iina avaa TV:n.')">🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">Illalla / Chris tekee / kotitehtävät /</span><span class="chunk-zh">在晚上 / Chris做 / 家庭作业 /</span></div>
+<div class="chunk-item"><span class="chunk-fi">ja Iina avaa / TV:n.</span><span class="chunk-zh">并且Iina打开 / 电视。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点 (核心难点 - 宾语):</strong></div>
+<div class="gram-item level-2">&bull; <strong>全格宾语 (Totaaliobjekti) 的单复数区别:</strong></div>
+<div class="gram-item level-3">&#8618; <strong>复数全格:</strong> <code>kotitehtävät</code>。当宾语是复数且动作也是“完成”性质时，宾语使用<strong>复数主格</strong>的形式（结尾 -t）。</div>
+<div class="gram-item level-4">&#8618; <em>逻辑:</em> Chris 会把作业做完，不仅是一个过程，还有一个结果。</div>
+<div class="gram-item level-3">&#8618; <strong>单数全格:</strong> <code>TV:n</code>。当宾语是单数且动作是“完成”性质时（这里指把电视打开这个动作完成），宾语使用<strong>单数属格</strong>形式（结尾 -n）。</div>
+<div class="gram-item level-4">&#8618; <em>书写规则:</em> 缩写词（如 TV）加词尾时，需要用冒号 <code>:</code> 连接。</div>
+<div class="gram-item level-2">&bull; <strong>时间状语:</strong> <code>Illalla</code> (Adessiivi -lla) 表示“在晚上”。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>tekee</code></strong>: 动词 <strong><code>tehdä</code></strong> (做)。不规则动词。</div>
+<div class="gram-item level-3">&#8618; <em>词干:</em> <code>teke-</code>.</div>
+<div class="gram-item level-2">&bull; <strong><code>kotitehtävät</code></strong>: 名词 <strong><code>kotitehtävä</code></strong> (家庭作业)。</div>
+<div class="gram-item level-3">&#8618; <em>构词:</em> <code>koti</code> (家) + <code>tehtävä</code> (任务)。</div>
+<div class="gram-item level-3">&#8618; <em>形式:</em> 复数主格（用作宾语）。</div>
+<div class="gram-item level-2">&bull; <strong><code>TV:n</code></strong>: 名词 <strong><code>TV</code></strong> (或 <code>televisio</code>)。</div>
+<div class="gram-item level-3">&#8618; <em>形式:</em> 单数宾格（属格形式）。</div>
+<div class="gram-item level-2">&bull; <strong><code>avaa</code></strong>: 动词 <strong><code>avata</code></strong> (打开)。</div>
+<div class="gram-item level-3">&#8618; <em>类型:</em> 4型动词 (-ta)。</div>
+<div class="gram-item level-3">&#8618; <em>变位:</em> 去掉 -ta，a 变长 (ava- + a)。</div>
+            </div>
+            <div class="back-translation"><strong>在晚上 / Chris做 / 家庭作业 / 并且Iina打开 / 电视。</strong></div>
+        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 2</div>
+            <div class="fi-sentence">"<span class="v-word">Häiritseekö</span> <span class="v-word">telkkari</span> <span class="v-word">sinuu</span>?" <span class="v-word">Iina</span> <span class="v-word">kysyy</span>.</div>
+            <button class="tts-btn" onclick="event.stopPropagation(); speak('"Häiritseekö telkkari sinuu?" Iina kysyy.')">🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">"Häiritseekö / telkkari / sinuu?" / Iina kysyy.</span><span class="chunk-zh">“打扰吗 / 电视 / 你？” / Iina问。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点:</strong></div>
+<div class="gram-item level-2">&bull; <strong>动词 <code>häiritä</code> 的接格 (Reaktio):</strong></div>
+<div class="gram-item level-3">&#8618; <strong>规则:</strong> <code>häiritä</code> (打扰) 必须接 <strong>部分格 (Partitiivi)</strong>。因为打扰是一种持续的影响，或者是一种情感上的触动。</div>
+<div class="gram-item level-2">&bull; <strong>口语代词 (Puhekieli):</strong></div>
+<div class="gram-item level-3">&#8618; <code>sinuu</code> = 标准书面语 <strong><code>sinua</code></strong> (你的部分格)。</div>
+<div class="gram-item level-3">&#8618; <em>现象:</em> 在口语中，结尾的 <code>-ua/-yä</code> 经常合并成双元音 <code>-uu/-yy</code>。</div>
+<div class="gram-item level-3">&#8618; <em>举例:</em> <code>minua</code> -> <code>minuu</code>, <code>sinua</code> -> <code>sinuu</code>.</div>
+<div class="gram-item level-2">&bull; <strong>口语词汇:</strong> <code>telkkari</code> 是 <code>televisio</code> 的常用口语词。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>Häiritseekö</code></strong>: 动词 <strong><code>häiritä</code></strong> (打扰)。</div>
+<div class="gram-item level-3">&#8618; <em>类型:</em> 5型动词 (-ita/-itä)。</div>
+<div class="gram-item level-3">&#8618; <em>变位:</em> 词干加 -se-。<code>häirit</code> -> <code>häiritse-</code>.</div>
+<div class="gram-item level-3">&#8618; <em>形式:</em> 单三 + 疑问后缀 -kö.</div>
+<div class="gram-item level-2">&bull; <strong><code>sinuu</code></strong>: 代词 <strong><code>sinä</code></strong>。部分格 <code>sinua</code> 的口语变体。</div>
+            </div>
+            <div class="back-translation"><strong>“打扰吗 / 电视 / 你？” / Iina问。</strong></div>
+        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 3</div>
+            <div class="fi-sentence">"<span class="v-word">Ei</span> <span class="v-word">se</span> <span class="v-word">häiritse</span> <span class="v-word">minua</span>. <span class="v-word">Minä</span> <span class="v-word">olen</span> <span class="v-word">valmis</span>", <span class="v-word">Chris</span> <span class="v-word">sanoo</span> <span class="v-word">ja</span> <span class="v-word">tulee</span> <span class="v-word">Iinan</span> <span class="v-word">luo</span>.</div>
+            <button class="tts-btn" onclick="event.stopPropagation(); speak('"Ei se häiritse minua. Minä olen valmis", Chris sanoo ja tulee Iinan luo.')">🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">"Ei se häiritse / minua. /</span><span class="chunk-zh">“它不打扰 / 我。</span></div>
+<div class="chunk-item"><span class="chunk-fi">Minä olen / valmis", / Chris sanoo /</span><span class="chunk-zh">我是 / 完成了的/准备好的”，/ Chris说 /</span></div>
+<div class="chunk-item"><span class="chunk-fi">ja tulee / Iinan luo.</span><span class="chunk-zh">并来到 / Iina身边。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点:</strong></div>
+<div class="gram-item level-2">&bull; <strong>否定句中的宾语:</strong> <code>Ei häiritse minua</code>。否定句宾语强制使用 <strong>部分格</strong> (<code>minua</code>)。</div>
+<div class="gram-item level-2">&bull; <strong><code>olla valmis</code>:</strong> 意思是“准备好了”或者“完成了某事”。这里指 Chris 做完作业了。</div>
+<div class="gram-item level-2">&bull; <strong>后置词结构 (Postpositio) - 动态:</strong></div>
+<div class="gram-item level-3">&#8618; <strong>规则:</strong> <code>tulla</code> (来) 是一个移动动词，所以要用表示<strong>方向</strong>的后置词结构。</div>
+<div class="gram-item level-3">&#8618; <code>jonkun</code> (属格) + <strong><code>luo</code></strong> (向...身边)。</div>
+<div class="gram-item level-3">&#8618; <em>对比:</em> 如果是“在Iina身边”，则说 <code>Iinan luona</code>。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>häiritse</code></strong>: 动词 <code>häiritä</code> 的否定式主干。</div>
+<div class="gram-item level-2">&bull; <strong><code>luo</code></strong>: 后置词。表示“去某人处”。</div>
+            </div>
+            <div class="back-translation"><strong>“它不打扰 / 我。 我是 / 完成了的/准备好的”，/ Chris说 / 并来到 / Iina身边。</strong></div>
+        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 4</div>
+            <div class="fi-sentence"><span class="v-word">He</span> <span class="v-word">istuvat</span> <span class="v-word">sohvalla</span> <span class="v-word">ja</span> <span class="v-word">katsovat</span> <span class="v-word">yhdessä</span> <span class="v-word">televisiota</span>.</div>
+            <button class="tts-btn" onclick="event.stopPropagation(); speak('He istuvat sohvalla ja katsovat yhdessä televisiota.')">🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">He istuvat / sohvalla / ja katsovat / yhdessä / televisiota.</span><span class="chunk-zh">他们坐 / 在沙发上 / 并看 / 一起 / 电视。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>istua</code> + 地点:</strong> 坐在某物上面，用 <strong>接格 (-lla)</strong>。<code>sohva</code> -> <code>sohvalla</code>。</div>
+<div class="gram-item level-2">&bull; <strong><code>katsoa</code> + Partitiivi:</strong> “看电视”是典型的持续性动作，宾语 <code>televisio</code> 必须用部分格 <code>televisiota</code>。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>istuvat</code></strong>: 动词 <strong><code>istua</code></strong> (坐)。1型。</div>
+<div class="gram-item level-2">&bull; <strong><code>sohvalla</code></strong>: 名词 <strong><code>sohva</code></strong> (沙发)。</div>
+<div class="gram-item level-2">&bull; <strong><code>televisiota</code></strong>: 名词 <strong><code>televisio</code></strong>。部分格。</div>
+            </div>
+            <div class="back-translation"><strong>他们坐 / 在沙发上 / 并看 / 一起 / 电视。</strong></div>
+        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 5</div>
+            <div class="fi-sentence">"<span class="v-word">Mitä</span> <span class="v-word">ohjelmaa</span> <span class="v-word">katsotaan</span>?" <span class="v-word">Iina</span> <span class="v-word">kysyy</span>.</div>
+            <button class="tts-btn" onclick="event.stopPropagation(); speak('"Mitä ohjelmaa katsotaan?" Iina kysyy.')">🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">"Mitä ohjelmaa / katsotaan?" / Iina kysyy.</span><span class="chunk-zh">“什么节目 / 我们看？” / Iina问。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点 (高阶用法):</strong></div>
+<div class="gram-item level-2">&bull; <strong>被动语态代替第一人称复数 (Passiivi me-muotona):</strong></div>
+<div class="gram-item level-3">&#8618; <strong>规则:</strong> 在口语和非正式语境中，<code>katsotaan</code> (被动语态现在时) 经常用来代替 <code>me katsomme</code> (我们看)。</div>
+<div class="gram-item level-3">&#8618; <strong>含义:</strong> “我们要看什么节目？” 或 “咱们看什么节目？”。建议或共同行动的意味很强。</div>
+<div class="gram-item level-2">&bull; <strong>疑问词的格:</strong> 因为 <code>katsoa</code> 要求部分格，所以疑问词 <code>mikä</code> 和名词 <code>ohjelma</code> 都要变成部分格 -> <code>Mitä ohjelmaa</code>.</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>Mitä</code></strong>: 代词 <strong><code>mikä</code></strong>。部分格。</div>
+<div class="gram-item level-2">&bull; <strong><code>katsotaan</code></strong>: 动词 <strong><code>katsoa</code></strong>。被动语态现在时。</div>
+<div class="gram-item level-3">&#8618; <em>构词:</em> 弱词干 <code>katso-</code> + 被动标记 <code>ta</code> + 人称/时态 <code>an</code>.</div>
+            </div>
+            <div class="back-translation"><strong>“什么节目 / 我们看？” / Iina问。</strong></div>
+        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 6</div>
+            <div class="fi-sentence">"<span class="v-word">Ihan</span> <span class="v-word">sama</span>, <span class="v-word">valitse</span> <span class="v-word">sinä</span>", <span class="v-word">Chris</span> <span class="v-word">vastaa</span>.</div>
+            <button class="tts-btn" onclick="event.stopPropagation(); speak('"Ihan sama, valitse sinä", Chris vastaa.')">🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">"Ihan sama, / valitse sinä", / Chris vastaa.</span><span class="chunk-zh">“完全一样(无所谓)，/ 你选吧”，/ Chris回答。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>固定搭配:</strong> <strong><code>Ihan sama</code></strong>。字面意是“完全相同”，实际常用作“无所谓、随便、都行”。</div>
+<div class="gram-item level-1"><strong>祈使句 (Imperatiivi):</strong> <code>valitse</code> 是第二人称单数祈使形式。</div>
+<div class="gram-item level-2">&bull; <em>规则:</em> 取第一人称单数 <code>valitsen</code>，去掉 <code>n</code> -> <code>valitse</code>.</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>valitse</code></strong>: 动词 <strong><code>valita</code></strong> (选择)。</div>
+<div class="gram-item level-3">&#8618; <em>类型:</em> 3型动词 (-ta/-tä, 前非元音)。</div>
+<div class="gram-item level-3">&#8618; <em>变位:</em> <code>valita</code> -> <code>valitse-</code>.</div>
+            </div>
+            <div class="back-translation"><strong>“完全一样(无所谓)，/ 你选吧”，/ Chris回答。</strong></div>
+        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 7</div>
+            <div class="fi-sentence"><span class="v-word">Wilpertti</span> <span class="v-word">nukkuu</span> <span class="v-word">sohvalla</span> <span class="v-word">Iinan</span> <span class="v-word">vieressä</span>.</div>
+            <button class="tts-btn" onclick="event.stopPropagation(); speak('Wilpertti nukkuu sohvalla Iinan vieressä.')">🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">Wilpertti nukkuu / sohvalla / Iinan vieressä.</span><span class="chunk-zh">Wilpertti睡 / 在沙发上 / Iina的旁边。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点:</strong></div>
+<div class="gram-item level-2">&bull; <strong>后置词结构 - 静态:</strong></div>
+<div class="gram-item level-3">&#8618; <strong>规则:</strong> <code>vieressä</code> (在...旁边/紧挨着) 是后置词，要求前面的词用属格。</div>
+<div class="gram-item level-3">&#8618; <code>Iinan</code> (属格) + <code>vieressä</code> (内格形式，表示静止的位置)。</div>
+<div class="gram-item level-3">&#8618; <em>对比:</em> 之前 <code>Iinan luo</code> 是动作方向，这里 <code>Iinan vieressä</code> 是静态位置。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>vieressä</code></strong>: 原型 <strong><code>vieri</code></strong> (旁边/侧边)。内格形式用作后置词。</div>
+            </div>
+            <div class="back-translation"><strong>Wilpertti睡 / 在沙发上 / Iina的旁边。</strong></div>
+        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 8</div>
+            <div class="fi-sentence"><span class="v-word">Se</span> <span class="v-word">kuorsaa</span> <span class="v-word">hiljaa</span>.</div>
+            <button class="tts-btn" onclick="event.stopPropagation(); speak('Se kuorsaa hiljaa.')">🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">Se kuorsaa / hiljaa.</span><span class="chunk-zh">它打呼噜 / 轻声地。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点:</strong></div>
+<div class="gram-item level-2">&bull; <strong>代词 <code>Se</code>:</strong> 指代动物 (Wilpertti)。</div>
+<div class="gram-item level-2">&bull; <strong>副词 <code>hiljaa</code>:</strong> 静静地，安静地，小声地。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>kuorsaa</code></strong>: 动词 <strong><code>kuorsata</code></strong> (打呼噜)。</div>
+<div class="gram-item level-3">&#8618; <em>类型:</em> 4型动词。</div>
+<div class="gram-item level-3">&#8618; <em>变位:</em> <code>kuorsata</code> -> <code>kuorsaa</code>.</div>
+            </div>
+            <div class="back-translation"><strong>它打呼噜 / 轻声地。</strong></div>
+        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 9</div>
+            <div class="fi-sentence"><span class="v-word">Yhdeltätoista</span> <span class="v-word">myös</span> <span class="v-word">Iina</span> <span class="v-word">ja</span> <span class="v-word">Chris</span> <span class="v-word">menevät</span> <span class="v-word">nukkumaan</span>.</div>
+            <button class="tts-btn" onclick="event.stopPropagation(); speak('Yhdeltätoista myös Iina ja Chris menevät nukkumaan.')">🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">Yhdeltätoista / myös Iina ja Chris / menevät / nukkumaan.</span><span class="chunk-zh">十一点的时候 / 也 Iina和Chris / 去 / 睡觉。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点 (高阶时间表达):</strong></div>
+<div class="gram-item level-2">&bull; <strong>整点时间的格:</strong></div>
+<div class="gram-item level-3">&#8618; <strong>规则:</strong> 当表示“在几点钟”发生某事时，数字使用 <strong>离格 (Ablatiivi, -lta/-ltä)</strong>。</div>
+<div class="gram-item level-3">&#8618; <strong>结构:</strong> <code>yksitoista</code> (11)。变格时，前半部分 <code>yksi</code> 变为 <code>yhdeltä</code>，后半部分 <code>toista</code> 保持不变（因为它已经是部分格形式）。</div>
+<div class="gram-item level-3">&#8618; <em>结果:</em> <code>Yhdeltätoista</code>.</div>
+<div class="gram-item level-2">&bull; <strong>第三不定式入格 (3. infinitiivi illatiivi):</strong></div>
+<div class="gram-item level-3">&#8618; <strong>规则:</strong> <code>mennä</code> (去) + 做某事。后面的动词必须变成“去做的状态”，即第三不定式的入格 (<code>-maan/-mään</code>)。</div>
+<div class="gram-item level-3">&#8618; <em>结构:</em> <code>nukkua</code> -> 强词干 <code>nukku-</code> + <code>maan</code>.</div>
+<div class="gram-item level-3">&#8618; <em>含义:</em> 去睡觉 (go to sleep)。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>Yhdeltätoista</code></strong>: 原型 <strong><code>yksitoista</code></strong> (11)。</div>
+<div class="gram-item level-3">&#8618; <em>变格分析:</em> <code>yhde-</code> (yksi的弱词干) + <code>ltä</code> + <code>toista</code>.</div>
+<div class="gram-item level-2">&bull; <strong><code>nukkumaan</code></strong>: 动词 <strong><code>nukkua</code></strong>。第三不定式入格。</div>
+            </div>
+            <div class="back-translation"><strong>十一点的时候 / 也 Iina和Chris / 去 / 睡觉。</strong></div>
+        </div></div></div>
+
+    </div>
+
+    <div class="supplement-section">
+        <h2>2.1 总结该段在全文中的意义和作用</h2>
+            <p>这一段通过晚间的休闲时光，展示了家庭生活的常态。</p>
+            <ol>
+            <li><strong>叙事推进:</strong> 从做作业（责任）过渡到看电视（休闲），最后到睡觉（结束一天）。
+            </li>
+            <li><strong>语言特色:</strong>
+                <ul>
+                    <li><strong>口语融入:</strong> 角色对话中自然地使用了口语形式 (<code>sinuu</code>, <code>telkkari</code>, <code>katsotaan</code> 表示“我们看”)，而旁白保持书面语。</li>
+                    <li><strong>位置与移动:</strong> 清晰地区分了“来到身边” (<code>luo</code>) 和“在旁边” (<code>vieressä</code>)。</li>
+                    <li><strong>时间与动作:</strong> 引入了精确时间点 (<code>yhdeltätoista</code>) 和动作目的 (<code>mennä nukkumaan</code>)。</li>
+                </ul>
+            </li>
+            </ol>
+    </div>
+
+    <div class="vocab-section">
+        <h2 style="text-align:center">重点词汇形态拆解</h2>
+            <table>
+                <thead><tr><th>单词 (Sana)</th><th>原型 (Perusmuoto)</th><th>中文翻译 (Käännös)</th><th>词干 (Vartalo)</th><th>词类/形式</th><th>构词法与语法深度解析 (Kiina)</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td class="sana-fi"><strong>kotitehtävät</strong></td>
+                        <td>kotitehtävä</td>
+                        <td>家庭作业</td>
+                        <td>kotitehtävä-</td>
+                        <td>名词 (复数全格)</td>
+                        <td><strong>全格宾语</strong>: 因为是复数且动作不仅是过程还有结果，用复数主格形式作宾语。</td>
+                    </tr>
+                    <tr>
+                        <td class="sana-fi"><strong>TV:n</strong></td>
+                        <td>TV</td>
+                        <td>电视</td>
+                        <td>-</td>
+                        <td>名词 (单数全格)</td>
+                        <td><strong>全格宾语</strong>: 单数且有结果的动作。缩写词加词尾用冒号。形式为属格。</td>
+                    </tr>
+                    <tr>
+                        <td class="sana-fi"><strong>Häiritseekö</strong></td>
+                        <td>häiritä</td>
+                        <td>打扰吗？</td>
+                        <td>häiritse-</td>
+                        <td>动词 (5型)</td>
+                        <td><strong>5型动词</strong>: 原型 <code>-itä</code> -> 词干 <code>-itse-</code>。<br><strong>疑问句</strong>: 加上 <code>-kö</code>。</td>
+                    </tr>
+                    <tr>
+                        <td class="sana-fi"><strong>sinuu</strong></td>
+                        <td>sinä</td>
+                        <td>你 (部分格)</td>
+                        <td>-</td>
+                        <td>代词 (口语)</td>
+                        <td><strong>口语变体</strong>: 书面语是 <code>sinua</code>。口语中 <code>-ua</code> 常变为长元音 <code>-uu</code>。<br><strong>Reaktio</strong>: <code>häiritä</code> 强制接部分格。</td>
+                    </tr>
+                    <tr>
+                        <td class="sana-fi"><strong>valmis</strong></td>
+                        <td>valmis</td>
+                        <td>准备好的</td>
+                        <td>valmii-</td>
+                        <td>形容词</td>
+                        <td><strong>s结尾词</strong>: 词干变为 <code>-ii-</code> (如 <code>valmiin</code>)。此处为主格，用原型。</td>
+                    </tr>
+                    <tr>
+                        <td class="sana-fi"><strong>luo</strong></td>
+                        <td>luo</td>
+                        <td>身边/处</td>
+                        <td>-</td>
+                        <td>后置词</td>
+                        <td><strong>方向性</strong>: 前接属格 (<code>Iinan luo</code>)。表示移动的方向“去某人那里”。</td>
+                    </tr>
+                    <tr>
+                        <td class="sana-fi"><strong>katsotaan</strong></td>
+                        <td>katsoa</td>
+                        <td>(我们)看 / 被看</td>
+                        <td>katso-</td>
+                        <td>动词 (被动)</td>
+                        <td><strong>被动语态</strong>: 弱词干 <code>katso</code> + <code>taan</code>。<br><strong>用法</strong>: 口语中常代替 <code>me katsomme</code> (我们看)。</td>
+                    </tr>
+                    <tr>
+                        <td class="sana-fi"><strong>vieressä</strong></td>
+                        <td>vieri</td>
+                        <td>在...旁边</td>
+                        <td>viere-</td>
+                        <td>后置词</td>
+                        <td><strong>位置性</strong>: 前接属格 (<code>Iinan vieressä</code>)。来源于名词 <code>vieri</code> (侧边) 的内格。</td>
+                    </tr>
+                    <tr>
+                        <td class="sana-fi"><strong>kuorsaa</strong></td>
+                        <td>kuorsata</td>
+                        <td>打呼噜</td>
+                        <td>kuorsaa-</td>
+                        <td>动词 (4型)</td>
+                        <td><strong>4型动词</strong>: <code>-ata</code> -> <code>-aa</code>。</td>
+                    </tr>
+                    <tr>
+                        <td class="sana-fi"><strong>Yhdeltätoista</strong></td>
+                        <td>yksitoista</td>
+                        <td>在十一点</td>
+                        <td>-</td>
+                        <td>数词 (离格)</td>
+                        <td><strong>时间状语</strong>: 钟点用离格 <code>-lta</code>。只有前半部分 <code>yksi</code> 变格为 <code>yhdeltä</code>，<code>toista</code> 不变。</td>
+                    </tr>
+                    <tr>
+                        <td class="sana-fi"><strong>nukkumaan</strong></td>
+                        <td>nukkua</td>
+                        <td>去睡觉</td>
+                        <td>nukku-</td>
+                        <td>动词 (3不定式)</td>
+                        <td><strong>入格</strong>: <code>mennä</code> (去) 后面接动作，必须用第三不定式入格 <code>-maan</code> (去...做)。</td>
+                    </tr>
+                </tbody>
+            </table>
+    </div>
+
+    <div class="word-tooltip" id="wordTooltip"></div>
+
+<script>
+    const vocabularyData = {
+  "kotitehtävät": { "prototype": "kotitehtävä", "chinese": "家庭作业", "form": "名词 (复数全格)" },
+  "tvn": { "prototype": "TV", "chinese": "电视", "form": "单数全格/属格" },
+  "häiritseekö": { "prototype": "häiritä", "chinese": "打扰吗？", "form": "动词 (5型)" },
+  "sinuu": { "prototype": "sinä", "chinese": "你 (部分格)", "form": "代词 (口语)" },
+  "valmis": { "prototype": "valmis", "chinese": "准备好的", "form": "形容词" },
+  "luo": { "prototype": "luo", "chinese": "身边/处", "form": "后置词" },
+  "katsotaan": { "prototype": "katsoa", "chinese": "(我们)看 / 被看", "form": "动词 (被动)" },
+  "vieressä": { "prototype": "vieri", "chinese": "在...旁边", "form": "后置词" },
+  "kuorsaa": { "prototype": "kuorsata", "chinese": "打呼噜", "form": "动词 (4型)" },
+  "yhdeltätoista": { "prototype": "yksitoista", "chinese": "在十一点", "form": "离格时间表达" },
+  "nukkumaan": { "prototype": "nukkua", "chinese": "去睡觉", "form": "动词 (3不定式)" },
+  "avaa": { "prototype": "avata", "chinese": "打开", "form": "3单（4型）" },
+  "chris": { "prototype": "Chris", "chinese": "人名", "form": "主格" },
+  "ei": { "prototype": "ei", "chinese": "不", "form": "否定动词（3单）" },
+  "häiritse": { "prototype": "häiritä", "chinese": "打扰", "form": "否定式词干" },
+  "he": { "prototype": "he", "chinese": "他们", "form": "代词主格复数" },
+  "hiljaa": { "prototype": "hiljaa", "chinese": "轻声地", "form": "副词" },
+  "ihan": { "prototype": "ihan", "chinese": "完全/很", "form": "副词" },
+  "iina": { "prototype": "Iina", "chinese": "人名", "form": "主格" },
+  "iinan": { "prototype": "Iina", "chinese": "Iina的", "form": "属格" },
+  "illalla": { "prototype": "ilta", "chinese": "在晚上", "form": "接格" },
+  "istuvat": { "prototype": "istua", "chinese": "坐", "form": "3复（1型）" },
+  "ja": { "prototype": "ja", "chinese": "和/并且", "form": "连词" },
+  "katsovat": { "prototype": "katsoa", "chinese": "看", "form": "3复（1型）" },
+  "kysyy": { "prototype": "kysyä", "chinese": "问", "form": "3单" },
+  "menevät": { "prototype": "mennä", "chinese": "去", "form": "3复" },
+  "minä": { "prototype": "minä", "chinese": "我", "form": "代词主格" },
+  "minua": { "prototype": "minä", "chinese": "我（部分格）", "form": "代词部分格" },
+  "mitä": { "prototype": "mikä", "chinese": "什么（部分格）", "form": "疑问代词部分格" },
+  "myös": { "prototype": "myös", "chinese": "也", "form": "副词" },
+  "nukkuu": { "prototype": "nukkua", "chinese": "睡觉", "form": "3单（1型）" },
+  "ohjelmaa": { "prototype": "ohjelma", "chinese": "节目（部分格）", "form": "单数部分格" },
+  "olen": { "prototype": "olla", "chinese": "是/在", "form": "1单现在时" },
+  "sama": { "prototype": "sama", "chinese": "一样/无所谓", "form": "形容词/代词主格" },
+  "sanoo": { "prototype": "sanoa", "chinese": "说", "form": "3单（1型）" },
+  "se": { "prototype": "se", "chinese": "它", "form": "代词主格" },
+  "sinä": { "prototype": "sinä", "chinese": "你", "form": "代词主格" },
+  "sohvalla": { "prototype": "sohva", "chinese": "在沙发上", "form": "接格" },
+  "tekee": { "prototype": "tehdä", "chinese": "做", "form": "2型动词，直陈式现在时，第三人称单数（hän tekee）" },
+  "televisiota": { "prototype": "televisio", "chinese": "电视（部分格）", "form": "部分格" },
+  "telkkari": { "prototype": "telkkari", "chinese": "电视（口语）", "form": "主格" },
+  "tulee": { "prototype": "tulla", "chinese": "来", "form": "3单（不规则）" },
+  "valitse": { "prototype": "valita", "chinese": "选吧", "form": "祈使2单" },
+  "vastaa": { "prototype": "vastata", "chinese": "回答", "form": "3单（4型）" },
+  "wilpertti": { "prototype": "Wilpertti", "chinese": "狗名", "form": "专有名词" },
+  "yhdessä": { "prototype": "yhdessä", "chinese": "一起", "form": "副词" }
+};
+
+    function flipCard(card) {
+        card.classList.toggle('is-flipped');
+    }
+
+    const tooltip = document.getElementById('wordTooltip');
+
+    function normalizeWord(text) {
+        return text.toLowerCase().replace(/[.,!?":;()]/g, '').trim();
+    }
+
+    function showTooltip(el) {
+        const word = normalizeWord(el.textContent);
+        const data = vocabularyData[word] || { prototype: el.textContent.trim(), chinese: '（未收录）', form: '词形' };
+        tooltip.innerHTML = '<span class="tooltip-proto">' + data.prototype + '</span><span class="tooltip-meaning">' + data.chinese + '</span><span class="tooltip-form">' + data.form + '</span>';
+        tooltip.classList.add('show');
+        const rect = el.getBoundingClientRect();
+        tooltip.style.left = (rect.left + window.scrollX + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+        tooltip.style.top = (rect.top + window.scrollY - tooltip.offsetHeight - 10) + 'px';
+    }
+
+    const synth = window.speechSynthesis;
+    const voiceSelect = document.getElementById('voice-select');
+    let voices = [];
+
+    function populateVoiceList() {
+        voices = synth.getVoices().sort((a, b) => a.name.localeCompare(b.name));
+        voiceSelect.innerHTML = voices
+            .map((v, i) => {
+                const selected = v.lang.startsWith('fi') ? 'selected' : '';
+                return '<option value="' + i + '" ' + selected + '>' + v.name + '</option>';
+            })
+            .join('');
+    }
+
+    function speak(text) {
+        if (synth.speaking) synth.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        if (voices.length > 0 && voiceSelect.value !== '') utter.voice = voices[voiceSelect.value];
+        utter.lang = 'fi-FI';
+        utter.rate = 0.8;
+        synth.speak(utter);
+    }
+
+    populateVoiceList();
+    if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoiceList;
+
+    document.querySelectorAll('.v-word').forEach(el => {
+        el.addEventListener('mouseenter', (e) => {
+            e.stopPropagation();
+            showTooltip(el);
+        });
+        el.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+        el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showTooltip(el);
+            speak(el.textContent);
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.v-word')) tooltip.classList.remove('show');
+    });
+</script>
+
+</body>
+</html>

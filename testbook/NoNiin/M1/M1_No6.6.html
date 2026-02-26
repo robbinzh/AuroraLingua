@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精读文本-6.6 - Siivouspäivän päätös (大扫除日的结尾)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap');
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-back-bg: #1a202c;
+            --accent-color: #8be9fd;
+            --highlight-color: #ff79c6;
+            --text-color: #2d3748;
+            --bg-color: #f0f4f8;
+        }
+
+        body {
+            font-family: 'Noto Sans', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-color);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        h1 { text-align: center; color: #1a202c; margin: 20px 0 5px 0; font-weight: 800; font-size: 2rem; }
+        .subtitle { text-align: center; color: #718096; margin-bottom: 30px; max-width: 760px; font-size: 0.95rem; line-height: 1.5; }
+
+        .supplement-section,
+        .vocab-section {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .supplement-section { margin-top: 10px; }
+        .vocab-section { margin-top: 30px; margin-bottom: 50px; }
+        .supplement-section h2,
+        .supplement-section h3,
+        .vocab-section h2 { margin-top: 0; color: #1f2937; }
+        .supplement-section p { line-height: 1.75; margin: 8px 0; }
+        .supplement-section ol { margin: 6px 0 10px 22px; line-height: 1.7; }
+        .supplement-section ul { margin: 6px 0 10px 18px; line-height: 1.7; }
+        .supplement-section li { margin: 4px 0; }
+        .supplement-section code,
+        .vocab-section code { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 1px 6px; }
+
+        .word-tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.95);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            max-width: 280px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: opacity 0.2s ease;
+        }
+        .word-tooltip.show { opacity: 1; visibility: visible; }
+        .tooltip-proto { color: #8be9fd; font-weight: 800; font-size: 1.1em; display: block; border-bottom: 1px solid #444; margin-bottom: 5px; }
+        .tooltip-meaning { color: #f8f8f2; font-weight: 600; display: block; }
+        .tooltip-form { color: #ff79c6; font-size: 0.8rem; display: block; margin-top: 3px; }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1200px;
+            padding-bottom: 50px;
+        }
+
+        .card {
+            height: 560px;
+            cursor: pointer;
+            position: relative;
+            perspective: 1500px;
+        }
+
+        .card.is-flipped { z-index: 10; }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            transform-origin: center;
+        }
+
+        .card:hover .card-inner { transform: scale(0.98); }
+        .card.is-flipped .card-inner { transform: rotateY(180deg) scale(0.98); }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .card-front {
+            background: white;
+            padding: 30px;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .fi-sentence {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e293b;
+            text-align: center;
+            line-height: 1.65;
+        }
+
+        .v-word {
+            text-decoration: underline dotted #cbd5e1;
+            cursor: help;
+            font-weight: 600;
+        }
+        .v-word:hover { background: #f1f5f9; text-decoration-style: solid; }
+
+        .card-back {
+            background: var(--card-back-bg);
+            color: #f8f8f2;
+            transform: rotateY(180deg);
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .back-title { font-size: 0.8rem; font-weight: 800; color: #718096; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .analysis-block { margin-bottom: 15px; border-bottom: 1px solid #2d3748; padding-bottom: 12px; }
+        .analysis-block:last-child { border-bottom: none; }
+        .chunk-item { border-left: 3px solid #48bb78; padding-left: 10px; margin-bottom: 8px; }
+        .chunk-fi { font-weight: 700; display: block; font-size: 1rem; }
+        .chunk-zh { font-size: 0.85rem; color: #a0aec0; display: block; }
+        .gram-item { font-size: 0.9rem; line-height: 1.55; margin-bottom: 6px; }
+        .gram-item strong { color: var(--accent-color); }
+        .gram-item.level-2 { padding-left: 10px; }
+        .gram-item.level-3 { padding-left: 20px; }
+        .gram-item.level-4 { padding-left: 30px; }
+        .back-translation { font-size: 1.05rem; font-weight: 600; border-left: 4px solid #ed64a6; padding-left: 12px; margin-top: 10px; }
+
+        .tts-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            margin-top: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: transform 0.2s;
+        }
+        .tts-btn:hover { transform: scale(1.1); }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; color: #64748b; font-size: 0.8rem; border-bottom: 2px solid #f1f5f9; }
+        td { padding: 15px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        .sana-fi { font-weight: 700; color: #334155; }
+
+        .controls {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        #voice-select { border-radius: 20px; padding: 5px 15px; border: 1px solid #ddd; }
+
+        @media (max-width: 480px) {
+            .card { height: 620px; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <select id="voice-select"></select>
+    </div>
+
+    <h1>📖 Siivouspäivän päätös (大扫除日的结尾)</h1>
+    <p class="subtitle">点击卡片翻转查看语法深度拆解。悬停或点击单词查看原型、中文与词法形式；点击单词可朗读单词，点击按钮可朗读整句。</p>
+
+    <div class="card-container">
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 1</div>
+            <div class="fi-sentence"><span class="v-word">Sillä</span> <span class="v-word">aikaa</span> <span class="v-word">kun</span> <span class="v-word">Iina</span> <span class="v-word">touhuaa</span> <span class="v-word">keittiössä</span>, <span class="v-word">Chris</span> <span class="v-word">alkaa</span> <span class="v-word">siivota</span> <span class="v-word">lattioita</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Sillä aikaa kun Iina touhuaa keittiössä, Chris alkaa siivota lattioita.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Sillä aikaa kun / Iina touhuaa / keittiössä, /</span><span class="chunk-zh">在那段时间当 / Iina忙活 / 在厨房里，</span></div>
+                <div class="chunk-item"><span class="chunk-fi">Chris alkaa / siivota / lattioita.</span><span class="chunk-zh">Chris开始 / 打扫 / 地板。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-1"><strong>语法要点:</strong></div>
+                <div class="gram-item level-2">&bull; <strong>句子结构:</strong> 时间状语从句 <code>Sillä aikaa kun...</code> + 主句。</div>
+                <div class="gram-item level-2">&bull; <strong><code>Sillä aikaa kun</code>:</strong> 固定连词词组，表示“在...的同时”。</div>
+                <div class="gram-item level-2">&bull; <strong><code>alkaa</code> + 1. Infinitiivi:</strong> <code>alkaa</code> 后接动词原形，如 <code>siivota</code>。</div>
+                <div class="gram-item level-3">&bull; <strong>对比:</strong> <code>ruveta</code> 常接第三不定式（如 <code>ruveta siivoamaan</code>）。</div>
+                <div class="gram-item level-2">&bull; <strong>部分格宾语:</strong> <code>lattioita</code> 强调“开始打扫”的过程性，且是复数不定量。</div>
+                <div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+                <div class="gram-item level-2">&bull; <strong><code>touhuaa</code></strong>: 原型 <code>touhuta</code>（4型），3单。</div>
+                <div class="gram-item level-2">&bull; <strong><code>siivota</code></strong>: 原型 <code>siivota</code>（4型），这里是第一不定式。</div>
+                <div class="gram-item level-2">&bull; <strong><code>lattioita</code></strong>: 原型 <code>lattia</code>，复数部分格。</div>
+            </div>
+            <div class="back-translation"><strong>当 Iina 在厨房忙活的时候，Chris 开始打扫地板。</strong></div>
+        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 2</div>
+            <div class="fi-sentence"><span class="v-word">Hän</span> <span class="v-word">lakaisee</span> <span class="v-word">lattialta</span> <span class="v-word">ensin</span> <span class="v-word">isommat</span> <span class="v-word">roskat</span> <span class="v-word">harjalla</span> <span class="v-word">ja</span> <span class="v-word">rikkakihvelillä</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Hän lakaisee lattialta ensin isommat roskat harjalla ja rikkakihvelillä.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Hän lakaisee / lattialta / ensin / isommat roskat /</span><span class="chunk-zh">他扫 / 从地板上 / 首先 / 较大的垃圾 /</span></div>
+                <div class="chunk-item"><span class="chunk-fi">harjalla / ja rikkakihvelillä.</span><span class="chunk-zh">用刷子 / 和用簸箕。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-1"><strong>语法要点:</strong></div>
+                <div class="gram-item level-2">&bull; <strong>离格 (Ablatiivi, -lta):</strong> <code>lattialta</code> 表示“从表面离开”。</div>
+                <div class="gram-item level-2">&bull; <strong>全格宾语:</strong> <code>isommat roskat</code>，强调扫走这些特定垃圾的结果。</div>
+                <div class="gram-item level-2">&bull; <strong>比较级:</strong> <code>isommat</code> 来自 <code>iso -&gt; isompi</code>。</div>
+                <div class="gram-item level-2">&bull; <strong>工具格 (Adessiivi, -lla):</strong> <code>harjalla</code>、<code>rikkakihvelillä</code> 表示“用什么工具”。</div>
+                <div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+                <div class="gram-item level-2">&bull; <strong><code>lakaisee</code></strong>: 原型 <code>lakaista</code>（3型），3单。</div>
+                <div class="gram-item level-2">&bull; <strong><code>isommat</code></strong>: 原型 <code>iso</code>，比较级复数主格。</div>
+                <div class="gram-item level-2">&bull; <strong><code>rikkakihvelillä</code></strong>: 原型 <code>rikkakihveli</code>，接格。</div>
+            </div>
+            <div class="back-translation"><strong>他先用刷子和簸箕把地板上较大的垃圾扫走。</strong></div>
+        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 3</div>
+            <div class="fi-sentence"><span class="v-word">Sitten</span> <span class="v-word">hän</span> <span class="v-word">imuroi</span> <span class="v-word">ja</span> <span class="v-word">lopuksi</span> <span class="v-word">hän</span> <span class="v-word">vielä</span> <span class="v-word">moppaa</span> <span class="v-word">lattiat</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Sitten hän imuroi ja lopuksi hän vielä moppaa lattiat.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Sitten / hän imuroi /</span><span class="chunk-zh">然后 / 他吸尘 /</span></div>
+                <div class="chunk-item"><span class="chunk-fi">ja lopuksi / hän vielä moppaa / lattiat.</span><span class="chunk-zh">并且最后 / 他还拖 / 地板。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-1"><strong>语法要点 (核心对比):</strong></div>
+                <div class="gram-item level-2">&bull; <strong>全格宾语:</strong> <code>lattiat</code>（复数主格形式作全格宾语）强调动作完成。</div>
+                <div class="gram-item level-2">&bull; <strong>对比句1:</strong> <code>siivota lattioita</code>（过程）vs <code>moppaa lattiat</code>（结果）。</div>
+                <div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+                <div class="gram-item level-2">&bull; <strong><code>imuroi</code></strong>: 原型 <code>imuroida</code>（2型），3单。</div>
+                <div class="gram-item level-2">&bull; <strong><code>moppaa</code></strong>: 原型 <code>mopata</code>（4型），3单。</div>
+                <div class="gram-item level-2">&bull; <strong><code>lattiat</code></strong>: 原型 <code>lattia</code>，复数主格（全格宾语）。</div>
+            </div>
+            <div class="back-translation"><strong>然后他吸尘，最后他还拖了地。</strong></div>
+        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 4</div>
+            <div class="fi-sentence"><span class="v-word">Sitten</span> <span class="v-word">Iina</span> <span class="v-word">ja</span> <span class="v-word">Chris</span> <span class="v-word">menevät</span> <span class="v-word">siivoamaan</span> <span class="v-word">vessan</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Sitten Iina ja Chris menevät siivoamaan vessan.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Sitten / Iina ja Chris menevät / siivoamaan / vessan.</span><span class="chunk-zh">然后 / Iina和Chris去 / 打扫 / 厕所。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-1"><strong>语法要点:</strong></div>
+                <div class="gram-item level-2">&bull; <strong><code>mennä</code> + 3. Infinitiivi Illatiivi:</strong> <code>mennä siivoamaan</code> 表示“去做某事”。</div>
+                <div class="gram-item level-2">&bull; <strong>全格宾语:</strong> <code>vessan</code>（单数属格形式）强调“把厕所打扫干净”。</div>
+                <div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+                <div class="gram-item level-2">&bull; <strong><code>menevät</code></strong>: 原型 <code>mennä</code>（3型），3复。</div>
+                <div class="gram-item level-2">&bull; <strong><code>siivoamaan</code></strong>: 原型 <code>siivota</code>，第三不定式入格。</div>
+                <div class="gram-item level-2">&bull; <strong><code>vessan</code></strong>: 原型 <code>vessa</code>，单数全格。</div>
+            </div>
+            <div class="back-translation"><strong>然后 Iina 和 Chris 去打扫厕所。</strong></div>
+        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 5</div>
+            <div class="fi-sentence"><span class="v-word">Chris</span> <span class="v-word">pesee</span> <span class="v-word">vessanpöntön</span> <span class="v-word">ja</span> <span class="v-word">Iina</span> <span class="v-word">puhdistaa</span> <span class="v-word">lavuaarin</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Chris pesee vessanpöntön ja Iina puhdistaa lavuaarin.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Chris pesee / vessanpöntön /</span><span class="chunk-zh">Chris洗 / 马桶 /</span></div>
+                <div class="chunk-item"><span class="chunk-fi">ja Iina puhdistaa / lavuaarin.</span><span class="chunk-zh">并且Iina清洁 / 洗手池。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-1"><strong>语法要点:</strong></div>
+                <div class="gram-item level-2">&bull; <strong>全格宾语 (Genetiivi-objekti):</strong> <code>vessanpöntön</code>、<code>lavuaarin</code> 都是单数属格，用于结果性动作。</div>
+                <div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+                <div class="gram-item level-2">&bull; <strong><code>vessanpöntön</code></strong>: 原型 <code>vessanpönttö</code>，单数全格。</div>
+                <div class="gram-item level-2">&bull; <strong><code>puhdistaa</code></strong>: 原型 <code>puhdistaa</code>（1型），3单。</div>
+                <div class="gram-item level-2">&bull; <strong><code>lavuaarin</code></strong>: 原型 <code>lavuaari</code>，单数全格。</div>
+            </div>
+            <div class="back-translation"><strong>Chris 清洗马桶，Iina 清洁洗手池。</strong></div>
+        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 6</div>
+            <div class="fi-sentence"><span class="v-word">Lopuksi</span> <span class="v-word">Iina</span> <span class="v-word">pesee</span> <span class="v-word">vielä</span> <span class="v-word">ikkunat</span> <span class="v-word">ja</span> <span class="v-word">Chris</span> <span class="v-word">auttaa</span> <span class="v-word">häntä</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Lopuksi Iina pesee vielä ikkunat ja Chris auttaa häntä.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Lopuksi / Iina pesee vielä / ikkunat /</span><span class="chunk-zh">最后 / Iina洗还 / 窗户 /</span></div>
+                <div class="chunk-item"><span class="chunk-fi">ja Chris auttaa / häntä.</span><span class="chunk-zh">并且Chris帮助 / 她。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-1"><strong>语法要点:</strong></div>
+                <div class="gram-item level-2">&bull; <strong>全格宾语:</strong> <code>ikkunat</code>（复数）表示把窗户都洗完。</div>
+                <div class="gram-item level-2">&bull; <strong><code>auttaa</code> + 部分格:</strong> <code>häntä</code> 是固定要求，不能用宾格。</div>
+                <div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+                <div class="gram-item level-2">&bull; <strong><code>Lopuksi</code></strong>: 原型 <code>loppu</code>，变格（Translatiivi）副词化用法。</div>
+                <div class="gram-item level-2">&bull; <strong><code>ikkunat</code></strong>: 原型 <code>ikkuna</code>，复数主格（全格宾语）。</div>
+                <div class="gram-item level-2">&bull; <strong><code>häntä</code></strong>: 原型 <code>hän</code>，部分格不规则形式。</div>
+            </div>
+            <div class="back-translation"><strong>最后，Iina 把窗户也洗了，Chris 帮了她。</strong></div>
+        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 7</div>
+            <div class="fi-sentence"><span class="v-word">Huh</span>, <span class="v-word">se</span> <span class="v-word">oli</span> <span class="v-word">iso</span> <span class="v-word">urakka</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Huh, se oli iso urakka.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Huh, / se oli / iso urakka.</span><span class="chunk-zh">呼，/ 那是 / 一个大工程/任务。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-1"><strong>语法要点:</strong></div>
+                <div class="gram-item level-2">&bull; <strong>过去时 (Imperfekti):</strong> <code>oli</code> 是 <code>olla</code> 的过去式 3单。</div>
+                <div class="gram-item level-2">&bull; <strong>补语结构:</strong> <code>iso urakka</code> 描述前面 <code>se</code> 的性质。</div>
+                <div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+                <div class="gram-item level-2">&bull; <strong><code>urakka</code></strong>: 原型 <code>urakka</code>，主格。</div>
+            </div>
+            <div class="back-translation"><strong>呼，那可真是一项大工程。</strong></div>
+        </div></div></div>
+
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 8</div>
+            <div class="fi-sentence"><span class="v-word">Mutta</span> <span class="v-word">kyllä</span> <span class="v-word">nyt</span> <span class="v-word">on</span> <span class="v-word">ihanaa</span>, <span class="v-word">kun</span> <span class="v-word">koti</span> <span class="v-word">on</span> <span class="v-word">putipuhdas</span>!</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Mutta kyllä nyt on ihanaa, kun koti on putipuhdas!")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Mutta / kyllä nyt on / ihanaa, /</span><span class="chunk-zh">但是 / 确实现在是 / 美妙的，</span></div>
+                <div class="chunk-item"><span class="chunk-fi">kun koti on / putipuhdas!</span><span class="chunk-zh">当家是 / 一尘不染的！</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-1"><strong>语法要点:</strong></div>
+                <div class="gram-item level-2">&bull; <strong>抽象主语表达:</strong> <code>on ihanaa</code> 中表语用部分格 <code>ihanaa</code>。</div>
+                <div class="gram-item level-2">&bull; <strong>形容词一致:</strong> <code>koti on putipuhdas</code> 中 <code>putipuhdas</code> 用主格与具体名词主语一致。</div>
+                <div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+                <div class="gram-item level-2">&bull; <strong><code>ihanaa</code></strong>: 原型 <code>ihana</code>，部分格。</div>
+                <div class="gram-item level-2">&bull; <strong><code>putipuhdas</code></strong>: 原型 <code>putipuhdas</code>，复合强化形容词。</div>
+            </div>
+            <div class="back-translation"><strong>但是现在家里一尘不染的，感觉真棒！</strong></div>
+        </div></div></div>
+    </div>
+
+    <div class="supplement-section">
+        <h2>2.1 总结该段在全文中的意义和作用</h2>
+        <p>这是整个大扫除故事的结局。</p>
+        <ol>
+            <li><strong>情节上：</strong>这一段集中描写最繁重的家务（扫地、拖地、刷厕所、擦窗）以及完成后的满足感。</li>
+            <li><strong>语法上：</strong>这是理解“过程 vs. 结果（Aspekti）”与宾语格（Partitiivi / Totaaliobjekti）的关键段落。</li>
+        </ol>
+
+        <h3>语法点补充 1：过程 vs 结果（Aspekti）</h3>
+        <ul>
+            <li><code>siivota lattioita</code>：强调“开始打扫/正在打扫”的过程，所以用部分格 <code>lattioita</code>。</li>
+            <li><code>moppaa lattiat</code>：强调“拖完了地板”的结果，所以用全格宾语 <code>lattiat</code>。</li>
+        </ul>
+
+        <h3>语法点补充 2：<code>mennä</code> + 3. Infinitiivi Illatiivi</h3>
+        <ul>
+            <li>结构：<code>mennä + 动词词干 + maan/mään</code>。</li>
+            <li>例子：<code>menevät siivoamaan vessan</code>（他们去打扫厕所）。</li>
+        </ul>
+
+        <h3>语法点补充 3：<code>auttaa</code> 的格要求</h3>
+        <ul>
+            <li><code>auttaa</code> 是典型部分格动词，后接人称代词时用部分格：<code>hän -&gt; häntä</code>。</li>
+        </ul>
+    </div>
+
+    <div class="vocab-section">
+        <h2 style="text-align:center">2.2 重点词汇形态拆解</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>单词 (Sana)</th>
+                    <th>原型 (Perusmuoto)</th>
+                    <th>中文翻译 (Käännös)</th>
+                    <th>词干 (Vartalo)</th>
+                    <th>词类/形式</th>
+                    <th>构词法与语法深度解析 (Kiina)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td class="sana-fi"><strong>touhuaa</strong></td><td>touhuta</td><td>忙活/忙碌</td><td>touhua-</td><td>动词 (4型)</td><td><strong>4型动词</strong>：原型 <code>-ta</code>，变位时 <code>-t-</code> 脱落并形成长元音；此处是3单。</td></tr>
+                <tr><td class="sana-fi"><strong>lattioita</strong></td><td>lattia</td><td>地板（部分格）</td><td>lattia-</td><td>名词 (复数部分格)</td><td><code>lattia + oi + ta</code>。表示过程或不定量对象。</td></tr>
+                <tr><td class="sana-fi"><strong>lakaisee</strong></td><td>lakaista</td><td>扫</td><td>lakaise-</td><td>动词 (3型)</td><td><strong>3型动词</strong>：去掉 <code>-sta</code> 加 <code>e</code>，此处是3单。</td></tr>
+                <tr><td class="sana-fi"><strong>isommat</strong></td><td>iso</td><td>更大的</td><td>isomma-</td><td>形容词 (比较级)</td><td><code>iso -&gt; isompi</code>；比较级中 <code>mp -&gt; mm</code>（弱级），此处为复数主格。</td></tr>
+                <tr><td class="sana-fi"><strong>rikkakihvelillä</strong></td><td>rikkakihveli</td><td>用簸箕</td><td>rikkakihveli-</td><td>名词 (接格)</td><td><strong>复合词</strong>：<code>rikka + kihveli</code>；<code>-llä</code> 标记工具。</td></tr>
+                <tr><td class="sana-fi"><strong>moppaa</strong></td><td>mopata</td><td>拖地</td><td>moppaa-</td><td>动词 (4型)</td><td>4型变位中出现词干强化，常见写法 <code>mopata -&gt; moppaa</code>，此处是3单。</td></tr>
+                <tr><td class="sana-fi"><strong>siivoamaan</strong></td><td>siivota</td><td>去打扫</td><td>siivoa-</td><td>动词 (3不定式)</td><td><strong>第三不定式入格</strong>：<code>siivoa + maan</code>，用于 <code>mennä</code> 后表示目的。</td></tr>
+                <tr><td class="sana-fi"><strong>vessanpöntön</strong></td><td>vessanpönttö</td><td>马桶（宾语）</td><td>vessanpöntö-</td><td>名词 (属格)</td><td><strong>KPT</strong>：<code>ntt -&gt; nt</code>，单数属格形式作全格宾语。</td></tr>
+                <tr><td class="sana-fi"><strong>lavuaarin</strong></td><td>lavuaari</td><td>洗手池（宾语）</td><td>lavuaari-</td><td>名词 (属格)</td><td>单数属格形式作全格宾语，强调完成性。</td></tr>
+                <tr><td class="sana-fi"><strong>häntä</strong></td><td>hän</td><td>他/她（部分格）</td><td>-</td><td>代词 (部分格)</td><td>不规则变化 <code>hän -&gt; häntä</code>；<code>auttaa</code> 固定要求部分格。</td></tr>
+                <tr><td class="sana-fi"><strong>putipuhdas</strong></td><td>putipuhdas</td><td>一尘不染</td><td>putipuhtaa-</td><td>形容词</td><td><strong>强化复合词</strong>：<code>puti + puhdas</code>，表达“非常干净”。</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="word-tooltip" id="wordTooltip"></div>
+
+    <script>
+        const vocabularyData = {
+            "sillä": { "prototype": "se", "chinese": "在那段（时间）", "form": "接格" },
+            "aikaa": { "prototype": "aika", "chinese": "时间", "form": "部分格" },
+            "kun": { "prototype": "kun", "chinese": "当...时", "form": "连词" },
+            "iina": { "prototype": "Iina", "chinese": "Iina", "form": "主格" },
+            "touhuaa": { "prototype": "touhuta", "chinese": "忙活", "form": "3单" },
+            "keittiössä": { "prototype": "keittiö", "chinese": "在厨房里", "form": "内格" },
+            "chris": { "prototype": "Chris", "chinese": "Chris", "form": "主格" },
+            "alkaa": { "prototype": "alkaa", "chinese": "开始", "form": "3单" },
+            "siivota": { "prototype": "siivota", "chinese": "打扫", "form": "1不定式" },
+            "lattioita": { "prototype": "lattia", "chinese": "地板", "form": "复数部分格" },
+            "hän": { "prototype": "hän", "chinese": "他/她", "form": "主格" },
+            "lakaisee": { "prototype": "lakaista", "chinese": "扫", "form": "3单" },
+            "lattialta": { "prototype": "lattia", "chinese": "从地板上", "form": "离格" },
+            "ensin": { "prototype": "ensin", "chinese": "首先", "form": "副词" },
+            "isommat": { "prototype": "iso", "chinese": "更大的", "form": "比较级复数主格" },
+            "roskat": { "prototype": "roska", "chinese": "垃圾", "form": "复数全格" },
+            "harjalla": { "prototype": "harja", "chinese": "用刷子", "form": "接格" },
+            "ja": { "prototype": "ja", "chinese": "和/并且", "form": "连词" },
+            "rikkakihvelillä": { "prototype": "rikkakihveli", "chinese": "用簸箕", "form": "接格" },
+            "sitten": { "prototype": "sitten", "chinese": "然后", "form": "副词" },
+            "imuroi": { "prototype": "imuroida", "chinese": "吸尘", "form": "3单" },
+            "lopuksi": { "prototype": "lopuksi", "chinese": "最后", "form": "副词" },
+            "vielä": { "prototype": "vielä", "chinese": "还", "form": "副词" },
+            "moppaa": { "prototype": "mopata", "chinese": "拖地", "form": "3单" },
+            "lattiat": { "prototype": "lattia", "chinese": "地板", "form": "复数全格" },
+            "menevät": { "prototype": "mennä", "chinese": "去", "form": "3复" },
+            "siivoamaan": { "prototype": "siivota", "chinese": "去打扫", "form": "3不定式入格" },
+            "vessan": { "prototype": "vessa", "chinese": "厕所", "form": "单数全格" },
+            "pesee": { "prototype": "pestä", "chinese": "洗", "form": "3单" },
+            "vessanpöntön": { "prototype": "vessanpönttö", "chinese": "马桶", "form": "单数全格" },
+            "puhdistaa": { "prototype": "puhdistaa", "chinese": "清洁", "form": "3单" },
+            "lavuaarin": { "prototype": "lavuaari", "chinese": "洗手池", "form": "单数全格" },
+            "ikkunat": { "prototype": "ikkuna", "chinese": "窗户", "form": "复数全格" },
+            "auttaa": { "prototype": "auttaa", "chinese": "帮助", "form": "3单（部分格动词）" },
+            "häntä": { "prototype": "hän", "chinese": "他/她（宾语）", "form": "部分格" },
+            "huh": { "prototype": "huh", "chinese": "呼（感叹）", "form": "感叹词" },
+            "se": { "prototype": "se", "chinese": "那/它", "form": "主格" },
+            "oli": { "prototype": "olla", "chinese": "是（过去）", "form": "3单过去时" },
+            "iso": { "prototype": "iso", "chinese": "大的", "form": "形容词主格" },
+            "urakka": { "prototype": "urakka", "chinese": "大工程/任务", "form": "主格" },
+            "mutta": { "prototype": "mutta", "chinese": "但是", "form": "连词" },
+            "kyllä": { "prototype": "kyllä", "chinese": "确实", "form": "副词" },
+            "nyt": { "prototype": "nyt", "chinese": "现在", "form": "副词" },
+            "on": { "prototype": "olla", "chinese": "是/有", "form": "3单" },
+            "ihanaa": { "prototype": "ihana", "chinese": "很美好", "form": "部分格" },
+            "koti": { "prototype": "koti", "chinese": "家", "form": "主格" },
+            "putipuhdas": { "prototype": "putipuhdas", "chinese": "一尘不染", "form": "形容词主格" }
+        };
+
+        function flipCard(card) {
+            card.classList.toggle('is-flipped');
+        }
+
+        const tooltip = document.getElementById('wordTooltip');
+
+        function normalizeWord(text) {
+            return text.toLowerCase().replace(/[.,!?":;()]/g, '').trim();
+        }
+
+        function showTooltip(el) {
+            const word = normalizeWord(el.textContent);
+            const data = vocabularyData[word] || { prototype: el.textContent.trim(), chinese: '（未收录）', form: '词形' };
+            tooltip.innerHTML = '<span class="tooltip-proto">' + data.prototype + '</span><span class="tooltip-meaning">' + data.chinese + '</span><span class="tooltip-form">' + data.form + '</span>';
+            tooltip.classList.add('show');
+            const rect = el.getBoundingClientRect();
+            tooltip.style.left = (rect.left + window.scrollX + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+            tooltip.style.top = (rect.top + window.scrollY - tooltip.offsetHeight - 10) + 'px';
+        }
+
+        const synth = window.speechSynthesis;
+        const voiceSelect = document.getElementById('voice-select');
+        let voices = [];
+
+        function populateVoiceList() {
+            voices = synth.getVoices().sort((a, b) => a.name.localeCompare(b.name));
+            voiceSelect.innerHTML = voices
+                .map((v, i) => {
+                    const selected = v.lang.startsWith('fi') ? 'selected' : '';
+                    return '<option value="' + i + '" ' + selected + '>' + v.name + '</option>';
+                })
+                .join('');
+        }
+
+        function speak(text) {
+            if (synth.speaking) synth.cancel();
+            const utter = new SpeechSynthesisUtterance(text);
+            if (voices.length > 0 && voiceSelect.value !== '') utter.voice = voices[voiceSelect.value];
+            utter.lang = 'fi-FI';
+            utter.rate = 0.8;
+            synth.speak(utter);
+        }
+
+        populateVoiceList();
+        if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoiceList;
+
+        document.querySelectorAll('.v-word').forEach(el => {
+            el.addEventListener('mouseenter', (e) => {
+                e.stopPropagation();
+                showTooltip(el);
+            });
+            el.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showTooltip(el);
+                speak(el.textContent);
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.v-word')) tooltip.classList.remove('show');
+        });
+    </script>
+
+</body>
+</html>

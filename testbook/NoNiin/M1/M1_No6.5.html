@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精读文本-6.5 - Siivouspäivä (大扫除日)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap');
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-back-bg: #1a202c;
+            --accent-color: #8be9fd;
+            --highlight-color: #ff79c6;
+            --text-color: #2d3748;
+            --bg-color: #f0f4f8;
+        }
+
+        body {
+            font-family: 'Noto Sans', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-color);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        h1 { text-align: center; color: #1a202c; margin: 20px 0 5px 0; font-weight: 800; font-size: 2rem; }
+        .subtitle { text-align: center; color: #718096; margin-bottom: 30px; max-width: 760px; font-size: 0.95rem; line-height: 1.5; }
+
+        .supplement-section,
+        .vocab-section {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .supplement-section { margin-top: 10px; }
+        .vocab-section { margin-top: 30px; margin-bottom: 50px; }
+        .supplement-section h2,
+        .supplement-section h3,
+        .vocab-section h2 { margin-top: 0; color: #1f2937; }
+        .supplement-section p { line-height: 1.75; margin: 8px 0; }
+        .supplement-section ol { margin: 6px 0 10px 22px; line-height: 1.7; }
+        .supplement-section ul { margin: 6px 0 10px 18px; line-height: 1.7; }
+        .supplement-section li { margin: 4px 0; }
+        .supplement-section code,
+        .vocab-section code { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 1px 6px; }
+
+        .word-tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.95);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            max-width: 280px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: opacity 0.2s ease;
+        }
+        .word-tooltip.show { opacity: 1; visibility: visible; }
+        .tooltip-proto { color: #8be9fd; font-weight: 800; font-size: 1.1em; display: block; border-bottom: 1px solid #444; margin-bottom: 5px; }
+        .tooltip-meaning { color: #f8f8f2; font-weight: 600; display: block; }
+        .tooltip-form { color: #ff79c6; font-size: 0.8rem; display: block; margin-top: 3px; }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1200px;
+            padding-bottom: 50px;
+        }
+
+        .card {
+            height: 560px;
+            cursor: pointer;
+            position: relative;
+            perspective: 1500px;
+        }
+
+        .card.is-flipped { z-index: 10; }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            transform-origin: center;
+        }
+
+        .card:hover .card-inner { transform: scale(0.98); }
+        .card.is-flipped .card-inner { transform: rotateY(180deg) scale(0.98); }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .card-front {
+            background: white;
+            padding: 30px;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .fi-sentence {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e293b;
+            text-align: center;
+            line-height: 1.65;
+        }
+
+        .v-word {
+            text-decoration: underline dotted #cbd5e1;
+            cursor: help;
+            font-weight: 600;
+        }
+        .v-word:hover { background: #f1f5f9; text-decoration-style: solid; }
+
+        .card-back {
+            background: var(--card-back-bg);
+            color: #f8f8f2;
+            transform: rotateY(180deg);
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .back-title { font-size: 0.8rem; font-weight: 800; color: #718096; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .analysis-block { margin-bottom: 15px; border-bottom: 1px solid #2d3748; padding-bottom: 12px; }
+        .analysis-block:last-child { border-bottom: none; }
+        .chunk-item { border-left: 3px solid #48bb78; padding-left: 10px; margin-bottom: 8px; }
+        .chunk-fi { font-weight: 700; display: block; font-size: 1rem; }
+        .chunk-zh { font-size: 0.85rem; color: #a0aec0; display: block; }
+        .gram-item { font-size: 0.9rem; line-height: 1.55; margin-bottom: 6px; }
+        .gram-item strong { color: var(--accent-color); }
+        .gram-item.level-2 { padding-left: 10px; }
+        .gram-item.level-3 { padding-left: 20px; }
+        .gram-item.level-4 { padding-left: 30px; }
+        .back-translation { font-size: 1.05rem; font-weight: 600; border-left: 4px solid #ed64a6; padding-left: 12px; margin-top: 10px; }
+
+        .tts-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            margin-top: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: transform 0.2s;
+        }
+        .tts-btn:hover { transform: scale(1.1); }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; color: #64748b; font-size: 0.8rem; border-bottom: 2px solid #f1f5f9; }
+        td { padding: 15px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        .sana-fi { font-weight: 700; color: #334155; }
+
+        .controls {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        #voice-select { border-radius: 20px; padding: 5px 15px; border: 1px solid #ddd; }
+
+        @media (max-width: 480px) {
+            .card { height: 620px; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <select id="voice-select"></select>
+    </div>
+
+    <h1>📖 Siivouspäivä (大扫除日)</h1>
+    <p class="subtitle">点击卡片翻转查看语法深度拆解。悬停或点击单词查看原型、中文与词法形式；点击单词可朗读单词，点击按钮可朗读整句。</p>
+
+    <div class="card-container">
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 1</div>
+            <div class="fi-sentence"><span class="v-word">Tänään</span> <span class="v-word">on</span> <span class="v-word">Iinan</span> <span class="v-word">ja</span> <span class="v-word">Chrisin</span> <span class="v-word">siivouspäivä</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Tänään on Iinan ja Chrisin siivouspäivä.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">Tänään on / Iinan ja Chrisin / siivouspäivä.</span><span class="chunk-zh">今天是 / Iina和Chris的 / 清洁日/大扫除日。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点:</strong></div>
+<div class="gram-item level-2">&bull; <strong>属格 (Genetiivi):</strong> <code>Iinan ja Chrisin</code>。表示“谁的”。</div>
+<div class="gram-item level-2">&bull; <strong>复合词 (Yhdyssana):</strong> <code>siivouspäivä</code> = <code>siivous</code> (清洁/打扫，名词) + <code>päivä</code> (日子)。<code>siivous</code> 源自动词 <code>siivota</code>。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>Tänään</code></strong>: 副词 (今天)。</div>
+<div class="gram-item level-2">&bull; <strong><code>siivouspäivä</code></strong>: 原型 <code>siivouspäivä</code>。词干 <code>siivouspäivä-</code>。</div>
+            </div>
+            <div class="back-translation"><strong>今天是 Iina 和 Chris 的大扫除日。</strong></div>
+        </div></div></div>        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 2</div>
+            <div class="fi-sentence"><span class="v-word">He</span> <span class="v-word">siivoavat</span> <span class="v-word">koko</span> <span class="v-word">kodin</span> <span class="v-word">putipuhtaaksi</span>!</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("He siivoavat koko kodin putipuhtaaksi!")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">He siivoavat / koko kodin / putipuhtaaksi!</span><span class="chunk-zh">他们打扫 / 整个家 / (变得)一尘不染！</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点:</strong></div>
+<div class="gram-item level-2">&bull; <strong>宾语 (Objekti):</strong> <code>koko kodin</code>。这是<strong>单数全格宾语</strong>（属格形式 -n），因为“打扫整个家”是一个有明确结果、被彻底完成的动作。</div>
+<div class="gram-item level-2">&bull; <strong>变格词 (Translatiivi -ksi):</strong> <code>putipuhtaaksi</code>。</div>
+<div class="gram-item level-3">&bull; <strong>规则:</strong> 变格 (Translatiivi) 表示“状态的改变”或“变成某种状态”。</div>
+<div class="gram-item level-3">&bull; <strong>含义:</strong> 家被打扫后，<strong>变成了</strong>干净的状态。</div>
+<div class="gram-item level-3">&bull; <strong>词汇:</strong> <code>putipuhdas</code> 是一个强调词，意为“干干净净”、“一尘不染”。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>siivoavat</code></strong>: 原型 <code>siivota</code> (4型)。词干 <code>siivoa-</code>。规则: <code>-t-</code> 脱落，<code>a</code> 加倍 -&gt; <code>he siivoavat</code>。</div>
+<div class="gram-item level-2">&bull; <strong><code>kodin</code></strong>: 原型 <code>koti</code> (家)。词干 <code>kodi-</code> (弱级 t-&gt;d)。单数属格/宾格。</div>
+<div class="gram-item level-2">&bull; <strong><code>putipuhtaaksi</code></strong>: 原型 <code>putipuhdas</code>。词干 <code>putipuhtaa-</code> (s结尾词的变化)。变格: <code>putipuhtaa</code> + <code>ksi</code>.</div>
+            </div>
+            <div class="back-translation"><strong>他们把整个家打扫得一尘不染！</strong></div>
+        </div></div></div>        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 3</div>
+            <div class="fi-sentence"><span class="v-word">Ensin</span> <span class="v-word">Iina</span> <span class="v-word">pesee</span> <span class="v-word">pyykkiä</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Ensin Iina pesee pyykkiä.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">Ensin / Iina pesee / pyykkiä.</span><span class="chunk-zh">首先 / Iina洗 / 衣服/脏衣物。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点 (重点对比):</strong></div>
+<div class="gram-item level-2">&bull; <strong>部分格宾语 (Partitiivi):</strong> <code>pyykkiä</code>。</div>
+<div class="gram-item level-2">&bull; <strong>为什么用部分格？</strong> 此时强调的是“她在洗衣服”这个<strong>动作过程</strong>，或者指洗“一些”衣服，而不是强调“把这堆衣服洗完”的结果。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>pyykkiä</code></strong>: 原型 <code>pyykki</code>。词干 <code>pyykki-</code>。单数部分格 <code>pyykki</code> + <code>ä</code>。</div>
+            </div>
+            <div class="back-translation"><strong>首先，Iina 开始洗衣服。</strong></div>
+        </div></div></div>        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 4</div>
+            <div class="fi-sentence"><span class="v-word">Pyykkikori</span> <span class="v-word">on</span> <span class="v-word">nimittäin</span> <span class="v-word">täpötäynnä</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Pyykkikori on nimittäin täpötäynnä.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">Pyykkikori on / nimittäin / täpötäynnä.</span><span class="chunk-zh">洗衣篮是 / 原来(你瞧) / 满满当当的。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点:</strong></div>
+<div class="gram-item level-2">&bull; <strong>状态格 (Essiivi -na):</strong> <code>täpötäynnä</code>。</div>
+<div class="gram-item level-3">&bull; <strong>规则:</strong> 状态格表示“处于某种状态”。</div>
+<div class="gram-item level-3">&bull; <strong>词汇:</strong> <code>täpötäysi</code> (挤满的/塞满的)。</div>
+<div class="gram-item level-2">&bull; <strong>连接词:</strong> <code>nimittäin</code> (即，因为，你瞧)。用于解释原因或补充说明。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>täpötäynnä</code></strong>: 原型 <code>täpötäysi</code>。词干 <code>täpötäyte-</code> (通常i结尾形容词) 但这里是特殊的 <code>si</code> -&gt; <code>nne</code> ? 不，<code>täysi</code> 的词干是 <code>täyte-</code>，但作为 Essiivi 有特殊保留形式，或是基于辅音词干 <code>täyn-</code> + <code>nä</code>。<strong>täpö-</strong>：这是一个<strong>加强前缀</strong>（vahvistussana），类似于英语中的 "cram-" 或 "stone-"（如 stone-cold）。它本身没有实际含义，也不能独立变位，作用就是把后面的形容词程度推到极致。- <strong>täynnä</strong>：这是形容词 <strong><code>täysi</code></strong>（满的）的<strong>状态格（Essive Case）</strong>形式。    täpötäynnä 是状态格，不可变位，单数复数一样。如果你想表达“在满满的篮子里”，你会回到原形 <code>täysi</code> 去变位（例如：<em>täpötäydessä korissa</em>），但作为表语描述“满了”这个状态时，永远只用 <code>täpötäynnä</code>。</div>
+            </div>
+            <div class="back-translation"><strong>原来洗衣篮已经塞得满满当当了。</strong></div>
+        </div></div></div>        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 5</div>
+            <div class="fi-sentence"><span class="v-word">Iina</span> <span class="v-word">laittaa</span> <span class="v-word">pyykit</span> <span class="v-word">koneeseen</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Iina laittaa pyykit koneeseen.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">Iina laittaa / pyykit / koneeseen.</span><span class="chunk-zh">Iina放 / 那些衣服 / 进机器里。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点 (重点对比):</strong></div>
+<div class="gram-item level-2">&bull; <strong>全格宾语 (Totaaliobjekti):</strong> <code>pyykit</code> (复数主格)。</div>
+<div class="gram-item level-2">&bull; <strong>为什么不用部分格了？</strong> 刚才还在洗 <code>pyykkiä</code>，现在变成了 <code>pyykit</code>。因为这里指的是“把<strong>那些</strong>（特定的、篮子里的）衣服”全部放进去，动作有明确对象和结果。</div>
+<div class="gram-item level-2">&bull; <strong>入格 (Illatiivi):</strong> <code>koneeseen</code> (进机器)。<code>laittaa</code> + <code>Illatiivi</code> 是固定搭配，表示“放入某处”。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>pyykit</code></strong>: 原型 <code>pyykki</code>。词干 <code>pyyki-</code> (弱级 kk-&gt;k)。复数主格。</div>
+<div class="gram-item level-2">&bull; <strong><code>koneeseen</code></strong>: 原型 <code>kone</code>。词干 <code>konee-</code>。入格 <code>seen</code> (e结尾单词的入格形式)。</div>
+            </div>
+            <div class="back-translation"><strong>Iina 把衣服放进洗衣机。</strong></div>
+        </div></div></div>        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 6</div>
+            <div class="fi-sentence"><span class="v-word">Sillä</span> <span class="v-word">aikaa</span>, <span class="v-word">kun</span> <span class="v-word">kone</span> <span class="v-word">pesee</span> <span class="v-word">pyykit</span>, <span class="v-word">Iina</span> <span class="v-word">pyyhkii</span> <span class="v-word">pölyt</span> <span class="v-word">rätillä</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Sillä aikaa, kun kone pesee pyykit, Iina pyyhkii pölyt rätillä.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">Sillä aikaa, / kun kone pesee pyykit, / Iina pyyhkii pölyt / rätillä.</span><span class="chunk-zh">在那段时间， / 当机器洗衣服(的时候)， / Iina擦灰尘 / 用抹布。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>固定搭配:</strong> <code>Sillä aikaa, kun...</code> (在...的同时 / 当...的时候)。</div>
+<div class="gram-item level-1"><strong>语法要点:</strong></div>
+<div class="gram-item level-2">&bull; <strong>接格 (Adessiivi) 表工具:</strong> <code>rätillä</code>。用抹布。</div>
+<div class="gram-item level-2">&bull; <strong>宾语:</strong> <code>pyykit</code> (全格，指机洗的这批衣服)；<code>pölyt</code> (全格，复数主格，指把灰尘擦掉，通常用复数)。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>pesee</code></strong>: 原型 <code>pestä</code> (3型)。词干 <code>pese-</code>。</div>
+<div class="gram-item level-2">&bull; <strong><code>pyyhkii</code></strong>: 原型 <code>pyyhkiä</code> (1型)。词干 <code>pyyhki-</code>。KPT变化 <code>hk</code> 保持不变。</div>
+<div class="gram-item level-2">&bull; <strong><code>pölyt</code></strong>: 原型 <code>pöly</code> (灰尘)。</div>
+<div class="gram-item level-2">&bull; <strong><code>rätillä</code></strong>: 原型 <code>rätti</code> (抹布)。词干 <code>räti-</code> (弱级 tt-&gt;t)。接格。</div>
+            </div>
+            <div class="back-translation"><strong>在洗衣机洗衣服的时候，Iina 用抹布擦灰尘。</strong></div>
+        </div></div></div>        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 7</div>
+            <div class="fi-sentence"><span class="v-word">Kun</span> <span class="v-word">kone</span> <span class="v-word">on</span> <span class="v-word">pessyt</span> <span class="v-word">pyykit</span>, <span class="v-word">Iina</span> <span class="v-word">ripustaa</span> <span class="v-word">ne</span> <span class="v-word">kuivumaan</span> <span class="v-word">pyykkitelineelle</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kun kone on pessyt pyykit, Iina ripustaa ne kuivumaan pyykkitelineelle.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">Kun kone on pessyt / pyykit, / Iina ripustaa ne / kuivumaan / pyykkitelineelle.</span><span class="chunk-zh">当机器已经洗完 / 衣服， / Iina挂它们 / 去变干 / 到晾衣架上。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点:</strong></div>
+<div class="gram-item level-2">&bull; <strong>现在完成时 (Perfekti):</strong> <code>on pessyt</code>。表示动作<strong>已经完成</strong>。</div>
+<div class="gram-item level-2">&bull; <strong>宾语:</strong> <code>ne</code> (它们，指代 <code>pyykit</code>)。复数宾语的全格形式（对于代词 <code>ne</code> 是宾格）。</div>
+<div class="gram-item level-2">&bull; <strong>第三不定式入格 (-maan):</strong> <code>kuivumaan</code>。</div>
+<div class="gram-item level-3">&bull; <strong>规则:</strong> 动词 <code>ripustaa</code> (挂) 后面接另一个动作表示目的或状态变化时，用第三不定式入格。挂起来 -&gt; 去干。</div>
+<div class="gram-item level-2">&bull; <strong>向格/接格 (Allatiivi):</strong> <code>pyykkitelineelle</code>。挂<strong>到</strong>架子上。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>pessyt</code></strong>: 原型 <code>pestä</code>。过去分词形式 (NUT-partisiippi)。</div>
+<div class="gram-item level-2">&bull; <strong><code>ripustaa</code></strong>: 原型 <code>ripustaa</code> (1型)。</div>
+<div class="gram-item level-2">&bull; <strong><code>kuivumaan</code></strong>: 原型 <code>kuivua</code> (变干)。词干 <code>kuivu-</code> + <code>maan</code>.</div>
+<div class="gram-item level-2">&bull; <strong><code>pyykkitelineelle</code></strong>: 原型 <code>pyykkiteline</code>。复合词 <code>pyykki</code> + <code>teline</code> (架子)。词干 <code>telinee-</code> (e结尾词)。</div>
+            </div>
+            <div class="back-translation"><strong>当洗衣机洗完衣服后，Iina 把它们挂到晾衣架上晾干。</strong></div>
+        </div></div></div>        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 8</div>
+            <div class="fi-sentence"><span class="v-word">Iinaa</span> <span class="v-word">harmittaa</span>, <span class="v-word">että</span> <span class="v-word">heillä</span> <span class="v-word">ei</span> <span class="v-word">ole</span> <span class="v-word">kuivausrumpua</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Iinaa harmittaa, että heillä ei ole kuivausrumpua.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">Iinaa harmittaa, / että heillä ei ole / kuivausrumpua.</span><span class="chunk-zh">Iina感到懊恼/烦心， / 因为他们没有 / 烘干机。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点 (核心句型):</strong></div>
+<div class="gram-item level-2">&bull; <strong>Partitiiviverbi (部分格动词) 作主语:</strong> <code>harmittaa</code> (使...烦恼)。</div>
+<div class="gram-item level-3">&bull; 这种“心理感受动词”通常要求体验者用 <strong>部分格 (Partitiivi)</strong>。即：烦恼正在“搞” Iina。</div>
+<div class="gram-item level-3">&bull; 结构: <code>Partitiivi</code> (体验者) + <code>Verbi</code> (单三)。-&gt; <code>Iinaa harmittaa</code>.</div>
+<div class="gram-item level-2">&bull; <strong>否定拥有句:</strong> <code>heillä ei ole</code> + <strong>部分格</strong>。</div>
+<div class="gram-item level-3">&bull; <code>kuivausrumpua</code> (部分格)。因为是否定句。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>Iinaa</code></strong>: 原型 <code>Iina</code>。部分格。</div>
+<div class="gram-item level-2">&bull; <strong><code>harmittaa</code></strong>: 原型 <code>harmittaa</code> (1型)。</div>
+<div class="gram-item level-2">&bull; <strong><code>kuivausrumpua</code></strong>: 原型 <code>kuivausrumpu</code>。复合词 <code>kuivaus</code> (干燥) + <code>rumpu</code> (鼓/滚筒)。词干 <code>rumpu-</code> (强级 mp)。此处部分格 <code>rumpua</code>。</div>
+            </div>
+            <div class="back-translation"><strong>Iina 有点烦恼，因为他们没有烘干机。</strong></div>
+        </div></div></div>        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 9</div>
+            <div class="fi-sentence"><span class="v-word">Chris</span> <span class="v-word">ottaa</span> <span class="v-word">siivouskomerosta</span> <span class="v-word">silitysraudan</span> <span class="v-word">ja</span> <span class="v-word">-laudan</span> <span class="v-word">ja</span> <span class="v-word">alkaa</span> <span class="v-word">silittää</span> <span class="v-word">vaatteita</span> <span class="v-word">ja</span> <span class="v-word">Iina</span> <span class="v-word">laittaa</span> <span class="v-word">vaatteet</span> <span class="v-word">kaappiin</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Chris ottaa siivouskomerosta silitysraudan ja -laudan ja alkaa silittää vaatteita ja Iina laittaa vaatteet kaappiin.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">Chris ottaa / siivouskomerosta / silitysraudan ja -laudan /</span><span class="chunk-zh">Chris拿 / 从清洁柜里 / 熨斗和(熨衣)板 /</span></div>
+<div class="chunk-item"><span class="chunk-fi">ja alkaa silittää / vaatteita /</span><span class="chunk-zh">并开始熨烫 / 衣服 /</span></div>
+<div class="chunk-item"><span class="chunk-fi">ja Iina laittaa / vaatteet / kaappiin.</span><span class="chunk-zh">然后Iina放 / 衣服 / 进柜子里。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点:</strong></div>
+<div class="gram-item level-2">&bull; <strong>出格 (Elatiivi -sta):</strong> <code>siivouskomerosta</code>。表示从哪里拿出来。</div>
+<div class="gram-item level-2">&bull; <strong>连字符用法:</strong> <code>silitysraudan ja -laudan</code>。</div>
+<div class="gram-item level-3">&bull; 全称是 <code>silitysraudan ja silityslaudan</code>。因为前缀 <code>silitys-</code> (熨烫) 相同，第二个词省略前缀用连字符 <code>-</code> 代替。</div>
+<div class="gram-item level-3">&bull; <strong>全格宾语:</strong> <code>raudan</code> (rauta) 和 <code>laudan</code> (lauta)。单数属格形式，因为是拿了具体的这两个东西。</div>
+<div class="gram-item level-2">&bull; <strong>动词 <code>alkaa</code>:</strong> 后接第一不定式 (<code>silittää</code>)。</div>
+<div class="gram-item level-2">&bull; <strong>部分格宾语:</strong> <code>silittää vaatteita</code>。熨烫是一个过程，所以用部分格。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>siivouskomerosta</code></strong>: 原型 <code>siivouskomero</code> (清洁柜/杂物间)。词干 <code>komero-</code>。</div>
+<div class="gram-item level-2">&bull; <strong><code>silitysraudan</code></strong>: 原型 <code>silitysrauta</code>。词干 <code>rauda-</code> (t-&gt;d)。单数属格/宾格。</div>
+<div class="gram-item level-2">&bull; <strong><code>-laudan</code></strong>: 原型 <code>silityslauta</code>。词干 <code>lauda-</code> (t-&gt;d)。</div>
+<div class="gram-item level-2">&bull; <strong><code>silittää</code></strong>: 原型 <code>silittää</code> (1型)。</div>
+            </div>
+            <div class="back-translation"><strong>Chris 从杂物间拿出熨斗和熨衣板，开始熨衣服，Iina 则把衣服放进衣柜。</strong></div>
+        </div></div></div>        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 10</div>
+            <div class="fi-sentence"><span class="v-word">Sitten</span> <span class="v-word">Iina</span> <span class="v-word">menee</span> <span class="v-word">keittiöön</span> <span class="v-word">täyttämään</span> <span class="v-word">tiskikonetta</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Sitten Iina menee keittiöön täyttämään tiskikonetta.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">Sitten / Iina menee / keittiöön / täyttämään / tiskikonetta.</span><span class="chunk-zh">然后 / Iina去 / 进厨房 / 去装满 / 洗碗机。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点:</strong></div>
+<div class="gram-item level-2">&bull; <strong>入格 (Illatiivi):</strong> <code>keittiöön</code>。</div>
+<div class="gram-item level-2">&bull; <strong>3.不定式入格:</strong> <code>menee ... täyttämään</code>。去（为了做）某事。</div>
+<div class="gram-item level-2">&bull; <strong>部分格宾语:</strong> <code>tiskikonetta</code>。通常“填满”机器被视为一个过程，或者指填充机器的空间（Irresultative），所以常用部分格。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>täyttämään</code></strong>: 原型 <code>täyttää</code> (装填)。词干 <code>täyttä-</code> + <code>mään</code>。</div>
+<div class="gram-item level-2">&bull; <strong><code>tiskikonetta</code></strong>: 原型 <code>tiskikone</code>。复合词 <code>tiski</code> (洗碗/盘子) + <code>kone</code> (机器)。</div>
+            </div>
+            <div class="back-translation"><strong>然后 Iina 进厨房去装洗碗机。</strong></div>
+        </div></div></div>        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 11</div>
+            <div class="fi-sentence"><span class="v-word">Hänen</span> <span class="v-word">täytyy</span> <span class="v-word">ensin</span> <span class="v-word">ottaa</span> <span class="v-word">puhtaat</span> <span class="v-word">astiat</span> <span class="v-word">koneesta</span>, <span class="v-word">ennen</span> <span class="v-word">kuin</span> <span class="v-word">hän</span> <span class="v-word">voi</span> <span class="v-word">laittaa</span> <span class="v-word">likaiset</span> <span class="v-word">astiat</span> <span class="v-word">koneeseen</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Hänen täytyy ensin ottaa puhtaat astiat koneesta, ennen kuin hän voi laittaa likaiset astiat koneeseen.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">Hänen täytyy / ensin ottaa / puhtaat astiat / koneesta, /</span><span class="chunk-zh">她必须 / 先拿 / 干净的餐具 / 从机器里，</span></div>
+<div class="chunk-item"><span class="chunk-fi">ennen kuin / hän voi laittaa / likaiset astiat / koneeseen.</span><span class="chunk-zh">在...之前 / 她能放 / 脏餐具 / 进机器里。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点:</strong></div>
+<div class="gram-item level-2">&bull; <strong>必要性结构 (Nesessiivi):</strong> <code>Hänen täytyy</code> (属格 + täytyy)。表示“她必须”。</div>
+<div class="gram-item level-2">&bull; <strong>全格宾语 (复数):</strong> <code>puhtaat astiat</code> (干净的餐具) 和 <code>likaiset astiat</code> (脏餐具)。</div>
+<div class="gram-item level-3">&bull; <em>规则:</em> 在 <code>täytyy</code> 结构中，宾语通常用主格形式（这里复数主格看起来和普通主格一样）。</div>
+<div class="gram-item level-2">&bull; <strong>地点格:</strong> <code>koneesta</code> (出格 - 拿出来) vs <code>koneeseen</code> (入格 - 放进去)。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>Hänen</code></strong>: 原型 <code>hän</code>。属格。</div>
+<div class="gram-item level-2">&bull; <strong><code>puhtaat</code></strong>: 原型 <code>puhdas</code>。词干 <code>puhtaa-</code>。复数主格。</div>
+<div class="gram-item level-2">&bull; <strong><code>astiat</code></strong>: 原型 <code>astia</code>。复数主格。</div>
+<div class="gram-item level-2">&bull; <strong><code>likaiset</code></strong>: 原型 <code>likainen</code>。词干 <code>likaise-</code>。复数主格。</div>
+            </div>
+            <div class="back-translation"><strong>在把脏餐具放进去之前，她必须先从洗碗机里把干净的餐具拿出来。</strong></div>
+        </div></div></div>        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 12</div>
+            <div class="fi-sentence"><span class="v-word">Paistinpannun</span> <span class="v-word">hän</span> <span class="v-word">tiskaa</span> <span class="v-word">käsin</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Paistinpannun hän tiskaa käsin.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+<div class="chunk-item"><span class="chunk-fi">Paistinpannun / hän tiskaa / käsin.</span><span class="chunk-zh">煎锅 / 她洗 / 用手。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+<div class="gram-item level-1"><strong>语法要点:</strong></div>
+<div class="gram-item level-2">&bull; <strong>语序:</strong> 宾语 <code>Paistinpannun</code> 前置，表示强调“至于煎锅嘛...”。</div>
+<div class="gram-item level-2">&bull; <strong>全格宾语:</strong> <code>Paistinpannun</code> (单数属格形式)。因为是洗<strong>这一个</strong>具体的锅，并且会洗完。</div>
+<div class="gram-item level-2">&bull; <strong>手段/方式 (Instruktiivi):</strong> <code>käsin</code>。</div>
+<div class="gram-item level-3">&bull; 原型 <code>käsi</code> (手)。<code>käsin</code> 是复数指导格 (Instructive plural)，固定用法，意为“用手，手工地”。</div>
+<div class="gram-item level-1"><strong>词汇变位与原型:</strong></div>
+<div class="gram-item level-2">&bull; <strong><code>Paistinpannun</code></strong>: 原型 <code>paistinpannu</code>。复合词 <code>paistin</code> (paisti的属格，烤肉的) + <code>pannu</code> (锅)。</div>
+<div class="gram-item level-2">&bull; <strong><code>käsin</code></strong>: 原型 <code>käsi</code>。固定副词用法。</div>
+            </div>
+            <div class="back-translation"><strong>至于煎锅，她用手洗。</strong></div>
+        </div></div></div>
+
+    </div>
+
+    <div class="supplement-section">
+        <h2>2.1 总结该段在全文中的意义和作用</h2>
+<p>这是一篇极佳的<strong>生活场景叙述文</strong>。</p>
+<ol>
+<li><strong>词汇积累:</strong> 它涵盖了家庭大扫除（Siivouspäivä）的核心词汇：洗衣 (pyykki)、熨烫 (silittää)、洗碗 (tiskata)、灰尘 (pölyt)、家电 (kone, kuivausrumpu)。</li>
+<li><strong>语法功能:</strong> 它像教科书一样展示了<strong>宾语格的变化</strong>（根据动作是过程还是结果，是部分还是全部）以及<strong>动态地点格</strong>（从哪拿出来 -sta，放到哪去 -an）的精确用法。</li>
+</ol>
+    </div>
+
+    <div class="supplement-section">
+        <h2>语法点补充1 täpötäynnä</h2>
+<p><code>täpötäynnä</code>（塞得满满当当）这个词其实是一个<strong>复合固定形式</strong>，它的“变位”逻辑非常有意思，因为它实际上是一个<strong>已经变好位的状态词</strong>。</p>
+<p>在芬兰语中，这类词通常被称为“僵化形式”或“固定副词性形容词”。我们来拆解它的构造：</p>
+<h3>1. 词源拆解：<code>täpö</code> + <code>täynnä</code></h3>
+<ul>
+<li>
+<p><strong>täpö-</strong>：这是一个<strong>加强前缀</strong>（vahvistussana），类似于英语中的 "cram-" 或 "stone-"（如 stone-cold）。它本身没有实际含义，也不能独立变位，作用就是把后面的形容词程度推到极致。</p>
+</li>
+<li>
+<p><strong>täynnä</strong>：这是形容词 <strong><code>täysi</code></strong>（满的）的<strong>状态格（Essive Case）</strong>形式。</p>
+</li>
+</ul>
+<h3>2. 为什么它看起来不像一般的变位？</h3>
+<p>在芬兰语中，描述“状态”时经常使用状态格（后缀 <code>-na/nä</code>）。</p>
+<ul>
+<li>
+<p><strong>原形</strong>：<code>täysi</code>（满）</p>
+</li>
+<li>
+<p><strong>状态格</strong>：<code>täynnä</code>（处于满的状态）</p>
+</li>
+</ul>
+<p>当你看到 <code>täpötäynnä</code> 时，它已经处在状态格中了。在句子 <strong>"Pyykkikori on täpötäynnä"</strong> 中，它的功能是描述洗衣篮当前的状态。这种结构与你在图片中看到的 <strong>"Selkä on kipeä"</strong>（背是疼的） 或 <strong>"Iho on kuuma"</strong>（皮肤是热的） 非常相似，都是“主语 + on + 描述状态的词”。</p>
+<h3>3. 它需要进一步变位吗？</h3>
+<p><strong>不需要。</strong> 这是一个非常高效的词：</p>
+<ul>
+<li>
+<p>它是<strong>不可变位</strong>的（Invariable）。无论主语是单数还是复数，它都保持 <code>täpötäynnä</code>。</p>
+<ul>
+<li>
+<p><em>Pyykkikori on täpötäynnä.</em> (洗衣篮是满满的。)</p>
+</li>
+<li>
+<p><em>Pyykkikorit ovat täpötäynnä.</em> (洗衣篮们是满满的。)</p>
+</li>
+</ul>
+</li>
+<li>
+<p>如果你想表达“在满满的篮子里”，你会回到原形 <code>täysi</code> 去变位（例如：<em>täpötäydessä korissa</em>），但作为表语描述“满了”这个状态时，永远只用 <code>täpötäynnä</code>。</p>
+</li>
+</ul>
+<h3>4. 补充：句中的 <code>nimittäin</code></h3>
+<p>顺便提一下，句中的 <strong><code>nimittäin</code></strong> 是一个非常有用的填充词，意思是“即”、“因为”、“你要知道”。</p>
+<ul>
+<li>
+<p>它通常用来解释前一句话的原因。</p>
+</li>
+<li>
+<p>例子：<em>En voi pestä vaatteita. Pyykkikori on <strong>nimittäin</strong> täpötäynnä.</em> (我没法洗衣服。<strong>因为</strong>你看，洗衣篮已经塞得满满当当了。)</p>
+</li>
+</ul>
+    </div>
+
+    <div class="vocab-section">
+        <h2 style="text-align:center">重点词汇形态拆解</h2>
+            <table>
+                <thead><tr><th>单词 (Sana)</th><th>原型 (Perusmuoto)</th><th>中文翻译 (Käännös)</th><th>词干 (Vartalo)</th><th>词类/形式</th><th>构词法与语法深度解析 (Kiina)</th></tr></thead>
+                <tbody>
+<tr><td class="sana-fi"><strong>siivouspäivä</strong></td><td>siivouspäivä</td><td>大扫除日</td><td>siivouspäivä-</td><td>名词 (主格)</td><td><strong>复合词</strong>: <code>siivous</code> (清洁，源自siivota) + <code>päivä</code> (日子)。</td></tr><tr><td class="sana-fi"><strong>kodin</strong></td><td>koti</td><td>家 (全格宾语)</td><td>kodi-</td><td>名词 (属格)</td><td><strong>KPT-变化</strong>: <code>t</code> -&gt; <code>d</code>。单数属格形式用作<strong>全格宾语</strong>。</td></tr><tr><td class="sana-fi"><strong>putipuhtaaksi</strong></td><td>putipuhdas</td><td>一尘不染 (变格)</td><td>putipuhtaa-</td><td>形容词 (变格)</td><td><strong>变格 (Translatiivi)</strong>: <code>ksi</code> 结尾，表示状态的改变。<br><strong>词干</strong>: <code>as</code> 结尾的形容词，词干变为 <code>aa</code> (puhdas -&gt; puhtaa)。</td></tr><tr><td class="sana-fi"><strong>pyykkiä</strong></td><td>pyykki</td><td>待洗衣物 (部分格)</td><td>pyykki-</td><td>名词 (部分格)</td><td><strong>部分格</strong>: 强调“洗衣服”这个动作的过程，或不确定的数量。词干 <code>kk</code> 保持强级。</td></tr><tr><td class="sana-fi"><strong>täpötäynnä</strong></td><td>täpötäysi</td><td>满满当当 (状态格)</td><td>täpötäyn-</td><td>形容词 (状态格)</td><td><strong>状态格 (Essiivi)</strong>: <code>-na</code> 结尾。<br><strong>构词</strong>: <code>täpö-</code> (增强前缀) + <code>täysi</code> (满)。<code>täysi</code> 在状态格中有特殊形式 <code>täynnä</code>。</td></tr><tr><td class="sana-fi"><strong>pyykit</strong></td><td>pyykki</td><td>衣物 (全格宾语)</td><td>pyyki-</td><td>名词 (复数主格)</td><td><strong>KPT-变化</strong>: <code>kk</code> -&gt; <code>k</code>。<br><strong>全格宾语</strong>: 复数。指特定的、全部放进机器的那些衣服。</td></tr><tr><td class="sana-fi"><strong>koneeseen</strong></td><td>kone</td><td>进机器里</td><td>konee-</td><td>名词 (入格)</td><td><strong>入格</strong>: <code>e</code> 结尾的名词，入格形式为 <code>seen</code>。</td></tr><tr><td class="sana-fi"><strong>rätillä</strong></td><td>rätti</td><td>用抹布</td><td>räti-</td><td>名词 (接格)</td><td><strong>KPT-变化</strong>: <code>tt</code> -&gt; <code>t</code>。<br><strong>工具格</strong>: Adessiivi (-lla) 表示使用的工具。</td></tr><tr><td class="sana-fi"><strong>pessyt</strong></td><td>pestä</td><td>洗过</td><td>pes-</td><td>动词 (分词)</td><td><strong>NUT-分词</strong>: 完成时 <code>on</code> + <code>nut/nyt</code> 形式。<code>pestä</code> -&gt; <code>pes-</code> + <code>syt</code>。</td></tr><tr><td class="sana-fi"><strong>kuivumaan</strong></td><td>kuivua</td><td>去变干</td><td>kuivu-</td><td>动词 (3不定式)</td><td><strong>3.不定式入格</strong>: <code>-maan</code>。表示动作的目的或方向（挂起来-&gt;为了干）。</td></tr><tr><td class="sana-fi"><strong>pyykkitelineelle</strong></td><td>pyykkiteline</td><td>到晾衣架上</td><td>...telinee-</td><td>名词 (向格)</td><td><strong>复合词</strong>: <code>pyykki</code> + <code>teline</code> (架子)。<br><strong>词干</strong>: <code>e</code> 结尾词 <code>teline</code> -&gt; <code>telinee-</code>。</td></tr><tr><td class="sana-fi"><strong>harmittaa</strong></td><td>harmittaa</td><td>使...烦恼</td><td>harmitta-</td><td>动词 (1型)</td><td><strong>部分格动词</strong>: 这是一个由“感觉”驱动的动词，要求体验者用部分格 (<code>Iinaa</code>).</td></tr><tr><td class="sana-fi"><strong>siivouskomerosta</strong></td><td>siivouskomero</td><td>从清洁柜</td><td>...komero-</td><td>名词 (出格)</td><td><strong>出格 (-sta)</strong>: 表示来源“从里面出来”。</td></tr><tr><td class="sana-fi"><strong>silitysraudan</strong></td><td>silitysrauta</td><td>熨斗 (全格宾语)</td><td>...rauda-</td><td>名词 (属格)</td><td><strong>KPT-变化</strong>: <code>t</code> -&gt; <code>d</code>。<br><strong>复合词</strong>: <code>silitys</code> (熨烫) + <code>rauta</code> (铁/熨斗)。</td></tr><tr><td class="sana-fi"><strong>täyttämään</strong></td><td>täyttää</td><td>去装满</td><td>täyttä-</td><td>动词 (3不定式)</td><td><strong>3.不定式入格</strong>: <code>menee</code> (去) + <code>-mään</code> (做某事)。</td></tr><tr><td class="sana-fi"><strong>puhtaat</strong></td><td>puhdas</td><td>干净的 (复数)</td><td>puhtaa-</td><td>形容词 (复数)</td><td><strong>词干变化</strong>: <code>s</code> -&gt; <code>a</code> (puhdas -&gt; puhtaan -&gt; puhtaat)。KPT <code>hd</code> -&gt; <code>ht</code>.</td></tr><tr><td class="sana-fi"><strong>käsin</strong></td><td>käsi</td><td>用手 (手工)</td><td>käsi-</td><td>名词 (指导格)</td><td><strong>固定副词</strong>: <code>käsi</code> 的复数指导格 (Instruktiivi)，表示方式。</td></tr>
+                </tbody>
+            </table>
+    </div>
+
+    <div class="word-tooltip" id="wordTooltip"></div>
+
+<script>
+    const vocabularyData = {
+  "siivouspäivä": {
+    "prototype": "siivouspäivä",
+    "chinese": "大扫除日",
+    "form": "主格"
+  },
+  "kodin": {
+    "prototype": "koti",
+    "chinese": "家（全格）",
+    "form": "单数全格"
+  },
+  "putipuhtaaksi": {
+    "prototype": "putipuhdas",
+    "chinese": "一尘不染",
+    "form": "变格-ksi"
+  },
+  "pyykkiä": {
+    "prototype": "pyykki",
+    "chinese": "衣物",
+    "form": "部分格"
+  },
+  "täpötäynnä": {
+    "prototype": "täpötäysi",
+    "chinese": "满满当当",
+    "form": "状态格"
+  },
+  "pyykit": {
+    "prototype": "pyykki",
+    "chinese": "衣物（这批）",
+    "form": "复数全格"
+  },
+  "koneeseen": {
+    "prototype": "kone",
+    "chinese": "进机器里",
+    "form": "入格"
+  },
+  "rätillä": {
+    "prototype": "rätti",
+    "chinese": "用抹布",
+    "form": "接格"
+  },
+  "pessyt": {
+    "prototype": "pestä",
+    "chinese": "已洗完",
+    "form": "过去分词"
+  },
+  "kuivumaan": {
+    "prototype": "kuivua",
+    "chinese": "去变干",
+    "form": "3不定式入格"
+  },
+  "pyykkitelineelle": {
+    "prototype": "pyykkiteline",
+    "chinese": "到晾衣架上",
+    "form": "向格"
+  },
+  "harmittaa": {
+    "prototype": "harmittaa",
+    "chinese": "使烦恼",
+    "form": "3单"
+  },
+  "siivouskomerosta": {
+    "prototype": "siivouskomero",
+    "chinese": "从清洁柜里",
+    "form": "出格"
+  },
+  "silitysraudan": {
+    "prototype": "silitysrauta",
+    "chinese": "熨斗",
+    "form": "单数全格"
+  },
+  "täyttämään": {
+    "prototype": "täyttää",
+    "chinese": "去装满",
+    "form": "3不定式入格"
+  },
+  "puhtaat": {
+    "prototype": "puhdas",
+    "chinese": "干净的",
+    "form": "复数主格"
+  },
+  "käsin": {
+    "prototype": "käsi",
+    "chinese": "用手",
+    "form": "指导格"
+  },
+  "-laudan": {
+    "prototype": "silityslauta",
+    "chinese": "（熨衣）板",
+    "form": "单数全格"
+  },
+  "aikaa": {
+    "prototype": "aika",
+    "chinese": "时间",
+    "form": "部分格"
+  },
+  "alkaa": {
+    "prototype": "alkaa",
+    "chinese": "开始",
+    "form": "3单"
+  },
+  "astiat": {
+    "prototype": "astia",
+    "chinese": "餐具",
+    "form": "复数全格"
+  },
+  "chris": {
+    "prototype": "Chris",
+    "chinese": "Chris",
+    "form": "主格"
+  },
+  "chrisin": {
+    "prototype": "Chris",
+    "chinese": "Chris的",
+    "form": "属格"
+  },
+  "ei": {
+    "prototype": "ei",
+    "chinese": "不",
+    "form": "否定3单"
+  },
+  "ennen": {
+    "prototype": "ennen",
+    "chinese": "在...之前",
+    "form": "连词"
+  },
+  "ensin": {
+    "prototype": "ensin",
+    "chinese": "首先",
+    "form": "副词"
+  },
+  "että": {
+    "prototype": "että",
+    "chinese": "（引导从句）",
+    "form": "连词"
+  },
+  "he": {
+    "prototype": "he",
+    "chinese": "他们",
+    "form": "主格复数"
+  },
+  "heillä": {
+    "prototype": "he",
+    "chinese": "他们有/在他们那儿",
+    "form": "接格"
+  },
+  "hän": {
+    "prototype": "hän",
+    "chinese": "她/他",
+    "form": "主格"
+  },
+  "hänen": {
+    "prototype": "hän",
+    "chinese": "她/他的",
+    "form": "属格"
+  },
+  "iina": {
+    "prototype": "Iina",
+    "chinese": "Iina",
+    "form": "主格"
+  },
+  "iinaa": {
+    "prototype": "Iina",
+    "chinese": "Iina（部分格）",
+    "form": "部分格"
+  },
+  "iinan": {
+    "prototype": "Iina",
+    "chinese": "Iina的",
+    "form": "属格"
+  },
+  "ja": {
+    "prototype": "ja",
+    "chinese": "和/并且",
+    "form": "连词"
+  },
+  "kaappiin": {
+    "prototype": "kaappi",
+    "chinese": "进柜子里",
+    "form": "入格"
+  },
+  "keittiöön": {
+    "prototype": "keittiö",
+    "chinese": "进厨房",
+    "form": "入格"
+  },
+  "koko": {
+    "prototype": "koko",
+    "chinese": "整个",
+    "form": "限定词"
+  },
+  "kone": {
+    "prototype": "kone",
+    "chinese": "机器",
+    "form": "主格"
+  },
+  "koneesta": {
+    "prototype": "kone",
+    "chinese": "从机器里",
+    "form": "出格"
+  },
+  "kuin": {
+    "prototype": "kuin",
+    "chinese": "当...时/比",
+    "form": "连词"
+  },
+  "kuivausrumpua": {
+    "prototype": "kuivausrumpu",
+    "chinese": "烘干机",
+    "form": "部分格"
+  },
+  "kun": {
+    "prototype": "kun",
+    "chinese": "当...时",
+    "form": "连词"
+  },
+  "laittaa": {
+    "prototype": "laittaa",
+    "chinese": "放入",
+    "form": "3单"
+  },
+  "likaiset": {
+    "prototype": "likainen",
+    "chinese": "脏的",
+    "form": "复数主格"
+  },
+  "menee": {
+    "prototype": "mennä",
+    "chinese": "去",
+    "form": "3单"
+  },
+  "ne": {
+    "prototype": "ne",
+    "chinese": "它们",
+    "form": "宾格复数"
+  },
+  "nimittäin": {
+    "prototype": "nimittäin",
+    "chinese": "因为/你瞧",
+    "form": "副词"
+  },
+  "ole": {
+    "prototype": "olla",
+    "chinese": "是/有",
+    "form": "否定式词干"
+  },
+  "on": {
+    "prototype": "olla",
+    "chinese": "是/有",
+    "form": "3单"
+  },
+  "ottaa": {
+    "prototype": "ottaa",
+    "chinese": "拿",
+    "form": "3单"
+  },
+  "paistinpannun": {
+    "prototype": "paistinpannu",
+    "chinese": "煎锅",
+    "form": "单数全格"
+  },
+  "pesee": {
+    "prototype": "pestä",
+    "chinese": "洗",
+    "form": "3单"
+  },
+  "pyyhkii": {
+    "prototype": "pyyhkiä",
+    "chinese": "擦",
+    "form": "3单"
+  },
+  "pyykkikori": {
+    "prototype": "pyykkikori",
+    "chinese": "洗衣篮",
+    "form": "主格"
+  },
+  "pölyt": {
+    "prototype": "pöly",
+    "chinese": "灰尘",
+    "form": "复数全格"
+  },
+  "ripustaa": {
+    "prototype": "ripustaa",
+    "chinese": "挂起",
+    "form": "3单"
+  },
+  "siivoavat": {
+    "prototype": "siivota",
+    "chinese": "打扫",
+    "form": "3复"
+  },
+  "silittää": {
+    "prototype": "silittää",
+    "chinese": "熨烫",
+    "form": "1不定式"
+  },
+  "sillä": {
+    "prototype": "se",
+    "chinese": "在那段（时间）",
+    "form": "接格"
+  },
+  "sitten": {
+    "prototype": "sitten",
+    "chinese": "然后",
+    "form": "副词"
+  },
+  "tiskaa": {
+    "prototype": "tiskata",
+    "chinese": "洗（餐具）",
+    "form": "3单"
+  },
+  "tiskikonetta": {
+    "prototype": "tiskikone",
+    "chinese": "洗碗机",
+    "form": "部分格"
+  },
+  "tänään": {
+    "prototype": "tänään",
+    "chinese": "今天",
+    "form": "副词"
+  },
+  "täytyy": {
+    "prototype": "täytyä",
+    "chinese": "必须",
+    "form": "3单"
+  },
+  "vaatteet": {
+    "prototype": "vaate",
+    "chinese": "衣服",
+    "form": "复数全格"
+  },
+  "vaatteita": {
+    "prototype": "vaate",
+    "chinese": "衣服",
+    "form": "部分格"
+  },
+  "voi": {
+    "prototype": "voida",
+    "chinese": "可以",
+    "form": "3单"
+  }
+};
+
+    function flipCard(card) {
+        card.classList.toggle('is-flipped');
+    }
+
+    const tooltip = document.getElementById('wordTooltip');
+
+    function normalizeWord(text) {
+        return text.toLowerCase().replace(/[.,!?":;()]/g, '').trim();
+    }
+
+    function showTooltip(el) {
+        const word = normalizeWord(el.textContent);
+        const data = vocabularyData[word] || { prototype: el.textContent.trim(), chinese: '（未收录）', form: '词形' };
+        tooltip.innerHTML = '<span class="tooltip-proto">' + data.prototype + '</span><span class="tooltip-meaning">' + data.chinese + '</span><span class="tooltip-form">' + data.form + '</span>';
+        tooltip.classList.add('show');
+        const rect = el.getBoundingClientRect();
+        tooltip.style.left = (rect.left + window.scrollX + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+        tooltip.style.top = (rect.top + window.scrollY - tooltip.offsetHeight - 10) + 'px';
+    }
+
+    const synth = window.speechSynthesis;
+    const voiceSelect = document.getElementById('voice-select');
+    let voices = [];
+
+    function populateVoiceList() {
+        voices = synth.getVoices().sort((a, b) => a.name.localeCompare(b.name));
+        voiceSelect.innerHTML = voices
+            .map((v, i) => {
+                const selected = v.lang.startsWith('fi') ? 'selected' : '';
+                return '<option value="' + i + '" ' + selected + '>' + v.name + '</option>';
+            })
+            .join('');
+    }
+
+    function speak(text) {
+        if (synth.speaking) synth.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        if (voices.length > 0 && voiceSelect.value !== '') utter.voice = voices[voiceSelect.value];
+        utter.lang = 'fi-FI';
+        utter.rate = 0.8;
+        synth.speak(utter);
+    }
+
+    populateVoiceList();
+    if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoiceList;
+
+    document.querySelectorAll('.v-word').forEach(el => {
+        el.addEventListener('mouseenter', (e) => {
+            e.stopPropagation();
+            showTooltip(el);
+        });
+        el.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+        el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showTooltip(el);
+            speak(el.textContent);
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.v-word')) tooltip.classList.remove('show');
+    });
+</script>
+
+</body>
+</html>
