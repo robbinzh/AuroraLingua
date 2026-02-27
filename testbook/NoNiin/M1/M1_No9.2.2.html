@@ -1,0 +1,3259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精读文本-9.2.2 - Äitienpäivästä jouluun</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap');
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-back-bg: #1a202c;
+            --accent-color: #8be9fd;
+            --highlight-color: #ff79c6;
+            --text-color: #2d3748;
+            --bg-color: #f0f4f8;
+        }
+
+        body {
+            font-family: 'Noto Sans', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-color);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        h1 { text-align: center; color: #1a202c; margin: 20px 0 5px 0; font-weight: 800; font-size: 2rem; }
+        .subtitle { text-align: center; color: #718096; margin-bottom: 30px; max-width: 760px; font-size: 0.95rem; line-height: 1.5; }
+
+        .supplement-section,
+        .vocab-section {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .supplement-section { margin-top: 10px; }
+        .vocab-section { margin-top: 30px; margin-bottom: 50px; }
+        .supplement-section h2,
+        .supplement-section h3,
+        .vocab-section h2 { margin-top: 0; color: #1f2937; }
+        .supplement-section p { line-height: 1.75; margin: 8px 0; }
+        .supplement-section ol { margin: 6px 0 10px 22px; line-height: 1.7; }
+        .supplement-section ul { margin: 6px 0 10px 18px; line-height: 1.7; }
+        .supplement-section li { margin: 4px 0; }
+        .supplement-section code,
+        .vocab-section code { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 1px 6px; }
+
+        .word-tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.95);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            max-width: 280px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: opacity 0.2s ease;
+        }
+        .word-tooltip.show { opacity: 1; visibility: visible; }
+        .tooltip-proto { color: #8be9fd; font-weight: 800; font-size: 1.1em; display: block; border-bottom: 1px solid #444; margin-bottom: 5px; }
+        .tooltip-meaning { color: #f8f8f2; font-weight: 600; display: block; }
+        .tooltip-form { color: #ff79c6; font-size: 0.8rem; display: block; margin-top: 3px; }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1200px;
+            padding-bottom: 50px;
+        }
+
+        .card {
+            height: 620px;
+            cursor: pointer;
+            position: relative;
+            perspective: 1500px;
+        }
+
+        .card.is-flipped { z-index: 10; }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            transform-origin: center;
+        }
+
+        .card:hover .card-inner { transform: scale(0.98); }
+        .card.is-flipped .card-inner { transform: rotateY(180deg) scale(0.98); }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .card-front {
+            background: white;
+            padding: 30px;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .fi-sentence {
+            font-size: 1.22rem;
+            font-weight: 700;
+            color: #1e293b;
+            text-align: center;
+            line-height: 1.65;
+        }
+
+        .v-word {
+            text-decoration: underline dotted #cbd5e1;
+            cursor: help;
+            font-weight: 600;
+        }
+        .v-word:hover { background: #f1f5f9; text-decoration-style: solid; }
+
+        .card-back {
+            background: var(--card-back-bg);
+            color: #f8f8f2;
+            transform: rotateY(180deg);
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .back-title { font-size: 0.8rem; font-weight: 800; color: #718096; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .analysis-block { margin-bottom: 15px; border-bottom: 1px solid #2d3748; padding-bottom: 12px; }
+        .analysis-block:last-child { border-bottom: none; }
+        .chunk-item { border-left: 3px solid #48bb78; padding-left: 10px; margin-bottom: 8px; }
+        .chunk-fi { font-weight: 700; display: block; font-size: 1rem; }
+        .chunk-zh { font-size: 0.85rem; color: #a0aec0; display: block; }
+        .gram-item { font-size: 0.9rem; line-height: 1.55; margin-bottom: 6px; }
+        .gram-item strong { color: var(--accent-color); }
+        .gram-item.level-2 { padding-left: 10px; }
+        .gram-item.level-3 { padding-left: 20px; }
+        .gram-item.level-4 { padding-left: 30px; }
+        .back-translation { font-size: 1.05rem; font-weight: 600; border-left: 4px solid #ed64a6; padding-left: 12px; margin-top: 10px; }
+
+        .tts-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            margin-top: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: transform 0.2s;
+        }
+        .tts-btn:hover { transform: scale(1.1); }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; color: #64748b; font-size: 0.8rem; border-bottom: 2px solid #f1f5f9; }
+        td { padding: 15px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        .sana-fi { font-weight: 700; color: #334155; }
+
+        .controls {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        #voice-select { border-radius: 20px; padding: 5px 15px; border: 1px solid #ddd; }
+
+        @media (max-width: 480px) {
+            .card { height: 680px; }
+            h1 { font-size: 1.5rem; }
+        }
+    
+    
+    
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <select id="voice-select"></select>
+    </div>
+
+            <h1>📖 Äitienpäivästä jouluun</h1>
+            <p class="subtitle">点击卡片翻转查看语法拆解。悬停或点击单词查看原型、中文与词法形式；点击单词可朗读单词，点击按钮可朗读整句。</p>
+
+    <div class="card-container">
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 1</div>
+            <div class="fi-sentence"><span class="v-word">Kaisa</span>: <span class="v-word">Joulu</span> <span class="v-word">on</span> <span class="v-word">lasten</span> <span class="v-word">lempijuhla</span>! <span class="v-word">Tai</span> <span class="v-word">me</span> <span class="v-word">tykätään</span> <span class="v-word">kyllä</span> <span class="v-word">koko</span> <span class="v-word">porukka</span> <span class="v-word">joulusta</span>! <span class="v-word">Me</span> <span class="v-word">ollaan</span> <span class="v-word">jouluihmisiä</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kaisa: Joulu on lasten lempijuhla! Tai me tykätään kyllä koko porukka joulusta! Me ollaan jouluihmisiä.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Joulu on</span><span class="chunk-zh">圣诞节是</span></div><div class="chunk-item"><span class="chunk-fi">lasten lempijuhla!</span><span class="chunk-zh">孩子们最爱的节日！</span></div><div class="chunk-item"><span class="chunk-fi">Tai me tykätään</span><span class="chunk-zh">或者说我们喜欢</span></div><div class="chunk-item"><span class="chunk-fi">kyllä</span><span class="chunk-zh">确实</span></div><div class="chunk-item"><span class="chunk-fi">koko porukka</span><span class="chunk-zh">整个群体/全家人</span></div><div class="chunk-item"><span class="chunk-fi">joulusta!</span><span class="chunk-zh">圣诞节！</span></div><div class="chunk-item"><span class="chunk-fi">Me ollaan</span><span class="chunk-zh">我们是</span></div><div class="chunk-item"><span class="chunk-fi">jouluihmisiä.</span><span class="chunk-zh">热爱圣诞节的人。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <strong>复合名词:</strong> <code>lempijuhla</code>。<code>lempi</code> (最爱的/钟爱的) + <code>juhla</code> (节日)。</div><div class="gram-item level-4">&bull; <strong>口语极高频词:</strong> <code>koko porukka</code>。<code>porukka</code> 在口语中意为“伙计们/一群人/圈子”，在这里指代“我们全家人”。</div><div class="gram-item level-4">&bull; <strong>被动态表“我们” (口语铁律):</strong> <code>me tykätään</code> (= me tykkäämme), <code>me ollaan</code> (= me olemme)。在这段对话中，Kaisa 完全抛弃了书面语，彻底使用了最地道的口语表达。</div><div class="gram-item level-4">&bull; <strong>动词接格 (Rektio):</strong> <code>tykätä + mistä (Elatiivi)</code>。再次复习，所以圣诞节变成了出格 <code>joulusta</code>。</div><div class="gram-item level-4">&bull; <strong>表语的格:</strong> <code>Me ollaan jouluihmisiä</code>。主语是复数 (me)，且表示“属于某一类人”时，表语要用<strong>复数部分格</strong> (<code>ihminen</code> -&gt; <code>ihmisiä</code>)。</div><div class="gram-item level-3">&bull; <strong>词汇变位:</strong></div><div class="gram-item level-4">&bull; <code>ihmisiä</code>: 原型 <code>ihminen</code>。词干变 -se- 后加复数标志 -i-，e 消失，加部分格 -ä -&gt; <code>ihmisiä</code>。</div>
+            </div>
+            <div class="back-translation"><strong>Kaisa: 圣诞节是孩子们最喜欢的节日！或者说，其实我们全家人都很喜欢圣诞节！我们都是“圣诞迷”。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 2</div>
+            <div class="fi-sentence"><span class="v-word">Sandrine</span>: <span class="v-word">No</span> <span class="v-word">niin</span>, <span class="v-word">varmaan</span> <span class="v-word">joulu</span> <span class="v-word">on</span> <span class="v-word">lapsista</span> <span class="v-word">kivaa</span>, <span class="v-word">koska</span> <span class="v-word">silloin</span> <span class="v-word">lapset</span> <span class="v-word">saavat</span> <span class="v-word">paljon</span> <span class="v-word">lahjoja</span>!</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Sandrine: No niin, varmaan joulu on lapsista kivaa, koska silloin lapset saavat paljon lahjoja!")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">No niin,</span><span class="chunk-zh">嗯/确实如此，</span></div><div class="chunk-item"><span class="chunk-fi">varmaan</span><span class="chunk-zh">肯定/大概</span></div><div class="chunk-item"><span class="chunk-fi">joulu on</span><span class="chunk-zh">圣诞节是</span></div><div class="chunk-item"><span class="chunk-fi">lapsista</span><span class="chunk-zh">在孩子们看来</span></div><div class="chunk-item"><span class="chunk-fi">kivaa,</span><span class="chunk-zh">好玩的，</span></div><div class="chunk-item"><span class="chunk-fi">koska silloin</span><span class="chunk-zh">因为那时</span></div><div class="chunk-item"><span class="chunk-fi">lapset saavat</span><span class="chunk-zh">孩子们会收到</span></div><div class="chunk-item"><span class="chunk-fi">paljon lahjoja!</span><span class="chunk-zh">很多礼物！</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (表达观点 + 抽象体验的部分格):</strong></div><div class="gram-item level-4">&bull; <strong><code>lapsista</code></strong>: 出格 (-sta) 在这里不是“从孩子里面出来”，而是极高频的<strong>表达观点</strong>的用法（“对孩子们来说 / 在孩子们看来”），等同于之前学过的 <em>minusta</em> / <em>mun mielestä</em>。</div><div class="gram-item level-4">&bull; <strong><code>joulu on kivaa</code> (极度易错点!)</strong>: 为什么这里 <code>kiva</code> 要用部分格 <code>kivaa</code>？虽然“圣诞节(joulu)”是一个可数名词，但在这里它指代的不是日历上的某一天，而是<strong>“过圣诞节这种体验和氛围” (一个抽象的、不可数的过程)</strong>。当主语被视为抽象体验时，表语必须用部分格。</div><div class="gram-item level-4">&bull; <code>paljon lahjoja</code>: 数量词 <code>paljon</code> (很多) 后面必须接<strong>部分格</strong>。因为礼物很多，所以是复数部分格 <code>lahjoja</code>。</div>
+            </div>
+            <div class="back-translation"><strong>Sandrine: 嗯确实，在孩子们看来圣诞节肯定很好玩，因为那时候孩子们会收到一大堆礼物！ ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 3</div>
+            <div class="fi-sentence"><span class="v-word">Kaisa</span>: <span class="v-word">Joo</span>. <span class="v-word">Suomessa</span> <span class="v-word">joulupukki</span> <span class="v-word">tulee</span> <span class="v-word">käymään</span> <span class="v-word">jouluaattona</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kaisa: Joo. Suomessa joulupukki tulee käymään jouluaattona.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Joo.</span><span class="chunk-zh">是的。</span></div><div class="chunk-item"><span class="chunk-fi">Suomessa</span><span class="chunk-zh">在芬兰</span></div><div class="chunk-item"><span class="chunk-fi">joulupukki tulee</span><span class="chunk-zh">圣诞老人会来</span></div><div class="chunk-item"><span class="chunk-fi">käymään</span><span class="chunk-zh">拜访</span></div><div class="chunk-item"><span class="chunk-fi">jouluaattona.</span><span class="chunk-zh">在平安夜/圣诞前夕。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (第三不定式入格):</strong></div><div class="gram-item level-4">&bull; <strong><code>tulla + tekemään (Illatiivi)</code></strong>: “来做某事”。当动词 tulla (来) 后面跟另一个动作时，第二个动作必须使用 <strong>第3不定式 (-ma/-mä) 的入格形式 (-an/-än)</strong>。</div><div class="gram-item level-4">&bull; <code>käymään</code>: 原型 <code>käydä</code> (拜访/去一趟)。词干 <code>käy-</code> + <code>mä</code> + <code>än</code> = <code>käymään</code> (来走一趟 / 来拜访)。</div><div class="gram-item level-4">&bull; <code>jouluaattona</code>: 节日当天的特定时间，用本质格 <code>Essiivi (-na)</code>。</div>
+            </div>
+            <div class="back-translation"><strong>Kaisa: 对。在芬兰，圣诞老人会在平安夜来家里拜访。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 4</div>
+            <div class="fi-sentence"><span class="v-word">Sofiasta</span> <span class="v-word">on</span> <span class="v-word">ihanaa</span>, <span class="v-word">kun</span> <span class="v-word">joulupukki</span> <span class="v-word">tulee</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Sofiasta on ihanaa, kun joulupukki tulee.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Sofiasta on</span><span class="chunk-zh">Sofia觉得</span></div><div class="chunk-item"><span class="chunk-fi">ihanaa,</span><span class="chunk-zh">太美妙了，</span></div><div class="chunk-item"><span class="chunk-fi">kun</span><span class="chunk-zh">当</span></div><div class="chunk-item"><span class="chunk-fi">joulupukki tulee.</span><span class="chunk-zh">圣诞老人来的时候。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (主从复合句的表语格):</strong></div><div class="gram-item level-4">&bull; <code>Sofiasta</code>: 再次复习，出格表观点 (“对Sofia来说”)。</div><div class="gram-item level-4">&bull; <strong><code>on ihanaa, kun...</code></strong>: 这是一个经典结构。当句子的真正主语是一个<strong>从句</strong> (kun joulupukki tulee) 或<strong>不定式动作</strong>时，主句里的形容词（表语）永远要用<strong>单数部分格 (-a/-ä)</strong>。因为“一件事情”是抽象的、无法被称量的，所以 <code>ihana</code> 必须变成 <code>ihanaa</code>。你绝不能说 Sofiasta on ihana。</div>
+            </div>
+            <div class="back-translation"><strong>当圣诞老人出现时，Sofia觉得那简直太美妙了。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 5</div>
+            <div class="fi-sentence"><span class="v-word">Aikuisille</span> <span class="v-word">joulun</span> <span class="v-word">valmisteluissa</span> <span class="v-word">on</span> <span class="v-word">varmaan</span> <span class="v-word">tärkeintä</span> <span class="v-word">kodin</span> <span class="v-word">siivoaminen</span> <span class="v-word">ja</span> <span class="v-word">joulukuusen</span> <span class="v-word">koristeleminen</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Aikuisille joulun valmisteluissa on varmaan tärkeintä kodin siivoaminen ja joulukuusen koristeleminen.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Aikuisille</span><span class="chunk-zh">对成年人来说</span></div><div class="chunk-item"><span class="chunk-fi">joulun valmisteluissa</span><span class="chunk-zh">在圣诞节的各项准备工作中</span></div><div class="chunk-item"><span class="chunk-fi">on varmaan</span><span class="chunk-zh">大概是</span></div><div class="chunk-item"><span class="chunk-fi">tärkeintä</span><span class="chunk-zh">最重要的</span></div><div class="chunk-item"><span class="chunk-fi">kodin siivoaminen</span><span class="chunk-zh">家里的打扫</span></div><div class="chunk-item"><span class="chunk-fi">ja joulukuusen koristeleminen.</span><span class="chunk-zh">和圣诞树的装饰。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <code>Aikuisille</code>: 向格 (-lle) 表示对象，“对...而言”。</div><div class="gram-item level-4">&bull; <code>valmisteluissa</code>: 原型 <code>valmistelu</code> (准备工作)。这里用复数内格 (-i-ssa)，表示“在各项准备工作内部/当中”。</div><div class="gram-item level-4">&bull; <strong>表语的格 (最高级部分格):</strong> <code>tärkeintä</code> 是形容词 <code>tärkeä</code> (重要) 的最高级 <code>tärkein</code> 的单数部分格。为什么用部分格？看后面的主语！</div><div class="gram-item level-4">&bull; <strong>核心难点：第四不定式 (Neljäs infinitiivi, -minen):</strong></div><div class="gram-item level-4">&bull; 在芬兰语中，把一个动词变成名词（动名词）最标准的方法是加 <code>-minen</code>。</div><div class="gram-item level-4">&bull; <code>siivoaminen</code> (打扫这一行为): 原动词 <code>siivota</code> (4型，打扫)。词干 <code>siivoa-</code>，将 a 去掉加上 <code>-minen</code> -&gt; <code>siivoaminen</code>。</div><div class="gram-item level-4">&bull; <code>koristeleminen</code> (装饰这一行为): 原动词 <code>koristella</code> (3型，装饰)。弱词干 <code>koristele-</code> + <code>-minen</code> -&gt; <code>koristeleminen</code>。</div><div class="gram-item level-4">&bull; <strong>修饰 -minen 的逻辑:</strong> 谁被打扫？家被装饰？在 -minen 结构前，<strong>动作的承受者（宾语）必须变成属格 (Genetiivi)</strong>。因此是 <code>kodin</code> (家的) siivoaminen 和 <code>joulukuusen</code> (圣诞树的) koristeleminen。</div><div class="gram-item level-4">&bull; <strong>为什么用 tärkeintä?</strong> 因为主语是由 <code>-minen</code> 构成的抽象动作（打扫和装饰），所以形容词必须用部分格。</div>
+            </div>
+            <div class="back-translation"><strong>对成年人来说，在所有的圣诞准备工作中，最重要的（环节）大概就是打扫房屋和装饰圣诞树了。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 6</div>
+            <div class="fi-sentence"><span class="v-word">Ja</span> <span class="v-word">sitten</span> <span class="v-word">jouluna</span> <span class="v-word">tietysti</span> <span class="v-word">syöminen</span> <span class="v-word">ja</span> <span class="v-word">lepääminen</span>! <span class="v-word">Monet</span> <span class="v-word">käy</span> <span class="v-word">joulupäivänä</span> <span class="v-word">joulukirkossa</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Ja sitten jouluna tietysti syöminen ja lepääminen! Monet käy joulupäivänä joulukirkossa.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Ja sitten</span><span class="chunk-zh">然后</span></div><div class="chunk-item"><span class="chunk-fi">jouluna</span><span class="chunk-zh">在圣诞节期间</span></div><div class="chunk-item"><span class="chunk-fi">tietysti</span><span class="chunk-zh">当然是</span></div><div class="chunk-item"><span class="chunk-fi">syöminen</span><span class="chunk-zh">吃</span></div><div class="chunk-item"><span class="chunk-fi">ja lepääminen!</span><span class="chunk-zh">和休息！</span></div><div class="chunk-item"><span class="chunk-fi">Monet käy</span><span class="chunk-zh">很多人去</span></div><div class="chunk-item"><span class="chunk-fi">joulupäivänä</span><span class="chunk-zh">在圣诞当天</span></div><div class="chunk-item"><span class="chunk-fi">joulukirkossa.</span><span class="chunk-zh">圣诞教堂。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <strong>继续第四不定式狂欢:</strong></div><div class="gram-item level-4">&bull; <code>syöminen</code> (吃): 动词 <code>syödä</code> (2型)。词干 <code>syö-</code> + <code>minen</code> = <code>syöminen</code>。</div><div class="gram-item level-4">&bull; <code>lepääminen</code> (休息): 动词 <code>levätä</code> (4型，极重要)。强弱交替 v -&gt; p。词干变为 <code>lepää-</code> + <code>minen</code> = <code>lepääminen</code>。</div><div class="gram-item level-4">&bull; <strong>口语主谓不一致:</strong> <code>Monet käy</code> (书面语应为 monet käyvät)。主语复数，动词直接用单数。</div><div class="gram-item level-4">&bull; <strong>动词接格:</strong> <code>käydä + missä</code> (去某地)。去教堂必须用内格 <code>kirkossa</code> (进入教堂内部做礼拜并返回)。</div>
+            </div>
+            <div class="back-translation"><strong>当然，到了圣诞节期间最重要的就是大吃大喝和好好休息了！许多人会在圣诞节当天去教堂做礼拜。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 7</div>
+            <div class="fi-sentence"><span class="v-word">Sandrine</span>: <span class="v-word">Mitä</span> <span class="v-word">Suomessa</span> <span class="v-word">syödään</span> <span class="v-word">jouluna</span>?</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Sandrine: Mitä Suomessa syödään jouluna?")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Mitä</span><span class="chunk-zh">什么</span></div><div class="chunk-item"><span class="chunk-fi">Suomessa</span><span class="chunk-zh">在芬兰</span></div><div class="chunk-item"><span class="chunk-fi">syödään</span><span class="chunk-zh">人们吃</span></div><div class="chunk-item"><span class="chunk-fi">jouluna?</span><span class="chunk-zh">在圣诞节？</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-2">&bull; 再次出现“泛指被动态” <code>syödään</code> (人们吃什么)。因为问的是泛指的食物，宾语疑问词使用部分格 <code>Mitä</code>。</div>
+            </div>
+            <div class="back-translation"><strong>Sandrine: 芬兰人在圣诞节通常吃什么？ ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 8</div>
+            <div class="fi-sentence"><span class="v-word">Kaisa</span>: <span class="v-word">Jouluna</span> <span class="v-word">syödään</span> <span class="v-word">tosi</span> <span class="v-word">paljon</span>! <span class="v-word">Joulukinkkua</span>, <span class="v-word">graavikalaa</span> <span class="v-word">ja</span> <span class="v-word">laatikoita</span> <span class="v-word">ja</span> <span class="v-word">paljon</span> <span class="v-word">suklaata</span>!</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kaisa: Jouluna syödään tosi paljon! Joulukinkkua, graavikalaa ja laatikoita ja paljon suklaata!")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Jouluna syödään</span><span class="chunk-zh">圣诞节人们吃</span></div><div class="chunk-item"><span class="chunk-fi">tosi paljon!</span><span class="chunk-zh">非常多！</span></div><div class="chunk-item"><span class="chunk-fi">Joulukinkkua,</span><span class="chunk-zh">圣诞烤火腿，</span></div><div class="chunk-item"><span class="chunk-fi">graavikalaa</span><span class="chunk-zh">腌生鱼</span></div><div class="chunk-item"><span class="chunk-fi">ja laatikoita</span><span class="chunk-zh">和砂锅菜</span></div><div class="chunk-item"><span class="chunk-fi">ja paljon suklaata!</span><span class="chunk-zh">以及很多巧克力！</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (部分格的食物大阅兵):</strong></div><div class="gram-item level-4">&bull; 在这个句子里，所有列出的食物都是动词 <code>syödään</code> 的宾语，而且全部是不可数的“物质/食物类别”，因此<strong>必须全部使用部分格 (Partitiivi)</strong>。</div><div class="gram-item level-4">&bull; <code>Joulukinkkua</code>: <code>kinkku</code> (火腿) -&gt; 单数部分格 <code>kinkkua</code>。</div><div class="gram-item level-4">&bull; <code>graavikalaa</code>: <code>kala</code> (鱼) -&gt; 单数部分格 <code>kalaa</code>。</div><div class="gram-item level-4">&bull; <code>laatikoita</code>: 芬兰特色的“烤砂锅菜”(Laatikko)。因为有不同种类的砂锅菜（不止一盒），所以使用了<strong>复数部分格</strong>。原型 <code>laatikko</code> (盒子)。弱词干 kkk -&gt; k (laatiko-) + 复数标志 i + 部分格 ta = <code>laatikoita</code>。</div><div class="gram-item level-4">&bull; <code>paljon suklaata</code>: 数量词 <code>paljon</code> + 单数部分格。<code>suklaa</code> 词尾是双元音，部分格加 <code>-ta</code>。</div>
+            </div>
+            <div class="back-translation"><strong>Kaisa: 圣诞节人们吃得超级多！有圣诞烤火腿、腌生三文鱼、各种烤砂锅菜，还有大量的巧克力！ ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 9</div>
+            <div class="fi-sentence"><span class="v-word">Sandrine</span>: <span class="v-word">Laatikoitako</span>?</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Sandrine: Laatikoitako?")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Laatikoitako?</span><span class="chunk-zh">砂锅菜/盒子？</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-2">&bull; <code>Laatikoita</code> (复数部分格) + 疑问后缀 <code>-ko</code>。直接拿刚刚听到的词反问，语气生动。“（你刚说）盒子？（Laatikko字面意思是盒子）”</div>
+            </div>
+            <div class="back-translation"><strong>Sandrine: 砂锅菜/盒子？ ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 10</div>
+            <div class="fi-sentence"><span class="v-word">Kaisa</span>: <span class="v-word">Joo</span>. <span class="v-word">Lanttulaatikot</span>, <span class="v-word">porkkanalaatikot</span> <span class="v-word">ja</span> <span class="v-word">perunalaatikot</span> <span class="v-word">kuuluu</span> <span class="v-word">jouluun</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kaisa: Joo. Lanttulaatikot, porkkanalaatikot ja perunalaatikot kuuluu jouluun.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Joo.</span><span class="chunk-zh">是的。</span></div><div class="chunk-item"><span class="chunk-fi">Lanttulaatikot,</span><span class="chunk-zh">大头菜/芜菁砂锅，</span></div><div class="chunk-item"><span class="chunk-fi">porkkanalaatikot</span><span class="chunk-zh">胡萝卜砂锅</span></div><div class="chunk-item"><span class="chunk-fi">ja perunalaatikot</span><span class="chunk-zh">和土豆砂锅</span></div><div class="chunk-item"><span class="chunk-fi">kuuluu</span><span class="chunk-zh">属于</span></div><div class="chunk-item"><span class="chunk-fi">jouluun.</span><span class="chunk-zh">圣诞节。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; 这句列举了芬兰圣诞节最传统的三大美食。它们在这里作为主语，使用了复数主格 (-t)。</div><div class="gram-item level-4">&bull; <strong>口语主谓不一致:</strong> 主语全都是复数，但动词 <code>kuuluu</code> 是第三人称单数 (书面语应为 kuuluvat)。</div><div class="gram-item level-4">&bull; <strong>极高频动词接格:</strong> <code>kuulua + mihin (Illatiivi入格)</code>。表示“属于...的一部分 / ...必备的元素”。圣诞节 joulu 必须变成 <code>jouluun</code>。</div>
+            </div>
+            <div class="back-translation"><strong>Kaisa: 是的。大头菜砂锅、胡萝卜砂锅和土豆砂锅都是圣诞节的标配。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 11</div>
+            <div class="fi-sentence"><span class="v-word">Noi</span> <span class="v-word">laatikkoruuat</span> <span class="v-word">on</span> <span class="v-word">kyl</span> <span class="v-word">semmosii</span>, <span class="v-word">että</span> <span class="v-word">monet</span> <span class="v-word">ulkomaalaiset</span> <span class="v-word">ihmettelee</span> <span class="v-word">niitä</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Noi laatikkoruuat on kyl semmosii, että monet ulkomaalaiset ihmettelee niitä.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Noi laatikkoruuat</span><span class="chunk-zh">那些砂锅菜</span></div><div class="chunk-item"><span class="chunk-fi">on kyl semmosii,</span><span class="chunk-zh">确实就是那种，</span></div><div class="chunk-item"><span class="chunk-fi">että</span><span class="chunk-zh">即</span></div><div class="chunk-item"><span class="chunk-fi">monet ulkomaalaiset</span><span class="chunk-zh">很多外国人</span></div><div class="chunk-item"><span class="chunk-fi">ihmettelee</span><span class="chunk-zh">对...感到惊奇</span></div><div class="chunk-item"><span class="chunk-fi">niitä.</span><span class="chunk-zh">它们。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-2">&bull; <strong>这句是这段文本中最“野”的口语，信息量爆炸：</strong></div><div class="gram-item level-4">&bull; <strong><code>Noi</code></strong>: 书面语 <code>nuo</code> (那些) 的绝对口语形式。</div><div class="gram-item level-4">&bull; <strong><code>laatikkoruuat</code></strong>: 书面语 <code>laatikkoruoat</code>。在现代口语中，<code>ruoka</code> (食物) 的复数常常直接把 o 吞掉变成 uu (ruuat)。</div><div class="gram-item level-4">&bull; <strong><code>on kyl semmosii</code></strong>:</div><div class="gram-item level-4">&bull; <code>on</code> = ovat (主谓不一致)。</div><div class="gram-item level-4">&bull; <code>kyl</code> = <code>kyllä</code>。口语常吞掉末尾的 lä，表示强调语气“确实/的确”。</div><div class="gram-item level-4">&bull; <code>semmosii</code> = <code>sellaisia</code>。神级缩略！代词 <code>sellainen</code> (那种的) -&gt; 复数部分格 <code>sellaisia</code> -&gt; 口语发音直接缩成 <code>semmosii</code> 或者 <code>semmosia</code>。这里作表语，修饰复数主语，必须用复数部分格。</div><div class="gram-item level-4">&bull; <strong>口语主谓不一致:</strong> <code>monet ulkomaalaiset</code> (复数主语) + <code>ihmettelee</code> (单数动词，书面语为 ihmettelevät)。</div><div class="gram-item level-4">&bull; <strong>动词接格:</strong> <code>ihmetellä + mitä (Partitiivi)</code>。对某事感到好奇、惊讶、不解。复数代词 <code>ne</code> 的部分格是 <code>niitä</code>。</div>
+            </div>
+            <div class="back-translation"><strong>那些砂锅菜确实就是那种，能让很多外国人都看得目瞪口呆/直呼看不懂的东西。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 12</div>
+            <div class="fi-sentence"><span class="v-word">Eikä</span> <span class="v-word">kaikki</span> <span class="v-word">suomalaisetkaan</span> <span class="v-word">tykkää</span> <span class="v-word">syödä</span> <span class="v-word">laatikoita</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Eikä kaikki suomalaisetkaan tykkää syödä laatikoita.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Eikä</span><span class="chunk-zh">并且也不</span></div><div class="chunk-item"><span class="chunk-fi">kaikki suomalaisetkaan</span><span class="chunk-zh">所有芬兰人们也</span></div><div class="chunk-item"><span class="chunk-fi">tykkää</span><span class="chunk-zh">喜欢</span></div><div class="chunk-item"><span class="chunk-fi">syödä</span><span class="chunk-zh">吃</span></div><div class="chunk-item"><span class="chunk-fi">laatikoita.</span><span class="chunk-zh">砂锅菜。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <code>Eikä</code>: 否定词 <code>Ei</code> + <code>kä</code> (并且...也)。这里的 <code>Ei</code> 配合后面的口语动词 <code>tykkää</code> 使用了单数形式 (书面语应为 Eivätkä)。</div><div class="gram-item level-4">&bull; <code>suomalaisetkaan</code>: <code>suomalaiset</code> (芬兰人们) + <code>kaan</code> (否定句中的“也/甚至”)。意思是“连所有的芬兰人都并非...”。</div><div class="gram-item level-4">&bull; <code>laatikoita</code>: 动词 <code>syödä</code> 的宾语，复数部分格。</div>
+            </div>
+            <div class="back-translation"><strong>并且，也并非所有的芬兰人都喜欢吃这些砂锅菜。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 13</div>
+            <div class="fi-sentence"><span class="v-word">Nykyään</span> <span class="v-word">jotkut</span> <span class="v-word">voi</span> <span class="v-word">syödä</span> <span class="v-word">jouluna</span> <span class="v-word">vaikka</span> <span class="v-word">sushia</span>!</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Nykyään jotkut voi syödä jouluna vaikka sushia!")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Nykyään</span><span class="chunk-zh">如今</span></div><div class="chunk-item"><span class="chunk-fi">jotkut voi</span><span class="chunk-zh">有些人可能会</span></div><div class="chunk-item"><span class="chunk-fi">syödä</span><span class="chunk-zh">吃</span></div><div class="chunk-item"><span class="chunk-fi">jouluna</span><span class="chunk-zh">在圣诞节</span></div><div class="chunk-item"><span class="chunk-fi">vaikka sushia!</span><span class="chunk-zh">比如/甚至吃寿司！</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <code>jotkut voi</code> = jotkut voivat (口语，复数主语配单数动词)。</div><div class="gram-item level-4">&bull; <code>vaikka</code>: 这是一个极灵活的词。在这里不是“虽然”，而是口语里常用的“比如说 / 甚至可能”的意思。</div><div class="gram-item level-4">&bull; <code>sushia</code>: 外来词 <code>sushi</code> 作为食物/物质名词，在此处作宾语，用单数部分格。</div>
+            </div>
+            <div class="back-translation"><strong>如今，有些人在圣诞节甚至可能会去吃寿司！ ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 14</div>
+            <div class="fi-sentence"><span class="v-word">Mut</span> <span class="v-word">kyllä</span> <span class="v-word">ulkomaalaiset</span> <span class="v-word">ihmettelee</span> <span class="v-word">pikkujoulujakin</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Mut kyllä ulkomaalaiset ihmettelee pikkujoulujakin.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Mut kyllä</span><span class="chunk-zh">但确实</span></div><div class="chunk-item"><span class="chunk-fi">ulkomaalaiset ihmettelee</span><span class="chunk-zh">外国人们也会对...感到惊奇</span></div><div class="chunk-item"><span class="chunk-fi">pikkujoulujakin.</span><span class="chunk-zh">连“小圣诞节派对”也。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <code>Mut</code>: <code>mutta</code> 的口语极简版。</div><div class="gram-item level-4">&bull; <code>ihmettelee</code>: 再次复习，复数主语配单数动词；并且要求宾语用<strong>部分格</strong>。</div><div class="gram-item level-4">&bull; <code>pikkujoulujakin</code>: <code>pikkujoulu</code> (小圣诞节) 的复数部分格 <code>pikkujouluja</code> + 肯定语气词 <code>kin</code> (也/甚至)。芬兰的小圣诞节派对通常以复数形式表达 (pikkujoulut)。</div>
+            </div>
+            <div class="back-translation"><strong>但确实，外国人们对芬兰的“小圣诞派对（Pikkujoulut）”也感到挺稀奇的。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 15</div>
+            <div class="fi-sentence"><span class="v-word">Sandrine</span>: <span class="v-word">Pikkujoulut</span>. <span class="v-word">Mikä</span> <span class="v-word">se</span> <span class="v-word">on</span>?</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Sandrine: Pikkujoulut. Mikä se on?")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Pikkujoulut.</span><span class="chunk-zh">小圣诞派对。</span></div><div class="chunk-item"><span class="chunk-fi">Mikä se on?</span><span class="chunk-zh">那是什么？</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-2">&bull; 这是一个很有趣的口语现象。Sandrine重复了 <code>Pikkujoulut</code> (复数形式)，但提问时使用了单数代词 <code>Mikä se on?</code> (那是什么？)。在日常对话中，当把一个复数名词作为一个整体的<strong>概念</strong>来询问时，芬兰人经常直接用单数 se 来指代。</div>
+            </div>
+            <div class="back-translation"><strong>Sandrine: 小圣诞派对。那是啥？ ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 16</div>
+            <div class="fi-sentence"><span class="v-word">Kaisa</span>: <span class="v-word">No</span>, <span class="v-word">suomalaiset</span> <span class="v-word">juhlii</span> <span class="v-word">marras-joulukuussa</span> <span class="v-word">pikkujouluja</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kaisa: No, suomalaiset juhlii marras-joulukuussa pikkujouluja.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">No,</span><span class="chunk-zh">嗯，</span></div><div class="chunk-item"><span class="chunk-fi">suomalaiset juhlii</span><span class="chunk-zh">芬兰人庆祝</span></div><div class="chunk-item"><span class="chunk-fi">marras-joulukuussa</span><span class="chunk-zh">在11月至12月期间</span></div><div class="chunk-item"><span class="chunk-fi">pikkujouluja.</span><span class="chunk-zh">小圣诞派对。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-2">&bull; <code>juhlii</code>: juhlivat的口语版。</div><div class="gram-item level-2">&bull; <code>pikkujouluja</code>: 动词 <code>juhlia</code> 庆祝（持续性动作），宾语用复数部分格。</div>
+            </div>
+            <div class="back-translation"><strong>Kaisa: 嗯，芬兰人会在11月和12月期间举办各种小圣诞派对。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 17</div>
+            <div class="fi-sentence"><span class="v-word">Monet</span> <span class="v-word">firmatkin</span> <span class="v-word">järjestää</span> <span class="v-word">työntekijöille</span> <span class="v-word">pikkujoulut</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Monet firmatkin järjestää työntekijöille pikkujoulut.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Monet firmatkin</span><span class="chunk-zh">许多公司也会</span></div><div class="chunk-item"><span class="chunk-fi">järjestää</span><span class="chunk-zh">组织/举办</span></div><div class="chunk-item"><span class="chunk-fi">työntekijöille</span><span class="chunk-zh">为员工们</span></div><div class="chunk-item"><span class="chunk-fi">pikkujoulut.</span><span class="chunk-zh">小圣诞派对。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (宾语格的对比 - 极重要):</strong></div><div class="gram-item level-4">&bull; <code>firmatkin</code>: 外来口语词 <code>firma</code> (公司，书面语为 yritys) 的复数 + kin。</div><div class="gram-item level-4">&bull; <code>työntekijöille</code>: <code>työntekijä</code> (员工) 的复数向格，表示动作的受益对象“给/为员工”。</div><div class="gram-item level-4">&bull; <code>pikkujoulut</code>: <strong>注意！这里用的是复数宾格 (Accusative plural，外表和主格一模一样以-t结尾)</strong>，而不再是前一句的部分格 <code>pikkujouluja</code>。为什么？因为前面是“庆祝节日” (持续动作)，而这句是 <code>järjestää pikkujoulut</code> (组织一场完整的活动)。动作有一个明确的完成目标和界限（办一场派对），所以宾语用宾格！</div>
+            </div>
+            <div class="back-translation"><strong>甚至很多公司也会为员工们组织专门的小圣诞派对。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 18</div>
+            <div class="fi-sentence"><span class="v-word">Siellä</span> <span class="v-word">syödään</span> <span class="v-word">ja</span> <span class="v-word">juodaan</span> <span class="v-word">hyvin</span>, <span class="v-word">tanssitaan</span> <span class="v-word">ja</span> <span class="v-word">pidetään</span> <span class="v-word">hauskaa</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Siellä syödään ja juodaan hyvin, tanssitaan ja pidetään hauskaa.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Siellä</span><span class="chunk-zh">在那里</span></div><div class="chunk-item"><span class="chunk-fi">syödään ja juodaan</span><span class="chunk-zh">人们吃喝</span></div><div class="chunk-item"><span class="chunk-fi">hyvin,</span><span class="chunk-zh">很好地，</span></div><div class="chunk-item"><span class="chunk-fi">tanssitaan</span><span class="chunk-zh">跳舞</span></div><div class="chunk-item"><span class="chunk-fi">ja pidetään hauskaa.</span><span class="chunk-zh">并玩得开心。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (连续被动态表普遍行为):</strong></div><div class="gram-item level-4">&bull; 连续四个被动现在时：<code>syödään</code>, <code>juodaan</code>, <code>tanssitaan</code>, <code>pidetään</code>。描绘了派对上人们普遍的狂欢状态。</div><div class="gram-item level-4">&bull; <code>pidetään hauskaa</code>: 芬兰语固定搭配 <code>pitää hauskaa</code> (玩得开心)。被动态下宾语 <code>hauskaa</code> 依然保持部分格。</div>
+            </div>
+            <div class="back-translation"><strong>在派对上，人们好吃好喝，跳舞狂欢，玩得非常尽兴。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 19</div>
+            <div class="fi-sentence"><span class="v-word">Sandrine</span>: <span class="v-word">Pidetään</span> <span class="v-word">mekin</span> <span class="v-word">pikkujoulut</span>, <span class="v-word">kun</span> <span class="v-word">tulee</span> <span class="v-word">pikkujouluaika</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Sandrine: Pidetään mekin pikkujoulut, kun tulee pikkujouluaika.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Pidetään mekin</span><span class="chunk-zh">咱们也办一个吧</span></div><div class="chunk-item"><span class="chunk-fi">pikkujoulut,</span><span class="chunk-zh">小圣诞派对，</span></div><div class="chunk-item"><span class="chunk-fi">kun tulee</span><span class="chunk-zh">当到来时</span></div><div class="chunk-item"><span class="chunk-fi">pikkujouluaika.</span><span class="chunk-zh">小圣诞季。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <strong><code>Pidetään mekin</code></strong>: 这是芬兰语中极其灵魂的用法。当把<strong>被动态动词 (pidetään) 放在句首</strong>时，它立刻变成了一个<strong>第一人称复数的祈使句 / 提议 (Let's do something)</strong>。意思是“让我们也办一个吧！”。<code>mekin</code> (me + kin) 意思是“我们也要”。</div><div class="gram-item level-4">&bull; <code>pikkujoulut</code>: 宾格，表示办一场完整的派对。</div>
+            </div>
+            <div class="back-translation"><strong>Sandrine: 等到了小圣诞季，咱们也办一场小圣诞派对吧！ ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 20</div>
+            <div class="fi-sentence"><span class="v-word">Kaisa</span>: <span class="v-word">Sovittu</span>! <span class="v-word">Kättä</span> <span class="v-word">päälle</span>!</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kaisa: Sovittu! Kättä päälle!")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Sovittu!</span><span class="chunk-zh">一言为定！</span></div><div class="chunk-item"><span class="chunk-fi">Kättä päälle!</span><span class="chunk-zh">握手成交/一言为定！</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <code>Sovittu</code>: 动词 <code>sopia</code> (同意/达成一致) 的<strong>过去被动分词 (TU-partisiippi)</strong>。单独使用相当于英语的 "Agreed!"（说定了！）。</div><div class="gram-item level-4">&bull; <code>Kättä päälle!</code>: <strong>芬兰语死磕成语（Idiomi）</strong>。字面意思是“把手放上去”。这来源于古老传统，双方达成协议后击掌或握手。这里 <code>käsi</code> (手) 变成了单数部分格 <code>kättä</code>，<code>päälle</code> 是向格（到...上面）。相当于中文的“击掌为盟/一言为定”！</div>
+            </div>
+            <div class="back-translation"><strong>Kaisa: 一言为定！击掌成交！ ---</strong></div>
+        </div></div></div>
+    </div>
+
+        <div class="supplement-section">
+        <h2>语法补充与全文总结</h2>
+        <h3>导读</h3>
+<p>收到！既然你要求“不要节省力气，不要省略分析深度”，那我就绝不手软！这一段是这篇对话的最后高潮部分，<strong>芬兰口语的连读、缩略、以及最高频的句型</strong>在这里大爆发。</p>
+<p>我们将深度死磕几个在这段中出现的骨灰级语法点：</p>
+<ol>
+<li><strong>第四不定式（-minen）</strong>的动名词化及其逻辑。</li>
+<li><strong>抽象感受与部分格</strong>的结合（<em>Sofiasta on ihanaa</em>）。</li>
+<li>芬兰人日常聊天中最狂野的<strong>口语吞音和变形</strong>（<em>kyl semmosii</em>, <em>noi</em>, <em>eikä</em>）。</li>
+<li><strong>被动语态表“提议（Let's...）”</strong>的高级用法。</li>
+</ol>
+<p>准备好，我们开始逐句拆解！</p>
+        <h3>第四部分：圣诞节（Joulu）与小圣诞派对（Pikkujoulu）</h3>
+<p>这段对话作为这篇语料的收尾，将<strong>日常交际中的口语色彩推向了顶峰</strong>。</p>
+<p>在内容上，它极具芬兰文化特色，介绍了“不讨外国人喜欢”的圣诞砂锅菜（Laatikot）以及芬兰冬日的社交灵魂——小圣诞派对（Pikkujoulu）。</p>
+<p>在语法上，这段文本是检验你对<strong>“宾语部分格 VS 宾语宾格”</strong>以及<strong>“口语降级（第三人称复数退化为单数、被动态横行）”</strong>掌握程度的终极试金石。特别是 <code>kyl semmosii</code> 这样的缩略词，能听懂和用出它们，你的芬兰语才算真正接上了芬兰的地气。</p>
+    </div>
+
+        <div class="vocab-section">
+        <h2>重点词汇形态拆解表</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>单词 (Sana)</th>
+                    <th>原型 (Perusmuoto)</th>
+                    <th>中文翻译</th>
+                    <th>词干 (Vartalo)</th>
+                    <th>词类/形式</th>
+                    <th>构词法与语法深度解析</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="sana-fi"><strong>koristeleminen</strong></td>
+                    <td>koristella</td>
+                    <td>装饰 (动名词)</td>
+                    <td>koristele-</td>
+                    <td>动词/变位</td>
+                    <td><strong>第四不定式 (-minen)</strong>。由3型动词 koristella 派生。作名词用，主语必须是抽象的。它前面的宾语要求属格 (joulukuusen koristeleminen)。</td>
+                </tr>
+                <tr>
+                    <td class="sana-fi"><strong>lepääminen</strong></td>
+                    <td>levätä</td>
+                    <td>休息 (动名词)</td>
+                    <td>lepää-</td>
+                    <td>动词/变位</td>
+                    <td>极重要！4型动词 levätä，词干中产生强辅音 v -&gt; p，变 lepää-。加 minen 后缀名词化。</td>
+                </tr>
+                <tr>
+                    <td class="sana-fi"><strong>laatikoita</strong></td>
+                    <td>laatikko</td>
+                    <td>砂锅菜/盒子</td>
+                    <td>laatiko-</td>
+                    <td>重点词形</td>
+                    <td><strong>复数部分格</strong>。kpt变化：kk -&gt; k。变复数加 i，因以 o 结尾，加 ta -&gt; laatikoita。</td>
+                </tr>
+                <tr>
+                    <td class="sana-fi"><strong>semmosii (口语)</strong></td>
+                    <td>sellainen</td>
+                    <td>那样的</td>
+                    <td>sellaise-</td>
+                    <td>重点词形</td>
+                    <td><strong>极简口语词</strong>。原形复数部分格为 sellaisia。口语中直接把 -laisia 吞掉变形为 -mosii 或 -mosia。文中配合 kyl (kyllä) 极大地增强了地道感。</td>
+                </tr>
+                <tr>
+                    <td class="sana-fi"><strong>sovittu</strong></td>
+                    <td>sopia</td>
+                    <td>同意的</td>
+                    <td>sovi-</td>
+                    <td>分词</td>
+                    <td><strong>过去被动分词</strong>。sopia (1型，适合/同意)。变被动加 -taan (sovitaan)，变过去被动分词加 -ttu -&gt; sovittu。极高频单字句："说好了！"。</td>
+                </tr>
+                <tr>
+                    <td class="sana-fi"><strong>kättä</strong></td>
+                    <td>käsi</td>
+                    <td>手</td>
+                    <td>käte-</td>
+                    <td>重点词形</td>
+                    <td>单数部分格。固定搭配 <code>Kättä päälle</code> (击掌成交)。单数部分格由词根 käte- 特殊演变而来 (e-&gt;ä，t强化为tt -&gt; kättä)。</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="word-tooltip" id="wordTooltip"></div>
+
+    <script>
+        const vocabularyData = {
+            "aikaa": {
+                        "prototype": "aika",
+                        "chinese": "时间",
+                        "form": "部分格"
+            },
+            "aikaan": {
+                        "prototype": "aika",
+                        "chinese": "到这个时间/这时",
+                        "form": "单数入格"
+            },
+            "ajaa": {
+                        "prototype": "ajaa",
+                        "chinese": "开车",
+                        "form": "1不定式"
+            },
+            "ajo-ohjeet": {
+                        "prototype": "ajo-ohje",
+                        "chinese": "驾驶指南",
+                        "form": "名词 (复数)"
+            },
+            "ammatista": {
+                        "prototype": "ammatti",
+                        "chinese": "（见语法分析）",
+                        "form": "职业"
+            },
+            "annetaan": {
+                        "prototype": "antaa",
+                        "chinese": "（见语法分析）",
+                        "form": "1型动词"
+            },
+            "aurinko": {
+                        "prototype": "aurinko",
+                        "chinese": "太阳",
+                        "form": "主格"
+            },
+            "autetaan": {
+                        "prototype": "auttaa",
+                        "chinese": "我们帮助（口语被动）",
+                        "form": "被动态"
+            },
+            "auttaa": {
+                        "prototype": "auttaa",
+                        "chinese": "帮助",
+                        "form": "1不定式"
+            },
+            "bonuskorttihakemus": {
+                        "prototype": "bonuskorttihakemus",
+                        "chinese": "积分卡申请",
+                        "form": "名词"
+            },
+            "edullisesti": {
+                        "prototype": "edullinen",
+                        "chinese": "实惠地",
+                        "form": "副词"
+            },
+            "ei": {
+                        "prototype": "ei",
+                        "chinese": "不",
+                        "form": "否定动词（3单）"
+            },
+            "eli": {
+                        "prototype": "eli",
+                        "chinese": "即/也就是说",
+                        "form": "连词"
+            },
+            "emme": {
+                        "prototype": "ei",
+                        "chinese": "我们不",
+                        "form": "否定动词1复"
+            },
+            "en": {
+                        "prototype": "ei",
+                        "chinese": "不",
+                        "form": "否定动词1单"
+            },
+            "enkä": {
+                        "prototype": "en + eikä",
+                        "chinese": "也不",
+                        "form": "否定连词形式"
+            },
+            "entäs": {
+                        "prototype": "entä",
+                        "chinese": "那…呢（口语）",
+                        "form": "口语疑问词"
+            },
+            "etelä-suomessa": {
+                        "prototype": "Etelä-Suomi",
+                        "chinese": "在南芬兰",
+                        "form": "内格"
+            },
+            "etsitä": {
+                        "prototype": "etsiä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ettei": {
+                        "prototype": "että ei",
+                        "chinese": "以免/为了不",
+                        "form": "连词"
+            },
+            "että": {
+                        "prototype": "että",
+                        "chinese": "（引导从句）",
+                        "form": "连词"
+            },
+            "halpoja": {
+                        "prototype": "halpa",
+                        "chinese": "便宜的（复）",
+                        "form": "复数部分格"
+            },
+            "harrastuksesta": {
+                        "prototype": "harrastus",
+                        "chinese": "关于爱好",
+                        "form": "出格"
+            },
+            "hauskaa": {
+                        "prototype": "hauska",
+                        "chinese": "开心/有趣（地）",
+                        "form": "部分格"
+            },
+            "hei": {
+                        "prototype": "hei",
+                        "chinese": "嘿/喂",
+                        "form": "招呼语"
+            },
+            "huoli": {
+                        "prototype": "huoli",
+                        "chinese": "担心",
+                        "form": "名词主格"
+            },
+            "huomenna": {
+                        "prototype": "huomenna",
+                        "chinese": "明天",
+                        "form": "时间副词"
+            },
+            "huono": {
+                        "prototype": "huono",
+                        "chinese": "坏的",
+                        "form": "形容词主格"
+            },
+            "hyttyset": {
+                        "prototype": "hyttynen",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "hyttysiä": {
+                        "prototype": "hyttynen",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "hyvä": {
+                        "prototype": "hyvä",
+                        "chinese": "好的",
+                        "form": "形容词主格"
+            },
+            "hyvän": {
+                        "prototype": "hyvä",
+                        "chinese": "好的（属格）",
+                        "form": "属格"
+            },
+            "idea": {
+                        "prototype": "idea",
+                        "chinese": "主意",
+                        "form": "名词主格"
+            },
+            "idean": {
+                        "prototype": "idea",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ihanaa": {
+                        "prototype": "ihana",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "inhoon": {
+                        "prototype": "inhota",
+                        "chinese": "我讨厌",
+                        "form": "动词 (口语)"
+            },
+            "ja": {
+                        "prototype": "ja",
+                        "chinese": "和/并且",
+                        "form": "连词"
+            },
+            "joo": {
+                        "prototype": "joo",
+                        "chinese": "好/嗯",
+                        "form": "回应语"
+            },
+            "juhannuksena": {
+                        "prototype": "juhannus",
+                        "chinese": "在仲夏节",
+                        "form": "名词 (状态格)"
+            },
+            "jälkeen": {
+                        "prototype": "jälkeen",
+                        "chinese": "之后",
+                        "form": "后置词"
+            },
+            "järvellä": {
+                        "prototype": "järvi",
+                        "chinese": "在湖面上",
+                        "form": "接格"
+            },
+            "järvessä": {
+                        "prototype": "järvi",
+                        "chinese": "在湖里",
+                        "form": "内格"
+            },
+            "kaakkois-suomessa": {
+                        "prototype": "Kaakkois-Suomi",
+                        "chinese": "在东南芬兰",
+                        "form": "名词 (内格)"
+            },
+            "kaisa": {
+                        "prototype": "Kaisa",
+                        "chinese": "Kaisa（人名）",
+                        "form": "专有名词"
+            },
+            "kans": {
+                        "prototype": "kanssa (口语 kans)",
+                        "chinese": "也/跟…一起（口语）",
+                        "form": "口语形式"
+            },
+            "katso": {
+                        "prototype": "katsoa",
+                        "chinese": "看",
+                        "form": "命令式2单"
+            },
+            "katsomassa": {
+                        "prototype": "katsoa",
+                        "chinese": "去看/在看",
+                        "form": "第三不定式内格"
+            },
+            "kaunis": {
+                        "prototype": "kaunis",
+                        "chinese": "美丽的",
+                        "form": "形容词主格"
+            },
+            "kaupassa": {
+                        "prototype": "kauppa",
+                        "chinese": "在商店里",
+                        "form": "内格"
+            },
+            "kerromme": {
+                        "prototype": "kertoa",
+                        "chinese": "我们讲述",
+                        "form": "1复"
+            },
+            "kesä": {
+                        "prototype": "kesä",
+                        "chinese": "夏天",
+                        "form": "主格"
+            },
+            "kesällä": {
+                        "prototype": "kesä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kesämökki": {
+                        "prototype": "kesämökki",
+                        "chinese": "夏季度假木屋",
+                        "form": "复合名词"
+            },
+            "kesässä": {
+                        "prototype": "kesä",
+                        "chinese": "在夏天里",
+                        "form": "内格"
+            },
+            "kesäyöt": {
+                        "prototype": "kesäyö",
+                        "chinese": "夏夜（复）",
+                        "form": "复数主格"
+            },
+            "kiitos": {
+                        "prototype": "kiitos",
+                        "chinese": "谢谢",
+                        "form": "感叹词"
+            },
+            "kivaa": {
+                        "prototype": "kiva",
+                        "chinese": "不错/愉快的",
+                        "form": "单数部分格"
+            },
+            "kivalta": {
+                        "prototype": "kiva",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "koko": {
+                        "prototype": "koko",
+                        "chinese": "整个",
+                        "form": "不变化限定词"
+            },
+            "koskaan": {
+                        "prototype": "koskaan",
+                        "chinese": "从未/曾经",
+                        "form": "副词"
+            },
+            "kotiin": {
+                        "prototype": "koti",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kotitehtävä": {
+                        "prototype": "kotitehtävä",
+                        "chinese": "家庭作业",
+                        "form": "名词 (原形)"
+            },
+            "kuitenkin": {
+                        "prototype": "kuitenkin",
+                        "chinese": "不过/然而",
+                        "form": "副词"
+            },
+            "kurssilla": {
+                        "prototype": "kurssi",
+                        "chinese": "在课上",
+                        "form": "接格"
+            },
+            "kutsusta": {
+                        "prototype": "kutsu",
+                        "chinese": "（见语法分析）",
+                        "form": "邀请"
+            },
+            "kuule": {
+                        "prototype": "kuulla",
+                        "chinese": "你听我说",
+                        "form": "命令式2单"
+            },
+            "kuvaa": {
+                        "prototype": "kuva",
+                        "chinese": "照片（部分格）",
+                        "form": "单数部分格"
+            },
+            "kuvassa": {
+                        "prototype": "kuva",
+                        "chinese": "在照片里",
+                        "form": "内格"
+            },
+            "kykene": {
+                        "prototype": "kyetä",
+                        "chinese": "能够",
+                        "form": "动词词干"
+            },
+            "kyllä": {
+                        "prototype": "kyllä",
+                        "chinese": "确实",
+                        "form": "副词"
+            },
+            "kysytään": {
+                        "prototype": "kysyä",
+                        "chinese": "我们问（口语被动）",
+                        "form": "被动态"
+            },
+            "käydään": {
+                        "prototype": "käydä",
+                        "chinese": "我们去（口语被动）",
+                        "form": "被动态"
+            },
+            "lapissa": {
+                        "prototype": "Lappi",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "laske": {
+                        "prototype": "laskea",
+                        "chinese": "（见语法分析）",
+                        "form": "落下/计算，1型动词"
+            },
+            "lisäksi": {
+                        "prototype": "lisäksi",
+                        "chinese": "此外",
+                        "form": "连接副词"
+            },
+            "luistimia": {
+                        "prototype": "luistin",
+                        "chinese": "溜冰鞋",
+                        "form": "名词 (复数P)"
+            },
+            "luvataan": {
+                        "prototype": "luvata",
+                        "chinese": "（见语法分析）",
+                        "form": "4型动词"
+            },
+            "lämmintä": {
+                        "prototype": "lämmin",
+                        "chinese": "暖和的",
+                        "form": "形容词 (部分格)"
+            },
+            "me": {
+                        "prototype": "me",
+                        "chinese": "我们",
+                        "form": "主格"
+            },
+            "meidän": {
+                        "prototype": "me",
+                        "chinese": "我们的",
+                        "form": "属格"
+            },
+            "meillä": {
+                        "prototype": "me",
+                        "chinese": "在我们这/我们有",
+                        "form": "接格"
+            },
+            "mene": {
+                        "prototype": "mennä",
+                        "chinese": "去吧（你）",
+                        "form": "命令式2单"
+            },
+            "mennä": {
+                        "prototype": "mennä",
+                        "chinese": "去",
+                        "form": "1不定式"
+            },
+            "mennään": {
+                        "prototype": "mennä",
+                        "chinese": "我们走吧（口语）",
+                        "form": "被动态"
+            },
+            "merellä": {
+                        "prototype": "meri",
+                        "chinese": "在海面上",
+                        "form": "接格"
+            },
+            "meressä": {
+                        "prototype": "meri",
+                        "chinese": "在海里",
+                        "form": "内格"
+            },
+            "mielestä": {
+                        "prototype": "mieli",
+                        "chinese": "依…看法",
+                        "form": "出格"
+            },
+            "millaista": {
+                        "prototype": "millainen",
+                        "chinese": "什么样的",
+                        "form": "形容词 (部分格)"
+            },
+            "minulla": {
+                        "prototype": "minä",
+                        "chinese": "我这边/我有",
+                        "form": "接格"
+            },
+            "minun": {
+                        "prototype": "minä",
+                        "chinese": "我的/我（属格）",
+                        "form": "属格"
+            },
+            "minä": {
+                        "prototype": "minä",
+                        "chinese": "我",
+                        "form": "代词主格"
+            },
+            "mitäh": {
+                        "prototype": "mitä",
+                        "chinese": "啥？",
+                        "form": "口语感叹"
+            },
+            "moi": {
+                        "prototype": "moi",
+                        "chinese": "嗨",
+                        "form": "问候语"
+            },
+            "mukaan": {
+                        "prototype": "mukaan",
+                        "chinese": "一起/随同",
+                        "form": "后置副词"
+            },
+            "mun": {
+                        "prototype": "minä",
+                        "chinese": "我的（口语）",
+                        "form": "口语属格"
+            },
+            "mutta": {
+                        "prototype": "mutta",
+                        "chinese": "但是",
+                        "form": "连词"
+            },
+            "myöhemmin": {
+                        "prototype": "myöhemmin",
+                        "chinese": "稍后",
+                        "form": "时间副词"
+            },
+            "myös": {
+                        "prototype": "myös",
+                        "chinese": "也",
+                        "form": "副词"
+            },
+            "mä": {
+                        "prototype": "minä",
+                        "chinese": "我",
+                        "form": "口语主格"
+            },
+            "mäkin": {
+                        "prototype": "mä + -kin",
+                        "chinese": "我也（口语）",
+                        "form": "口语附着词形式"
+            },
+            "mökille": {
+                        "prototype": "mökki",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "mökkiä": {
+                        "prototype": "mökki",
+                        "chinese": "小木屋（部分格）",
+                        "form": "单数部分格"
+            },
+            "neuvoa": {
+                        "prototype": "neuvo",
+                        "chinese": "（见语法分析）",
+                        "form": "建议"
+            },
+            "niin": {
+                        "prototype": "niin",
+                        "chinese": "那么/这样",
+                        "form": "副词/连词"
+            },
+            "niitä": {
+                        "prototype": "ne",
+                        "chinese": "它们/那些",
+                        "form": "部分格"
+            },
+            "no": {
+                        "prototype": "no",
+                        "chinese": "嗯/好吧",
+                        "form": "语气词"
+            },
+            "nyt": {
+                        "prototype": "nyt",
+                        "chinese": "现在",
+                        "form": "副词"
+            },
+            "nähdään": {
+                        "prototype": "nähdä",
+                        "chinese": "再见/我们见面",
+                        "form": "被动态"
+            },
+            "näyttää": {
+                        "prototype": "näyttää",
+                        "chinese": "看起来",
+                        "form": "3单"
+            },
+            "oi": {
+                        "prototype": "oi",
+                        "chinese": "哎呀/哇",
+                        "form": "感叹词"
+            },
+            "ole": {
+                        "prototype": "olla",
+                        "chinese": "是/有",
+                        "form": "否定式词干"
+            },
+            "ollenkaan": {
+                        "prototype": "ollenkaan",
+                        "chinese": "根本（不）",
+                        "form": "副词"
+            },
+            "on": {
+                        "prototype": "olla",
+                        "chinese": "是/有",
+                        "form": "3单"
+            },
+            "onko": {
+                        "prototype": "olla",
+                        "chinese": "是吗",
+                        "form": "3单疑问"
+            },
+            "opiskeluohjeet": {
+                        "prototype": "opiskeluohje",
+                        "chinese": "学习说明（复）",
+                        "form": "复数主格"
+            },
+            "osaa": {
+                        "prototype": "osata",
+                        "chinese": "（见语法分析）",
+                        "form": "4型动词"
+            },
+            "pari": {
+                        "prototype": "pari",
+                        "chinese": "一对/几个",
+                        "form": "数量词"
+            },
+            "pidä": {
+                        "prototype": "pitää",
+                        "chinese": "请保持/玩得",
+                        "form": "命令式2单"
+            },
+            "pitäkää": {
+                        "prototype": "pitää",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "pitää": {
+                        "prototype": "pitää",
+                        "chinese": "必须/需要",
+                        "form": "3单"
+            },
+            "puhelimessa": {
+                        "prototype": "puhelin",
+                        "chinese": "在电话里",
+                        "form": "名词 (内格)"
+            },
+            "puoli": {
+                        "prototype": "puoli",
+                        "chinese": "方面/一半",
+                        "form": "名词主格"
+            },
+            "pysty": {
+                        "prototype": "pystyä",
+                        "chinese": "能/做得到",
+                        "form": "动词 (否定)"
+            },
+            "ryhmän": {
+                        "prototype": "ryhmä",
+                        "chinese": "小组的/小组（宾）",
+                        "form": "属格/宾格"
+            },
+            "saada": {
+                        "prototype": "saada",
+                        "chinese": "得到/能够",
+                        "form": "1不定式"
+            },
+            "sain": {
+                        "prototype": "saada",
+                        "chinese": "我得到了",
+                        "form": "过去时1单"
+            },
+            "sandrine": {
+                        "prototype": "Sandrine",
+                        "chinese": "Sandrine（人名）",
+                        "form": "专有名词"
+            },
+            "se": {
+                        "prototype": "se",
+                        "chinese": "它",
+                        "form": "代词主格"
+            },
+            "sen": {
+                        "prototype": "se",
+                        "chinese": "它（宾格）",
+                        "form": "宾格"
+            },
+            "siellä": {
+                        "prototype": "siellä",
+                        "chinese": "在那里",
+                        "form": "地点副词"
+            },
+            "silloin": {
+                        "prototype": "silloin",
+                        "chinese": "那时",
+                        "form": "时间副词"
+            },
+            "sinua": {
+                        "prototype": "sinä",
+                        "chinese": "你",
+                        "form": "部分格"
+            },
+            "sinäkin": {
+                        "prototype": "sinä + -kin",
+                        "chinese": "你也",
+                        "form": "附着词形式"
+            },
+            "sitten": {
+                        "prototype": "sitten",
+                        "chinese": "然后",
+                        "form": "副词"
+            },
+            "sitä": {
+                        "prototype": "se",
+                        "chinese": "那/它",
+                        "form": "部分格"
+            },
+            "sofia": {
+                        "prototype": "Sofia",
+                        "chinese": "Sofia（人名）",
+                        "form": "专有名词"
+            },
+            "soudellaan": {
+                        "prototype": "soudella",
+                        "chinese": "我们划船",
+                        "form": "动词 (被动)"
+            },
+            "soutaa": {
+                        "prototype": "soutaa",
+                        "chinese": "划船",
+                        "form": "1不定式"
+            },
+            "suksia": {
+                        "prototype": "suksi",
+                        "chinese": "滑雪板",
+                        "form": "名词 (复数P)"
+            },
+            "suomessa": {
+                        "prototype": "Suomi",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "säännöt": {
+                        "prototype": "sääntö",
+                        "chinese": "（见语法分析）",
+                        "form": "规则"
+            },
+            "tai": {
+                        "prototype": "tai",
+                        "chinese": "或者",
+                        "form": "连词"
+            },
+            "te": {
+                        "prototype": "te",
+                        "chinese": "你们",
+                        "form": "主格"
+            },
+            "teemme": {
+                        "prototype": "tehdä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tehdä": {
+                        "prototype": "tehdä",
+                        "chinese": "做",
+                        "form": "1不定式"
+            },
+            "teidän": {
+                        "prototype": "te",
+                        "chinese": "你们的",
+                        "form": "属格"
+            },
+            "teiltä": {
+                        "prototype": "te",
+                        "chinese": "从你们那",
+                        "form": "夺格"
+            },
+            "teitä": {
+                        "prototype": "te",
+                        "chinese": "你们",
+                        "form": "部分格"
+            },
+            "tuletko": {
+                        "prototype": "tulla",
+                        "chinese": "你来吗",
+                        "form": "2单疑问"
+            },
+            "tulkaa": {
+                        "prototype": "tulla",
+                        "chinese": "请来（你们）",
+                        "form": "命令式2复"
+            },
+            "tulla": {
+                        "prototype": "tulla",
+                        "chinese": "来",
+                        "form": "1不定式"
+            },
+            "turhaan": {
+                        "prototype": "turha",
+                        "chinese": "白白地",
+                        "form": "副词"
+            },
+            "tähän": {
+                        "prototype": "tämä",
+                        "chinese": "到这里/到这个",
+                        "form": "入格"
+            },
+            "tämä": {
+                        "prototype": "tämä",
+                        "chinese": "这个",
+                        "form": "主格"
+            },
+            "tässä": {
+                        "prototype": "tässä",
+                        "chinese": "在这里/给你",
+                        "form": "内格/固定表达"
+            },
+            "uida": {
+                        "prototype": "uida",
+                        "chinese": "游泳",
+                        "form": "1不定式"
+            },
+            "uimassa": {
+                        "prototype": "uida",
+                        "chinese": "在游泳",
+                        "form": "第三不定式内格"
+            },
+            "uinut": {
+                        "prototype": "uida",
+                        "chinese": "游过泳",
+                        "form": "分词 (NUT)"
+            },
+            "vaan": {
+                        "prototype": "vain",
+                        "chinese": "只是",
+                        "form": "口语副词"
+            },
+            "valoisa": {
+                        "prototype": "valoisa",
+                        "chinese": "（见语法分析）",
+                        "form": "明亮的"
+            },
+            "valoisat": {
+                        "prototype": "valoisa",
+                        "chinese": "明亮的（复）",
+                        "form": "复数主格"
+            },
+            "varsinkin": {
+                        "prototype": "varsinkin",
+                        "chinese": "尤其",
+                        "form": "副词"
+            },
+            "victor": {
+                        "prototype": "Victor",
+                        "chinese": "Victor（人名）",
+                        "form": "专有名词"
+            },
+            "viemään": {
+                        "prototype": "viedä",
+                        "chinese": "去送/去交",
+                        "form": "第三不定式入格"
+            },
+            "voi": {
+                        "prototype": "voida",
+                        "chinese": "可以",
+                        "form": "3单"
+            },
+            "voidaan": {
+                        "prototype": "voida",
+                        "chinese": "可以（口语被动）",
+                        "form": "被动态"
+            },
+            "voimme": {
+                        "prototype": "voida",
+                        "chinese": "我们可以",
+                        "form": "1复"
+            },
+            "vuodesta": {
+                        "prototype": "vuosi",
+                        "chinese": "从年份/每年",
+                        "form": "出格"
+            },
+            "yksi": {
+                        "prototype": "yksi",
+                        "chinese": "一/一个",
+                        "form": "数词"
+            },
+            "yö": {
+                        "prototype": "yö",
+                        "chinese": "夜晚",
+                        "form": "主格"
+            },
+            "yötön": {
+                        "prototype": "yötön",
+                        "chinese": "无夜的",
+                        "form": "形容词"
+            },
+            "älä": {
+                        "prototype": "ei",
+                        "chinese": "不要（你）",
+                        "form": "否定命令式2单"
+            },
+            "kaisan": {
+                        "prototype": "Kaisan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "luona": {
+                        "prototype": "luona",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kylässä": {
+                        "prototype": "kylässä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "he": {
+                        "prototype": "He",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "istuvat": {
+                        "prototype": "istuvat",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "keittiön": {
+                        "prototype": "keittiön",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "pöydän": {
+                        "prototype": "pöydän",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ääressä": {
+                        "prototype": "ääressä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juttelevat": {
+                        "prototype": "jutella",
+                        "chinese": "聊天/谈论",
+                        "form": "动词/变位"
+            },
+            "viikonlopusta": {
+                        "prototype": "viikonlopusta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "miten": {
+                        "prototype": "Miten",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "sun": {
+                        "prototype": "sun",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "viikonloppu": {
+                        "prototype": "viikonloppu",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "meni": {
+                        "prototype": "mennä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "mitä": {
+                        "prototype": "Mitä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "suvi": {
+                        "prototype": "Suvi",
+                        "chinese": "人名",
+                        "form": "专有名词"
+            },
+            "tykkäs": {
+                        "prototype": "tykätä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kirjalasta": {
+                        "prototype": "Kirjalasta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "hyvin": {
+                        "prototype": "hyvin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kysymästä": {
+                        "prototype": "kysyä",
+                        "chinese": "询问",
+                        "form": "动词/变位"
+            },
+            "minusta": {
+                        "prototype": "Minusta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "oli": {
+                        "prototype": "oli",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tosi": {
+                        "prototype": "tosi",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kiva": {
+                        "prototype": "kiva",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "nähdä": {
+                        "prototype": "nähdä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "pitkästä": {
+                        "prototype": "pitkästä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "touhusimme": {
+                        "prototype": "touhuta",
+                        "chinese": "瞎忙活/玩耍",
+                        "form": "动词/变位"
+            },
+            "paljon": {
+                        "prototype": "paljon",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "lasten": {
+                        "prototype": "lasten",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kanssa": {
+                        "prototype": "kanssa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "näytin": {
+                        "prototype": "näyttää",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "suville": {
+                        "prototype": "Suville",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kirjalaa": {
+                        "prototype": "Kirjalaa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kävimme": {
+                        "prototype": "käydä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "suvin": {
+                        "prototype": "Suvin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "syömässä": {
+                        "prototype": "syömässä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "entä": {
+                        "prototype": "Entä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "sinulla": {
+                        "prototype": "sinulla",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "sinun": {
+                        "prototype": "sinun",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "oikeen": {
+                        "prototype": "oikein",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "lauantaina": {
+                        "prototype": "Lauantaina",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "käytiin": {
+                        "prototype": "käydä",
+                        "chinese": "拜访/去一趟",
+                        "form": "动词/变位"
+            },
+            "sunnuntaina": {
+                        "prototype": "sunnuntaina",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "mentiin": {
+                        "prototype": "mentiin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "syömään": {
+                        "prototype": "syömään",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "vanhempien": {
+                        "prototype": "vanhempien",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "luokse": {
+                        "prototype": "luokse",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "äitillä": {
+                        "prototype": "äitillä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "synttärit": {
+                        "prototype": "syntymäpäivä",
+                        "chinese": "生日(口语)",
+                        "form": "重点词形"
+            },
+            "mut": {
+                        "prototype": "Mut",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "haluu": {
+                        "prototype": "haluu",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "mitää": {
+                        "prototype": "mitää",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "isoja": {
+                        "prototype": "isoja",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhlia": {
+                        "prototype": "juhlia",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ku": {
+                        "prototype": "ku",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "täytä": {
+                        "prototype": "täytä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tasavuosia": {
+                        "prototype": "tasavuosia",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ai": {
+                        "prototype": "Ai",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "jaa": {
+                        "prototype": "jaa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "eikö": {
+                        "prototype": "eikö",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "yleensä": {
+                        "prototype": "yleensä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhlita": {
+                        "prototype": "juhlita",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "syntymäpäiviä": {
+                        "prototype": "syntymäpäiviä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "riippuu": {
+                        "prototype": "riippuu",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kai": {
+                        "prototype": "kai",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "vähän": {
+                        "prototype": "vähän",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ihmisestä": {
+                        "prototype": "ihminen",
+                        "chinese": "人",
+                        "form": "名词/构词"
+            },
+            "ittestään": {
+                        "prototype": "itse",
+                        "chinese": "自己",
+                        "form": "重点词形"
+            },
+            "lastensynttärit": {
+                        "prototype": "lastensynttärit",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "iso": {
+                        "prototype": "iso",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juttu": {
+                        "prototype": "juttu",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "aikuiset": {
+                        "prototype": "aikuiset",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhlii": {
+                        "prototype": "juhlii",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ehkä": {
+                        "prototype": "ehkä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "eniten": {
+                        "prototype": "eniten",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "just": {
+                        "prototype": "just",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "sit": {
+                        "prototype": "sit",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "täytetään": {
+                        "prototype": "täytetään",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "vaikka": {
+                        "prototype": "vaikka",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "30": {
+                        "prototype": "30",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "vuotta": {
+                        "prototype": "vuotta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "50-vuotisjuhlat": {
+                        "prototype": "50-vuotisjuhlat",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "monilla": {
+                        "prototype": "monilla",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhla": {
+                        "prototype": "juhla",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ainakin": {
+                        "prototype": "ainakin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ennen": {
+                        "prototype": "ennen",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "okei": {
+                        "prototype": "Okei",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhlitaan": {
+                        "prototype": "juhlitaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "muuten": {
+                        "prototype": "muuten",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tietysti": {
+                        "prototype": "tietysti",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kahdenlaisia": {
+                        "prototype": "kahdenlainen",
+                        "chinese": "两种的",
+                        "form": "重点词形"
+            },
+            "nää": {
+                        "prototype": "nää",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tällaiset": {
+                        "prototype": "tällaiset",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "perhejuhlat": {
+                        "prototype": "perhejuhlat",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "vuodenaikaan": {
+                        "prototype": "vuodenaikaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "liittyvät": {
+                        "prototype": "liittyvät",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhlat": {
+                        "prototype": "juhlat",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tarkoitat": {
+                        "prototype": "tarkoitat",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kalenterijuhlat": {
+                        "prototype": "Kalenterijuhlat",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "liittyviä": {
+                        "prototype": "liittyvä",
+                        "chinese": "相关的",
+                        "form": "分词"
+            },
+            "vuoden": {
+                        "prototype": "vuoden",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "eka": {
+                        "prototype": "eka",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "uusivuosi": {
+                        "prototype": "uusivuosi",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "oikeastaan": {
+                        "prototype": "oikeastaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "alkaa": {
+                        "prototype": "alkaa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "jo": {
+                        "prototype": "jo",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "vikana": {
+                        "prototype": "vikana",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "päivänä": {
+                        "prototype": "päivänä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "koska": {
+                        "prototype": "koska",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "sillon": {
+                        "prototype": "sillon",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "uudenvuodenaatto": {
+                        "prototype": "uudenvuodenaatto",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tiedän": {
+                        "prototype": "tiedän",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "uudenvuodenaattona": {
+                        "prototype": "Uudenvuodenaattona",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juodaan": {
+                        "prototype": "juodaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kuohuviiniä": {
+                        "prototype": "kuohuviiniä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "katsellaan": {
+                        "prototype": "katsellaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ilotulitusta": {
+                        "prototype": "ilotulitusta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tehdään": {
+                        "prototype": "tehdään",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "uudenvuodenlupauksia": {
+                        "prototype": "uudenvuodenlupauksia",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "uutenavuotena": {
+                        "prototype": "uusivuosi",
+                        "chinese": "新年(本质格)",
+                        "form": "名词/构词"
+            },
+            "syödään": {
+                        "prototype": "syödään",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "nakit": {
+                        "prototype": "Nakit",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "perunasalaatti": {
+                        "prototype": "perunasalaatti",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "perinteistä": {
+                        "prototype": "perinteistä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "uudenvuodenaaton": {
+                        "prototype": "uudenvuodenaaton",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "naposteltavaa": {
+                        "prototype": "naposteltava",
+                        "chinese": "零食/小吃",
+                        "form": "分词"
+            },
+            "lapset": {
+                        "prototype": "lapset",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "syövät": {
+                        "prototype": "syövät",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "sipsejä": {
+                        "prototype": "sipsejä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juovat": {
+                        "prototype": "juovat",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "limsaa": {
+                        "prototype": "limsaa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "aatto": {
+                        "prototype": "Aatto",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "riehakas": {
+                        "prototype": "riehakas",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "uudenvuodenpäivä": {
+                        "prototype": "uudenvuodenpäivä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "arvokas": {
+                        "prototype": "arvokas",
+                        "chinese": "有价值/庄重的",
+                        "form": "名词/构词"
+            },
+            "presidentti": {
+                        "prototype": "Presidentti",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "uudenvuodenpuheensa": {
+                        "prototype": "uudenvuodenpuheensa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "televisiossa": {
+                        "prototype": "televisiossa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "monen": {
+                        "prototype": "Monen",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "suomalaisen": {
+                        "prototype": "suomalaisen",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "uudenvuodenlupaus": {
+                        "prototype": "uudenvuodenlupaus",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tipaton": {
+                        "prototype": "tipaton",
+                        "chinese": "无滴的(滴酒不沾)",
+                        "form": "名词/构词"
+            },
+            "tammikuu": {
+                        "prototype": "tammikuu",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "mikä": {
+                        "prototype": "Mikä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juoda": {
+                        "prototype": "juoda",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "alkoholia": {
+                        "prototype": "alkoholia",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tammikuussa": {
+                        "prototype": "tammikuussa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "eletään": {
+                        "prototype": "eletään",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "muutenkin": {
+                        "prototype": "muutenkin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "terveellisesti": {
+                        "prototype": "terveellisesti",
+                        "chinese": "健康地(副词)",
+                        "form": "副词"
+            },
+            "sepäs": {
+                        "prototype": "sepäs",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "onkin": {
+                        "prototype": "onkin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "hauska": {
+                        "prototype": "hauska",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "victorkin": {
+                        "prototype": "Victor",
+                        "chinese": "人名",
+                        "form": "专有名词"
+            },
+            "vietetään": {
+                        "prototype": "vietetään",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tipatonta": {
+                        "prototype": "tipatonta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tammikuuta": {
+                        "prototype": "tammikuuta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "lihaton": {
+                        "prototype": "lihaton",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kun": {
+                        "prototype": "kun",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "jätetään": {
+                        "prototype": "jätetään",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "liha": {
+                        "prototype": "liha",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "pois": {
+                        "prototype": "pois",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kasvisruokia": {
+                        "prototype": "kasvisruokia",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "peukku": {
+                        "prototype": "Peukku",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "teille": {
+                        "prototype": "teille",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ilmastolle": {
+                        "prototype": "ilmastolle",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "toukokuun": {
+                        "prototype": "Toukokuun",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "toka": {
+                        "prototype": "toinen",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "sunnuntai": {
+                        "prototype": "sunnuntai",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "äitienpäivää": {
+                        "prototype": "äitienpäivää",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "askartelee": {
+                        "prototype": "askarrella",
+                        "chinese": "做手工",
+                        "form": "动词/变位"
+            },
+            "päiväkodissa": {
+                        "prototype": "päiväkodissa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "koulussa": {
+                        "prototype": "koulussa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "äitienpäiväkortin": {
+                        "prototype": "äitienpäiväkortin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "poimii": {
+                        "prototype": "poimia",
+                        "chinese": "采摘",
+                        "form": "动词/变位"
+            },
+            "valkovuokkoja": {
+                        "prototype": "valkovuokkoja",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "äideille": {
+                        "prototype": "äideille",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "äiti": {
+                        "prototype": "äiti",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "saa": {
+                        "prototype": "saa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "aamukahvit": {
+                        "prototype": "aamukahvit",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "sänkyyn": {
+                        "prototype": "sänkyyn",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "äitienpäivänä": {
+                        "prototype": "Äitienpäivänä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "monet": {
+                        "prototype": "monet",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "menee": {
+                        "prototype": "menee",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ravintolaan": {
+                        "prototype": "ravintolaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "äitienpäivälounaalle": {
+                        "prototype": "äitienpäivälounaalle",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "oikein": {
+                        "prototype": "oikein",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "äideillä": {
+                        "prototype": "äiti",
+                        "chinese": "母亲",
+                        "form": "重点词形"
+            },
+            "oma": {
+                        "prototype": "oma",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "päivä": {
+                        "prototype": "päivä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "isilläkin": {
+                        "prototype": "isillä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "isänpäivä": {
+                        "prototype": "isänpäivä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "marraskuun": {
+                        "prototype": "marraskuun",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ahaa": {
+                        "prototype": "Ahaa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "paras": {
+                        "prototype": "hyvä",
+                        "chinese": "最好的",
+                        "form": "重点词形"
+            },
+            "tykkään": {
+                        "prototype": "tykkään",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhannuksesta": {
+                        "prototype": "juhannus",
+                        "chinese": "仲夏节",
+                        "form": "名词/构词"
+            },
+            "juhannus": {
+                        "prototype": "Juhannus",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "keskikesän": {
+                        "prototype": "keskikesän",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kansanjuhla": {
+                        "prototype": "kansanjuhla",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ihmiset": {
+                        "prototype": "ihmiset",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "olla": {
+                        "prototype": "olla",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "järven": {
+                        "prototype": "järven",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "meren": {
+                        "prototype": "meren",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "rannalla": {
+                        "prototype": "rannalla",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "grillataan": {
+                        "prototype": "grillata",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "saunotaan": {
+                        "prototype": "saunoa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "uidaan": {
+                        "prototype": "uida",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhannusaattona": {
+                        "prototype": "Juhannusaattona",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "poltetaan": {
+                        "prototype": "poltetaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhannuskokko": {
+                        "prototype": "Juhannuskokko",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tuli": {
+                        "prototype": "tuli",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ollaan": {
+                        "prototype": "ollaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "mökillä": {
+                        "prototype": "mökillä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "meilläkin": {
+                        "prototype": "Meilläkin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kokko": {
+                        "prototype": "kokko",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "hienon": {
+                        "prototype": "hienon",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "näköistä": {
+                        "prototype": "näköistä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhannuskokot": {
+                        "prototype": "juhannuskokot",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "loistaa": {
+                        "prototype": "loistaa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "rannoilla": {
+                        "prototype": "rannoilla",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tehän": {
+                        "prototype": "tehän",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "voisitte": {
+                        "prototype": "voisitte",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "meiän": {
+                        "prototype": "meiän",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tullaan": {
+                        "prototype": "tullaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "siitä": {
+                        "prototype": "Siitä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tulee": {
+                        "prototype": "tulee",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "hienoa": {
+                        "prototype": "Hienoa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ainoa": {
+                        "prototype": "ainoa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhlapäivä": {
+                        "prototype": "juhlapäivä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "jolloin": {
+                        "prototype": "joka",
+                        "chinese": "在那时",
+                        "form": "副词"
+            },
+            "lippu": {
+                        "prototype": "Lippu",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "salossa": {
+                        "prototype": "salko",
+                        "chinese": "旗杆",
+                        "form": "重点词形"
+            },
+            "yölläkin": {
+                        "prototype": "yölläkin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "nimittäin": {
+                        "prototype": "nimittäin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "laitetaan": {
+                        "prototype": "laitetaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhannusaattoiltana": {
+                        "prototype": "juhannusaattoiltana",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kuudelta": {
+                        "prototype": "kuudelta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "salkoon": {
+                        "prototype": "salkoon",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "otetaan": {
+                        "prototype": "otetaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "vasta": {
+                        "prototype": "vasta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhannuspäivän": {
+                        "prototype": "juhannuspäivän",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "iltana": {
+                        "prototype": "iltana",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "yhdeksältä": {
+                        "prototype": "yhdeksältä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "sepä": {
+                        "prototype": "sepä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "mielenkiintoista": {
+                        "prototype": "mielenkiintoista",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "milloin": {
+                        "prototype": "Milloin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "suomen": {
+                        "prototype": "Suomen",
+                        "chinese": "专有名词/名称",
+                        "form": "专有名词"
+            },
+            "itsenäisyyspäivä": {
+                        "prototype": "Itsenäisyyspäivä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "6": {
+                        "prototype": "6",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "joulukuuta": {
+                        "prototype": "joulukuu",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "itsenäisyyspäivänä": {
+                        "prototype": "Itsenäisyyspäivänä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "presidentillä": {
+                        "prototype": "presidentillä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "isot": {
+                        "prototype": "isot",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "presidentinlinnassa": {
+                        "prototype": "presidentinlinnassa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "linnan": {
+                        "prototype": "Linnan",
+                        "chinese": "专有名词/名称",
+                        "form": "专有名词"
+            },
+            "näytetään": {
+                        "prototype": "näytetään",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "telkkarissa": {
+                        "prototype": "telkkarissa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kattoo": {
+                        "prototype": "kattoo",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "mekin": {
+                        "prototype": "Mekin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "katsotaan": {
+                        "prototype": "katsotaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "aina": {
+                        "prototype": "aina",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kuulostaa": {
+                        "prototype": "kuulostaa",
+                        "chinese": "听起来像",
+                        "form": "动词/变位"
+            },
+            "siltä": {
+                        "prototype": "se",
+                        "chinese": "它",
+                        "form": "重点词形"
+            },
+            "mikään": {
+                        "prototype": "mikään",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "todellakaan": {
+                        "prototype": "todellakaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "liputuspäivä": {
+                        "prototype": "liputuspäivä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ihmisillä": {
+                        "prototype": "ihmisillä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ikkunalla": {
+                        "prototype": "ikkunalla",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kaks": {
+                        "prototype": "kaks",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "sinivalkoista": {
+                        "prototype": "sinivalkoista",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kynttilää": {
+                        "prototype": "kynttilä",
+                        "chinese": "蜡烛",
+                        "form": "重点词形"
+            },
+            "kello": {
+                        "prototype": "kello",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "18": {
+                        "prototype": "18",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "20": {
+                        "prototype": "20",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kamerunissa": {
+                        "prototype": "Kamerunissa",
+                        "chinese": "专有名词/名称",
+                        "form": "专有名词"
+            },
+            "ihan": {
+                        "prototype": "ihan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "erilaista": {
+                        "prototype": "erilaista",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kerro": {
+                        "prototype": "kertoa",
+                        "chinese": "讲述/告诉",
+                        "form": "重点词形"
+            },
+            "millainen": {
+                        "prototype": "millainen",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "joulu": {
+                        "prototype": "joulu",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "lempijuhla": {
+                        "prototype": "lempijuhla",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tykätään": {
+                        "prototype": "tykätään",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "porukka": {
+                        "prototype": "porukka",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "joulusta": {
+                        "prototype": "joulusta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "jouluihmisiä": {
+                        "prototype": "jouluihmisiä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "varmaan": {
+                        "prototype": "varmaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "lapsista": {
+                        "prototype": "lapsista",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "saavat": {
+                        "prototype": "saavat",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "lahjoja": {
+                        "prototype": "lahjoja",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "joulupukki": {
+                        "prototype": "joulupukki",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "käymään": {
+                        "prototype": "käydä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "jouluaattona": {
+                        "prototype": "jouluaattona",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "sofiasta": {
+                        "prototype": "Sofiasta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "aikuisille": {
+                        "prototype": "Aikuisille",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "joulun": {
+                        "prototype": "joulun",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "valmisteluissa": {
+                        "prototype": "valmistelu",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tärkeintä": {
+                        "prototype": "tärkeintä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kodin": {
+                        "prototype": "kodin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "siivoaminen": {
+                        "prototype": "siivoaminen",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "joulukuusen": {
+                        "prototype": "joulukuusen",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "koristeleminen": {
+                        "prototype": "koristella",
+                        "chinese": "装饰 (动名词)",
+                        "form": "动词/变位"
+            },
+            "jouluna": {
+                        "prototype": "jouluna",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "syöminen": {
+                        "prototype": "syöminen",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "lepääminen": {
+                        "prototype": "levätä",
+                        "chinese": "休息 (动名词)",
+                        "form": "动词/变位"
+            },
+            "käy": {
+                        "prototype": "käy",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "joulupäivänä": {
+                        "prototype": "joulupäivänä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "joulukirkossa": {
+                        "prototype": "joulukirkossa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "joulukinkkua": {
+                        "prototype": "Joulukinkkua",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "graavikalaa": {
+                        "prototype": "graavikalaa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "laatikoita": {
+                        "prototype": "laatikko",
+                        "chinese": "砂锅菜/盒子",
+                        "form": "重点词形"
+            },
+            "suklaata": {
+                        "prototype": "suklaata",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "laatikoitako": {
+                        "prototype": "Laatikoitako",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "lanttulaatikot": {
+                        "prototype": "Lanttulaatikot",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "porkkanalaatikot": {
+                        "prototype": "porkkanalaatikot",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "perunalaatikot": {
+                        "prototype": "perunalaatikot",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kuuluu": {
+                        "prototype": "kuuluu",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "jouluun": {
+                        "prototype": "jouluun",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "noi": {
+                        "prototype": "Noi",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "laatikkoruuat": {
+                        "prototype": "laatikkoruuat",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kyl": {
+                        "prototype": "kyllä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "semmosii": {
+                        "prototype": "sellainen",
+                        "chinese": "那样的（口语缩略）",
+                        "form": "重点词形"
+            },
+            "ulkomaalaiset": {
+                        "prototype": "ulkomaalaiset",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ihmettelee": {
+                        "prototype": "ihmettelee",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "eikä": {
+                        "prototype": "Eikä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kaikki": {
+                        "prototype": "kaikki",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "suomalaisetkaan": {
+                        "prototype": "suomalaisetkaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tykkää": {
+                        "prototype": "tykkää",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "syödä": {
+                        "prototype": "syödä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "nykyään": {
+                        "prototype": "Nykyään",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "jotkut": {
+                        "prototype": "jotkut",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "sushia": {
+                        "prototype": "sushia",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "pikkujoulujakin": {
+                        "prototype": "pikkujoulujakin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "pikkujoulut": {
+                        "prototype": "pikkujoulut",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "suomalaiset": {
+                        "prototype": "suomalaiset",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "marras-joulukuussa": {
+                        "prototype": "marras-joulukuussa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "pikkujouluja": {
+                        "prototype": "pikkujouluja",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "firmatkin": {
+                        "prototype": "firmatkin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "järjestää": {
+                        "prototype": "järjestää",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "työntekijöille": {
+                        "prototype": "työntekijöille",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tanssitaan": {
+                        "prototype": "tanssitaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "pidetään": {
+                        "prototype": "Pidetään",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "pikkujouluaika": {
+                        "prototype": "pikkujouluaika",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "sovittu": {
+                        "prototype": "sopia",
+                        "chinese": "同意的",
+                        "form": "分词"
+            },
+            "kättä": {
+                        "prototype": "käsi",
+                        "chinese": "手",
+                        "form": "重点词形"
+            },
+            "päälle": {
+                        "prototype": "päälle",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            }
+};
+
+
+
+
+        function flipCard(card) {
+            card.classList.toggle('is-flipped');
+        }
+
+        const tooltip = document.getElementById('wordTooltip');
+
+        function normalizeWord(text) {
+            return text.toLowerCase().replace(/[.,!?":;()]/g, '').trim();
+        }
+
+        function showTooltip(el) {
+            const word = normalizeWord(el.textContent);
+            const data = vocabularyData[word] || { prototype: el.textContent.trim(), chinese: '（未收录）', form: '词形' };
+            tooltip.innerHTML = '<span class="tooltip-proto">' + data.prototype + '</span><span class="tooltip-meaning">' + data.chinese + '</span><span class="tooltip-form">' + data.form + '</span>';
+            tooltip.classList.add('show');
+            const rect = el.getBoundingClientRect();
+            tooltip.style.left = (rect.left + window.scrollX + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+            tooltip.style.top = (rect.top + window.scrollY - tooltip.offsetHeight - 10) + 'px';
+        }
+
+        const synth = window.speechSynthesis;
+        const voiceSelect = document.getElementById('voice-select');
+        let voices = [];
+
+        function populateVoiceList() {
+            voices = synth.getVoices().sort((a, b) => a.name.localeCompare(b.name));
+            voiceSelect.innerHTML = voices
+                .map((v, i) => {
+                    const selected = v.lang.startsWith('fi') ? 'selected' : '';
+                    return '<option value="' + i + '" ' + selected + '>' + v.name + '</option>';
+                })
+                .join('');
+        }
+
+        function speak(text) {
+            if (synth.speaking) synth.cancel();
+            const utter = new SpeechSynthesisUtterance(text);
+            if (voices.length > 0 && voiceSelect.value !== '') utter.voice = voices[voiceSelect.value];
+            utter.lang = 'fi-FI';
+            utter.rate = 0.8;
+            synth.speak(utter);
+        }
+
+        populateVoiceList();
+        if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoiceList;
+
+        document.querySelectorAll('.v-word').forEach(el => {
+            el.addEventListener('mouseenter', (e) => {
+                e.stopPropagation();
+                showTooltip(el);
+            });
+            el.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showTooltip(el);
+                speak(el.textContent);
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.v-word')) tooltip.classList.remove('show');
+        });
+    </script>
+
+</body>
+</html>

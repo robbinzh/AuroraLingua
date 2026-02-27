@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精读文本-9.3 - Sandrine kertoo Kamerunin juhlapäivistä</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap');
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-back-bg: #1a202c;
+            --accent-color: #8be9fd;
+            --highlight-color: #ff79c6;
+            --text-color: #2d3748;
+            --bg-color: #f0f4f8;
+        }
+
+        body {
+            font-family: 'Noto Sans', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-color);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        h1 { text-align: center; color: #1a202c; margin: 20px 0 5px 0; font-weight: 800; font-size: 2rem; }
+        .subtitle { text-align: center; color: #718096; margin-bottom: 30px; max-width: 760px; font-size: 0.95rem; line-height: 1.5; }
+
+        .supplement-section,
+        .vocab-section {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .supplement-section { margin-top: 10px; }
+        .vocab-section { margin-top: 30px; margin-bottom: 50px; }
+        .supplement-section h2,
+        .supplement-section h3,
+        .vocab-section h2 { margin-top: 0; color: #1f2937; }
+        .supplement-section p { line-height: 1.75; margin: 8px 0; }
+        .supplement-section ol { margin: 6px 0 10px 22px; line-height: 1.7; }
+        .supplement-section ul { margin: 6px 0 10px 18px; line-height: 1.7; }
+        .supplement-section li { margin: 4px 0; }
+        .supplement-section code,
+        .vocab-section code { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 1px 6px; }
+
+        .word-tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.95);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            max-width: 280px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: opacity 0.2s ease;
+        }
+        .word-tooltip.show { opacity: 1; visibility: visible; }
+        .tooltip-proto { color: #8be9fd; font-weight: 800; font-size: 1.1em; display: block; border-bottom: 1px solid #444; margin-bottom: 5px; }
+        .tooltip-meaning { color: #f8f8f2; font-weight: 600; display: block; }
+        .tooltip-form { color: #ff79c6; font-size: 0.8rem; display: block; margin-top: 3px; }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1200px;
+            padding-bottom: 50px;
+        }
+
+        .card {
+            height: 620px;
+            cursor: pointer;
+            position: relative;
+            perspective: 1500px;
+        }
+
+        .card.is-flipped { z-index: 10; }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            transform-origin: center;
+        }
+
+        .card:hover .card-inner { transform: scale(0.98); }
+        .card.is-flipped .card-inner { transform: rotateY(180deg) scale(0.98); }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .card-front {
+            background: white;
+            padding: 30px;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .fi-sentence {
+            font-size: 1.22rem;
+            font-weight: 700;
+            color: #1e293b;
+            text-align: center;
+            line-height: 1.65;
+        }
+
+        .v-word {
+            text-decoration: underline dotted #cbd5e1;
+            cursor: help;
+            font-weight: 600;
+        }
+        .v-word:hover { background: #f1f5f9; text-decoration-style: solid; }
+
+        .card-back {
+            background: var(--card-back-bg);
+            color: #f8f8f2;
+            transform: rotateY(180deg);
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .back-title { font-size: 0.8rem; font-weight: 800; color: #718096; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .analysis-block { margin-bottom: 15px; border-bottom: 1px solid #2d3748; padding-bottom: 12px; }
+        .analysis-block:last-child { border-bottom: none; }
+        .chunk-item { border-left: 3px solid #48bb78; padding-left: 10px; margin-bottom: 8px; }
+        .chunk-fi { font-weight: 700; display: block; font-size: 1rem; }
+        .chunk-zh { font-size: 0.85rem; color: #a0aec0; display: block; }
+        .gram-item { font-size: 0.9rem; line-height: 1.55; margin-bottom: 6px; }
+        .gram-item strong { color: var(--accent-color); }
+        .gram-item.level-2 { padding-left: 10px; }
+        .gram-item.level-3 { padding-left: 20px; }
+        .gram-item.level-4 { padding-left: 30px; }
+        .back-translation { font-size: 1.05rem; font-weight: 600; border-left: 4px solid #ed64a6; padding-left: 12px; margin-top: 10px; }
+
+        .tts-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            margin-top: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: transform 0.2s;
+        }
+        .tts-btn:hover { transform: scale(1.1); }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; color: #64748b; font-size: 0.8rem; border-bottom: 2px solid #f1f5f9; }
+        td { padding: 15px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        .sana-fi { font-weight: 700; color: #334155; }
+
+        .controls {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        #voice-select { border-radius: 20px; padding: 5px 15px; border: 1px solid #ddd; }
+
+        @media (max-width: 480px) {
+            .card { height: 680px; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <select id="voice-select"></select>
+    </div>
+
+    <h1>📖 Sandrine kertoo Kamerunin juhlapäivistä</h1>
+    <p class="subtitle">点击卡片翻转查看语法拆解。悬停或点击单词查看原型、中文与词法形式；点击单词可朗读单词，点击按钮可朗读整句。</p>
+
+    <div class="card-container">
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 1</div>
+            <div class="fi-sentence"><span class="v-word">Kamerunissakin</span> <span class="v-word">juhlitaan</span> <span class="v-word">uuttavuotta</span>, <span class="v-word">mutta</span> <span class="v-word">siellä</span> <span class="v-word">ei</span> <span class="v-word">syödä</span> <span class="v-word">nakkeja</span> <span class="v-word">uutenavuotena</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kamerunissakin juhlitaan uuttavuotta, mutta siellä ei syödä nakkeja uutenavuotena.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Kamerunissakin juhlitaan</span><span class="chunk-zh">在喀麦隆也庆祝</span></div><div class="chunk-item"><span class="chunk-fi">uuttavuotta,</span><span class="chunk-zh">新年，</span></div><div class="chunk-item"><span class="chunk-fi">mutta siellä ei syödä</span><span class="chunk-zh">但是那里不吃</span></div><div class="chunk-item"><span class="chunk-fi">nakkeja</span><span class="chunk-zh">小香肠</span></div><div class="chunk-item"><span class="chunk-fi">uutenavuotena.</span><span class="chunk-zh">在新年期间。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子结构:</strong> 两个由 <code>mutta</code> (但是) 连接的并列句。全句使用被动语态（泛指“人们”）。</div><div class="gram-item level-3">&bull; <strong>语法要点 (核心精讲):</strong></div><div class="gram-item level-4">&bull; <strong><code>-kin</code> 附着词:</strong> 加在 <code>Kamerunissa</code> 后面，表示“在喀麦隆<strong>也</strong>...”。</div><div class="gram-item level-4">&bull; <strong>被动语态肯定式 vs 否定式:</strong></div><div class="gram-item level-4">&bull; <code>juhlitaan</code> (人们庆祝)：原型 <code>juhlia</code> (1型动词)。词干 <code>juhli-</code> + 被动标志 <code>taan</code>。</div><div class="gram-item level-4">&bull; <code>ei syödä</code> (人们不吃)：<strong>被动否定式的黄金法则 = 被动肯定式去掉最后的 <code>-an/-än</code></strong>。原型 <code>syödä</code> (2型) -&gt; <code>syödään</code> -&gt; 否定 <code>ei syödä</code>。</div><div class="gram-item level-4">&bull; <strong>动词支配 (Rektio):</strong> <code>juhlia</code> (庆祝) 必须接部分格。所以 <code>uusivuosi</code> 变成了 <code>uutta+vuotta</code> (前后两个词都要变部分格)。</div><div class="gram-item level-4">&bull; <strong>否定宾语:</strong> <code>ei syödä nakkeja</code>。因为是否定句，宾语“香肠”必须用<strong>复数部分格</strong> (nakki -&gt; nakkeja)。</div><div class="gram-item level-4">&bull; <strong>状态格 (Essiivi -na/nä) 表达时间:</strong> 芬兰语表达“在某天/某节日期间”，用状态格。</div><div class="gram-item level-4">&bull; <strong>变态级警告：</strong> <code>uusivuosi</code> 是复合词，变格时<strong>两部分都要变</strong>！<code>uusi</code> 的状态格词干是 <code>uute-</code>，<code>vuosi</code> 的状态格词干是 <code>vuote-</code>。拼在一起加 <code>-na</code>，就成了极其复杂的 <strong><code>uutenavuotena</code></strong>。</div>
+            </div>
+            <div class="back-translation"><strong>在喀麦隆人们也庆祝新年，但是那里的人们在过年时是不吃小香肠的。<em>(注：芬兰人过年有吃小香肠和土豆沙拉的传统)</em>。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 2</div>
+            <div class="fi-sentence"><span class="v-word">Kamerunissa</span> <span class="v-word">ei</span> <span class="v-word">tehdä</span> <span class="v-word">samoja</span> <span class="v-word">uudenvuodenlupauksia</span> <span class="v-word">kuin</span> <span class="v-word">Suomessa</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kamerunissa ei tehdä samoja uudenvuodenlupauksia kuin Suomessa.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Kamerunissa ei tehdä</span><span class="chunk-zh">在喀麦隆不做</span></div><div class="chunk-item"><span class="chunk-fi">samoja uudenvuodenlupauksia</span><span class="chunk-zh">相同的新年愿望</span></div><div class="chunk-item"><span class="chunk-fi">kuin Suomessa.</span><span class="chunk-zh">像在芬兰那样。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <code>ei tehdä</code>: 被动否定式。原型 <code>tehdä</code> (2型) -&gt; <code>tehdään</code> -&gt; <code>ei tehdä</code>。</div><div class="gram-item level-4">&bull; <code>samoja uudenvuodenlupauksia</code>: 复合词宾语。<code>sama</code> (相同的) + <code>uudenvuoden</code> (新年的-属格) + <code>lupaus</code> (愿望/承诺)。</div><div class="gram-item level-4">&bull; <strong>复数部分格:</strong> 因为是否定句 (<code>ei tehdä</code>)，并且愿望通常是多个，所以用复数部分格。<code>lupaus</code> 的复数部分格词干是 <code>lupauksi-</code> + <code>a</code> = <code>lupauksia</code>。形容词 <code>sama</code> 也必须跟着变复数部分格 <code>samoja</code>。</div><div class="gram-item level-4">&bull; <code>kuin</code>: 比较连词，“比/像...一样”。</div>
+            </div>
+            <div class="back-translation"><strong>在喀麦隆，人们不会许下和芬兰人一样的新年愿望。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 3</div>
+            <div class="fi-sentence"><span class="v-word">Kamerunissa</span> <span class="v-word">vietetään</span> <span class="v-word">helmikuussa</span> <span class="v-word">nuorisopäivää</span>. <span class="v-word">Suomessa</span> <span class="v-word">ei</span> <span class="v-word">vietetä</span> <span class="v-word">tällaista</span> <span class="v-word">juhlapäivää</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kamerunissa vietetään helmikuussa nuorisopäivää. Suomessa ei vietetä tällaista juhlapäivää.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Kamerunissa vietetään</span><span class="chunk-zh">在喀麦隆度过/庆祝</span></div><div class="chunk-item"><span class="chunk-fi">helmikuussa</span><span class="chunk-zh">在二月</span></div><div class="chunk-item"><span class="chunk-fi">nuorisopäivää.</span><span class="chunk-zh">青年节。</span></div><div class="chunk-item"><span class="chunk-fi">Suomessa ei vietetä</span><span class="chunk-zh">在芬兰不庆祝</span></div><div class="chunk-item"><span class="chunk-fi">tällaista juhlapäivää.</span><span class="chunk-zh">这样的节日。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <strong>KPT弱化在被动式中的应用:</strong> 原型 <code>viettää</code> (庆祝/度过，1型)。1型动词的被动式构词法是：<strong>弱词干 + taan/tään</strong>。</div><div class="gram-item level-4">&bull; 强词干：viet<strong>t</strong>ä-</div><div class="gram-item level-4">&bull; 弱词干：vie<strong>t</strong>ä-</div><div class="gram-item level-4">&bull; 被动肯定：vie<strong>t</strong>etään。被动否定：ei vie<strong>t</strong>etä。</div><div class="gram-item level-4">&bull; <code>tällaista</code>: 指示代词 <code>tällainen</code> (这样的) 的部分格。因为是在否定句中，做 <code>ei vietetä</code> 的宾语。</div>
+            </div>
+            <div class="back-translation"><strong>喀麦隆在二月庆祝青年节。芬兰是不庆祝这种节日的。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 4</div>
+            <div class="fi-sentence"><span class="v-word">Kamerunissakin</span> <span class="v-word">juhlitaan</span> <span class="v-word">pääsiäistä</span>, <span class="v-word">mutta</span> <span class="v-word">siellä</span> <span class="v-word">ei</span> <span class="v-word">syödä</span> <span class="v-word">mämmiä</span>!</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kamerunissakin juhlitaan pääsiäistä, mutta siellä ei syödä mämmiä!")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Kamerunissakin juhlitaan</span><span class="chunk-zh">在喀麦隆也庆祝</span></div><div class="chunk-item"><span class="chunk-fi">pääsiäistä,</span><span class="chunk-zh">复活节，</span></div><div class="chunk-item"><span class="chunk-fi">mutta siellä ei syödä</span><span class="chunk-zh">但是那里不吃</span></div><div class="chunk-item"><span class="chunk-fi">mämmiä!</span><span class="chunk-zh">黑麦布丁！</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <code>pääsiäistä</code>: <code>pääsiäinen</code> (复活节) 的部分格 (-nen 变 -stä)。作 <code>juhlia</code> 的宾语。</div><div class="gram-item level-4">&bull; <code>mämmiä</code>: <code>mämmi</code> (芬兰复活节传统暗黑色甜品) 的部分格。食物作为不可数物质，加上否定句双重buff，必须用部分格。</div>
+            </div>
+            <div class="back-translation"><strong>喀麦隆也庆祝复活节，但在那儿人们绝对不吃 Mämmi！ ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 5</div>
+            <div class="fi-sentence"><span class="v-word">Kamerunissa</span> <span class="v-word">ei</span> <span class="v-word">virvota</span> <span class="v-word">eikä</span> <span class="v-word">siellä</span> <span class="v-word">kasvateta</span> <span class="v-word">rairuohoa</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kamerunissa ei virvota eikä siellä kasvateta rairuohoa.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Kamerunissa ei virvota</span><span class="chunk-zh">在喀麦隆不挥舞柳枝</span></div><div class="chunk-item"><span class="chunk-fi">eikä siellä kasvateta</span><span class="chunk-zh">而且那里不种植</span></div><div class="chunk-item"><span class="chunk-fi">rairuohoa.</span><span class="chunk-zh">黑麦草。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (重点词汇与否定连词):</strong></div><div class="gram-item level-4">&bull; <strong><code>eikä</code>:</strong> 这是芬兰语中极其高频的连接词，等于 <code>ja ei</code> (并且不 / and not)。当连接两个否定动作时，后半句绝不用 <code>ja</code>，必须用 <code>eikä</code> (如果主语是其他，随人称变为 enkä, etkä, eivätkä 等)。</div><div class="gram-item level-4">&bull; <code>ei virvota</code>: 原型 <code>virpoa</code> (1型，复活节传统：小孩扮女巫挥舞装饰过的柳枝要糖果)。KPT弱化：p -&gt; v。被动肯定 <code>virvotaan</code>，否定 <code>ei virvota</code>。</div><div class="gram-item level-4">&bull; <code>ei kasvateta</code>: 原型 <code>kasvattaa</code> (1型，种植/养育)。KPT弱化：tt -&gt; t。被动肯定 <code>kasvatetaan</code>，否定 <code>ei kasvateta</code>。</div><div class="gram-item level-4">&bull; <code>rairuohoa</code>: <code>rairuoho</code> (复活节种在盘子里的草) 的部分格。</div>
+            </div>
+            <div class="back-translation"><strong>在喀麦隆，人们（复活节）不会拿着柳枝去讨糖，也不会种复活节草。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 6</div>
+            <div class="fi-sentence"><span class="v-word">Vappua</span> <span class="v-word">vietetään</span> <span class="v-word">myös</span> <span class="v-word">Kamerunissa</span>, <span class="v-word">mutta</span> <span class="v-word">siellä</span> <span class="v-word">ei</span> <span class="v-word">laiteta</span> <span class="v-word">ylioppilaslakkia</span> <span class="v-word">päähän</span> <span class="v-word">eikä</span> <span class="v-word">pueta</span> <span class="v-word">opiskelijahaalaria</span> <span class="v-word">päälle</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Vappua vietetään myös Kamerunissa, mutta siellä ei laiteta ylioppilaslakkia päähän eikä pueta opiskelijahaalaria päälle.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Vappua vietetään</span><span class="chunk-zh">五一节被庆祝</span></div><div class="chunk-item"><span class="chunk-fi">myös Kamerunissa,</span><span class="chunk-zh">也在喀麦隆，</span></div><div class="chunk-item"><span class="chunk-fi">mutta siellä ei laiteta</span><span class="chunk-zh">但是那里不被放置</span></div><div class="chunk-item"><span class="chunk-fi">ylioppilaslakkia</span><span class="chunk-zh">高中生毕业帽</span></div><div class="chunk-item"><span class="chunk-fi">päähän</span><span class="chunk-zh">到头上</span></div><div class="chunk-item"><span class="chunk-fi">eikä pueta</span><span class="chunk-zh">而且不被穿上</span></div><div class="chunk-item"><span class="chunk-fi">opiskelijahaalaria</span><span class="chunk-zh">大学生连体裤</span></div><div class="chunk-item"><span class="chunk-fi">päälle.</span><span class="chunk-zh">到身上。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <strong>动作的目的地 (Mihin):</strong></div><div class="gram-item level-4">&bull; <code>laittaa ... päähän</code>: 把...戴到头上。<code>pää</code> (头) 的入格 <code>päähän</code>。</div><div class="gram-item level-4">&bull; <code>pukea ... päälle</code>: 把...穿到身上。<code>päälle</code> (到...表面)，向格。</div><div class="gram-item level-4">&bull; <strong>KPT 极度弱化:</strong></div><div class="gram-item level-4">&bull; <code>ei laiteta</code>: 原型 <code>laittaa</code> (1型)。tt -&gt; t。</div><div class="gram-item level-4">&bull; <code>ei pueta</code>: 原型 <code>pukea</code> (1型)。<strong>k -&gt; 消失 (ø)</strong>。弱词干是 <code>pue-</code>，所以被动否定是 <code>ei pueta</code>。</div><div class="gram-item level-4">&bull; <strong>否定宾语:</strong> <code>ylioppilaslakkia</code> (lakki帽子的部分格), <code>opiskelijahaalaria</code> (haalari工装裤的部分格)。</div>
+            </div>
+            <div class="back-translation"><strong>喀麦隆也过五一节，但那里的人们不会把高中毕业白帽子戴在头上，也不会穿上大学生的彩色连体服。<em>(注：这是芬兰极其疯狂的Vappu传统)</em>。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 7</div>
+            <div class="fi-sentence"><span class="v-word">Kamerunissa</span> <span class="v-word">ei</span> <span class="v-word">juoda</span> <span class="v-word">simaa</span> <span class="v-word">eikä</span> <span class="v-word">siellä</span> <span class="v-word">syödä</span> <span class="v-word">tippaleipää</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kamerunissa ei juoda simaa eikä siellä syödä tippaleipää.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Kamerunissa ei juoda simaa</span><span class="chunk-zh">在喀麦隆不喝Sima饮料</span></div><div class="chunk-item"><span class="chunk-fi">eikä siellä syödä tippaleipää.</span><span class="chunk-zh">而且那里不吃漏斗蛋糕。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; 原文该句未单列 1.2 语法点；建议重点复习 <code>ei + 被动否定式</code> 与否定宾语部分格。</div>
+            </div>
+            <div class="back-translation"><strong>喀麦隆人不喝芬兰蜂蜜酒（Sima），也不吃漏斗形脆饼（Tippaleipä）。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 8</div>
+            <div class="fi-sentence"><span class="v-word">Kamerunissa</span> <span class="v-word">ei</span> <span class="v-word">juhlita</span> <span class="v-word">juhannusta</span>, <span class="v-word">sillä</span> <span class="v-word">yötön</span> <span class="v-word">yö</span> <span class="v-word">on</span> <span class="v-word">vain</span> <span class="v-word">täällä</span> <span class="v-word">pohjoisessa</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kamerunissa ei juhlita juhannusta, sillä yötön yö on vain täällä pohjoisessa.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Kamerunissa ei juhlita</span><span class="chunk-zh">在喀麦隆不庆祝</span></div><div class="chunk-item"><span class="chunk-fi">juhannusta,</span><span class="chunk-zh">仲夏节，</span></div><div class="chunk-item"><span class="chunk-fi">sillä</span><span class="chunk-zh">因为</span></div><div class="chunk-item"><span class="chunk-fi">yötön yö</span><span class="chunk-zh">无夜之夜/极昼</span></div><div class="chunk-item"><span class="chunk-fi">on vain</span><span class="chunk-zh">只在</span></div><div class="chunk-item"><span class="chunk-fi">täällä pohjoisessa.</span><span class="chunk-zh">这里的北方。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <code>sillä</code>: 连词，“因为”。(用法同 koska，但 sillä 多用于书面语连接两个独立句子)。</div><div class="gram-item level-4">&bull; <code>yötön</code>: 词尾 <code>-ton/tön</code> 表示“无/没有...的”。yö (夜) -&gt; yötön。</div><div class="gram-item level-4">&bull; <code>täällä pohjoisessa</code>: 方位名词同位语，两个词都用内格/接格表示“在这里的北方”。</div>
+            </div>
+            <div class="back-translation"><strong>喀麦隆不庆祝仲夏节，因为只有在这边的北欧才有极昼（白夜）。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 9</div>
+            <div class="fi-sentence"><span class="v-word">Siellä</span> <span class="v-word">ei</span> <span class="v-word">lähdetä</span> <span class="v-word">pois</span> <span class="v-word">kaupungista</span>, <span class="v-word">ei</span> <span class="v-word">mennä</span> <span class="v-word">mökille</span> <span class="v-word">eikä</span> <span class="v-word">polteta</span> <span class="v-word">kokkoa</span>. <span class="v-word">Siellä</span> <span class="v-word">ei</span> <span class="v-word">myöskään</span> <span class="v-word">saunota</span> <span class="v-word">eikä</span> <span class="v-word">grillata</span> <span class="v-word">juhannuksena</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Siellä ei lähdetä pois kaupungista, ei mennä mökille eikä polteta kokkoa. Siellä ei myöskään saunota eikä grillata juhannuksena.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Siellä ei lähdetä pois</span><span class="chunk-zh">那里人们不离开</span></div><div class="chunk-item"><span class="chunk-fi">kaupungista,</span><span class="chunk-zh">从城市，</span></div><div class="chunk-item"><span class="chunk-fi">ei mennä mökille</span><span class="chunk-zh">不去木屋</span></div><div class="chunk-item"><span class="chunk-fi">eikä polteta kokkoa.</span><span class="chunk-zh">而且不烧篝火。</span></div><div class="chunk-item"><span class="chunk-fi">Siellä ei myöskään saunota</span><span class="chunk-zh">那里也同样不洗桑拿</span></div><div class="chunk-item"><span class="chunk-fi">eikä grillata</span><span class="chunk-zh">而且不烧烤</span></div><div class="chunk-item"><span class="chunk-fi">juhannuksena.</span><span class="chunk-zh">在仲夏节期间。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (被动语态大爆发):</strong></div><div class="gram-item level-4">&bull; <code>ei lähdetä</code>: 原型 <code>lähteä</code> (1型)。弱化：t -&gt; d。弱词干 <code>lähde-</code>。</div><div class="gram-item level-4">&bull; <code>ei mennä</code>: 原型 <code>mennä</code> (3型)。3型动词的被动构词：去掉 -nä，直接加 -nään。<code>mennään</code> -&gt; 否定 <code>ei mennä</code>。</div><div class="gram-item level-4">&bull; <code>ei polteta</code>: 原型 <code>polttaa</code> (1型)。弱化：tt -&gt; t。</div><div class="gram-item level-4">&bull; <code>ei saunota</code>: 原型 <code>saunoa</code> (1型)。无KPT。</div><div class="gram-item level-4">&bull; <code>ei grillata</code>: 原型 <code>grillata</code> (4型)。4型动词被动式：直接在原型上加 -an/än。<code>grillataan</code> -&gt; 否定 <code>ei grillata</code>。</div><div class="gram-item level-4">&bull; <code>myöskään</code>: 固定副词搭配否定词，表示“也不”。<em>Minä myöskään en mene</em> (我也同样不去)。</div>
+            </div>
+            <div class="back-translation"><strong>在那里，人们不会离开城市，不去夏季度假木屋，也不会点燃仲夏篝火。那里的人在仲夏节期间也不会洗桑拿或烧烤。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 10</div>
+            <div class="fi-sentence"><span class="v-word">Kamerunissa</span> <span class="v-word">ei</span> <span class="v-word">vietetä</span> <span class="v-word">itsenäisyyspäivää</span> <span class="v-word">joulukuussa</span>. <span class="v-word">Siellä</span> <span class="v-word">vietetään</span> <span class="v-word">kansallispäivää</span> <span class="v-word">toukokuussa</span>, <span class="v-word">mutta</span> <span class="v-word">Kamerunissa</span> <span class="v-word">ei</span> <span class="v-word">laiteta</span> <span class="v-word">kynttilöitä</span> <span class="v-word">ikkunalaudalle</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kamerunissa ei vietetä itsenäisyyspäivää joulukuussa. Siellä vietetään kansallispäivää toukokuussa, mutta Kamerunissa ei laiteta kynttilöitä ikkunalaudalle.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Kamerunissa ei vietetä</span><span class="chunk-zh">在喀麦隆不庆祝</span></div><div class="chunk-item"><span class="chunk-fi">itsenäisyyspäivää</span><span class="chunk-zh">独立日</span></div><div class="chunk-item"><span class="chunk-fi">joulukuussa.</span><span class="chunk-zh">在12月。</span></div><div class="chunk-item"><span class="chunk-fi">Siellä vietetään kansallispäivää</span><span class="chunk-zh">那里庆祝国庆日</span></div><div class="chunk-item"><span class="chunk-fi">toukokuussa,</span><span class="chunk-zh">在五月，</span></div><div class="chunk-item"><span class="chunk-fi">mutta Kamerunissa ei laiteta</span><span class="chunk-zh">但是喀麦隆不放置</span></div><div class="chunk-item"><span class="chunk-fi">kynttilöitä</span><span class="chunk-zh">蜡烛，复数部分格</span></div><div class="chunk-item"><span class="chunk-fi">ikkunalaudalle.</span><span class="chunk-zh">到窗台上。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <code>kynttilöitä</code>: 原型 <code>kynttilä</code>。复数部分格。因为点蜡烛通常是好几根，且在否定句 <code>ei laiteta</code> 中。</div><div class="gram-item level-4">&bull; <code>ikkunalaudalle</code>: 复合词 <code>ikkuna</code> (窗) + <code>lauta</code> (板子)。KPT弱化 t -&gt; d。入格方向 <code>lle</code> 表示放到上面。<em>(注：芬兰独立日会在窗台点两根蓝白蜡烛)</em>。</div>
+            </div>
+            <div class="back-translation"><strong>喀麦隆不在12月庆祝独立日。他们在5月庆祝国庆日，但在喀麦隆，人们不会把蜡烛摆在窗台上。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 11</div>
+            <div class="fi-sentence"><span class="v-word">Siellä</span> <span class="v-word">ei</span> <span class="v-word">katsota</span> <span class="v-word">Linnan</span> <span class="v-word">juhlia</span> <span class="v-word">televisiosta</span> <span class="v-word">joulukuussa</span> <span class="v-word">vaan</span> <span class="v-word">toukokuussa</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Siellä ei katsota Linnan juhlia televisiosta joulukuussa vaan toukokuussa.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Siellä ei katsota</span><span class="chunk-zh">那里不看</span></div><div class="chunk-item"><span class="chunk-fi">Linnan juhlia</span><span class="chunk-zh">总统府招待会</span></div><div class="chunk-item"><span class="chunk-fi">televisiosta</span><span class="chunk-zh">从电视里</span></div><div class="chunk-item"><span class="chunk-fi">joulukuussa vaan toukokuussa.</span><span class="chunk-zh">在12月而是在5月。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <code>ei katsota</code>: 原型 <code>katsoa</code> (1型)。</div><div class="gram-item level-4">&bull; <code>Linnan juhlia</code>: 芬兰独立日重头戏“总统府独立日招待会” (<code>Linna</code> 城堡/总统府的属格 + <code>juhlat</code> 派对的复数部分格)。</div><div class="gram-item level-4">&bull; <code>...ei... vaan...</code>: 固定句型，“不是...而是...”。</div>
+            </div>
+            <div class="back-translation"><strong>那里的人们不在12月从电视里看“总统府招待晚宴”，而是在5月看。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 12</div>
+            <div class="fi-sentence"><span class="v-word">Kansallispäivänä</span> <span class="v-word">Kamerunissa</span> <span class="v-word">lauletaan</span> <span class="v-word">ja</span> <span class="v-word">tanssitaan</span> <span class="v-word">kaduilla</span>, <span class="v-word">mutta</span> <span class="v-word">Suomessa</span> <span class="v-word">ei</span> <span class="v-word">lauleta</span> <span class="v-word">eikä</span> <span class="v-word">tanssita</span> <span class="v-word">kaduilla</span> <span class="v-word">itsenäisyyspäivänä</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kansallispäivänä Kamerunissa lauletaan ja tanssitaan kaduilla, mutta Suomessa ei lauleta eikä tanssita kaduilla itsenäisyyspäivänä.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Kansallispäivänä</span><span class="chunk-zh">在国庆日</span></div><div class="chunk-item"><span class="chunk-fi">Kamerunissa lauletaan ja tanssitaan</span><span class="chunk-zh">在喀麦隆人们唱歌并跳舞</span></div><div class="chunk-item"><span class="chunk-fi">kaduilla,</span><span class="chunk-zh">在街道上，</span></div><div class="chunk-item"><span class="chunk-fi">mutta Suomessa ei lauleta eikä tanssita</span><span class="chunk-zh">但在芬兰不唱也不跳</span></div><div class="chunk-item"><span class="chunk-fi">kaduilla</span><span class="chunk-zh">在街道上</span></div><div class="chunk-item"><span class="chunk-fi">itsenäisyyspäivänä.</span><span class="chunk-zh">在独立日。</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <code>lauletaan / ei lauleta</code>: 原型 <code>laulaa</code> (1型)。</div><div class="gram-item level-4">&bull; <code>tanssitaan / ei tanssita</code>: 原型 <code>tanssia</code> (1型)。</div><div class="gram-item level-4">&bull; <code>kaduilla</code>: 原型 <code>katu</code> (街道)。t -&gt; d 弱化。复数接格 <code>-illa</code>，表示在许多条街道的表面上。</div><div class="gram-item level-4">&bull; <code>Kansallispäivänä</code> / <code>itsenäisyyspäivänä</code>: 极度高频的 <strong>Essiivi (状态格 -na/nä)</strong> 用于表达节日的某一天。</div>
+            </div>
+            <div class="back-translation"><strong>在国庆日，喀麦隆人会在街头唱歌跳舞，但芬兰人在独立日时是不在街上唱歌跳舞的。<em>(注：芬兰独立日基调严肃、哀悼阵亡将士)</em>。 ---</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 13</div>
+            <div class="fi-sentence"><span class="v-word">Kamerunissa</span> <span class="v-word">ei</span> <span class="v-word">juhlita</span> <span class="v-word">ihan</span> <span class="v-word">samalla</span> <span class="v-word">tavalla</span> <span class="v-word">kuin</span> <span class="v-word">Suomessa</span>!</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kamerunissa ei juhlita ihan samalla tavalla kuin Suomessa!")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Kamerunissa ei juhlita</span><span class="chunk-zh">在喀麦隆不庆祝</span></div><div class="chunk-item"><span class="chunk-fi">ihan samalla tavalla</span><span class="chunk-zh">完全用相同的方式</span></div><div class="chunk-item"><span class="chunk-fi">kuin Suomessa!</span><span class="chunk-zh">像在芬兰那样！</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点:</strong></div><div class="gram-item level-4">&bull; <code>tavalla</code>: 原型 <code>tapa</code> (方式/习惯)。KPT弱化 p -&gt; v。接格 <code>-lla</code> 常用来表示“用...方式 (by way of)”。</div><div class="gram-item level-4">&bull; <code>ihan</code>: 副词，极其/完全。<code>ihan samalla tavalla</code> = in the exact same way。</div>
+            </div>
+            <div class="back-translation"><strong>喀麦隆庆祝节日的方式跟芬兰可真不一样！ ---</strong></div>
+        </div></div></div>
+    </div>
+
+    <div class="supplement-section">
+        <h2>语法补充与全文总结</h2>
+        <h3>2.1. 总结该段在全文中的意义和作用</h3>
+<p>这是一篇结构极其工整的<strong>跨文化对比文本</strong>。</p>
+<ul>
+<li><strong>文化层面：</strong> 它像一本“芬兰节日民俗百科辞典”。借喀麦隆留学生 Sandrine 之口，反向盘点了芬兰一年四季的所有核心节日习俗（过年吃香肠、复活节吃 Mämmi 讨糖、五一戴白帽穿连体裤、仲夏去木屋烧篝火、独立日点蜡烛看电视）。</li>
+<li><strong>语法层面：</strong> 全篇是一场“被动语态否定式”的暴力轰炸。课文刻意让学生反复练习 <code>ei + 动词弱词干+ta/tä</code> 的结构，并反复植入“否定句宾语用部分格”的铁律。如果你能顺畅读完这篇，你的被动语态直觉将大幅提升。</li>
+</ul>
+    </div>
+
+    <div class="vocab-section">
+        <h2>重点词汇形态拆解表</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>单词 (Sana)</th><th>原型 (Perusmuoto)</th><th>中文翻译 (Käännös)</th><th>词干 (Vartalo)</th><th>词类/形式</th><th>构词法与语法深度解析 (Kiina)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td class="sana-fi"><strong>Uutenavuotena</strong></td><td>uusivuosi</td><td>在新年时</td><td>uute- + vuote-</td><td>名词 (状态格 Essiivi)</td><td><strong>极易错词</strong>：复合词，且两部分都属于古老词汇。<code>uusi</code> 变 <code>uute-</code>，<code>vuosi</code> 变 <code>vuote-</code>，最后加 <code>-na</code>。表示时间点。</td></tr><tr><td class="sana-fi"><strong>Lupauksia</strong></td><td>lupaus</td><td>承诺/愿望</td><td>lupauksi-</td><td>名词 (复数部分格)</td><td><code>-us</code> 结尾的抽象名词，单数属格是 <code>lupauksen</code>。复数词干在 <code>s</code> 前加 <code>i</code> 变为 <code>lupauksi-</code>，加 <code>-a</code> 成部分格。</td></tr><tr><td class="sana-fi"><strong>Mämmiä</strong></td><td>mämmi</td><td>黑麦布丁</td><td>mämmi-</td><td>名词 (部分格)</td><td>芬兰传统食品，作为不可数名词+否定句宾语，必须用部分格。</td></tr><tr><td class="sana-fi"><strong>Virvota</strong></td><td>virpoa</td><td>(用柳枝) 祝福</td><td>virvo-</td><td>动词 (被动否定)</td><td>1型动词，<code>p</code> 弱化为 <code>v</code>。被动肯定为 <code>virvotaan</code>，否定去掉 <code>-an</code>。</td></tr><tr><td class="sana-fi"><strong>Ylioppilaslakkia</strong></td><td>ylioppilaslakki</td><td>高中毕业帽</td><td>...lakki-</td><td>名词 (单数部分格)</td><td>超长复合词：<code>yli</code> (上) + <code>oppilas</code> (学生) = 高中生/大学生。<code>lakki</code> = 帽子。做否定动作的宾语用部分格。</td></tr><tr><td class="sana-fi"><strong>Pueta</strong></td><td>pukea</td><td>穿上</td><td>pue-</td><td>动词 (被动否定)</td><td>1型动词。<strong>KPT 消失变化</strong>：<code>k</code> 在弱语干中消失，<code>pukea</code> -&gt; <code>pue-</code>。被动肯定 <code>puetaan</code>，否定 <code>ei pueta</code>。</td></tr><tr><td class="sana-fi"><strong>Lähdetä</strong></td><td>lähteä</td><td>出发/离开</td><td>lähde-</td><td>动词 (被动否定)</td><td>1型动词。<code>t</code> 弱化为 <code>d</code>。被动肯定 <code>lähdetään</code>，否定 <code>ei lähdetä</code>。</td></tr><tr><td class="sana-fi"><strong>Kynttilöitä</strong></td><td>kynttilä</td><td>蜡烛</td><td>kynttilöi-</td><td>名词 (复数部分格)</td><td>结尾为 <code>-ä</code> 的词在变复数时，如果前面有元音，<code>ä</code> 通常变为 <code>ö</code>，再加复数标志 <code>i</code> 和部分格 <code>tä</code> -&gt; <code>kynttilöitä</code>。</td></tr><tr><td class="sana-fi"><strong>Ikkunalaudalle</strong></td><td>ikkunalauta</td><td>窗台上</td><td>...lauda-</td><td>名词 (向格 Allatiivi)</td><td>复合词：<code>ikkuna</code> (窗) + <code>lauta</code> (木板)。<code>t</code> 弱化为 <code>d</code>。加 <code>-lle</code> 表示“放置到...上面”。</td></tr><tr><td class="sana-fi"><strong>Lauletaan</strong></td><td>laulaa</td><td>人们唱歌</td><td>laule-</td><td>动词 (被动现在时)</td><td>1型动词。这里出现了元音的轻微变化（a 变为 e），是为了发音连贯（laula-taan 会拗口，所以变为 lauletaan）。</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="word-tooltip" id="wordTooltip"></div>
+
+    <script>
+        const vocabularyData = {
+            "ei": {
+                        "prototype": "ei",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "eikä": {
+                        "prototype": "eikä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "grillata": {
+                        "prototype": "grillata",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "helmikuussa": {
+                        "prototype": "helmikuussa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ihan": {
+                        "prototype": "ihan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ikkunalaudalle": {
+                        "prototype": "ikkunalauta",
+                        "chinese": "窗台上",
+                        "form": "名词 (向格 Allatiivi)"
+            },
+            "itsenäisyyspäivänä": {
+                        "prototype": "itsenäisyyspäivänä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "itsenäisyyspäivää": {
+                        "prototype": "itsenäisyyspäivää",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "ja": {
+                        "prototype": "ja",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "joulukuussa": {
+                        "prototype": "joulukuussa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhannuksena": {
+                        "prototype": "juhannuksena",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhannusta": {
+                        "prototype": "juhannusta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhlapäivää": {
+                        "prototype": "juhlapäivää",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhlia": {
+                        "prototype": "juhlia",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhlita": {
+                        "prototype": "juhlita",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juhlitaan": {
+                        "prototype": "juhlitaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "juoda": {
+                        "prototype": "juoda",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kaduilla": {
+                        "prototype": "kaduilla",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kamerunissa": {
+                        "prototype": "Kamerunissa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kamerunissakin": {
+                        "prototype": "Kamerunissakin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kansallispäivänä": {
+                        "prototype": "Kansallispäivänä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kansallispäivää": {
+                        "prototype": "kansallispäivää",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kasvateta": {
+                        "prototype": "kasvateta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "katsota": {
+                        "prototype": "katsota",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kaupungista": {
+                        "prototype": "kaupungista",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kokkoa": {
+                        "prototype": "kokkoa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kuin": {
+                        "prototype": "kuin",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "kynttilöitä": {
+                        "prototype": "kynttilä",
+                        "chinese": "蜡烛",
+                        "form": "名词 (复数部分格)"
+            },
+            "laiteta": {
+                        "prototype": "laiteta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "lauleta": {
+                        "prototype": "lauleta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "lauletaan": {
+                        "prototype": "laulaa",
+                        "chinese": "人们唱歌",
+                        "form": "动词 (被动现在时)"
+            },
+            "linnan": {
+                        "prototype": "Linnan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "lupauksia": {
+                        "prototype": "lupaus",
+                        "chinese": "承诺/愿望",
+                        "form": "名词 (复数部分格)"
+            },
+            "lähdetä": {
+                        "prototype": "lähteä",
+                        "chinese": "出发/离开",
+                        "form": "动词 (被动否定)"
+            },
+            "mennä": {
+                        "prototype": "mennä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "mutta": {
+                        "prototype": "mutta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "myös": {
+                        "prototype": "myös",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "myöskään": {
+                        "prototype": "myöskään",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "mämmiä": {
+                        "prototype": "mämmi",
+                        "chinese": "黑麦布丁",
+                        "form": "名词 (部分格)"
+            },
+            "mökille": {
+                        "prototype": "mökille",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "nakkeja": {
+                        "prototype": "nakkeja",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "nuorisopäivää": {
+                        "prototype": "nuorisopäivää",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "on": {
+                        "prototype": "on",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "opiskelijahaalaria": {
+                        "prototype": "opiskelijahaalaria",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "pohjoisessa": {
+                        "prototype": "pohjoisessa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "pois": {
+                        "prototype": "pois",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "polteta": {
+                        "prototype": "polteta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "pueta": {
+                        "prototype": "pukea",
+                        "chinese": "穿上",
+                        "form": "动词 (被动否定)"
+            },
+            "päähän": {
+                        "prototype": "päähän",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "päälle": {
+                        "prototype": "päälle",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "pääsiäistä": {
+                        "prototype": "pääsiäistä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "rairuohoa": {
+                        "prototype": "rairuohoa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "samalla": {
+                        "prototype": "samalla",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "samoja": {
+                        "prototype": "samoja",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "saunota": {
+                        "prototype": "saunota",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "siellä": {
+                        "prototype": "siellä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "sillä": {
+                        "prototype": "sillä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "simaa": {
+                        "prototype": "simaa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "suomessa": {
+                        "prototype": "Suomessa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "syödä": {
+                        "prototype": "syödä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tanssita": {
+                        "prototype": "tanssita",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tanssitaan": {
+                        "prototype": "tanssitaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tavalla": {
+                        "prototype": "tavalla",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tehdä": {
+                        "prototype": "tehdä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "televisiosta": {
+                        "prototype": "televisiosta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tippaleipää": {
+                        "prototype": "tippaleipää",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "toukokuussa": {
+                        "prototype": "toukokuussa",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "tällaista": {
+                        "prototype": "tällaista",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "täällä": {
+                        "prototype": "täällä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "uudenvuodenlupauksia": {
+                        "prototype": "uudenvuodenlupauksia",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "uutenavuotena": {
+                        "prototype": "uusivuosi",
+                        "chinese": "在新年时",
+                        "form": "名词 (状态格 Essiivi)"
+            },
+            "uuttavuotta": {
+                        "prototype": "uuttavuotta",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "vaan": {
+                        "prototype": "vaan",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "vain": {
+                        "prototype": "vain",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "vappua": {
+                        "prototype": "Vappua",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "vietetä": {
+                        "prototype": "vietetä",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "vietetään": {
+                        "prototype": "vietetään",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "virvota": {
+                        "prototype": "virpoa",
+                        "chinese": "(用柳枝) 祝福",
+                        "form": "动词 (被动否定)"
+            },
+            "ylioppilaslakkia": {
+                        "prototype": "ylioppilaslakki",
+                        "chinese": "高中毕业帽",
+                        "form": "名词 (单数部分格)"
+            },
+            "yö": {
+                        "prototype": "yö",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            },
+            "yötön": {
+                        "prototype": "yötön",
+                        "chinese": "（见语法分析）",
+                        "form": "词形"
+            }
+};
+
+        function flipCard(card) {
+            card.classList.toggle('is-flipped');
+        }
+
+        const tooltip = document.getElementById('wordTooltip');
+
+        function normalizeWord(text) {
+            return text.toLowerCase().replace(/[.,!?":;()]/g, '').trim();
+        }
+
+        function showTooltip(el) {
+            const word = normalizeWord(el.textContent);
+            const data = vocabularyData[word] || { prototype: el.textContent.trim(), chinese: '（未收录）', form: '词形' };
+            tooltip.innerHTML = '<span class="tooltip-proto">' + data.prototype + '</span><span class="tooltip-meaning">' + data.chinese + '</span><span class="tooltip-form">' + data.form + '</span>';
+            tooltip.classList.add('show');
+            const rect = el.getBoundingClientRect();
+            tooltip.style.left = (rect.left + window.scrollX + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+            tooltip.style.top = (rect.top + window.scrollY - tooltip.offsetHeight - 10) + 'px';
+        }
+
+        const synth = window.speechSynthesis;
+        const voiceSelect = document.getElementById('voice-select');
+        let voices = [];
+
+        function populateVoiceList() {
+            voices = synth.getVoices().sort((a, b) => a.name.localeCompare(b.name));
+            voiceSelect.innerHTML = voices
+                .map((v, i) => {
+                    const selected = v.lang.startsWith('fi') ? 'selected' : '';
+                    return '<option value="' + i + '" ' + selected + '>' + v.name + '</option>';
+                })
+                .join('');
+        }
+
+        function speak(text) {
+            if (synth.speaking) synth.cancel();
+            const utter = new SpeechSynthesisUtterance(text);
+            if (voices.length > 0 && voiceSelect.value !== '') utter.voice = voices[voiceSelect.value];
+            utter.lang = 'fi-FI';
+            utter.rate = 0.8;
+            synth.speak(utter);
+        }
+
+        populateVoiceList();
+        if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoiceList;
+
+        document.querySelectorAll('.v-word').forEach(el => {
+            el.addEventListener('mouseenter', (e) => {
+                e.stopPropagation();
+                showTooltip(el);
+            });
+            el.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showTooltip(el);
+                speak(el.textContent);
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.v-word')) tooltip.classList.remove('show');
+        });
+    </script>
+
+</body>
+</html>
+
+
