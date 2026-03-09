@@ -842,6 +842,411 @@
             }
 };
 
+        const vocabularyOverrides = {
+            "kamerunissakin": {
+                        "prototype": "Kamerun",
+                        "chinese": "在喀麦隆也",
+                        "form": "内格+kin"
+            },
+            "juhlitaan": {
+                        "prototype": "juhlia",
+                        "chinese": "庆祝",
+                        "form": "被动现在"
+            },
+            "uuttavuotta": {
+                        "prototype": "uusivuosi",
+                        "chinese": "新年",
+                        "form": "单数部分格"
+            },
+            "mutta": {
+                        "prototype": "mutta",
+                        "chinese": "但是",
+                        "form": "连词"
+            },
+            "siellä": {
+                        "prototype": "siellä",
+                        "chinese": "那里",
+                        "form": "副词"
+            },
+            "ei": {
+                        "prototype": "ei",
+                        "chinese": "不/没有",
+                        "form": "否定动词"
+            },
+            "syödä": {
+                        "prototype": "syödä",
+                        "chinese": "吃",
+                        "form": "被动否定"
+            },
+            "nakkeja": {
+                        "prototype": "nakki",
+                        "chinese": "小香肠",
+                        "form": "复数部分格"
+            },
+            "uutenavuotena": {
+                        "prototype": "uusivuosi",
+                        "chinese": "在新年时",
+                        "form": "本质格"
+            },
+            "kamerunissa": {
+                        "prototype": "Kamerun",
+                        "chinese": "在喀麦隆",
+                        "form": "内格"
+            },
+            "tehdä": {
+                        "prototype": "tehdä",
+                        "chinese": "做",
+                        "form": "被动否定"
+            },
+            "samoja": {
+                        "prototype": "sama",
+                        "chinese": "相同的",
+                        "form": "复数部分格"
+            },
+            "uudenvuodenlupauksia": {
+                        "prototype": "uudenvuodenlupaus",
+                        "chinese": "新年愿望",
+                        "form": "复数部分格"
+            },
+            "kuin": {
+                        "prototype": "kuin",
+                        "chinese": "像/比",
+                        "form": "连词"
+            },
+            "suomessa": {
+                        "prototype": "Suomi",
+                        "chinese": "在芬兰",
+                        "form": "内格"
+            },
+            "vietetään": {
+                        "prototype": "viettää",
+                        "chinese": "庆祝/度过",
+                        "form": "被动现在"
+            },
+            "helmikuussa": {
+                        "prototype": "helmikuu",
+                        "chinese": "在二月",
+                        "form": "内格"
+            },
+            "nuorisopäivää": {
+                        "prototype": "nuorisopäivä",
+                        "chinese": "青年节",
+                        "form": "单数部分格"
+            },
+            "vietetä": {
+                        "prototype": "viettää",
+                        "chinese": "庆祝/度过",
+                        "form": "被动否定"
+            },
+            "tällaista": {
+                        "prototype": "tällainen",
+                        "chinese": "这样的",
+                        "form": "单数部分格"
+            },
+            "juhlapäivää": {
+                        "prototype": "juhlapäivä",
+                        "chinese": "节日",
+                        "form": "单数部分格"
+            },
+            "pääsiäistä": {
+                        "prototype": "pääsiäinen",
+                        "chinese": "复活节",
+                        "form": "单数部分格"
+            },
+            "mämmiä": {
+                        "prototype": "mämmi",
+                        "chinese": "黑麦布丁",
+                        "form": "单数部分格"
+            },
+            "virvota": {
+                        "prototype": "virpoa",
+                        "chinese": "用柳枝祝福",
+                        "form": "被动否定"
+            },
+            "eikä": {
+                        "prototype": "eikä",
+                        "chinese": "也不",
+                        "form": "连词"
+            },
+            "kasvateta": {
+                        "prototype": "kasvattaa",
+                        "chinese": "种植/培育",
+                        "form": "被动否定"
+            },
+            "rairuohoa": {
+                        "prototype": "rairuoho",
+                        "chinese": "黑麦草",
+                        "form": "单数部分格"
+            },
+            "vappua": {
+                        "prototype": "vappu",
+                        "chinese": "五一节",
+                        "form": "单数部分格"
+            },
+            "myös": {
+                        "prototype": "myös",
+                        "chinese": "也",
+                        "form": "副词"
+            },
+            "laiteta": {
+                        "prototype": "laittaa",
+                        "chinese": "放/戴/摆",
+                        "form": "被动否定"
+            },
+            "ylioppilaslakkia": {
+                        "prototype": "ylioppilaslakki",
+                        "chinese": "毕业白帽",
+                        "form": "单数部分格"
+            },
+            "päähän": {
+                        "prototype": "pää",
+                        "chinese": "到头上",
+                        "form": "向格"
+            },
+            "pueta": {
+                        "prototype": "pukea",
+                        "chinese": "穿上",
+                        "form": "被动否定"
+            },
+            "opiskelijahaalaria": {
+                        "prototype": "opiskelijahaalari",
+                        "chinese": "学生连体服",
+                        "form": "单数部分格"
+            },
+            "päälle": {
+                        "prototype": "päälle",
+                        "chinese": "到身上/在上面",
+                        "form": "后置词/副词"
+            },
+            "juoda": {
+                        "prototype": "juoda",
+                        "chinese": "喝",
+                        "form": "被动否定"
+            },
+            "simaa": {
+                        "prototype": "sima",
+                        "chinese": "蜂蜜汽水",
+                        "form": "单数部分格"
+            },
+            "tippaleipää": {
+                        "prototype": "tippaleipä",
+                        "chinese": "漏斗蛋糕",
+                        "form": "单数部分格"
+            },
+            "juhlita": {
+                        "prototype": "juhlia",
+                        "chinese": "庆祝",
+                        "form": "被动否定"
+            },
+            "juhannusta": {
+                        "prototype": "juhannus",
+                        "chinese": "仲夏节",
+                        "form": "单数部分格"
+            },
+            "sillä": {
+                        "prototype": "sillä",
+                        "chinese": "因为",
+                        "form": "连词"
+            },
+            "yötön": {
+                        "prototype": "yötön",
+                        "chinese": "无夜的",
+                        "form": "单数主格"
+            },
+            "yö": {
+                        "prototype": "yö",
+                        "chinese": "夜晚",
+                        "form": "单数主格"
+            },
+            "on": {
+                        "prototype": "olla",
+                        "chinese": "是/有",
+                        "form": "3单"
+            },
+            "vain": {
+                        "prototype": "vain",
+                        "chinese": "只/仅仅",
+                        "form": "副词"
+            },
+            "täällä": {
+                        "prototype": "täällä",
+                        "chinese": "这里",
+                        "form": "副词"
+            },
+            "pohjoisessa": {
+                        "prototype": "pohjoinen",
+                        "chinese": "在北方",
+                        "form": "内格"
+            },
+            "lähdetä": {
+                        "prototype": "lähteä",
+                        "chinese": "出发/离开",
+                        "form": "被动否定"
+            },
+            "pois": {
+                        "prototype": "pois",
+                        "chinese": "离开/出去",
+                        "form": "副词"
+            },
+            "kaupungista": {
+                        "prototype": "kaupunki",
+                        "chinese": "从城市里",
+                        "form": "离格"
+            },
+            "mennä": {
+                        "prototype": "mennä",
+                        "chinese": "去",
+                        "form": "被动否定"
+            },
+            "mökille": {
+                        "prototype": "mökki",
+                        "chinese": "去小木屋",
+                        "form": "向格"
+            },
+            "polteta": {
+                        "prototype": "polttaa",
+                        "chinese": "点燃/烧",
+                        "form": "被动否定"
+            },
+            "kokkoa": {
+                        "prototype": "kokko",
+                        "chinese": "篝火",
+                        "form": "单数部分格"
+            },
+            "myöskään": {
+                        "prototype": "myöskään",
+                        "chinese": "也不",
+                        "form": "副词"
+            },
+            "saunota": {
+                        "prototype": "saunoa",
+                        "chinese": "洗桑拿",
+                        "form": "被动否定"
+            },
+            "grillata": {
+                        "prototype": "grillata",
+                        "chinese": "烧烤",
+                        "form": "被动否定"
+            },
+            "juhannuksena": {
+                        "prototype": "juhannus",
+                        "chinese": "在仲夏节时",
+                        "form": "本质格"
+            },
+            "itsenäisyyspäivää": {
+                        "prototype": "itsenäisyyspäivä",
+                        "chinese": "独立日",
+                        "form": "单数部分格"
+            },
+            "joulukuussa": {
+                        "prototype": "joulukuu",
+                        "chinese": "在十二月",
+                        "form": "内格"
+            },
+            "kansallispäivää": {
+                        "prototype": "kansallispäivä",
+                        "chinese": "国庆日",
+                        "form": "单数部分格"
+            },
+            "toukokuussa": {
+                        "prototype": "toukokuu",
+                        "chinese": "在五月",
+                        "form": "内格"
+            },
+            "kynttilöitä": {
+                        "prototype": "kynttilä",
+                        "chinese": "蜡烛",
+                        "form": "复数部分格"
+            },
+            "ikkunalaudalle": {
+                        "prototype": "ikkunalauta",
+                        "chinese": "到窗台上",
+                        "form": "向格"
+            },
+            "katsota": {
+                        "prototype": "katsoa",
+                        "chinese": "看",
+                        "form": "被动否定"
+            },
+            "linnan": {
+                        "prototype": "linna",
+                        "chinese": "总统府/宫殿的",
+                        "form": "单数属格"
+            },
+            "juhlia": {
+                        "prototype": "juhla",
+                        "chinese": "招待会/庆典",
+                        "form": "复数部分格"
+            },
+            "televisiosta": {
+                        "prototype": "televisio",
+                        "chinese": "从电视上",
+                        "form": "离格"
+            },
+            "vaan": {
+                        "prototype": "vaan",
+                        "chinese": "而是",
+                        "form": "连词"
+            },
+            "kansallispäivänä": {
+                        "prototype": "kansallispäivä",
+                        "chinese": "在国庆日",
+                        "form": "本质格"
+            },
+            "lauletaan": {
+                        "prototype": "laulaa",
+                        "chinese": "唱歌",
+                        "form": "被动现在"
+            },
+            "ja": {
+                        "prototype": "ja",
+                        "chinese": "和",
+                        "form": "连词"
+            },
+            "tanssitaan": {
+                        "prototype": "tanssia",
+                        "chinese": "跳舞",
+                        "form": "被动现在"
+            },
+            "kaduilla": {
+                        "prototype": "katu",
+                        "chinese": "在街上",
+                        "form": "复数表面格"
+            },
+            "lauleta": {
+                        "prototype": "laulaa",
+                        "chinese": "唱歌",
+                        "form": "被动否定"
+            },
+            "tanssita": {
+                        "prototype": "tanssia",
+                        "chinese": "跳舞",
+                        "form": "被动否定"
+            },
+            "itsenäisyyspäivänä": {
+                        "prototype": "itsenäisyyspäivä",
+                        "chinese": "在独立日",
+                        "form": "本质格"
+            },
+            "ihan": {
+                        "prototype": "ihan",
+                        "chinese": "完全/很",
+                        "form": "副词"
+            },
+            "samalla": {
+                        "prototype": "sama",
+                        "chinese": "同样地/以同样方式",
+                        "form": "单数表面格"
+            },
+            "tavalla": {
+                        "prototype": "tapa",
+                        "chinese": "方式",
+                        "form": "单数表面格"
+            }
+        };
+
+        Object.assign(vocabularyData, vocabularyOverrides);
+
         function flipCard(card) {
             card.classList.toggle('is-flipped');
         }

@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精读文本-10.3 - Elämä Suomessa</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap');
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-back-bg: #1a202c;
+            --accent-color: #8be9fd;
+            --highlight-color: #ff79c6;
+            --text-color: #2d3748;
+            --bg-color: #f0f4f8;
+        }
+
+        body {
+            font-family: 'Noto Sans', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-color);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        h1 { text-align: center; color: #1a202c; margin: 20px 0 5px 0; font-weight: 800; font-size: 2rem; }
+        .subtitle { text-align: center; color: #718096; margin-bottom: 30px; max-width: 760px; font-size: 0.95rem; line-height: 1.5; }
+
+        .supplement-section,
+        .vocab-section {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .supplement-section { margin-top: 10px; }
+        .vocab-section { margin-top: 30px; margin-bottom: 50px; }
+        .supplement-section h2,
+        .supplement-section h3,
+        .vocab-section h2 { margin-top: 0; color: #1f2937; }
+        .supplement-section p { line-height: 1.75; margin: 8px 0; }
+        .supplement-section ol { margin: 6px 0 10px 22px; line-height: 1.7; }
+        .supplement-section ul { margin: 6px 0 10px 18px; line-height: 1.7; }
+        .supplement-section li { margin: 4px 0; }
+        .supplement-section code,
+        .vocab-section code { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 1px 6px; }
+
+        .word-tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.95);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            max-width: 280px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: opacity 0.2s ease;
+        }
+        .word-tooltip.show { opacity: 1; visibility: visible; }
+        .tooltip-proto { color: #8be9fd; font-weight: 800; font-size: 1.1em; display: block; border-bottom: 1px solid #444; margin-bottom: 5px; }
+        .tooltip-meaning { color: #f8f8f2; font-weight: 600; display: block; }
+        .tooltip-form { color: #ff79c6; font-size: 0.8rem; display: block; margin-top: 3px; }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1200px;
+            padding-bottom: 50px;
+        }
+
+        .card {
+            height: 620px;
+            cursor: pointer;
+            position: relative;
+            perspective: 1500px;
+        }
+
+        .card.is-flipped { z-index: 10; }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            transform-origin: center;
+        }
+
+        .card:hover .card-inner { transform: scale(0.98); }
+        .card.is-flipped .card-inner { transform: rotateY(180deg) scale(0.98); }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .card-front {
+            background: white;
+            padding: 30px;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .fi-sentence {
+            font-size: 1.22rem;
+            font-weight: 700;
+            color: #1e293b;
+            text-align: center;
+            line-height: 1.65;
+        }
+
+        .v-word {
+            text-decoration: underline dotted #cbd5e1;
+            cursor: help;
+            font-weight: 600;
+        }
+        .v-word:hover { background: #f1f5f9; text-decoration-style: solid; }
+
+        .card-back {
+            background: var(--card-back-bg);
+            color: #f8f8f2;
+            transform: rotateY(180deg);
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .back-title { font-size: 0.8rem; font-weight: 800; color: #718096; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .analysis-block { margin-bottom: 15px; border-bottom: 1px solid #2d3748; padding-bottom: 12px; }
+        .analysis-block:last-child { border-bottom: none; }
+        .chunk-item { border-left: 3px solid #48bb78; padding-left: 10px; margin-bottom: 8px; }
+        .chunk-fi { font-weight: 700; display: block; font-size: 1rem; }
+        .chunk-zh { font-size: 0.85rem; color: #a0aec0; display: block; }
+        .gram-item { font-size: 0.9rem; line-height: 1.55; margin-bottom: 6px; }
+        .gram-item strong { color: var(--accent-color); }
+        .gram-item.level-2 { padding-left: 0; }
+        .gram-item.level-3 { padding-left: 10px; }
+        .gram-item.level-4 { padding-left: 20px; }
+        .back-translation { font-size: 1.05rem; font-weight: 600; border-left: 4px solid #ed64a6; padding-left: 12px; margin-top: 10px; }
+
+        .tts-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            margin-top: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: transform 0.2s;
+        }
+        .tts-btn:hover { transform: scale(1.1); }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; color: #64748b; font-size: 0.8rem; border-bottom: 2px solid #f1f5f9; }
+        td { padding: 15px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        .sana-fi strong { font-weight: 700; color: #334155; }
+
+        .controls {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        #voice-select { border-radius: 20px; padding: 5px 15px; border: 1px solid #ddd; }
+
+        @media (max-width: 480px) {
+            .card { height: 680px; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <select id="voice-select"></select>
+    </div>
+
+    <h1>Elämä Suomessa</h1>
+    <p class="subtitle">点击卡片翻转查看语法拆解。悬停或点击单词查看原型、中文与词法形式；点击单词可朗读单词，点击按钮可朗读整句。</p>
+
+    <div class="card-container">
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 1</div>
+            <div class="fi-sentence"><span class="v-word">Victor</span>: <span class="v-word">Sandrine</span>, <span class="v-word">mitä</span> <span class="v-word">sinä</span> <span class="v-word">tiesit</span> <span class="v-word">Suomesta</span> <span class="v-word">ennen</span> <span class="v-word">kuin</span> <span class="v-word">tulit</span> <span class="v-word">tänne</span>?</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Victor: Sandrine, mitä sinä tiesit Suomesta ennen kuin tulit tänne?")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Sandrine, mitä</span><span class="chunk-zh">什么</span></div><div class="chunk-item"><span class="chunk-fi">sinä tiesit</span><span class="chunk-zh">你知道</span></div><div class="chunk-item"><span class="chunk-fi">Suomesta</span><span class="chunk-zh">关于芬兰</span></div><div class="chunk-item"><span class="chunk-fi">ennen kuin</span><span class="chunk-zh">在...之前</span></div><div class="chunk-item"><span class="chunk-fi">tulit</span><span class="chunk-zh">你来</span></div><div class="chunk-item"><span class="chunk-fi">tänne</span><span class="chunk-zh">到这里</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 过去时 (Imperfekti)。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>动词接格 (Rektio):</strong> <code>tietää + mistä (出格 Elatiivi)</code>。表达“知道关于...的事情”时，芬兰人认为知识是从某个事物“里面”提取出来的，所以必须用 <code>-sta/-stä</code>。</div><div class="gram-item level-4">&bull; <strong>方位词的动态 vs 静态:</strong> <code>tänne</code> (到这里) 是指示代词 <code>tämä</code> 的<strong>入格方位词 (Illatiivi)</strong>。因为配合的是移动动词 <code>tulla</code> (来)，强调动作的终点，所以绝不能用静态的 <code>täällä</code> (在这里)。</div><div class="gram-item level-4">&bull; <strong>复合连词:</strong> <code>ennen kuin</code> (在...之前) 引导时间状语从句，从句的动词同样保持过去时。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>tiesit</code>: 原型 <code>tietää</code> (1型, 知道)。词干 <code>tietä-</code>。<strong>历史音变:</strong> 以 <code>-tää</code> 结尾的词（如 <em>tietää, ymmärtää, löytää</em>），过去时 <code>t</code> 遇到 <code>i</code> 强制摩擦化变为 <code>s</code>。所以 <code>tietä-</code> -&gt; <code>tiesi-</code> + <code>t</code> (你)。</div><div class="gram-item level-4">&bull; <code>Suomesta</code>: 原型 <code>Suomi</code>。词干 <code>Suome-</code> + <code>sta</code>。</div><div class="gram-item level-4">&bull; <code>tulit</code>: 原型 <code>tulla</code> (3型, 来)。词干 <code>tule-</code>。过去时 e 变 i -&gt; <code>tuli-</code> + <code>t</code>。</div>
+            </div>
+            <div class="back-translation"><strong>Sandrine，在你来这里之前，你对芬兰了解多少？</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 2</div>
+            <div class="fi-sentence"><span class="v-word">Sandrine</span>: <span class="v-word">Me</span> <span class="v-word">opimme</span> <span class="v-word">jo</span> <span class="v-word">koulussa</span>, <span class="v-word">että</span> <span class="v-word">Suomessa</span> <span class="v-word">on</span> <span class="v-word">talvella</span> <span class="v-word">lunta</span> <span class="v-word">ja</span> <span class="v-word">kylmää</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Sandrine: Me opimme jo koulussa, että Suomessa on talvella lunta ja kylmää.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Me opimme</span><span class="chunk-zh">我们学过</span></div><div class="chunk-item"><span class="chunk-fi">jo</span><span class="chunk-zh">已经</span></div><div class="chunk-item"><span class="chunk-fi">koulussa</span><span class="chunk-zh">在学校里，</span></div><div class="chunk-item"><span class="chunk-fi">että</span><span class="chunk-zh">即/就是</span></div><div class="chunk-item"><span class="chunk-fi">Suomessa on</span><span class="chunk-zh">在芬兰有</span></div><div class="chunk-item"><span class="chunk-fi">talvella</span><span class="chunk-zh">在冬天</span></div><div class="chunk-item"><span class="chunk-fi">lunta</span><span class="chunk-zh">雪</span></div><div class="chunk-item"><span class="chunk-fi">ja kylmää</span><span class="chunk-zh">和寒冷</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 过去时 (主句) + 现在时 (从句，陈述客观事实)。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>季节状语的接格:</strong> <code>talvella</code> (在冬天)。如同 <em>aamulla, päivällä</em>，表述在某个宽泛的季节期间，规则是使用<strong>接格 (Adessiivi, -lla/-llä)</strong>。</div><div class="gram-item level-4">&bull; <strong>存在句 (Eksistentiaalilause) 与部分格主语:</strong> <code>Suomessa on...</code> 是标准的存在句（某地有某物）。因为“雪 (lumi)”和“寒冷 (kylmä)”在这里被视为不可数的物质名词，所以它们作为存在句的主语，必须被强制降格为<strong>部分格 (Partitiivi)</strong>，即 <code>lunta</code> 和 <code>kylmää</code>。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>opimme</code>: 原型 <code>oppia</code> (1型, 学习)。词干 <code>oppi-</code>。<strong>KPT强弱交替:</strong> 遇到封闭后缀 <code>-mme</code> (我们)，强辅音 <code>pp</code> 弱化为 <code>p</code>。过去时 <code>i</code> 遇到词干原本的 <code>i</code> 合二为一。所以 <code>oppi</code> -&gt; <code>opi</code> + <code>i</code> + <code>mme</code> -&gt; <code>opimme</code>。</div><div class="gram-item level-4">&bull; <code>talvella</code>: 原型 <code>talvi</code> (冬天)。词干 <code>talve-</code> (旧词i变e) + <code>lla</code>。</div><div class="gram-item level-4">&bull; <code>lunta</code>: 原型 <code>lumi</code> (雪)。<strong>极特殊名词:</strong> <code>lumi</code> 的词干是 <code>lume-</code>，但它的部分格不规则，直接是 <code>lunta</code> (必须死记)。</div><div class="gram-item level-4">&bull; <code>kylmää</code>: 原型 <code>kylmä</code> (冷的/寒冷)。词干 <code>kylmä-</code> + 部分格 <code>ä</code>。</div>
+            </div>
+            <div class="back-translation"><strong>我们在学校里就已经学过，芬兰的冬天有雪，而且很冷。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 3</div>
+            <div class="fi-sentence"><span class="v-word">Mutta</span> <span class="v-word">minä</span> <span class="v-word">en</span> <span class="v-word">ollut</span> <span class="v-word">koskaan</span> <span class="v-word">nähnyt</span> <span class="v-word">lunta</span>, <span class="v-word">ennen</span> <span class="v-word">kuin</span> <span class="v-word">muutin</span> <span class="v-word">tänne</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Mutta minä en ollut koskaan nähnyt lunta, ennen kuin muutin tänne.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Mutta</span><span class="chunk-zh">但是</span></div><div class="chunk-item"><span class="chunk-fi">minä en ollut</span><span class="chunk-zh">我不曾</span></div><div class="chunk-item"><span class="chunk-fi">koskaan</span><span class="chunk-zh">从来</span></div><div class="chunk-item"><span class="chunk-fi">nähnyt</span><span class="chunk-zh">见过</span></div><div class="chunk-item"><span class="chunk-fi">lunta</span><span class="chunk-zh">雪，</span></div><div class="chunk-item"><span class="chunk-fi">ennen kuin</span><span class="chunk-zh">在...之前</span></div><div class="chunk-item"><span class="chunk-fi">muutin</span><span class="chunk-zh">我搬家</span></div><div class="chunk-item"><span class="chunk-fi">tänne</span><span class="chunk-zh">到这里</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> <strong>过去完成时否定式 (Pluskvamperfektin kieltomuoto)</strong> + 过去时。这是B1阶段的大Boss！</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>过去完成时的底层逻辑:</strong> 表达“在过去的某个动作（搬家）之前，已经完成或未完成的状态”。</div><div class="gram-item level-4">&bull; <strong>否定结构拆解:</strong> 公式是 <code>en/et/ei/emme/ette/eivät</code> + <code>ollut/olleet</code> + <code>NUT-分词</code>。主语是“我”，所以是 <code>en ollut nähnyt</code>。注意：中间的助动词 <code>ollut</code> 永远是单数过去分词形态（复数用 <code>olleet</code>）。</div><div class="gram-item level-4">&bull; <code>koskaan</code> (从来不) 必须配合否定动词使用。</div><div class="gram-item level-4">&bull; <strong>动词接格:</strong> <code>muuttaa + mihin (入格 Illatiivi)</code>。搬家是一个带有终点方向的动作，所以后面接 <code>tänne</code> (到这里) 或 <code>Suomeen</code> (到芬兰)。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>en ollut</code>: <code>olla</code> 的过去时否定助动词。</div><div class="gram-item level-4">&bull; <code>nähnyt</code>: 原型 <code>nähdä</code> (2型, 看见)。词干 <code>näe- / näh-</code>。NUT-过去分词是不规则的 <code>nähnyt</code>。</div><div class="gram-item level-4">&bull; <code>muutin</code>: 原型 <code>muuttaa</code> (1型, 搬家/改变)。词干 <code>muutta-</code>。<strong>KPT弱化:</strong> 遇到封闭后缀 <code>-n</code>，<code>tt</code> 弱化为 <code>t</code>。所以 <code>muutta-</code> -&gt; <code>muuti-</code> (加过去时i) + <code>n</code> -&gt; <code>muutin</code>。</div>
+            </div>
+            <div class="back-translation"><strong>但在我搬到这里之前，我从来没有亲眼见过雪。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 4</div>
+            <div class="fi-sentence"><span class="v-word">Ihmettelin</span>, <span class="v-word">miten</span> <span class="v-word">kukaan</span> <span class="v-word">voi</span> <span class="v-word">selvitä</span> <span class="v-word">talven</span> <span class="v-word">kylmyydestä</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Ihmettelin, miten kukaan voi selvitä talven kylmyydestä.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Ihmettelin</span><span class="chunk-zh">我当时纳闷，</span></div><div class="chunk-item"><span class="chunk-fi">miten</span><span class="chunk-zh">怎么</span></div><div class="chunk-item"><span class="chunk-fi">kukaan</span><span class="chunk-zh">任何人</span></div><div class="chunk-item"><span class="chunk-fi">voi</span><span class="chunk-zh">能</span></div><div class="chunk-item"><span class="chunk-fi">selvitä</span><span class="chunk-zh">存活/熬过</span></div><div class="chunk-item"><span class="chunk-fi">talven</span><span class="chunk-zh">冬天的</span></div><div class="chunk-item"><span class="chunk-fi">kylmyydestä</span><span class="chunk-zh">寒冷</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 过去时 (主句) + 现在时 (从句)。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>否定代词在疑问/惊讶句中的客串:</strong> <code>kukaan</code> (任何人) 通常只用在否定句 (ei kukaan)。但当表达极度怀疑、“怎么可能有人...”时，可以直接用在肯定句式的疑问从句中。</div><div class="gram-item level-4">&bull; <strong>生死攸关的接格 (Rektio):</strong> <code>selvitä + mistä (出格 Elatiivi)</code>。表示“从...中存活下来 / 熬过 / 搞定”。逻辑是：危险或困难像一个泥潭，你“从里面”挣脱出来了，所以用 <code>-stä</code>。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>Ihmettelin</code>: 原型 <code>ihmetellä</code> (3型, 纳闷/惊叹)。词干 <code>ihmettele-</code>。过去时 e 变 i -&gt; <code>ihmetteli-</code> + <code>n</code>。</div><div class="gram-item level-4">&bull; <code>selvitä</code>: 原型 <code>selvitä</code> (4型, 存活/搞定)。情态动词 <code>voi</code> 后面接原形。</div><div class="gram-item level-4">&bull; <code>kylmyydestä</code>: 原型 <code>kylmyys</code> (寒冷，抽象名词)。词干 <code>kylmyyde-</code> (以 -yys 结尾变 -yyde) + 出格 <code>stä</code>。</div>
+            </div>
+            <div class="back-translation"><strong>我当时很纳闷，怎么可能有人熬得过冬天那样的严寒。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 5</div>
+            <div class="fi-sentence"><span class="v-word">Nyt</span> <span class="v-word">tiedän</span>, <span class="v-word">että</span> <span class="v-word">kyllä</span> <span class="v-word">talvellakin</span> <span class="v-word">tarkenee</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Nyt tiedän, että kyllä talvellakin tarkenee.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Nyt tiedän</span><span class="chunk-zh">现在我知道，</span></div><div class="chunk-item"><span class="chunk-fi">että</span><span class="chunk-zh">即</span></div><div class="chunk-item"><span class="chunk-fi">kyllä</span><span class="chunk-zh">确实</span></div><div class="chunk-item"><span class="chunk-fi">talvellakin</span><span class="chunk-zh">在冬天也</span></div><div class="chunk-item"><span class="chunk-fi">tarkenee</span><span class="chunk-zh">受得住寒冷</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 现在时。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>零主语句式 (Nollapersoona):</strong> <code>tarkenee</code> 前面没有主语（没有 Hän/Se）。这在芬兰语中用来表达“人们普遍、任何人在这种情况下都能...”。翻译时常加个泛指的“人”。</div><div class="gram-item level-4">&bull; <strong>极其芬兰本土的动词:</strong> <code>tarketa</code> 这个词很难翻译，它专门指“在寒冷的环境中不觉得冷 / 穿得足够暖和扛得住冷”。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>talvellakin</code>: <code>talvi</code> 接格 <code>talvella</code> + 附着词 <code>kin</code> (也)。</div><div class="gram-item level-4">&bull; <code>tarkenee</code>: 原型 <code>tarketa</code> (6型动词, 扛得住冷)。词干 <code>tarkene-</code>。第三人称单数（用于零主语）延长元音 -&gt; <code>tarkenee</code>。</div>
+            </div>
+            <div class="back-translation"><strong>现在我知道了，其实冬天也是扛得住冷的（不会被冻死）。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 6</div>
+            <div class="fi-sentence"><span class="v-word">Pakkasellakin</span> <span class="v-word">pärjää</span>, <span class="v-word">jos</span> <span class="v-word">on</span> <span class="v-word">tarpeeksi</span> <span class="v-word">vaatteita</span> <span class="v-word">päällä</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Pakkasellakin pärjää, jos on tarpeeksi vaatteita päällä.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Pakkasellakin</span><span class="chunk-zh">在严寒中也</span></div><div class="chunk-item"><span class="chunk-fi">pärjää</span><span class="chunk-zh">能应付得好，</span></div><div class="chunk-item"><span class="chunk-fi">jos on</span><span class="chunk-zh">如果有</span></div><div class="chunk-item"><span class="chunk-fi">tarpeeksi</span><span class="chunk-zh">足够地</span></div><div class="chunk-item"><span class="chunk-fi">vaatteita</span><span class="chunk-zh">衣服</span></div><div class="chunk-item"><span class="chunk-fi">päällä</span><span class="chunk-zh">穿在身上</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 现在时。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>天气状况的接格:</strong> <code>pakkanen</code> (零下气温/严寒)。和 <code>talvella</code> 同理，处于某种天气状态中，芬兰语习惯用<strong>接格 (Adessiivi, -lla)</strong>，即 <code>pakkasella</code> (在严寒天气下)。</div><div class="gram-item level-4">&bull; <strong>经典的穿戴表达:</strong> <code>olla + päällä</code>。直译是“在头上/在顶上”，但实际意思是“穿在身上”。主语是衣服。</div><div class="gram-item level-4">&bull; <strong>数量副词 + 部分格:</strong> <code>tarpeeksi</code> (足够多地) 类似于 <code>paljon</code>，它是一个数量词，强制要求后面的名词变成<strong>部分格</strong> (<code>vaatteita</code>)。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>pakkasellakin</code>: 原型 <code>pakkanen</code>。词干 <code>-nen</code> 变 <code>-se-</code> -&gt; <code>pakkase-</code> + <code>lla</code> + <code>kin</code>。</div><div class="gram-item level-4">&bull; <code>pärjää</code>: 原型 <code>pärjätä</code> (4型, 应付/成功存活/过得去)。词干 <code>pärjää-</code>。零主语第三人称形式。</div><div class="gram-item level-4">&bull; <code>tarpeeksi</code>: 原型 <code>tarve</code> (需要)。变为转化格形态，现已固化为副词“足够”。</div><div class="gram-item level-4">&bull; <code>vaatteita</code>: 原型 <code>vaate</code> (衣服)。词干 <code>vaattee-</code> + 复数 <code>i</code> + 部分格 <code>ta</code> -&gt; <code>vaatteita</code>。(复数部分格常考词)。</div><div class="gram-item level-4">&bull; <code>päällä</code>: 原型 <code>pää</code> (头)。加接格 <code>llä</code>。</div>
+            </div>
+            <div class="back-translation"><strong>只要身上穿够了衣服，即使是在零下严寒天气里也能应付自如。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 7</div>
+            <div class="fi-sentence"><span class="v-word">Mitä</span> <span class="v-word">sinä</span> <span class="v-word">ajattelit</span> <span class="v-word">Suomesta</span>, <span class="v-word">kun</span> <span class="v-word">tulit</span> <span class="v-word">tänne</span> <span class="v-word">ensimmäistä</span> <span class="v-word">kertaa</span>?</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Mitä sinä ajattelit Suomesta, kun tulit tänne ensimmäistä kertaa?")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Mitä</span><span class="chunk-zh">什么</span></div><div class="chunk-item"><span class="chunk-fi">sinä ajattelit</span><span class="chunk-zh">你当时想</span></div><div class="chunk-item"><span class="chunk-fi">Suomesta</span><span class="chunk-zh">关于芬兰</span></div><div class="chunk-item"><span class="chunk-fi">kun</span><span class="chunk-zh">当</span></div><div class="chunk-item"><span class="chunk-fi">tulit</span><span class="chunk-zh">你来</span></div><div class="chunk-item"><span class="chunk-fi">tänne</span><span class="chunk-zh">到这里</span></div><div class="chunk-item"><span class="chunk-fi">ensimmäistä kertaa</span><span class="chunk-zh">第一次</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 过去时。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>核心动词接格:</strong> <code>ajatella + mistä (出格 Elatiivi)</code>。思考/看待某个事物。和 <code>tietää mistä</code> 逻辑完全一致。</div><div class="gram-item level-4">&bull; <strong>时间次数的表达 (部分格):</strong> <code>ensimmäistä kertaa</code> (第一次)。当表达“第几次做某事”但没有明确的介词结构时，芬兰语习惯把序数词和 <code>kerta</code> (次) 都变成<strong>单数部分格 (Partitiivi)</strong>，作为一个固定的时间状语短语。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>ajattelit</code>: 原型 <code>ajatella</code> (3型, 思考)。词干 <code>ajattele-</code>。过去时 e 变 i -&gt; <code>ajatteli-</code> + <code>t</code>。</div><div class="gram-item level-4">&bull; <code>ensimmäistä</code>: 原型 <code>ensimmäinen</code> (第一)。词干 <code>ensimmäise-</code>，因是 -nen 结尾，部分格直接变 <code>stä</code>。</div><div class="gram-item level-4">&bull; <code>kertaa</code>: 原型 <code>kerta</code> (次)。词干 <code>kerta-</code> + 部分格 <code>a</code>。</div>
+            </div>
+            <div class="back-translation"><strong>当你第一次来这里的时候，你对芬兰有什么想法？</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 8</div>
+            <div class="fi-sentence"><span class="v-word">Victor</span>: &quot;<span class="v-word">Suomi</span> <span class="v-word">on</span> <span class="v-word">suuri</span>, <span class="v-word">hieno</span> <span class="v-word">ja</span> <span class="v-word">rauhallinen</span> <span class="v-word">metsä</span>&quot;. <span class="v-word">Se</span> <span class="v-word">oli</span> <span class="v-word">minun</span> <span class="v-word">ensimmäinen</span> <span class="v-word">ajatus</span> <span class="v-word">Suomesta</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Victor: \"Suomi on suuri, hieno ja rauhallinen metsä\". Se oli minun ensimmäinen ajatus Suomesta.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">"Suomi on</span><span class="chunk-zh">芬兰是</span></div><div class="chunk-item"><span class="chunk-fi">suuri</span><span class="chunk-zh">巨大的，</span></div><div class="chunk-item"><span class="chunk-fi">hieno</span><span class="chunk-zh">极好的</span></div><div class="chunk-item"><span class="chunk-fi">ja rauhallinen</span><span class="chunk-zh">和平静的</span></div><div class="chunk-item"><span class="chunk-fi">metsä"</span><span class="chunk-zh">森林"。</span></div><div class="chunk-item"><span class="chunk-fi">Se oli</span><span class="chunk-zh">那是</span></div><div class="chunk-item"><span class="chunk-fi">minun ensimmäinen ajatus</span><span class="chunk-zh">我的第一个想法</span></div><div class="chunk-item"><span class="chunk-fi">Suomesta</span><span class="chunk-zh">关于芬兰</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>名词继承动词的接格 (Substantiivin rektio):</strong> 这是芬兰语中非常高级且优美的语法现象！刚才上面学了动词 <code>ajatella + mistä</code> (考虑关于...)。由该动词派生出来的名词 <code>ajatus</code> (想法) 同样<strong>继承了这个接格属性</strong>。所以“对芬兰的想法”不能用属格，必须继续用出格：<code>ajatus Suomesta</code>。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>rauhallinen</code>: 原型 <code>rauhallinen</code> (平静的，派生自 <code>rauha</code> 和平)。主格。</div><div class="gram-item level-4">&bull; <code>ajatus</code>: 原型 <code>ajatus</code> (想法，派生自动词 <code>ajatella</code>)。主格作表语。</div>
+            </div>
+            <div class="back-translation"><strong>Victor：“芬兰就是一片巨大、绝美且宁静的森林”。那是我对芬兰的第一个想法。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 9</div>
+            <div class="fi-sentence"><span class="v-word">Huomasin</span>, <span class="v-word">että</span> <span class="v-word">täällä</span> <span class="v-word">on</span> <span class="v-word">ihan</span> <span class="v-word">erilaista</span> <span class="v-word">kuin</span> <span class="v-word">Meksikossa</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Huomasin, että täällä on ihan erilaista kuin Meksikossa.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Huomasin</span><span class="chunk-zh">我注意到，</span></div><div class="chunk-item"><span class="chunk-fi">että</span><span class="chunk-zh">即</span></div><div class="chunk-item"><span class="chunk-fi">täällä on</span><span class="chunk-zh">这里是</span></div><div class="chunk-item"><span class="chunk-fi">ihan</span><span class="chunk-zh">完全</span></div><div class="chunk-item"><span class="chunk-fi">erilaista</span><span class="chunk-zh">不同的</span></div><div class="chunk-item"><span class="chunk-fi">kuin</span><span class="chunk-zh">比起/和...比</span></div><div class="chunk-item"><span class="chunk-fi">Meksikossa</span><span class="chunk-zh">在墨西哥</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 过去时 (主句) + 现在时 (从句)。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>状态句与部分格形容词:</strong> <code>täällä on erilaista</code>。这也是一个没有实体主语的零主语/状态句。形容词作表语时，必须使用<strong>部分格 (Partitiivi)</strong>。不能说 <em>täällä on erilainen</em>。</div><div class="gram-item level-4">&bull; <strong>固定比较级句型:</strong> <code>erilainen + kuin</code> (与...不同)。后面的比较对象也需与前面的环境状态保持格的一致，所以是 <code>Meksikossa</code> (在墨西哥的内格环境)。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>Huomasin</code>: 原型 <code>huomata</code> (4型, 注意到/发觉)。词干 <code>huomaa-</code>。<strong>4型过去时特例:</strong> 末尾的长音 <code>aa</code> 遇到过去时 <code>i</code>，强制突变为 <code>asi</code>。所以 <code>huomaa-</code> -&gt; <code>huomasi-</code> + <code>n</code> -&gt; <code>huomasin</code>。</div><div class="gram-item level-4">&bull; <code>erilaista</code>: 原型 <code>erilainen</code> (不同的)。<code>-nen</code> 结尾部分格变 <code>-sta</code>。</div>
+            </div>
+            <div class="back-translation"><strong>我注意到，这里和墨西哥的感觉完全不一样。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 10</div>
+            <div class="fi-sentence"><span class="v-word">Tuntui</span>, <span class="v-word">että</span> <span class="v-word">täällä</span> <span class="v-word">oli</span> <span class="v-word">paljon</span> <span class="v-word">vähemmän</span> <span class="v-word">ihmisiä</span> <span class="v-word">ja</span> <span class="v-word">enemmän</span> <span class="v-word">tilaa</span>!</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Tuntui, että täällä oli paljon vähemmän ihmisiä ja enemmän tilaa!")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Tuntui</span><span class="chunk-zh">感觉是，</span></div><div class="chunk-item"><span class="chunk-fi">että</span><span class="chunk-zh">即</span></div><div class="chunk-item"><span class="chunk-fi">täällä oli</span><span class="chunk-zh">这里有</span></div><div class="chunk-item"><span class="chunk-fi">paljon</span><span class="chunk-zh">很多/极大地</span></div><div class="chunk-item"><span class="chunk-fi">vähemmän</span><span class="chunk-zh">更少</span></div><div class="chunk-item"><span class="chunk-fi">ihmisiä</span><span class="chunk-zh">人</span></div><div class="chunk-item"><span class="chunk-fi">ja enemmän</span><span class="chunk-zh">更多</span></div><div class="chunk-item"><span class="chunk-fi">tilaa</span><span class="chunk-zh">空间</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 过去时。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>感觉类动词的零主语运用:</strong> <code>Tuntui, että...</code> (让人觉得...)。不需要加 <em>Se</em>，直接用第三人称单数。</div><div class="gram-item level-4">&bull; <strong>比较级连击 + 部分格支配:</strong> <code>vähemmän</code> (更少) 和 <code>enemmän</code> (更多) 都是比较级副词（原级是 vähän / paljon）。它们作为数量词，一如既往地展现出强权：<strong>强制要求后面的名词变成部分格 (Partitiivi)</strong>！所以是复数部分格 <code>ihmisiä</code> 和单数部分格 <code>tilaa</code>。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>Tuntui</code>: 原型 <code>tuntua</code> (1型, 感觉)。词干 <code>tuntu-</code>。</div><div class="gram-item level-4">&bull; <code>vähemmän</code>: 原型 <code>vähän</code>。比较级形式。</div><div class="gram-item level-4">&bull; <code>enemmän</code>: 原型 <code>paljon</code>。比较级特殊形式。</div><div class="gram-item level-4">&bull; <code>ihmisiä</code>: 原型 <code>ihminen</code> (人)。词干 <code>ihmise-</code> + 复数 <code>i</code> + 部分格 <code>ä</code>。</div><div class="gram-item level-4">&bull; <code>tilaa</code>: 原型 <code>tila</code> (空间/状态)。词干 <code>tila-</code> + 部分格 <code>a</code>。</div>
+            </div>
+            <div class="back-translation"><strong>让人感觉这里的人要少得多，而空间要大得多！</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 11</div>
+            <div class="fi-sentence"><span class="v-word">Sandrine</span>: <span class="v-word">Joo</span>, <span class="v-word">minäkin</span> <span class="v-word">ihmettelin</span> <span class="v-word">samaa</span>!</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Sandrine: Joo, minäkin ihmettelin samaa!")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Joo</span><span class="chunk-zh">是的，</span></div><div class="chunk-item"><span class="chunk-fi">minäkin</span><span class="chunk-zh">我也</span></div><div class="chunk-item"><span class="chunk-fi">ihmettelin</span><span class="chunk-zh">当时纳闷/惊叹</span></div><div class="chunk-item"><span class="chunk-fi">samaa</span><span class="chunk-zh">同样的事情</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 过去时 (Imperfekti)。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>代词的部分格作宾语:</strong> <code>sama</code> (相同的)。因为“感到惊奇/纳闷”是一个心理活动，没有物理上的完成终点，所以动词 <code>ihmetellä</code> 强制要求宾语使用<strong>部分格 (Partitiivi)</strong>，即 <code>samaa</code>。</div><div class="gram-item level-4">&bull; <strong>附着词的吸附:</strong> <code>minä</code> + <code>kin</code> (也)。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>ihmettelin</code>: 原型 <code>ihmetellä</code> (3型，纳闷/惊叹)。词干 <code>ihmettele-</code>。过去时 e 变 i -&gt; <code>ihmetteli-</code> + <code>n</code>。</div>
+            </div>
+            <div class="back-translation"><strong>Sandrine：是的，我当时也对同一件事感到纳闷！</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 12</div>
+            <div class="fi-sentence"><span class="v-word">Suomalaisten</span> <span class="v-word">ujous</span> <span class="v-word">oli</span> <span class="v-word">kyllä</span> <span class="v-word">iso</span> <span class="v-word">kulttuurishokki</span> <span class="v-word">minulle</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Suomalaisten ujous oli kyllä iso kulttuurishokki minulle.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Suomalaisten</span><span class="chunk-zh">芬兰人们的</span></div><div class="chunk-item"><span class="chunk-fi">ujous</span><span class="chunk-zh">害羞/腼腆</span></div><div class="chunk-item"><span class="chunk-fi">oli</span><span class="chunk-zh">是</span></div><div class="chunk-item"><span class="chunk-fi">kyllä</span><span class="chunk-zh">的确/确实</span></div><div class="chunk-item"><span class="chunk-fi">iso kulttuurishokki</span><span class="chunk-zh">巨大的文化冲击</span></div><div class="chunk-item"><span class="chunk-fi">minulle</span><span class="chunk-zh">对我来说</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 过去时。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>复数属格的修饰 (Genetiivimäärite):</strong> <code>Suomalaisten</code> 是 <code>suomalainen</code> 的复数属格，修饰主语 <code>ujous</code>。</div><div class="gram-item level-4">&bull; <strong>语气副词:</strong> <code>kyllä</code> 在这里不是“yes”，而是一个极其常用的强调语气词，相当于“确实/的的确确”。</div><div class="gram-item level-4">&bull; <strong>向格表对象:</strong> <code>minulle</code> (对我而言)，表示这个冲击的承受者。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>Suomalaisten</code>: 原型 <code>suomalainen</code>。词干 <code>suomalaise-</code>。复数属格的标志通常是 <code>-en</code> 或 <code>-iden</code>，<code>-nen</code> 结尾的词复数属格通常是 <code>suomalaisten</code> 或 <code>suomalaisien</code> (前者更常用)。</div><div class="gram-item level-4">&bull; <code>ujous</code>: 原型 <code>ujous</code> (害羞，名词)。这是由形容词 <code>ujo</code> (害羞的) 加上抽象名词后缀 <code>-us</code> 派生而来的。主格作主语。</div>
+            </div>
+            <div class="back-translation"><strong>芬兰人的腼腆对我来说，的的确确是一个巨大的文化冲击。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 13</div>
+            <div class="fi-sentence"><span class="v-word">Luulin</span>, <span class="v-word">etten</span> <span class="v-word">koskaan</span> <span class="v-word">tutustu</span> <span class="v-word">ihmisiin</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Luulin, etten koskaan tutustu ihmisiin.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Luulin</span><span class="chunk-zh">我原以为，</span></div><div class="chunk-item"><span class="chunk-fi">etten</span><span class="chunk-zh">即我不</span></div><div class="chunk-item"><span class="chunk-fi">koskaan</span><span class="chunk-zh">永远/从来</span></div><div class="chunk-item"><span class="chunk-fi">tutustu</span><span class="chunk-zh">结识</span></div><div class="chunk-item"><span class="chunk-fi">ihmisiin</span><span class="chunk-zh">人们</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 过去时 (主句) + 现在时 (从句，表达当时的心理活动)。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>致命的动词接格陷阱 (Rektio):</strong> <code>tutustua + mihin (入格 Illatiivi)</code>。中文说“<strong>和</strong>人认识”，英语说“get to know <strong>with</strong>”，但在芬兰语的底层逻辑里，结识一个人是一个“单向深入对方世界”的过程，必须用表示进入的<strong>入格 (-Vn, -hVn, -isiin)</strong>！绝对不能用 <em>ihmisten kanssa</em>，必须是 <code>ihmisiin</code>！(这个考点在YKI考试中命中率极高)。</div><div class="gram-item level-4">&bull; <strong>连词与否定动词的融合:</strong> <code>etten</code> = <code>että</code> + <code>en</code>。在芬兰语中，当 <code>että</code> 从句是否定句且主语是第一人称“我”时，会合并成 <code>etten</code>。(如果是“你不”，就是 <code>ettet</code>)。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>Luulin</code>: 原型 <code>luulla</code> (3型，以为/认为)。词干 <code>luule-</code>。过去时 e 变 i -&gt; <code>luuli-</code> + <code>n</code>。</div><div class="gram-item level-4">&bull; <code>tutustu</code>: 原型 <code>tutustua</code> (1型，结识)。否定词 <code>en</code> 后面跟动词原形的词干 <code>tutustu</code>。</div><div class="gram-item level-4">&bull; <code>ihmisiin</code>: 原型 <code>ihminen</code>。词干 <code>ihmise-</code>。复数标志 <code>i</code>。入格后缀 <code>in</code>。<code>ihmise-</code> + <code>i</code> + <code>in</code> -&gt; <code>ihmisiin</code>。</div>
+            </div>
+            <div class="back-translation"><strong>我原以为，我永远也交不到朋友（结识不到人）。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 14</div>
+            <div class="fi-sentence"><span class="v-word">Onneksi</span> <span class="v-word">olin</span> <span class="v-word">väärässä</span> <span class="v-word">ja</span> <span class="v-word">aloin</span> <span class="v-word">saada</span> <span class="v-word">ystäviä</span>!</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Onneksi olin väärässä ja aloin saada ystäviä!")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Onneksi</span><span class="chunk-zh">幸运的是</span></div><div class="chunk-item"><span class="chunk-fi">olin</span><span class="chunk-zh">我是</span></div><div class="chunk-item"><span class="chunk-fi">väärässä</span><span class="chunk-zh">错的</span></div><div class="chunk-item"><span class="chunk-fi">ja</span><span class="chunk-zh">并且</span></div><div class="chunk-item"><span class="chunk-fi">aloin</span><span class="chunk-zh">我开始</span></div><div class="chunk-item"><span class="chunk-fi">saada</span><span class="chunk-zh">得到/交到</span></div><div class="chunk-item"><span class="chunk-fi">ystäviä</span><span class="chunk-zh">朋友们</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 过去时。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>固定搭配与内格:</strong> <code>olla väärässä</code> (直译：在错误里)。这是表达“弄错了/想错了”的唯一地道说法。同样地，“说对了”是 <code>olla oikeassa</code> (在正确里)。必须用内格 (<code>-ssa</code>)。</div><div class="gram-item level-4">&bull; <strong>动词双打 (<code>alkaa</code> 的接格):</strong> <code>alkaa + 1. infinitiivi</code> (动词原形)。所以是 <code>aloin saada</code>。</div><div class="gram-item level-4">&bull; <strong>无限制宾语:</strong> <code>ystäviä</code> 是复数部分格。因为交朋友是一个持续的、数量不确定的动作。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>Onneksi</code>: 原型 <code>onni</code> (运气)。转化格 (Translatiivi, -ksi) 已经固化成了副词，表示“幸运地变成... / 幸好”。</div><div class="gram-item level-4">&bull; <code>aloin</code>: 原型 <code>alkaa</code> (1型，开始)。词干 <code>alka-</code>。<strong>KPT极强变异:</strong> 过去时 <code>i</code> 遇到 <code>a</code>，不发生和谐变音，而是 <code>a</code> 直接脱落变 <code>oi</code>（类似 <code>antaa-&gt;antoi</code>，但这里只剩 <code>oi</code>）。且因封闭音节，<code>k</code> 脱落。所以 <code>alkaa</code> -&gt; 词干 <code>alka-</code> -&gt; 过去时 <code>aloi-</code> + <code>n</code> -&gt; <code>aloin</code>。</div><div class="gram-item level-4">&bull; <code>ystäviä</code>: 原型 <code>ystävä</code>。词干 <code>ystävä-</code> + 复数 <code>i</code> + 部分格 <code>ä</code> -&gt; 遇到 <code>ä</code> 结尾，<code>ä</code> 脱落 -&gt; <code>ystäviä</code>。</div>
+            </div>
+            <div class="back-translation"><strong>幸运的是我想错了，并且我开始交到朋友了！</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 15</div>
+            <div class="fi-sentence"><span class="v-word">Victor</span>: <span class="v-word">Joo</span>, <span class="v-word">suomalaiset</span> <span class="v-word">ovat</span> <span class="v-word">ujoja</span> <span class="v-word">mutta</span> <span class="v-word">ystävällisiä</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Victor: Joo, suomalaiset ovat ujoja mutta ystävällisiä.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Joo, suomalaiset</span><span class="chunk-zh">芬兰人</span></div><div class="chunk-item"><span class="chunk-fi">ovat</span><span class="chunk-zh">是</span></div><div class="chunk-item"><span class="chunk-fi">ujoja</span><span class="chunk-zh">害羞的</span></div><div class="chunk-item"><span class="chunk-fi">mutta</span><span class="chunk-zh">但是</span></div><div class="chunk-item"><span class="chunk-fi">ystävällisiä</span><span class="chunk-zh">友善的</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>主语与表语的复数部分格一致:</strong> 主语 <code>suomalaiset</code> 是复数（指代一个群体）。当形容词作表语修饰一个复数群体（且是主观的属性描述）时，表语必须使用<strong>复数部分格</strong>！所以 <code>ujo</code> 变 <code>ujoja</code>，<code>ystävällinen</code> 变 <code>ystävällisiä</code>。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>ystävällisiä</code>: 原型 <code>ystävällinen</code> (友好的，派生自 <code>ystävä</code>)。词干 <code>ystävällise-</code> + 复数 <code>i</code> + 部分格 <code>ä</code> -&gt; <code>ystävällisiä</code>。</div>
+            </div>
+            <div class="back-translation"><strong>Victor: 是的，芬兰人很腼腆，但十分友善。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 16</div>
+            <div class="fi-sentence"><span class="v-word">Ymmärsin</span> <span class="v-word">sen</span> <span class="v-word">silloin</span>, <span class="v-word">kun</span> <span class="v-word">tapasin</span> <span class="v-word">Kaisan</span> <span class="v-word">vanhemmat</span> <span class="v-word">ensimmäisen</span> <span class="v-word">kerran</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Ymmärsin sen silloin, kun tapasin Kaisan vanhemmat ensimmäisen kerran.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Ymmärsin</span><span class="chunk-zh">我明白了</span></div><div class="chunk-item"><span class="chunk-fi">sen</span><span class="chunk-zh">那点</span></div><div class="chunk-item"><span class="chunk-fi">silloin</span><span class="chunk-zh">在那时，</span></div><div class="chunk-item"><span class="chunk-fi">kun</span><span class="chunk-zh">当</span></div><div class="chunk-item"><span class="chunk-fi">tapasin</span><span class="chunk-zh">我遇见</span></div><div class="chunk-item"><span class="chunk-fi">Kaisan vanhemmat</span><span class="chunk-zh">Kaisa的父母</span></div><div class="chunk-item"><span class="chunk-fi">ensimmäisen kerran</span><span class="chunk-zh">第一次</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 过去时。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>复数全宾格 (T-Akkusatiivi):</strong> “遇见Kaisa的父母”是一个有明确结果的完整动作，且宾语是“所有的父母”（两位）。因此，“父母”一词必须用复数宾格，它的长相和复数主格完全一样：<code>vanhemmat</code> (结尾是 <code>-t</code>)。</div><div class="gram-item level-4">&bull; <strong>时间次数的全宾格:</strong> <code>ensimmäisen kerran</code> (第一次)。在这里，它不仅是一个状语，它的语法本质是<strong>“时间宾格 (Aika-akkusatiivi)”</strong>。表达完整完成了一次动作，所以用长得像属格的宾格 <code>-n</code>。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>Ymmärsin</code>: 原型 <code>ymmärtää</code> (1型，理解)。词干 <code>ymmärtä-</code>。<strong>历史摩擦化:</strong> 词尾 <code>-rtää</code>，遇到过去时 <code>i</code>，<code>t</code> 摩擦变成 <code>s</code> -&gt; <code>ymmärsi-</code> + <code>n</code>。</div><div class="gram-item level-4">&bull; <code>tapasin</code>: 原型 <code>tavata</code> (4型，遇见)。词干 <code>tapaa-</code> (<strong>注意，4型的词干要发生KPT强弱逆转，v-&gt;p，并且延长元音！</strong>)。<strong>4型过去时:</strong> 长元音 <code>aa</code> 遇到过去时 <code>i</code>，突变成 <code>asi</code>。所以 <code>tapaa-</code> -&gt; <code>tapasi-</code> + <code>n</code>。</div><div class="gram-item level-4">&bull; <code>vanhemmat</code>: 原型 <code>vanhempi</code> (父母，字面意思是更老的人)。词干 <code>vanhemma-</code> + 复数宾格 <code>t</code>。</div>
+            </div>
+            <div class="back-translation"><strong>当我第一次见到Kaisa的父母时，我就明白了这一点。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 17</div>
+            <div class="fi-sentence"><span class="v-word">Me</span> <span class="v-word">olimme</span> <span class="v-word">mökillä</span> <span class="v-word">ja</span> <span class="v-word">minua</span> <span class="v-word">jännitti</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Me olimme mökillä ja minua jännitti.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Me olimme</span><span class="chunk-zh">我们在</span></div><div class="chunk-item"><span class="chunk-fi">mökillä</span><span class="chunk-zh">小木屋</span></div><div class="chunk-item"><span class="chunk-fi">ja</span><span class="chunk-zh">并且</span></div><div class="chunk-item"><span class="chunk-fi">minua</span><span class="chunk-zh">我-部分格</span></div><div class="chunk-item"><span class="chunk-fi">jännitti</span><span class="chunk-zh">感到紧张</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>地点的接格:</strong> <code>mökillä</code>。在芬兰语中，去小木屋（mökki）、公交站（pysäkki）、售货亭（kioski）等半开放或特定的地点，习惯使用外/接格体系 (<code>-lla/-lle/-lta</code>)。</div><div class="gram-item level-4">&bull; <strong>情感动词的倒装魔法 (Tunne-verbi):</strong> 这是芬兰语独有的绝妙句型！当表达一种不受控制的生理或心理感受（如紧张、害怕、恶心）时，芬兰人不会说“我是紧张的”，而是说<strong>“紧张感抓住了我”</strong>。</div><div class="gram-item level-4">&bull; <strong>规则:</strong> 承受情感的人变成<strong>部分格放在句首 (<code>minua</code>)</strong>，后面的情感动词永远保持<strong>第三人称单数 (<code>jännitti</code>)</strong>。没有任何主语。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>mökillä</code>: 原型 <code>mökki</code> (木屋)。词干 <code>möki-</code> (KPT弱化 kk-&gt;k) + <code>llä</code>。</div><div class="gram-item level-4">&bull; <code>minua</code>: 原型 <code>minä</code>。部分格。</div><div class="gram-item level-4">&bull; <code>jännitti</code>: 原型 <code>jännittää</code> (1型，使...紧张)。词干 <code>jännittä-</code>。过去时 <code>ä</code> 脱落 -&gt; <code>jännitti</code>。</div>
+            </div>
+            <div class="back-translation"><strong>我们在小木屋里，当时我感到非常紧张。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 18</div>
+            <div class="fi-sentence"><span class="v-word">Mutta</span> <span class="v-word">meillä</span> <span class="v-word">oli</span> <span class="v-word">tosi</span> <span class="v-word">kivaa</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Mutta meillä oli tosi kivaa.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Mutta</span><span class="chunk-zh">但是</span></div><div class="chunk-item"><span class="chunk-fi">meillä oli</span><span class="chunk-zh">我们有</span></div><div class="chunk-item"><span class="chunk-fi">tosi kivaa</span><span class="chunk-zh">非常开心</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>拥有句表达情绪:</strong> 芬兰语不说 "We were fun"，而是说 "We had fun" (在我们身上有开心)。依然是 <code>接格 (meillä) + oli + 部分格 (kivaa)</code>。</div>
+            </div>
+            <div class="back-translation"><strong>但是我们玩得非常开心。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 19</div>
+            <div class="fi-sentence"><span class="v-word">Me</span> <span class="v-word">ajoimme</span> <span class="v-word">pyörällä</span>, <span class="v-word">kävelimme</span> <span class="v-word">metsässä</span> <span class="v-word">ja</span> <span class="v-word">keräsimme</span> <span class="v-word">marjoja</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Me ajoimme pyörällä, kävelimme metsässä ja keräsimme marjoja.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Me ajoimme</span><span class="chunk-zh">我们骑了</span></div><div class="chunk-item"><span class="chunk-fi">pyörällä</span><span class="chunk-zh">自行车，</span></div><div class="chunk-item"><span class="chunk-fi">kävelimme</span><span class="chunk-zh">散步了</span></div><div class="chunk-item"><span class="chunk-fi">metsässä</span><span class="chunk-zh">在森林里</span></div><div class="chunk-item"><span class="chunk-fi">ja</span><span class="chunk-zh">并且</span></div><div class="chunk-item"><span class="chunk-fi">keräsimme</span><span class="chunk-zh">采摘了</span></div><div class="chunk-item"><span class="chunk-fi">marjoja</span><span class="chunk-zh">浆果</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 过去时三连击。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>交通工具的工具格 (Adessiivi):</strong> 再次出现！凭借/骑自行车是 <code>pyörällä</code>。</div><div class="gram-item level-4">&bull; <strong>无尽的采摘 (部分格):</strong> 采摘浆果是一个典型的漫无目的、数量未知的持续动作。因此必须用复数部分格 <code>marjoja</code>。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>ajoimme</code>: 原型 <code>ajaa</code> (1型，驾驶/骑)。词干 <code>aja-</code>。过去时 a+i -&gt; oi。所以 <code>ajoi-</code> + <code>mme</code>。</div><div class="gram-item level-4">&bull; <code>kävelimme</code>: 原型 <code>kävellä</code> (3型，走路)。词干 <code>kävele-</code>。过去时 e 变 i -&gt; <code>käveli-</code> + <code>mme</code>。</div><div class="gram-item level-4">&bull; <code>keräsimme</code>: 原型 <code>kerätä</code> (4型，收集/采摘)。词干 <code>kerää-</code>。<strong>4型过去时再次突变:</strong> 词干 <code>ää</code> 遇 <code>i</code> 裂变为 <code>äsi</code>。所以 <code>keräsi-</code> + <code>mme</code>。</div><div class="gram-item level-4">&bull; <code>marjoja</code>: 原型 <code>marja</code> (浆果)。词干 <code>marja-</code> + 复数 <code>i</code> + <code>a</code> (遇到复数i，词干末尾的a变成o，发音更圆润) -&gt; <code>marjoja</code>。</div>
+            </div>
+            <div class="back-translation"><strong>我们骑了自行车，在森林里散步，还采摘了浆果。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 20</div>
+            <div class="fi-sentence"><span class="v-word">Me</span> <span class="v-word">muuten</span> <span class="v-word">näimme</span> <span class="v-word">hirven</span> <span class="v-word">silloin</span>!</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Me muuten näimme hirven silloin!")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Me muuten</span><span class="chunk-zh">顺便说一下，我们</span></div><div class="chunk-item"><span class="chunk-fi">näimme</span><span class="chunk-zh">看见了</span></div><div class="chunk-item"><span class="chunk-fi">hirven</span><span class="chunk-zh">一头驼鹿</span></div><div class="chunk-item"><span class="chunk-fi">silloin</span><span class="chunk-zh">那时</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>单数全宾格的霸道:</strong> 看见一头具体的、完整的驼鹿。动作彻底完成，宾语是单数，必须使用长得像属格的宾格 (Akkusatiivi, <code>-n</code>)，即 <code>hirven</code>。绝对不能用 <em>hirveä</em>。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>näimme</code>: 原型 <code>nähdä</code> (2型，看见。这是一个超级不规则动词！)。现在时词干是 <code>näke-</code>。过去时的逻辑是：<code>näke-</code> 遇到 <code>i</code>，丢掉 <code>e</code>，且在第一人称复数 <code>-mme</code> 的封闭音节下，强辅音 <code>k</code> 直接消失（Kato）！所以：<code>näke-</code> -&gt; <code>näki-</code> -&gt; <code>näi-</code> + <code>mme</code> -&gt; <code>näimme</code>。(我看见了则是 <code>näin</code>)。</div><div class="gram-item level-4">&bull; <code>hirven</code>: 原型 <code>hirvi</code> (驼鹿)。旧词词干 <code>i</code> 变 <code>e</code> -&gt; <code>hirve-</code> + 全宾格 <code>n</code>。</div>
+            </div>
+            <div class="back-translation"><strong>顺便说一句，我们当时还看见了一头驼鹿！</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 21</div>
+            <div class="fi-sentence"><span class="v-word">Se</span> <span class="v-word">oli</span> <span class="v-word">ensimmäinen</span> <span class="v-word">kerta</span>, <span class="v-word">kun</span> <span class="v-word">minä</span> <span class="v-word">näin</span> <span class="v-word">hirven</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Se oli ensimmäinen kerta, kun minä näin hirven.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Se oli</span><span class="chunk-zh">那是</span></div><div class="chunk-item"><span class="chunk-fi">ensimmäinen kerta</span><span class="chunk-zh">第一次</span></div><div class="chunk-item"><span class="chunk-fi">kun minä näin hirven</span><span class="chunk-zh">我看见驼鹿的时候</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>结构：</strong> 系动词句 + <code>kun</code> 引导的时间/内容从句。</div><div class="gram-item level-3">&bull; <strong>语法要点：</strong></div><div class="gram-item level-4">&bull; <strong>ensimmäinen kerta:</strong> 固定表达“第一次/首度经历某事”。这里 <code>ensimmäinen</code> 和 <code>kerta</code> 都用单数主格，整体作表语。</div><div class="gram-item level-4">&bull; <strong>kun minä näin hirven:</strong> <code>kun</code> 引导从句；<code>näin</code> 是动词 <code>nähdä</code> 的第一人称单数过去时；<code>hirven</code> 是单数全宾格，表示看见了一头具体而完整的驼鹿。</div><div class="gram-item level-4">&bull; <strong>Se oli ...:</strong> <code>se</code> 在这里回指上一句提到的那次经历，<code>oli</code> 是 <code>olla</code> 的第三人称单数过去时。</div>
+            </div>
+            <div class="back-translation"><strong>那是我第一次看见驼鹿。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 22</div>
+            <div class="fi-sentence"><span class="v-word">Se</span> <span class="v-word">oli</span> <span class="v-word">hieno</span> <span class="v-word">kokemus</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Se oli hieno kokemus.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Se oli</span><span class="chunk-zh">那是</span></div><div class="chunk-item"><span class="chunk-fi">hieno kokemus</span><span class="chunk-zh">一次很棒的经历</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>结构：</strong> 简洁的系动词句。</div><div class="gram-item level-3">&bull; <strong>语法要点：</strong></div><div class="gram-item level-4">&bull; <strong>hieno kokemus:</strong> 形容词 <code>hieno</code> 修饰名词 <code>kokemus</code>，两者都用单数主格，整体作表语。</div><div class="gram-item level-4">&bull; <strong>kokemus:</strong> 来自动词 <code>kokea</code>（体验/经历）派生出的名词，表示一次具体的经历或体验。</div><div class="gram-item level-4">&bull; <strong>Se oli:</strong> 继续承接上一句那次看到驼鹿的经历，用最地道的芬兰语方式作总结性评价。</div>
+            </div>
+            <div class="back-translation"><strong>那是一次极好的经历。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 23</div>
+            <div class="fi-sentence"><span class="v-word">Lisäksi</span> <span class="v-word">me</span> <span class="v-word">uimme</span>, <span class="v-word">kalastimme</span> <span class="v-word">ja</span> <span class="v-word">otimme</span> <span class="v-word">aurinkoa</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Lisäksi me uimme, kalastimme ja otimme aurinkoa.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Lisäksi</span><span class="chunk-zh">此外</span></div><div class="chunk-item"><span class="chunk-fi">me uimme</span><span class="chunk-zh">我们游泳了，</span></div><div class="chunk-item"><span class="chunk-fi">kalastimme</span><span class="chunk-zh">钓鱼了</span></div><div class="chunk-item"><span class="chunk-fi">ja</span><span class="chunk-zh">并且</span></div><div class="chunk-item"><span class="chunk-fi">otimme</span><span class="chunk-zh">拿/抓了</span></div><div class="chunk-item"><span class="chunk-fi">aurinkoa</span><span class="chunk-zh">太阳</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>经典芬兰式短语:</strong> <code>ottaa aurinkoa</code> (直译：拿走一点太阳)。意思是<strong>晒太阳</strong>。因为太阳你永远也拿不完，所以太阳必须用部分格 <code>aurinkoa</code>。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>uimme</code>: 原型 <code>uida</code> (2型，游泳)。词干 <code>ui-</code>。过去时直接加 <code>mme</code> (因为本身带i，不用再加)。</div><div class="gram-item level-4">&bull; <code>kalastimme</code>: 原型 <code>kalastaa</code> (1型，钓鱼，从 <code>kala</code> 鱼派生)。词干 <code>kalasta-</code>。过去时 a 脱落，<code>kalasti-</code> + <code>mme</code>。</div><div class="gram-item level-4">&bull; <code>otimme</code>: 原型 <code>ottaa</code> (1型，拿/取)。词干 <code>otta-</code>。<strong>KPT弱化:</strong> 遇到封闭音节 <code>mme</code>，<code>tt</code> 变 <code>t</code>。过去时 a 变 o 吗？注意！<code>ottaa</code> 首音节是 <code>o</code>，所以末尾的 <code>a</code> 遇到 <code>i</code> 不是变 <code>o</code>，而是直接脱落（发不出 ottoi 这样的音）。所以是 <code>oti-</code> + <code>mme</code>。</div>
+            </div>
+            <div class="back-translation"><strong>此外，我们还游了泳，钓了鱼，并且晒了日光浴。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 24</div>
+            <div class="fi-sentence"><span class="v-word">Söimme</span> <span class="v-word">ja</span> <span class="v-word">joimme</span> <span class="v-word">hyvin</span>, <span class="v-word">juttelimme</span>, <span class="v-word">nauroimme</span> <span class="v-word">ja</span> <span class="v-word">pelasimme</span> <span class="v-word">korttia</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Söimme ja joimme hyvin, juttelimme, nauroimme ja pelasimme korttia.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Söimme</span><span class="chunk-zh">我们吃了</span></div><div class="chunk-item"><span class="chunk-fi">ja joimme</span><span class="chunk-zh">喝了</span></div><div class="chunk-item"><span class="chunk-fi">hyvin</span><span class="chunk-zh">很好地，</span></div><div class="chunk-item"><span class="chunk-fi">juttelimme</span><span class="chunk-zh">聊了天，</span></div><div class="chunk-item"><span class="chunk-fi">nauroimme</span><span class="chunk-zh">大笑了</span></div><div class="chunk-item"><span class="chunk-fi">ja</span><span class="chunk-zh">并且</span></div><div class="chunk-item"><span class="chunk-fi">pelasimme</span><span class="chunk-zh">玩了</span></div><div class="chunk-item"><span class="chunk-fi">korttia</span><span class="chunk-zh">牌</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>打牌的接格法则:</strong> <code>pelata</code> + 部分格。只要是有规则的游戏（打牌、足球、电脑游戏），游戏名称一律用<strong>部分格</strong>。所以是 <code>korttia</code>。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型 (过去时极限连击！):</strong></div><div class="gram-item level-4">&bull; <code>Söimme</code>: <code>syödä</code> (2型)。吃掉首元音 -&gt; <code>söi-</code> + <code>mme</code>。</div><div class="gram-item level-4">&bull; <code>joimme</code>: <code>juoda</code> (2型)。吃掉首元音 -&gt; <code>joi-</code> + <code>mme</code>。</div><div class="gram-item level-4">&bull; <code>pelasimme</code>: <code>pelata</code> (4型)。长音 <code>aa</code> 突变 <code>asi</code> -&gt; <code>pelasi-</code> + <code>mme</code>。</div>
+            </div>
+            <div class="back-translation"><strong>我们吃得好喝得好，一起聊天，放声大笑，还打了牌。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 25</div>
+            <div class="fi-sentence"><span class="v-word">Olin</span> <span class="v-word">tosi</span> <span class="v-word">onnellinen</span>. <span class="v-word">Olen</span> <span class="v-word">onnekas</span> <span class="v-word">mies</span>, <span class="v-word">minulla</span> <span class="v-word">on</span> <span class="v-word">ihana</span> <span class="v-word">perhe</span>!</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Olin tosi onnellinen. Olen onnekas mies, minulla on ihana perhe!")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Olin</span><span class="chunk-zh">我当时是</span></div><div class="chunk-item"><span class="chunk-fi">tosi onnellinen</span><span class="chunk-zh">非常幸福的</span></div><div class="chunk-item"><span class="chunk-fi">Olen</span><span class="chunk-zh">我是</span></div><div class="chunk-item"><span class="chunk-fi">onnekas mies</span><span class="chunk-zh">一个幸运的男人，</span></div><div class="chunk-item"><span class="chunk-fi">minulla on</span><span class="chunk-zh">我拥有</span></div><div class="chunk-item"><span class="chunk-fi">ihana perhe</span><span class="chunk-zh">美好的家庭</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>时态穿越:</strong> 描述当时小木屋的感受用过去时 <code>Olin</code>。最后感叹现在的总体状态，瞬间拉回现在时 <code>Olen</code>。</div><div class="gram-item level-4">&bull; <strong>词汇辨析 (<code>onnellinen</code> vs <code>onnekas</code>):</strong> 两者都来自名词 <code>onni</code> (运气/幸福)。</div><div class="gram-item level-4">&bull; <code>onnellinen</code> = 充满幸福感的 (happy / blissful)。</div><div class="gram-item level-4">&bull; <code>onnekas</code> = 运气好的 (lucky / fortunate)。 Victor 先说当时觉得很“幸福”，接着说自己是一个“运气很好”的男人。用词极其精准！</div>
+            </div>
+            <div class="back-translation"><strong>我当时感到非常幸福。我是一个幸运的男人，我拥有一个美好的家庭！</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 26</div>
+            <div class="fi-sentence"><span class="v-word">Sandrine</span>: <span class="v-word">Kuulostaa</span> <span class="v-word">kivalta</span> <span class="v-word">ja</span> <span class="v-word">jännittävältä</span>! <span class="v-word">Victor</span>, <span class="v-word">mitä</span> <span class="v-word">sinä</span> <span class="v-word">toivot</span> <span class="v-word">tulevaisuudelta</span>?</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Sandrine: Kuulostaa kivalta ja jännittävältä! Victor, mitä sinä toivot tulevaisuudelta?")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Kuulostaa</span><span class="chunk-zh">听起来</span></div><div class="chunk-item"><span class="chunk-fi">kivalta</span><span class="chunk-zh">不错</span></div><div class="chunk-item"><span class="chunk-fi">ja</span><span class="chunk-zh">并且</span></div><div class="chunk-item"><span class="chunk-fi">jännittävältä</span><span class="chunk-zh">令人兴奋的</span></div><div class="chunk-item"><span class="chunk-fi">Victor, mitä</span><span class="chunk-zh">什么</span></div><div class="chunk-item"><span class="chunk-fi">sinä toivot</span><span class="chunk-zh">你期盼/希望</span></div><div class="chunk-item"><span class="chunk-fi">tulevaisuudelta</span><span class="chunk-zh">从未来</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 现在时 (Preesens)。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>感官动词的夺格复习:</strong> 和上一段一样，<code>kuulostaa</code> 强制要求后面的形容词使用<strong>夺格 (-lta/-ltä)</strong>。这里并列了两个形容词，两者都必须加 <code>-lta/ltä</code>。</div><div class="gram-item level-4">&bull; <strong>希望的接格 (Rektio):</strong> <code>toivoa + lta/ltä (夺格)</code>。中文说“对未来有什么期盼”，但在芬兰语的底层空间逻辑里，你的期盼是“从”未来那里得到的，所以必须用表示“从...表面离开”的夺格 <code>tulevaisuudelta</code>。</div><div class="gram-item level-4">&bull; <code>mitä</code> 是 <code>toivoa</code> 的部分格宾语，表示期盼的“内容/事物”。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>jännittävältä</code>: 原型 <code>jännittävä</code> (令人紧张/兴奋的)。这是由动词 <code>jännittää</code> 加 <code>-vä</code> 后缀构成的<strong>现在主动分词 (VA-partisiippi)</strong>，直接当作形容词使用。词干 <code>jännittävä-</code> + <code>ltä</code>。</div><div class="gram-item level-4">&bull; <code>tulevaisuudelta</code>: 原型 <code>tulevaisuus</code> (未来)。由动词 <code>tulla</code> (来) 派生出的抽象名词。<strong>变格死规律:</strong> 凡是 <code>-uus/-yys</code> 结尾的抽象名词，变格词干永远是 <code>-uude-/-yyde-</code>。所以是 <code>tulevaisuude-</code> + <code>lta</code>。</div>
+            </div>
+            <div class="back-translation"><strong>Sandrine: 听起来真棒、真让人兴奋！Victor，你对未来有什么期盼？</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 27</div>
+            <div class="fi-sentence"><span class="v-word">Victor</span>: <span class="v-word">Minä</span> <span class="v-word">haluan</span> <span class="v-word">perustaa</span> <span class="v-word">oman</span> <span class="v-word">yrityksen</span>. <span class="v-word">Haluan</span> <span class="v-word">avata</span> <span class="v-word">tatuointistudion</span> <span class="v-word">ja</span> <span class="v-word">tehdä</span> <span class="v-word">tatuointeja</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Victor: Minä haluan perustaa oman yrityksen. Haluan avata tatuointistudion ja tehdä tatuointeja.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Minä haluan</span><span class="chunk-zh">我想</span></div><div class="chunk-item"><span class="chunk-fi">perustaa</span><span class="chunk-zh">创立</span></div><div class="chunk-item"><span class="chunk-fi">oman yrityksen</span><span class="chunk-zh">自己的公司</span></div><div class="chunk-item"><span class="chunk-fi">Haluan</span><span class="chunk-zh">我想</span></div><div class="chunk-item"><span class="chunk-fi">avata</span><span class="chunk-zh">开设</span></div><div class="chunk-item"><span class="chunk-fi">tatuointistudion</span><span class="chunk-zh">一家纹身工作室</span></div><div class="chunk-item"><span class="chunk-fi">ja</span><span class="chunk-zh">并且</span></div><div class="chunk-item"><span class="chunk-fi">tehdä</span><span class="chunk-zh">做</span></div><div class="chunk-item"><span class="chunk-fi">tatuointeja</span><span class="chunk-zh">纹身</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 现在时 + 动词原形 (1. infinitiivi)。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透：全宾格 vs 部分格的终极对决)：</strong></div><div class="gram-item level-4">&bull; <strong>全宾格 (Genetiivi-akkusatiivi):</strong> <code>perustaa oman yrityksen</code> 和 <code>avata tatuointistudion</code>。为什么这里用长得像属格的宾格 (<code>-n</code>)？因为“创立一家公司”和“开一家工作室”都是<strong>单一的、完整的、有明确结果的动作</strong>。当你完成这个动作时，公司就存在了。此时，单数宾语必须使用 <code>-n</code> 结尾的宾格！修饰词 <code>oma</code> 也必须跟着变 <code>oman</code>。</div><div class="gram-item level-4">&bull; <strong>部分格 (Partitiivi):</strong> <code>tehdä tatuointeja</code>。为什么这里变成了部分格？因为“做纹身”是一个<strong>复数的、没有明确数量限制的持续性动作</strong>（你不可能只做完一个纹身就退休了，你要做无数个）。所以必须使用复数部分格。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>perustaa</code>: 原型 <code>perustaa</code> (1型，创立)。词根来自 <code>perus</code> (基础)。</div><div class="gram-item level-4">&bull; <code>yrityksen</code>: 原型 <code>yritys</code> (公司/尝试)。<strong>s结尾名词变格:</strong> 以 <code>-s</code> 结尾的名词，变格词干通常是 <code>-kse-</code>。所以 <code>yritykse-</code> + <code>n</code>。</div><div class="gram-item level-4">&bull; <code>avata</code>: 原型 <code>avata</code> (4型，打开/开设)。</div><div class="gram-item level-4">&bull; <code>tatuointeja</code>: 原型 <code>tatuointi</code> (纹身，外来词)。复数 <code>i</code> + 部分格 <code>a</code> -&gt; <code>tatuointeja</code>。</div>
+            </div>
+            <div class="back-translation"><strong>Victor: 我想创立自己的公司。我想开一家纹身工作室，并且做纹身。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 28</div>
+            <div class="fi-sentence"><span class="v-word">Ja</span> <span class="v-word">haluan</span> <span class="v-word">myös</span> <span class="v-word">piirtää</span> <span class="v-word">sarjakuvia</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Ja haluan myös piirtää sarjakuvia.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Ja</span><span class="chunk-zh">并且</span></div><div class="chunk-item"><span class="chunk-fi">haluan</span><span class="chunk-zh">我想</span></div><div class="chunk-item"><span class="chunk-fi">myös</span><span class="chunk-zh">也</span></div><div class="chunk-item"><span class="chunk-fi">piirtää</span><span class="chunk-zh">画</span></div><div class="chunk-item"><span class="chunk-fi">sarjakuvia</span><span class="chunk-zh">连环画/漫画</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; 这里再次使用了<strong>复数部分格宾语</strong>。画漫画是一个持续的、数量未知的动作。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>sarjakuvia</code>: 原型 <code>sarjakuva</code> (复合词: <code>sarja</code> 系列 + <code>kuva</code> 图像 -&gt; 连环画)。词干 <code>sarjakuva-</code> + 复数 <code>i</code> + <code>a</code> -&gt; <code>sarjakuvia</code>。</div>
+            </div>
+            <div class="back-translation"><strong>并且我还想画漫画。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 29</div>
+            <div class="fi-sentence"><span class="v-word">Minulla</span> <span class="v-word">on</span> <span class="v-word">taiteilijanimikin</span> <span class="v-word">jo</span> <span class="v-word">valmiina</span>: <span class="v-word">Hermano</span> <span class="v-word">Perro</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Minulla on taiteilijanimikin jo valmiina: Hermano Perro.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Minulla on</span><span class="chunk-zh">我已经有</span></div><div class="chunk-item"><span class="chunk-fi">taiteilijanimikin</span><span class="chunk-zh">连艺名也...</span></div><div class="chunk-item"><span class="chunk-fi">jo</span><span class="chunk-zh">已经</span></div><div class="chunk-item"><span class="chunk-fi">valmiina</span><span class="chunk-zh">准备好了的状态</span></div><div class="chunk-item"><span class="chunk-fi">Hermano Perro</span><span class="chunk-zh"></span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>样格表达状态 (Essiivi, -na/-nä):</strong> <code>valmiina</code> (准备好的)。在芬兰语中，当你表达某人或某物处于某种“临时或阶段性的状态”时，使用样格。这里表示“艺名已经处于就绪的状态”。</div><div class="gram-item level-4">&bull; <strong>附着词的极强表现力:</strong> <code>taiteilijanimi</code> + <code>kin</code>。附着在主语上，表示“甚至/连...都已经有了”。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>taiteilijanimikin</code>: 原型 <code>taiteilijanimi</code> (<code>taide</code> 艺术 -&gt; <code>taiteilija</code> 艺术家 + <code>nimi</code> 名字)。主格。</div><div class="gram-item level-4">&bull; <code>valmiina</code>: 原型 <code>valmis</code> (准备好的，形容词)。<strong>特殊形容词词干:</strong> <code>valmis</code> 的词干是 <code>valmii-</code>。加上样格后缀 <code>na</code> -&gt; <code>valmiina</code>。</div>
+            </div>
+            <div class="back-translation"><strong>我甚至连艺名都已经准备好了：Hermano Perro（狗兄弟）。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 30</div>
+            <div class="fi-sentence"><span class="v-word">Entä</span> <span class="v-word">sinä</span>, <span class="v-word">mitä</span> <span class="v-word">sinä</span> <span class="v-word">toivot</span>?</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Entä sinä, mitä sinä toivot?")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Entä sinä</span><span class="chunk-zh">那你呢</span></div><div class="chunk-item"><span class="chunk-fi">mitä sinä toivot</span><span class="chunk-zh">你希望什么</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>结构：</strong> 话题转换短句 + 直接疑问句。</div><div class="gram-item level-3">&bull; <strong>语法要点：</strong></div><div class="gram-item level-4">&bull; <strong>Entä sinä:</strong> 芬兰语里极常见的接话方式，意思是“那你呢/换你来说呢”。</div><div class="gram-item level-4">&bull; <strong>mitä:</strong> 疑问代词 <code>mikä</code> 的部分格，作动词 <code>toivoa</code> 的宾语，表示“希望什么内容/事情”。</div><div class="gram-item level-4">&bull; <strong>toivot:</strong> 动词 <code>toivoa</code> 的第二人称单数现在时，用来直接询问对方的愿望或期待。</div>
+            </div>
+            <div class="back-translation"><strong>那你呢，你期盼什么？</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 31</div>
+            <div class="fi-sentence"><span class="v-word">Sandrine</span>: <span class="v-word">Minä</span> <span class="v-word">haluan</span> <span class="v-word">mennä</span> <span class="v-word">lähihoitajakoulutukseen</span> <span class="v-word">ja</span> <span class="v-word">sen</span> <span class="v-word">jälkeen</span> <span class="v-word">sairaanhoitajakoulutukseen</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Sandrine: Minä haluan mennä lähihoitajakoulutukseen ja sen jälkeen sairaanhoitajakoulutukseen.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Minä haluan</span><span class="chunk-zh">我想</span></div><div class="chunk-item"><span class="chunk-fi">mennä</span><span class="chunk-zh">去</span></div><div class="chunk-item"><span class="chunk-fi">lähihoitajakoulutukseen</span><span class="chunk-zh">参加实用护士培训</span></div><div class="chunk-item"><span class="chunk-fi">ja</span><span class="chunk-zh">并且</span></div><div class="chunk-item"><span class="chunk-fi">sen jälkeen</span><span class="chunk-zh">在那之后</span></div><div class="chunk-item"><span class="chunk-fi">sairaanhoitajakoulutukseen</span><span class="chunk-zh">参加注册护士培训</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>动态目的地的入格 (Illatiivi):</strong> <code>mennä + mihin</code>。去参加某个培训或课程，芬兰语的逻辑是“进入”这个课程，所以必须使用入格（长元音 + n）。</div><div class="gram-item level-4">&bull; <strong>后置词的属格控制:</strong> <code>sen jälkeen</code> (在那之后)。<code>jälkeen</code> 是后置词，强制要求前面的代词 <code>se</code> 变成属格 <code>sen</code>。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>lähihoitajakoulutukseen</code>: 超级复合名词！<code>lähi</code> (近处的) + <code>hoitaja</code> (护理员) + <code>koulutus</code> (教育/培训)。核心词是 <code>koulutus</code>，因为以 <code>-us</code> 结尾，词干变为 <code>koulutukse-</code>。加上入格后缀（延长元音e + n）-&gt; <code>koulutukseen</code>。</div><div class="gram-item level-4">&bull; <code>sairaanhoitajakoulutukseen</code>: 另一个复合名词。<code>sairaan</code> (生病的，sairas的属格) + <code>hoitaja</code> (照顾者) + <code>koulutus</code>。同样变为入格。<em>(注：Lähihoitaja 相当于助理护士/实用护士，Sairaanhoitaja 相当于拥有本科学位的注册护士，这展示了 Sandrine 清晰的职业晋升路径)。</em></div>
+            </div>
+            <div class="back-translation"><strong>Sandrine: 我想去参加实用护士（助理护士）培训，在那之后再去参加注册护士培训。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 32</div>
+            <div class="fi-sentence"><span class="v-word">Haluan</span> <span class="v-word">auttaa</span> <span class="v-word">ihmisiä</span> <span class="v-word">täällä</span>, <span class="v-word">samalla</span> <span class="v-word">tavalla</span> <span class="v-word">kuin</span> <span class="v-word">ennen</span> <span class="v-word">autoin</span> <span class="v-word">ihmisiä</span> <span class="v-word">Kamerunissa</span>.</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Haluan auttaa ihmisiä täällä, samalla tavalla kuin ennen autoin ihmisiä Kamerunissa.")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Haluan</span><span class="chunk-zh">我想</span></div><div class="chunk-item"><span class="chunk-fi">auttaa</span><span class="chunk-zh">帮助</span></div><div class="chunk-item"><span class="chunk-fi">ihmisiä</span><span class="chunk-zh">人们</span></div><div class="chunk-item"><span class="chunk-fi">täällä</span><span class="chunk-zh">在这里，</span></div><div class="chunk-item"><span class="chunk-fi">samalla tavalla</span><span class="chunk-zh">用同样的方式</span></div><div class="chunk-item"><span class="chunk-fi">kuin</span><span class="chunk-zh">像</span></div><div class="chunk-item"><span class="chunk-fi">ennen</span><span class="chunk-zh">以前</span></div><div class="chunk-item"><span class="chunk-fi">autoin</span><span class="chunk-zh">我曾帮助</span></div><div class="chunk-item"><span class="chunk-fi">ihmisiä</span><span class="chunk-zh">人们</span></div><div class="chunk-item"><span class="chunk-fi">Kamerunissa</span><span class="chunk-zh">在喀麦隆</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>句子时态：</strong> 现在时 (主句) + 过去时 (从句)。</div><div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>动词接格复习:</strong> <code>auttaa + ketä (部分格)</code>。帮助的对象永远是部分格。所以是 <code>ihmisiä</code>。</div><div class="gram-item level-4">&bull; <strong>方式状语的接格 (Tapa-adverbiaali):</strong> <code>samalla tavalla</code> (用同样的方式)。表达“以...方式”做某事，芬兰语使用<strong>接格 (Adessiivi, -lla/-llä)</strong>。形容词 <code>sama</code> 必须与名词 <code>tapa</code> 保持格的一致，一起变接格。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>samalla</code>: 原型 <code>sama</code> (同样的)。词干 <code>sama-</code> + <code>lla</code>。</div><div class="gram-item level-4">&bull; <code>tavalla</code>: 原型 <code>tapa</code> (方式/习惯)。<strong>KPT弱化:</strong> 遇到封闭音节 <code>lla</code>，强辅音 <code>p</code> 弱化为 <code>v</code>。所以 <code>tapa-</code> -&gt; <code>tava-</code> + <code>lla</code> -&gt; <code>tavalla</code>。</div><div class="gram-item level-4">&bull; <code>autoin</code>: 原型 <code>auttaa</code> (1型, 帮助)。过去时 a 变 o -&gt; <code>auttoi-</code>。遇到第一人称单数 <code>n</code> 的封闭音节，<code>tt</code> 弱化为 <code>t</code> -&gt; <code>autoin</code>。</div>
+            </div>
+            <div class="back-translation"><strong>我想在这里帮助人们，就像我以前在喀麦隆帮助人们那样（用同样的方式）。</strong></div>
+        </div></div></div>
+        <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><div class="card-number">句 33</div>
+            <div class="fi-sentence"><span class="v-word">Kaisa</span>: <span class="v-word">Voi</span>, <span class="v-word">miten</span> <span class="v-word">suloisia</span> <span class="v-word">te</span> <span class="v-word">ootte</span>!</div>
+            <button class="tts-btn" onclick='event.stopPropagation(); speak("Kaisa: Voi, miten suloisia te ootte!")'>🔊</button>
+        </div><div class="card-back">
+            <div class="analysis-block">
+                <span class="back-title">1. 语块拆解</span>
+                <div class="chunk-item"><span class="chunk-fi">Voi</span><span class="chunk-zh">哇哦，</span></div><div class="chunk-item"><span class="chunk-fi">miten</span><span class="chunk-zh">多么</span></div><div class="chunk-item"><span class="chunk-fi">suloisia</span><span class="chunk-zh">可爱的</span></div><div class="chunk-item"><span class="chunk-fi">te ootte</span><span class="chunk-zh">你们是</span></div>
+            </div>
+            <div class="analysis-block">
+                <span class="back-title">2. 变位与要点</span>
+                <div class="gram-item level-3">&bull; <strong>语法要点 (讲透)：</strong></div><div class="gram-item level-4">&bull; <strong>纯正的感叹句式:</strong> <code>miten + 形容词 + 主语 + 谓语</code>。相当于英语的 "How sweet you are!"。</div><div class="gram-item level-4">&bull; <strong>表语的复数部分格:</strong> 这里的主语是 <code>te</code> (你们，复数)，所以形容词作表语必须使用<strong>复数部分格</strong> <code>suloisia</code>。</div><div class="gram-item level-4">&bull; <strong>口语极简表达 (Puhekieli):</strong> <code>ootte</code> 是标准书面语 <code>olette</code> (你们是) 的赫尔辛基及南部常见口语形式。</div><div class="gram-item level-3">&bull; <strong>词汇变位与原型：</strong></div><div class="gram-item level-4">&bull; <code>suloisia</code>: 原型 <code>suloinen</code> (可爱的/甜蜜的)。词干 <code>suloise-</code> + 复数 <code>i</code> + 部分格 <code>a</code> -&gt; <code>suloisia</code>。</div><div class="gram-item level-4">&bull; <code>ootte</code>: 原型 <code>olla</code>。第二人称复数口语。</div>
+            </div>
+            <div class="back-translation"><strong>Kaisa: 哇，你们真是太可爱了！</strong></div>
+        </div></div></div>
+    </div>
+
+    <div class="supplement-section">
+    <h2>第一部分：关于雪、严寒与初印象的探讨</h2>
+    <h3>总结</h3>
+    <p>这是语料的开篇部分，通过对比喀麦隆、墨西哥与芬兰的巨大气候及人口落差，展现了初到异国他乡的“环境冲击”。</p>
+    <p>从语言分析的维度来看，这一段是<strong>B1语法的一个大考场</strong>。它集中暴露了中国学习者最容易犯错的几个点：<strong>过去完成时的否定 (<code>en ollut nähnyt</code>)</strong>、<strong>无主语句型 (<code>tarkenee</code>, <code>pärjää</code>)</strong>，以及<strong>数量词/比较级对部分格的绝对控制 (<code>tarpeeksi vaatteita</code>, <code>enemmän tilaa</code>)</strong>。</p>
+</div>
+<div class="vocab-section">
+    <h2>第一部分：关于雪、严寒与初印象的探讨 词汇分解表</h2>
+    <table><thead><tr><th>单词 (Sana)</th><th>原型 (Perusmuoto)</th><th>中文翻译 (Käännös)</th><th>词干 (Vartalo)</th><th>词类/形式</th><th>构词法与语法深度解析 (Kiina)</th></tr></thead><tbody><tr><td><strong>Opimme</strong></td><td>oppia (1型)</td><td>我们学过(过去时)</td><td>oppi- / opi-</td><td>动词 (过去时)</td><td><strong>KPT强弱交替:</strong> 第一人称复数 <code>-mme</code> 属于封闭后缀。强辅音 <code>pp</code> 必须弱化为 <code>p</code>。且因原型自带 <code>i</code>，过去时的 <code>i</code> 融入其中，不发生额外变化。</td></tr><tr><td><strong>Nähnyt</strong></td><td>nähdä (2型)</td><td>看见 (过去分词)</td><td>näe- / näh-</td><td>动词 (NUT-分词)</td><td><strong>极特殊分词:</strong> <code>nähdä</code> 是不规则2型动词。其完成时/过去完成时所需的过去分词形态固定为 <code>nähnyt</code> (单数) / <code>nähneet</code> (复数)。</td></tr><tr><td><strong>Tarkenee</strong></td><td>tarketa (6型)</td><td>扛得住冷</td><td>tarkene-</td><td>动词 (现在时)</td><td><strong>6型动词特例:</strong> 原型以 <code>-eta/-etä</code> 结尾，现在时词干需变为 <code>-ene-</code>。在此处作第三人称单数（零主语句），延长末尾元音变 <code>tarkenee</code>。</td></tr><tr><td><strong>Pärjää</strong></td><td>pärjätä (4型)</td><td>应付得过来</td><td>pärjää-</td><td>动词 (现在时)</td><td><strong>4型动词词干延长:</strong> 原型去掉后缀 <code>-tä</code>，留下词干，并将末尾的元音 <code>ä</code> 双写延长为 <code>ää</code>。由于是第三人称单数，不再加额外后缀。</td></tr><tr><td><strong>Vaatteita</strong></td><td>vaate</td><td>衣服(复数部分格)</td><td>vaattee-</td><td>名词 (复数部分格)</td><td><strong>经典旧词变异:</strong> 以 <code>-e</code> 结尾的名词，变格词干时必定双写变成 <code>-ee-</code> (且触发强辅音逆转 <code>t</code>-&gt;<code>tt</code>)。加复数 <code>i</code> 和部分格 <code>ta</code> -&gt; <code>vaatteita</code>。</td></tr><tr><td><strong>Ajatus</strong></td><td>ajatus</td><td>想法/念头(主格)</td><td>ajatukse-</td><td>名词 (主格)</td><td><strong>继承动词接格:</strong> 动词派生名词。词尾 <code>-s</code> 的词变格词干往往是 <code>-kse-</code>。最重要的是，它保留了母体动词 <code>ajatella</code> 的基因，必须连接出格 <code>Suomesta</code>。</td></tr><tr><td><strong>Huomasin</strong></td><td>huomata (4型)</td><td>我注意到了</td><td>huomaa- / huomasi-</td><td>动词 (过去时)</td><td><strong>4型过去时突变:</strong> 和上一篇的 <code>pelata -&gt; pelasi</code> 一模一样，词干的长元音 <code>aa</code> 遇到过去时的 <code>i</code>，必定产生裂变生成 <code>asi</code>。必须死记。</td></tr></tbody></table>
+</div>
+<div class="supplement-section">
+    <h2>第二部分：芬兰人的社恐与小木屋的狂欢</h2>
+    <h3>总结</h3>
+    <p>这一段是全文的“动作戏”高潮！Victor 回忆了见岳父母的完美周末。</p>
+    <p>对于学习者来说，这是<strong>史诗级的过去时练兵场</strong>。在短短几句话中，芬兰语1到4型动词的过去时特殊规则全部出场（2型的双元音脱落、4型的 <code>asi</code> 突变、1型的 <code>tt-&gt;t</code> 弱化和 <code>a-&gt;o</code> 变音，以及不规则词 <code>nähdä</code> 的神仙走位）。此外，它极佳地展示了“情感倒装句 (<code>minua jännitti</code>)”这一芬兰语地道精髓。</p>
+</div>
+<div class="vocab-section">
+    <h2>第二部分：芬兰人的社恐与小木屋的狂欢 词汇分解表</h2>
+    <table><thead><tr><th>单词 (Sana)</th><th>原型 (Perusmuoto)</th><th>中文翻译 (Käännös)</th><th>词干 (Vartalo)</th><th>词类/形式</th><th>构词法与语法深度解析 (Kiina)</th></tr></thead><tbody><tr><td><strong>Tutustu</strong></td><td>tutustua (1型)</td><td>结识/熟悉</td><td>tutustu-</td><td>动词 (现在否定)</td><td><strong>致命接格陷阱:</strong> 动词意义是结识，其后支配的名词必须强制进入<strong>入格 (Illatiivi)</strong>。不能用 <code>kanssa</code>。这里前面跟否定词 <code>en</code>，所以使用不带人称后缀的原形词干。</td></tr><tr><td><strong>Tapasin</strong></td><td>tavata (4型)</td><td>我遇见了(过去时)</td><td>tapaa- / tapasi-</td><td>动词 (过去时)</td><td><strong>4型KPT逆转与突变:</strong> 词根是弱辅音 <code>v</code>，变词干时逆转为强辅音 <code>p</code>，并延长元音变 <code>tapaa-</code>。过去时遇到 <code>i</code>，<code>aa</code> 强制裂变为 <code>asi</code>。这套组合拳必须滚瓜烂熟。</td></tr><tr><td><strong>Jännitti</strong></td><td>jännittää (1型)</td><td>使...紧张</td><td>jännittä-</td><td>动词 (过去时)</td><td><strong>零主语情感句:</strong> 动词原意是“使(某人)紧绷”。在句首放部分格代词 <code>minua</code>，动词永远维持第三人称单数 <code>jännitti</code>，表示“有一种紧张感攫取了我”。</td></tr><tr><td><strong>Näimme</strong></td><td>nähdä (2型)</td><td>我们看见了</td><td>näke- / näi-</td><td>动词 (过去时)</td><td><strong>极度不规则变位:</strong> 现代标准分型它算2型，但词干是 <code>näke-</code>。过去时遇到 <code>i</code>，脱落 <code>e</code>。遇到第一人称复数 <code>-mme</code> 的封闭音节挤压，强辅音 <code>k</code> 发生“辅音消失(kato)”。最终变为 <code>näi-mme</code>。</td></tr><tr><td><strong>Keräsimme</strong></td><td>kerätä (4型)</td><td>我们采摘了</td><td>kerää- / keräsi-</td><td>动词 (过去时)</td><td><strong>4型过去时突变:</strong> 原型去掉后缀 <code>-tä</code>，变长音 <code>kerää-</code>。过去时 <code>ää</code> 遇 <code>i</code> 裂变为 <code>äsi</code>。加第一人称复数 <code>-mme</code>。</td></tr><tr><td><strong>Korttia</strong></td><td>kortti</td><td>纸牌(部分格)</td><td>kortti-</td><td>名词 (部分格)</td><td><strong>外来词与游戏接格:</strong> 外来词词干通常直接是原形。受前面动词 <code>pelasimme</code> (玩游戏) 支配，强制变为部分格 <code>korttia</code>。</td></tr><tr><td><strong>Onnekas</strong></td><td>onnekas</td><td>幸运的</td><td>onnekkaa-</td><td>形容词 (主格)</td><td><strong>派生词缀:</strong> <code>onni</code> (运气) + <code>-kas/käs</code> (拥有某物特征的)。其变格词干永远是 <code>-kkaa-</code> (例如：属格 <code>onnekkaan</code>)。</td></tr></tbody></table>
+</div>
+<div class="supplement-section">
+    <h2>第三部分：关于未来的梦想与职业规划</h2>
+    <h3>总结</h3>
+    <p>这一段是全文温馨、充满希望的结局。两人不再迷茫于初来芬兰时的文化和气候冲击，而是扎根于此，清晰地规划了自己的人生蓝图（创业和成为白衣天使）。</p>
+    <p>在语法层面上，这一段是<strong>名词变格逻辑的大练兵</strong>：从单数全宾格（<code>yrityksen</code>）到复数部分格（<code>tatuointeja</code>），从表达状态的样格（<code>valmiina</code>）到表达方式的接格（<code>tavalla</code>），再到超长复合名词的入格（<code>koulutukseen</code>）。这些全都是通过 B1 甚至 B2 考试所必须具备的坚实基本功。</p>
+</div>
+<div class="vocab-section">
+    <h2>第三部分：关于未来的梦想与职业规划 词汇分解表</h2>
+    <table><thead><tr><th>单词 (Sana)</th><th>原型 (Perusmuoto)</th><th>中文翻译 (Käännös)</th><th>词干 (Vartalo)</th><th>词类/形式</th><th>构词法与语法深度解析 (Kiina)</th></tr></thead><tbody><tr><td><strong>Tulevaisuudelta</strong></td><td>tulevaisuus</td><td>从未来(夺格)</td><td>tulevaisuude-</td><td>名词 (夺格)</td><td><strong>派生构词与变格:</strong> 动词 <code>tulla</code> (来) -&gt; 分词 <code>tuleva</code> (将来的) -&gt; 加后缀 <code>-isuus</code> 变成抽象名词“未来”。<code>-uus</code> 结尾词干必变 <code>-uude-</code>，因受 <code>toivoa</code> 支配接夺格 <code>-lta</code>。</td></tr><tr><td><strong>Yrityksen</strong></td><td>yritys</td><td>公司(单数全宾格)</td><td>yritykse-</td><td>名词 (宾格)</td><td><strong>动作结果支配:</strong> 创立 (<code>perustaa</code>) 是瞬间完成的有结果动作，目标是单数公司。因此必须用长得像属格的全宾格 <code>-n</code>。<code>-s</code> 结尾词干变 <code>-kse-</code>。</td></tr><tr><td><strong>Valmiina</strong></td><td>valmis</td><td>准备好(样格状态)</td><td>valmii-</td><td>形容词 (样格)</td><td><strong>状态语法:</strong> <code>valmis</code> 词干特殊，延长为 <code>valmii-</code>。加样格 <code>-na</code>，在芬兰语中常用来表示“处于...的状态中”，译为“已经准备就绪了”。</td></tr><tr><td><strong>Koulutukseen</strong></td><td>koulutus</td><td>进入培训(入格)</td><td>koulutukse-</td><td>名词 (入格)</td><td><strong>动态方向格:</strong> <code>kouluttaa</code> (培训) 派生名词 <code>koulutus</code> (培训课程)。去参加课程动作有终点属性，使用入格。词干 <code>-kse-</code> + <code>en</code> -&gt; <code>-kseen</code>。</td></tr><tr><td><strong>Tavalla</strong></td><td>tapa</td><td>用...方式(接格)</td><td>tava-</td><td>名词 (接格)</td><td><strong>方式状语的铁律:</strong> 芬兰语表达 "by means of" 或 "in ... way" 时，必须使用<strong>接格 (-lla/-llä)</strong>。<code>tapa</code> 是核心基础词，注意 KPT 弱化 <code>p-&gt;v</code>。</td></tr><tr><td><strong>Suloisia</strong></td><td>suloinen</td><td>可爱的(复数部分格)</td><td>suloise-</td><td>形容词 (复数部分格)</td><td><strong>表语一致性原则:</strong> 修饰复数代词 <code>te</code> (你们) 的性质描述。<code>-nen</code> 结尾形容词词干为 <code>-se-</code>，加复数 <code>i</code> 和部分格 <code>a</code>，完美变身 <code>suloisia</code>。</td></tr></tbody></table>
+</div>
+
+    <div class="word-tooltip" id="wordTooltip"></div>
+
+    <script>
+        const vocabularyData = {
+            "ajattelit": {
+                        "prototype": "ajatella",
+                        "chinese": "想/认为",
+                        "form": "2单过去"
+            },
+            "ajatus": {
+                        "prototype": "ajatus",
+                        "chinese": "想法",
+                        "form": "单数主格"
+            },
+            "ajoimme": {
+                        "prototype": "ajaa",
+                        "chinese": "我们骑/开",
+                        "form": "1复过去"
+            },
+            "aloin": {
+                        "prototype": "alkaa",
+                        "chinese": "我开始",
+                        "form": "1单过去"
+            },
+            "aurinkoa": {
+                        "prototype": "aurinko",
+                        "chinese": "太阳/日光",
+                        "form": "单数部分格"
+            },
+            "autoin": {
+                        "prototype": "auttaa",
+                        "chinese": "帮助",
+                        "form": "1单过去"
+            },
+            "auttaa": {
+                        "prototype": "auttaa",
+                        "chinese": "帮助",
+                        "form": "1不定式"
+            },
+            "avata": {
+                        "prototype": "avata",
+                        "chinese": "开设/打开",
+                        "form": "1不定式"
+            },
+            "en": {
+                        "prototype": "ei",
+                        "chinese": "不",
+                        "form": "否定动词1单"
+            },
+            "enemmän": {
+                        "prototype": "paljon",
+                        "chinese": "更多",
+                        "form": "比较级副词"
+            },
+            "ennen": {
+                        "prototype": "ennen",
+                        "chinese": "以前",
+                        "form": "副词"
+            },
+            "ensimmäinen": {
+                        "prototype": "ensimmäinen",
+                        "chinese": "第一的",
+                        "form": "单数主格"
+            },
+            "ensimmäisen": {
+                        "prototype": "ensimmäinen",
+                        "chinese": "第一的",
+                        "form": "单数属格"
+            },
+            "ensimmäistä": {
+                        "prototype": "ensimmäinen",
+                        "chinese": "第一次/第一的",
+                        "form": "单数部分格"
+            },
+            "entä": {
+                        "prototype": "entä",
+                        "chinese": "那...呢",
+                        "form": "连词/副词"
+            },
+            "erilaista": {
+                        "prototype": "erilainen",
+                        "chinese": "不同的",
+                        "form": "单数部分格"
+            },
+            "etten": {
+                        "prototype": "että + ei",
+                        "chinese": "我不……",
+                        "form": "连词+否定1单"
+            },
+            "että": {
+                        "prototype": "että",
+                        "chinese": "……/即",
+                        "form": "连词"
+            },
+            "haluan": {
+                        "prototype": "haluta",
+                        "chinese": "我想要",
+                        "form": "1单"
+            },
+            "hermano": {
+                        "prototype": "Hermano",
+                        "chinese": "兄弟（艺名成分）",
+                        "form": "专名"
+            },
+            "hieno": {
+                        "prototype": "hieno",
+                        "chinese": "美好的/棒的",
+                        "form": "单数主格"
+            },
+            "hirven": {
+                        "prototype": "hirvi",
+                        "chinese": "驼鹿",
+                        "form": "单数宾格"
+            },
+            "huomasin": {
+                        "prototype": "huomata",
+                        "chinese": "我注意到",
+                        "form": "1单过去"
+            },
+            "hyvin": {
+                        "prototype": "hyvin",
+                        "chinese": "很好/很",
+                        "form": "副词"
+            },
+            "ihan": {
+                        "prototype": "ihan",
+                        "chinese": "完全/很",
+                        "form": "副词"
+            },
+            "ihana": {
+                        "prototype": "ihana",
+                        "chinese": "美好的",
+                        "form": "单数主格"
+            },
+            "ihmettelin": {
+                        "prototype": "ihmetellä",
+                        "chinese": "我惊讶/纳闷",
+                        "form": "1单过去"
+            },
+            "ihmisiin": {
+                        "prototype": "ihminen",
+                        "chinese": "到人们中/去认识人",
+                        "form": "复数入格"
+            },
+            "ihmisiä": {
+                        "prototype": "ihminen",
+                        "chinese": "人们",
+                        "form": "复数部分格"
+            },
+            "iso": {
+                        "prototype": "iso",
+                        "chinese": "大的",
+                        "form": "形容词主格"
+            },
+            "ja": {
+                        "prototype": "ja",
+                        "chinese": "和",
+                        "form": "连词"
+            },
+            "jo": {
+                        "prototype": "jo",
+                        "chinese": "已经",
+                        "form": "副词"
+            },
+            "joimme": {
+                        "prototype": "juoda",
+                        "chinese": "我们喝了",
+                        "form": "1复过去"
+            },
+            "joo": {
+                        "prototype": "joo",
+                        "chinese": "好/嗯",
+                        "form": "回应语"
+            },
+            "jos": {
+                        "prototype": "jos",
+                        "chinese": "如果",
+                        "form": "连词"
+            },
+            "juttelimme": {
+                        "prototype": "jutella",
+                        "chinese": "我们聊天了",
+                        "form": "1复过去"
+            },
+            "jälkeen": {
+                        "prototype": "jälkeen",
+                        "chinese": "在...之后",
+                        "form": "后置词"
+            },
+            "jännitti": {
+                        "prototype": "jännittää",
+                        "chinese": "使紧张",
+                        "form": "3单过去"
+            },
+            "jännittävältä": {
+                        "prototype": "jännittävä",
+                        "chinese": "令人兴奋的",
+                        "form": "单数夺格"
+            },
+            "kaisa": {
+                        "prototype": "Kaisa",
+                        "chinese": "凯萨",
+                        "form": "人名"
+            },
+            "kaisan": {
+                        "prototype": "Kaisa",
+                        "chinese": "Kaisa 的",
+                        "form": "属格"
+            },
+            "kalastimme": {
+                        "prototype": "kalastaa",
+                        "chinese": "我们钓鱼了",
+                        "form": "1复过去"
+            },
+            "kamerunissa": {
+                        "prototype": "Kamerun",
+                        "chinese": "在喀麦隆",
+                        "form": "内格"
+            },
+            "kerran": {
+                        "prototype": "kerta",
+                        "chinese": "一次/那次",
+                        "form": "时间副词"
+            },
+            "kerta": {
+                        "prototype": "kerta",
+                        "chinese": "次/回",
+                        "form": "单数主格"
+            },
+            "kertaa": {
+                        "prototype": "kerta",
+                        "chinese": "次/回",
+                        "form": "单数部分格"
+            },
+            "keräsimme": {
+                        "prototype": "kerätä",
+                        "chinese": "我们采集了",
+                        "form": "1复过去"
+            },
+            "kivaa": {
+                        "prototype": "kiva",
+                        "chinese": "不错/愉快的",
+                        "form": "单数部分格"
+            },
+            "kivalta": {
+                        "prototype": "kiva",
+                        "chinese": "不错/令人愉快的",
+                        "form": "单数夺格"
+            },
+            "kokemus": {
+                        "prototype": "kokemus",
+                        "chinese": "经历/体验",
+                        "form": "单数主格"
+            },
+            "korttia": {
+                        "prototype": "kortti",
+                        "chinese": "纸牌",
+                        "form": "单数部分格"
+            },
+            "koskaan": {
+                        "prototype": "koskaan",
+                        "chinese": "从未/曾经",
+                        "form": "副词"
+            },
+            "koulussa": {
+                        "prototype": "koulu",
+                        "chinese": "在学校",
+                        "form": "内格"
+            },
+            "kuin": {
+                        "prototype": "kuin",
+                        "chinese": "当...时/比",
+                        "form": "连词"
+            },
+            "kukaan": {
+                        "prototype": "kukaan",
+                        "chinese": "任何人",
+                        "form": "否定句不定代词"
+            },
+            "kulttuurishokki": {
+                        "prototype": "kulttuurishokki",
+                        "chinese": "文化冲击",
+                        "form": "单数主格"
+            },
+            "kun": {
+                        "prototype": "kun",
+                        "chinese": "当/因为",
+                        "form": "连词"
+            },
+            "kuulostaa": {
+                        "prototype": "kuulostaa",
+                        "chinese": "听起来",
+                        "form": "3单现在"
+            },
+            "kyllä": {
+                        "prototype": "kyllä",
+                        "chinese": "确实",
+                        "form": "副词"
+            },
+            "kylmyydestä": {
+                        "prototype": "kylmyys",
+                        "chinese": "寒冷",
+                        "form": "单数出格"
+            },
+            "kylmää": {
+                        "prototype": "kylmä",
+                        "chinese": "寒冷",
+                        "form": "单数部分格"
+            },
+            "kävelimme": {
+                        "prototype": "kävellä",
+                        "chinese": "我们走路了",
+                        "form": "1复过去"
+            },
+            "lisäksi": {
+                        "prototype": "lisäksi",
+                        "chinese": "此外",
+                        "form": "连接副词"
+            },
+            "lunta": {
+                        "prototype": "lumi",
+                        "chinese": "雪",
+                        "form": "名词 (单数部分格)"
+            },
+            "luulin": {
+                        "prototype": "luulla",
+                        "chinese": "我以为",
+                        "form": "1单过去"
+            },
+            "lähihoitajakoulutukseen": {
+                        "prototype": "lähihoitajakoulutus",
+                        "chinese": "进入护工培训",
+                        "form": "单数入格"
+            },
+            "marjoja": {
+                        "prototype": "marja",
+                        "chinese": "浆果",
+                        "form": "复数部分格"
+            },
+            "me": {
+                        "prototype": "me",
+                        "chinese": "我们",
+                        "form": "代词"
+            },
+            "meillä": {
+                        "prototype": "me",
+                        "chinese": "我们这里",
+                        "form": "接格"
+            },
+            "meksikossa": {
+                        "prototype": "Meksiko",
+                        "chinese": "在墨西哥",
+                        "form": "内格"
+            },
+            "mennä": {
+                        "prototype": "mennä",
+                        "chinese": "去",
+                        "form": "1不定式"
+            },
+            "metsä": {
+                        "prototype": "metsä",
+                        "chinese": "森林",
+                        "form": "单数主格"
+            },
+            "metsässä": {
+                        "prototype": "metsä",
+                        "chinese": "在森林里",
+                        "form": "内格"
+            },
+            "mies": {
+                        "prototype": "mies",
+                        "chinese": "丈夫/男人",
+                        "form": "主格"
+            },
+            "minua": {
+                        "prototype": "minä",
+                        "chinese": "我（部分格）",
+                        "form": "代词部分格"
+            },
+            "minulla": {
+                        "prototype": "minä",
+                        "chinese": "我这边/我有",
+                        "form": "接格"
+            },
+            "minulle": {
+                        "prototype": "minä",
+                        "chinese": "对我/给我",
+                        "form": "向格"
+            },
+            "minun": {
+                        "prototype": "minä",
+                        "chinese": "我的",
+                        "form": "单数属格"
+            },
+            "minä": {
+                        "prototype": "minä",
+                        "chinese": "我",
+                        "form": "代词"
+            },
+            "minäkin": {
+                        "prototype": "minä",
+                        "chinese": "我也",
+                        "form": "主格+kin"
+            },
+            "miten": {
+                        "prototype": "miten",
+                        "chinese": "怎样/多么",
+                        "form": "疑问副词"
+            },
+            "mitä": {
+                        "prototype": "mikä",
+                        "chinese": "什么（部分格）",
+                        "form": "疑问代词部分格"
+            },
+            "mutta": {
+                        "prototype": "mutta",
+                        "chinese": "但是",
+                        "form": "连词"
+            },
+            "muuten": {
+                        "prototype": "muuten",
+                        "chinese": "就那样/另外",
+                        "form": "副词"
+            },
+            "muutin": {
+                        "prototype": "muuttaa",
+                        "chinese": "我搬来/搬家",
+                        "form": "1单过去"
+            },
+            "myös": {
+                        "prototype": "myös",
+                        "chinese": "也",
+                        "form": "副词"
+            },
+            "mökillä": {
+                        "prototype": "mökki",
+                        "chinese": "在小木屋/度假屋",
+                        "form": "接格"
+            },
+            "nauroimme": {
+                        "prototype": "nauraa",
+                        "chinese": "我们笑了",
+                        "form": "1复过去"
+            },
+            "nyt": {
+                        "prototype": "nyt",
+                        "chinese": "现在",
+                        "form": "副词"
+            },
+            "nähnyt": {
+                        "prototype": "nähdä",
+                        "chinese": "看见过",
+                        "form": "过去分词"
+            },
+            "näimme": {
+                        "prototype": "nähdä",
+                        "chinese": "我们看见了",
+                        "form": "1复过去"
+            },
+            "näin": {
+                        "prototype": "nähdä",
+                        "chinese": "我看见了",
+                        "form": "1单过去"
+            },
+            "olen": {
+                        "prototype": "olla",
+                        "chinese": "我是/我已经",
+                        "form": "1单现在"
+            },
+            "oli": {
+                        "prototype": "olla",
+                        "chinese": "是/有",
+                        "form": "3单过去"
+            },
+            "olimme": {
+                        "prototype": "olla",
+                        "chinese": "我们曾在/是",
+                        "form": "1复过去"
+            },
+            "olin": {
+                        "prototype": "olla",
+                        "chinese": "我曾是",
+                        "form": "1单过去"
+            },
+            "ollut": {
+                        "prototype": "olla",
+                        "chinese": "曾经是/有过",
+                        "form": "过去分词"
+            },
+            "oman": {
+                        "prototype": "oma",
+                        "chinese": "自己的",
+                        "form": "单数属格"
+            },
+            "on": {
+                        "prototype": "olla",
+                        "chinese": "是/有",
+                        "form": "3单现在"
+            },
+            "onnekas": {
+                        "prototype": "onnekas",
+                        "chinese": "幸运的",
+                        "form": "单数主格"
+            },
+            "onneksi": {
+                        "prototype": "onneksi",
+                        "chinese": "幸好",
+                        "form": "副词"
+            },
+            "onnellinen": {
+                        "prototype": "onnellinen",
+                        "chinese": "幸福的",
+                        "form": "单数主格"
+            },
+            "ootte": {
+                        "prototype": "olla",
+                        "chinese": "你们是",
+                        "form": "口语2复"
+            },
+            "opimme": {
+                        "prototype": "oppia",
+                        "chinese": "我们学过",
+                        "form": "1复过去"
+            },
+            "otimme": {
+                        "prototype": "ottaa",
+                        "chinese": "我们晒/取",
+                        "form": "1复过去"
+            },
+            "ovat": {
+                        "prototype": "olla",
+                        "chinese": "是（他们）",
+                        "form": "3复"
+            },
+            "pakkasellakin": {
+                        "prototype": "pakkanen",
+                        "chinese": "即使在严寒里也",
+                        "form": "接格+kin"
+            },
+            "paljon": {
+                        "prototype": "paljon",
+                        "chinese": "很多",
+                        "form": "副词"
+            },
+            "pelasimme": {
+                        "prototype": "pelata",
+                        "chinese": "我们玩/打",
+                        "form": "1复过去"
+            },
+            "perhe": {
+                        "prototype": "perhe",
+                        "chinese": "家庭",
+                        "form": "单数主格"
+            },
+            "perro": {
+                        "prototype": "Perro",
+                        "chinese": "狗（艺名成分）",
+                        "form": "专名"
+            },
+            "perustaa": {
+                        "prototype": "perustaa",
+                        "chinese": "创立",
+                        "form": "1不定式"
+            },
+            "piirtää": {
+                        "prototype": "piirtää",
+                        "chinese": "画",
+                        "form": "1不定式"
+            },
+            "pyörällä": {
+                        "prototype": "pyörä",
+                        "chinese": "骑自行车/用自行车",
+                        "form": "接格"
+            },
+            "pärjää": {
+                        "prototype": "pärjätä",
+                        "chinese": "应付得来",
+                        "form": "3单"
+            },
+            "päällä": {
+                        "prototype": "päällä",
+                        "chinese": "在身上",
+                        "form": "方位副词"
+            },
+            "rauhallinen": {
+                        "prototype": "rauhallinen",
+                        "chinese": "安静的/平和的",
+                        "form": "单数主格"
+            },
+            "saada": {
+                        "prototype": "saada",
+                        "chinese": "得到/拿到",
+                        "form": "1不定式"
+            },
+            "sairaanhoitajakoulutukseen": {
+                        "prototype": "sairaanhoitajakoulutus",
+                        "chinese": "进入护士培训",
+                        "form": "单数入格"
+            },
+            "samaa": {
+                        "prototype": "sama",
+                        "chinese": "同样的事",
+                        "form": "单数部分格"
+            },
+            "samalla": {
+                        "prototype": "sama",
+                        "chinese": "同样的/同一个",
+                        "form": "接格"
+            },
+            "sandrine": {
+                        "prototype": "Sandrine",
+                        "chinese": "桑德琳",
+                        "form": "人名"
+            },
+            "sarjakuvia": {
+                        "prototype": "sarjakuva",
+                        "chinese": "漫画",
+                        "form": "复数部分格"
+            },
+            "se": {
+                        "prototype": "se",
+                        "chinese": "它",
+                        "form": "代词主格"
+            },
+            "selvitä": {
+                        "prototype": "selvitä",
+                        "chinese": "挺过/熬过",
+                        "form": "1不定式"
+            },
+            "sen": {
+                        "prototype": "se",
+                        "chinese": "它（宾格）",
+                        "form": "宾格"
+            },
+            "silloin": {
+                        "prototype": "silloin",
+                        "chinese": "那时",
+                        "form": "时间副词"
+            },
+            "sinä": {
+                        "prototype": "sinä",
+                        "chinese": "你",
+                        "form": "代词"
+            },
+            "suloisia": {
+                        "prototype": "suloinen",
+                        "chinese": "可爱的",
+                        "form": "复数部分格"
+            },
+            "suomalaiset": {
+                        "prototype": "suomalainen",
+                        "chinese": "芬兰人",
+                        "form": "复数主格"
+            },
+            "suomalaisten": {
+                        "prototype": "suomalainen",
+                        "chinese": "芬兰人的",
+                        "form": "复数属格"
+            },
+            "suomessa": {
+                        "prototype": "Suomi",
+                        "chinese": "在芬兰",
+                        "form": "内格"
+            },
+            "suomesta": {
+                        "prototype": "Suomi",
+                        "chinese": "关于芬兰",
+                        "form": "名词 (出格)"
+            },
+            "suomi": {
+                        "prototype": "Suomi",
+                        "chinese": "芬兰",
+                        "form": "国名"
+            },
+            "suuri": {
+                        "prototype": "suuri",
+                        "chinese": "大的",
+                        "form": "单数主格"
+            },
+            "söimme": {
+                        "prototype": "syödä",
+                        "chinese": "我们吃了",
+                        "form": "1复过去"
+            },
+            "taiteilijanimikin": {
+                        "prototype": "taiteilijanimi",
+                        "chinese": "连艺名也",
+                        "form": "单数主格+kin"
+            },
+            "talvella": {
+                        "prototype": "talvi",
+                        "chinese": "在冬天",
+                        "form": "接格"
+            },
+            "talvellakin": {
+                        "prototype": "talvi",
+                        "chinese": "即使在冬天也",
+                        "form": "接格+kin"
+            },
+            "talven": {
+                        "prototype": "talvi",
+                        "chinese": "冬天的",
+                        "form": "单数属格"
+            },
+            "tapasin": {
+                        "prototype": "tavata",
+                        "chinese": "我见到了",
+                        "form": "1单过去"
+            },
+            "tarkenee": {
+                        "prototype": "tarketa",
+                        "chinese": "耐得住冷",
+                        "form": "3单"
+            },
+            "tarpeeksi": {
+                        "prototype": "tarpeeksi",
+                        "chinese": "足够",
+                        "form": "副词"
+            },
+            "tatuointeja": {
+                        "prototype": "tatuointi",
+                        "chinese": "纹身",
+                        "form": "复数部分格"
+            },
+            "tatuointistudion": {
+                        "prototype": "tatuointistudio",
+                        "chinese": "纹身工作室",
+                        "form": "单数宾格"
+            },
+            "tavalla": {
+                        "prototype": "tapa",
+                        "chinese": "方式",
+                        "form": "接格"
+            },
+            "te": {
+                        "prototype": "te",
+                        "chinese": "你们",
+                        "form": "主格"
+            },
+            "tehdä": {
+                        "prototype": "tehdä",
+                        "chinese": "做",
+                        "form": "1不定式"
+            },
+            "tiedän": {
+                        "prototype": "tietää",
+                        "chinese": "我知道",
+                        "form": "1单"
+            },
+            "tiesit": {
+                        "prototype": "tietää",
+                        "chinese": "知道",
+                        "form": "2单过去"
+            },
+            "tilaa": {
+                        "prototype": "tila",
+                        "chinese": "空间",
+                        "form": "单数部分格"
+            },
+            "toivot": {
+                        "prototype": "toivoa",
+                        "chinese": "你希望",
+                        "form": "2单"
+            },
+            "tosi": {
+                        "prototype": "tosi",
+                        "chinese": "很/非常",
+                        "form": "副词"
+            },
+            "tulevaisuudelta": {
+                        "prototype": "tulevaisuus",
+                        "chinese": "从未来/对未来",
+                        "form": "夺格"
+            },
+            "tulit": {
+                        "prototype": "tulla",
+                        "chinese": "来了",
+                        "form": "2单过去"
+            },
+            "tuntui": {
+                        "prototype": "tuntua",
+                        "chinese": "让人感觉",
+                        "form": "3单过去"
+            },
+            "tutustu": {
+                        "prototype": "tutustua",
+                        "chinese": "结识",
+                        "form": "否定词后词干"
+            },
+            "tänne": {
+                        "prototype": "tänne",
+                        "chinese": "到这边",
+                        "form": "方向副词"
+            },
+            "täällä": {
+                        "prototype": "täällä",
+                        "chinese": "在这里",
+                        "form": "地点副词"
+            },
+            "uimme": {
+                        "prototype": "uida",
+                        "chinese": "我们游泳了",
+                        "form": "1复过去"
+            },
+            "ujoja": {
+                        "prototype": "ujo",
+                        "chinese": "害羞",
+                        "form": "形容词 (复数部分格)"
+            },
+            "ujous": {
+                        "prototype": "ujous",
+                        "chinese": "腼腆/害羞",
+                        "form": "单数主格"
+            },
+            "vaatteita": {
+                        "prototype": "vaate",
+                        "chinese": "衣服",
+                        "form": "复数部分格"
+            },
+            "valmiina": {
+                        "prototype": "valmis",
+                        "chinese": "准备好的",
+                        "form": "样格"
+            },
+            "vanhemmat": {
+                        "prototype": "vanhempi",
+                        "chinese": "父母",
+                        "form": "复数主格"
+            },
+            "victor": {
+                        "prototype": "Victor",
+                        "chinese": "维克托",
+                        "form": "人名"
+            },
+            "voi": {
+                        "prototype": "voida / voi",
+                        "chinese": "可以；哎呀",
+                        "form": "3单 / 感叹词"
+            },
+            "vähemmän": {
+                        "prototype": "vähän",
+                        "chinese": "更少",
+                        "form": "比较级副词"
+            },
+            "väärässä": {
+                        "prototype": "väärä",
+                        "chinese": "错的状态里",
+                        "form": "内格"
+            },
+            "ymmärsin": {
+                        "prototype": "ymmärtää",
+                        "chinese": "我明白了",
+                        "form": "1单过去"
+            },
+            "yrityksen": {
+                        "prototype": "yritys",
+                        "chinese": "公司",
+                        "form": "单数宾格"
+            },
+            "ystäviä": {
+                        "prototype": "ystävä",
+                        "chinese": "朋友",
+                        "form": "复数部分格"
+            },
+            "ystävällisiä": {
+                        "prototype": "ystävällinen",
+                        "chinese": "友善的",
+                        "form": "复数部分格"
+            }
+};
+
+function flipCard(card) {
+            card.classList.toggle('is-flipped');
+        }
+
+        const tooltip = document.getElementById('wordTooltip');
+
+        function normalizeWord(text) {
+            return text.toLowerCase().replace(/[.,!?":;()]/g, '').trim();
+        }
+
+        function showTooltip(el) {
+            const word = normalizeWord(el.textContent);
+            const data = vocabularyData[word] || { prototype: el.textContent.trim(), chinese: '（未收录）', form: '词形' };
+            tooltip.innerHTML = '<span class="tooltip-proto">' + data.prototype + '</span><span class="tooltip-meaning">' + data.chinese + '</span><span class="tooltip-form">' + data.form + '</span>';
+            tooltip.classList.add('show');
+            const rect = el.getBoundingClientRect();
+            tooltip.style.left = (rect.left + window.scrollX + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+            tooltip.style.top = (rect.top + window.scrollY - tooltip.offsetHeight - 10) + 'px';
+        }
+
+        const synth = window.speechSynthesis;
+        const voiceSelect = document.getElementById('voice-select');
+        let voices = [];
+
+        function populateVoiceList() {
+            voices = synth.getVoices().sort((a, b) => a.name.localeCompare(b.name));
+            voiceSelect.innerHTML = voices
+                .map((v, i) => {
+                    const selected = v.lang.startsWith('fi') ? 'selected' : '';
+                    return '<option value="' + i + '" ' + selected + '>' + v.name + '</option>';
+                })
+                .join('');
+        }
+
+        function speak(text) {
+            if (synth.speaking) synth.cancel();
+            const utter = new SpeechSynthesisUtterance(text);
+            if (voices.length > 0 && voiceSelect.value !== '') utter.voice = voices[voiceSelect.value];
+            utter.lang = 'fi-FI';
+            utter.rate = 0.8;
+            synth.speak(utter);
+        }
+
+        populateVoiceList();
+        if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoiceList;
+
+        document.querySelectorAll('.v-word').forEach(el => {
+            el.addEventListener('mouseenter', (e) => {
+                e.stopPropagation();
+                showTooltip(el);
+            });
+            el.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showTooltip(el);
+                speak(el.textContent);
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.v-word')) tooltip.classList.remove('show');
+        });
+    </script>
+
+</body>
+</html>
